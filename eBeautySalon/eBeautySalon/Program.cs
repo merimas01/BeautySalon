@@ -1,16 +1,23 @@
 using eBeautySalon.Services;
+using eBeautySalon.Services.Database;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddTransient<IUslugeService, UslugeService>();
-
+builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(IKorisniciService));
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<BeautySalonContext>(options => options.UseSqlServer(connectionString));
+
 
 var app = builder.Build();
 

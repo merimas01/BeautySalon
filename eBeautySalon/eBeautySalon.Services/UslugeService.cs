@@ -1,4 +1,5 @@
 ﻿using eBeautySalon.Models;
+using eBeautySalon.Services.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace eBeautySalon.Services
 {
     public class UslugeService : IUslugeService
     {
+        BeautySalonContext context;
+        public UslugeService(BeautySalonContext context) {
+            this.context = context;
+        }
         List<Usluge> usluge = new List<Usluge>()
         {
             new Usluge()
@@ -19,6 +24,7 @@ namespace eBeautySalon.Services
         };
         public IList<Usluge> Get()
         {
+           // var list = context.Uslugas.ToList();
             return usluge;
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace eBeautySalon.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UslugeController : ControllerBase
     {
         private readonly IUslugeService _uslugeService;

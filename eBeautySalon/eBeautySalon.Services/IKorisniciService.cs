@@ -11,7 +11,7 @@ namespace eBeautySalon.Services
 {
     public interface IKorisniciService
     {
-        List<Korisnici> Get();
+        Task<List<Korisnici>> Get();
         Korisnici Insert(KorisniciInsertRequest request);
         Korisnici Update(int id, KorisniciUpdateRequest request);
     }

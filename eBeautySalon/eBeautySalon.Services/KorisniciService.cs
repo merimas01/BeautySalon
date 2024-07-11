@@ -2,6 +2,7 @@
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Services.Database;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,9 @@ namespace eBeautySalon.Services
             _mapper = mapper;
         }
 
-        public List<Korisnici> Get()
+        public async Task<List<Korisnici>> Get()
         {
-            var entityList = _context.Korisniks.ToList();
+            var entityList = await _context.Korisniks.ToListAsync();
             return _mapper.Map<List<Korisnici>>(entityList);
 
         }

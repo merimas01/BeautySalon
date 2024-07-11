@@ -1,3 +1,5 @@
+using eBeautySalon.Models;
+using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IUslugeService, UslugeService>();
 builder.Services.AddTransient<IKorisniciService, KorisniciService>();
+builder.Services.AddTransient<IKategorijeService, KategorijeService>();
+builder.Services.AddTransient<IService<Komentari,BaseSearchObject>, BaseService<Komentari, Komentar,BaseSearchObject>>(); //bez interfejsa i servisa
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

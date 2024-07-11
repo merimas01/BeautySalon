@@ -21,9 +21,9 @@ namespace eBeautySalon.Controllers
         }
 
         [HttpGet()]
-        public IEnumerable<Korisnici> Get()
+        public async Task<IEnumerable<Korisnici>> Get()
         {
-            return _service.Get();
+            return await _service.Get();
         }
 
         [HttpPost()]

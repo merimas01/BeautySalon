@@ -19,8 +19,20 @@ namespace eBeautySalon.Services
             CreateMap<KorisniciUpdateRequest, Korisnik>();
 
             CreateMap<Kategorija, Kategorije>();
+            CreateMap<KategorijeInsertRequest, Kategorija>();
+            CreateMap<KategorijeUpdateRequest, Kategorija>();
 
             CreateMap<Komentar, Komentari>();
+            CreateMap<KomentariInsertRequest, Komentar>();
+            CreateMap<KomentariUpdateRequest, Komentar>();
+
+            CreateMap<KorisnikUloga, KorisniciUloge>();
+            CreateMap<Uloga, Uloge>();
+
+            CreateMap<Usluga, Usluge>();
+            CreateMap<UslugeInsertRequest, Usluga>();
+            CreateMap<UslugeUpdateRequest, Usluga>();
+
         }
     }
 }

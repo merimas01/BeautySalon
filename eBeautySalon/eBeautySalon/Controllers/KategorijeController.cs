@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace eBeautySalon.Controllers
 {
     [ApiController]
-    public class KategorijeController : BaseController<Kategorije, KategorijeSearchObject>
+    public class KategorijeController : BaseCRUDController<Kategorije, KategorijeSearchObject, KategorijeInsertRequest,KategorijeUpdateRequest>
     {
-        public KategorijeController(ILogger<BaseController<Kategorije,KategorijeSearchObject>> logger, IKategorijeService service)
+        public KategorijeController(ILogger<BaseCRUDController<Kategorije,KategorijeSearchObject,KategorijeInsertRequest,KategorijeUpdateRequest>> logger, IKategorijeService service)
             :base(logger,service)
         {
         }

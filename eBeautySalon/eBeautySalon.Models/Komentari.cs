@@ -20,5 +20,9 @@ namespace eBeautySalon.Models
 
         public int? UslugaId { get; set; }
 
+        public virtual Korisnici? Korisnik { get; set; }
+
+        public virtual Usluge? Usluga { get; set; }
+
     }
 }

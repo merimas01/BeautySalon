@@ -23,7 +23,7 @@ namespace eBeautySalon.Models
 
         public DateTime? DatumModifikovanja { get; set; }
 
-        //public virtual Kategorija? Kategorija { get; set; }
+        public virtual Kategorije? Kategorija { get; set; }
 
         //public virtual ICollection<Komentar> Komentars { get; set; } = new List<Komentar>();
 

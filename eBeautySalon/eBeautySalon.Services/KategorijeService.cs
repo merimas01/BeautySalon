@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using eBeautySalon.Models;
+using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public class KategorijeService : BaseService<Kategorije,Kategorija,KategorijeSearchObject>, IKategorijeService
+    public class KategorijeService : BaseCRUDService<Kategorije,Kategorija,KategorijeSearchObject, KategorijeInsertRequest, KategorijeUpdateRequest>, IKategorijeService
     {
         public KategorijeService(BeautySalonContext context, IMapper mapper) : base(context,mapper)
         {
@@ -27,7 +28,17 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.Opis != null && x.Opis.StartsWith(search.Opis));
             }
+           
             return base.AddFilter(query, search);
+        }
+
+        public override IQueryable<Kategorija> AddInclude(IQueryable<Kategorija> query, KategorijeSearchObject? search = null)
+        {
+            if (search?.isUslugeIncluded == true)
+            {
+                query = query.Include("Uslugas");
+            }
+            return base.AddInclude(query, search);
         }
     }
 }

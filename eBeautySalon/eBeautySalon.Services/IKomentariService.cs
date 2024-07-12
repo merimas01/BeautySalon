@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public interface IKategorijeService: ICRUDService<Kategorije, KategorijeSearchObject,KategorijeInsertRequest,KategorijeUpdateRequest>
+    public interface IKomentariService : ICRUDService<Komentari, BaseSearchObject, KomentariInsertRequest,KomentariUpdateRequest> 
     {
     }
 }

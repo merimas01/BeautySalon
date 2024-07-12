@@ -17,5 +17,7 @@ namespace eBeautySalon.Models
         public DateTime DatumKreiranja { get; set; }
 
         public DateTime? DatumModifikovanja { get; set; }
+
+        public virtual ICollection<Usluge> Uslugas { get; set; } = new List<Usluge>();
     }
 }

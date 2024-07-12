@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
+using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,38 +14,18 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public class KorisniciService : IKorisniciService
+    public class KorisniciService : BaseCRUDService<Korisnici, Korisnik, KorisniciSearchObject,KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
     {
-        BeautySalonContext _context;
-        public IMapper _mapper { get; set; }
-
-        public KorisniciService(BeautySalonContext context, IMapper mapper)
+        public KorisniciService(BeautySalonContext context, IMapper mapper): base(context,mapper)
         {
-            _context = context;
-            _mapper = mapper;
         }
 
-        public async Task<List<Korisnici>> Get()
+        public override async Task BeforeInsert(Korisnik korisnik, KorisniciInsertRequest request)
         {
-            var entityList = await _context.Korisniks.ToListAsync();
-            return _mapper.Map<List<Korisnici>>(entityList);
-
-        }
-
-        public Korisnici Insert(KorisniciInsertRequest request)
-        {
-            var korisnik = new Korisnik(); 
-            _mapper.Map(request, korisnik);
-
             korisnik.LozinkaSalt = GenerateSalt();
             korisnik.LozinkaHash = GenerateHash(korisnik.LozinkaSalt, request.Password);
-
-            _context.Korisniks.Add(korisnik); 
-            _context.SaveChanges(); 
-
-            return _mapper.Map<Korisnici>(korisnik); 
         }
-
+      
         public static string GenerateSalt()
         {
             var provider = new RNGCryptoServiceProvider();
@@ -67,20 +49,13 @@ namespace eBeautySalon.Services
             return Convert.ToBase64String(inArray);
         }
 
-        public Korisnici Update(int id, KorisniciUpdateRequest request)
+        public override IQueryable<Korisnik> AddInclude(IQueryable<Korisnik> query, KorisniciSearchObject? search = null)
         {
-            var korisnik = _context.Korisniks.Find(id);
-
-            if (korisnik != null)
+            if (search?.isUlogeIncluded == true)
             {
-                _mapper.Map(request, korisnik); 
-            
-                _context.SaveChanges();
-
-                return _mapper.Map<Models.Korisnici>(korisnik);
+                query = query.Include("KorisnikUlogas.Uloga");
             }
-
-            return new Models.Korisnici();
+            return base.AddInclude(query, search);
         }
 
     }

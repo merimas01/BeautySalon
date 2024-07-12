@@ -1,5 +1,6 @@
 ﻿using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
+using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public interface IKorisniciService
+    public interface IKorisniciService : ICRUDService<Korisnici, KorisniciSearchObject, KorisniciInsertRequest,KorisniciUpdateRequest>
     {
-        Task<List<Korisnici>> Get();
-        Korisnici Insert(KorisniciInsertRequest request);
-        Korisnici Update(int id, KorisniciUpdateRequest request);
+        
     }
 }

@@ -29,6 +29,8 @@ namespace eBeautySalon.Services
            
             query = AddFilter(query, search);
 
+            query = AddInclude(query, search);
+
             result.Count = await query.CountAsync();
 
             if (search?.Page.HasValue==true && search?.PageSize.HasValue == true)
@@ -42,6 +44,11 @@ namespace eBeautySalon.Services
             result.Result = tmp;
 
             return result;
+        }
+
+        public virtual IQueryable<TDb> AddInclude(IQueryable<TDb> query, TSearch? search = null)
+        {
+            return query;
         }
 
         public virtual IQueryable<TDb> AddFilter(IQueryable<TDb> query, TSearch? search = null)

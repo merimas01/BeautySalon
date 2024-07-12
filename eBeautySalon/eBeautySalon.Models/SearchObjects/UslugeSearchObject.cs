@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Models.SearchObjects
 {
-    public class KategorijeSearchObject : BaseSearchObject
+    public class UslugeSearchObject : BaseSearchObject
     {
         public string? Naziv { get; set; }
-        public string? Opis { get; set; }
-        public bool? isUslugeIncluded { get; set; }
+
+        public string? Opis { get; set; } = null!;
+
+        public decimal? Cijena { get; set; }
+
     }
 }

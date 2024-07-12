@@ -20,10 +20,6 @@ namespace eBeautySalon.Models
 
         public string KorisnickoIme { get; set; } = null!;
 
-        //public string LozinkaHash { get; set; } = null!;
-
-        //public string LozinkaSalt { get; set; } = null!;
-
         public bool Status { get; set; }
 
         //public int? SlikaProfilaId { get; set; }
@@ -36,7 +32,7 @@ namespace eBeautySalon.Models
 
         //public virtual ICollection<Komentar> Komentars { get; set; } = new List<Komentar>();
 
-        //public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
+        public virtual ICollection<KorisniciUloge> KorisnikUlogas { get; set; } = new List<KorisniciUloge>();
 
         //public virtual ICollection<Novost> Novosts { get; set; } = new List<Novost>();
 

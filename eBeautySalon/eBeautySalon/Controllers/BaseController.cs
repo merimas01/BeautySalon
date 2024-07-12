@@ -9,8 +9,8 @@ namespace eBeautySalon.Controllers
     [ApiController]
     public class BaseController<T, TSearch> : ControllerBase where T : class where TSearch : class
     {
-        private readonly IService<T,TSearch> _service;
-        private readonly ILogger<BaseController<T,TSearch>> _logger;
+        protected readonly IService<T,TSearch> _service;
+        protected readonly ILogger<BaseController<T,TSearch>> _logger;
 
         public BaseController(ILogger<BaseController<T,TSearch>> logger, IService<T,TSearch> service)
         {

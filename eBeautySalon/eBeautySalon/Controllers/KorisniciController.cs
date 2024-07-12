@@ -1,5 +1,6 @@
 ﻿using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
+using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services;
 using eBeautySalon.Services.Database;
 using Microsoft.AspNetCore.Http;
@@ -9,33 +10,25 @@ namespace eBeautySalon.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class KorisniciController : ControllerBase
+    public class KorisniciController : BaseCRUDController<Korisnici, KorisniciSearchObject,KorisniciInsertRequest,KorisniciUpdateRequest>
     {
-        private readonly IKorisniciService _service;
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public KorisniciController(ILogger<WeatherForecastController> logger, IKorisniciService service)
+        //protected IKorisniciService _korisniciService; - ako imali svoje metode koje nisu crud
+        public KorisniciController(ILogger<BaseCRUDController<Korisnici, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>> logger, IKorisniciService service)
+            : base(logger, service)
         {
-            _logger = logger;
-            _service = service;
+           //_korisniciService = service;
         }
 
-        [HttpGet()]
-        public async Task<IEnumerable<Korisnici>> Get()
-        {
-            return await _service.Get();
-        }
+        //[HttpPost()]
+        //public Korisnici Insert(KorisniciInsertRequest request)
+        //{
+        //    return _korisniciService.Insert(request);
+        //}
 
-        [HttpPost()]
-        public Korisnici Insert(KorisniciInsertRequest request)
-        {
-            return _service.Insert(request);
-        }
-
-        [HttpPut("{id}")]
-        public Korisnici Update (int id, KorisniciUpdateRequest request)
-        {
-            return _service.Update(id, request);
-        }
+        //[HttpPut("{id}")]
+        //public Korisnici Update(int id, KorisniciUpdateRequest request)
+        //{
+        //    return (_service as IKorisniciService).Update(id, request);
+        //}
     }
 }

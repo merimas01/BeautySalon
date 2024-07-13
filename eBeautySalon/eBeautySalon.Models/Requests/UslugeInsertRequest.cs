@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -9,14 +10,19 @@ namespace eBeautySalon.Models.Requests
 {
     public class UslugeInsertRequest
     {
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Naziv je obavezan.")]
         public string Naziv { get; set; }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Opis je obavezan.")]
         public string Opis { get; set; } = null!;
 
+        [Required(ErrorMessage = "Cijena je obavezna.")]
+        [Range(1,1000)]
         public decimal Cijena { get; set; }
-
-       // public int? SlikaUslugeId { get; set; }
-
+        
+        // public int? SlikaUslugeId { get; set; }
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Vrijednost mora biti veca od 0.")]
         public int? KategorijaId { get; set; }
 
         [JsonIgnore]

@@ -1,4 +1,5 @@
 using eBeautySalon.Controllers;
+using eBeautySalon.Filters;
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
@@ -18,7 +19,10 @@ builder.Services.AddTransient<IKomentariService, KomentariService>();
 //    <ICRUDService<Komentari,BaseSearchObject,KomentariInsertRequest,KomentariUpdateRequest>,
 //    BaseCRUDService<Komentari, Komentar, BaseSearchObject, KomentariInsertRequest, KomentariUpdateRequest>>(); //bez interfejsa i servisa
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(x =>
+{
+    x.Filters.Add<ErrorFilter>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

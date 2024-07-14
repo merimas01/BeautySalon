@@ -58,5 +58,25 @@ namespace eBeautySalon.Services
             return base.AddInclude(query, search);
         }
 
+        public async Task<Korisnici> Login(string username, string password)
+        {
+            var entity = await _context.Korisniks.Include("KorisniciUloges.Uloga").FirstOrDefaultAsync(x => x.KorisnickoIme == username);
+
+            if (entity == null)
+            {
+                return null;
+            }
+            //sada password koji je poslan moramo hesirati istim mehanizmom koji je u bazi
+            //i ako se hash slaze, mozemo korisnika pustiti
+            var hash = GenerateHash(entity.LozinkaSalt, password);
+
+            if (hash != entity.LozinkaHash)
+            {
+                return null;
+            }
+            return _mapper.Map<Korisnici>(entity);
+
+        }
+
     }
 }

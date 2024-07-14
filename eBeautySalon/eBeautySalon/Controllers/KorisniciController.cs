@@ -3,6 +3,7 @@ using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services;
 using eBeautySalon.Services.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,12 @@ namespace eBeautySalon.Controllers
             : base(logger, service)
         {
            //_korisniciService = service;
+        }
+
+        [Authorize(Roles = "Administrator")] //samo admin moze insertati korisnika
+        public override Task<Korisnici> Insert(KorisniciInsertRequest insert)
+        {
+            return base.Insert(insert);
         }
 
         //[HttpPost()]

@@ -1,5 +1,6 @@
 ﻿using eBeautySalon.Models;
 using eBeautySalon.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace eBeautySalon.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class BaseController<T, TSearch> : ControllerBase where T : class where TSearch : class
     {
         protected readonly IService<T,TSearch> _service;

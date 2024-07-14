@@ -31,7 +31,7 @@ namespace eBeautySalon.Models.Requests
         public DateTime? DatumKreiranja { get; set; } = DateTime.Now;
 
         // public int? SlikaProfilaId { get; set; }
-
-        //public bool? IsAdmin { get; set; }
+        [JsonIgnore]
+        public bool? IsAdmin { get; set; } = false;
     }
 }

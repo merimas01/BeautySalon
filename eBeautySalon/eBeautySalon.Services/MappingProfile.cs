@@ -33,6 +33,10 @@ namespace eBeautySalon.Services
             CreateMap<UslugeInsertRequest, Usluga>();
             CreateMap<UslugeUpdateRequest, Usluga>();
 
+            CreateMap<Ocjena, Ocjene>();
+            CreateMap<OcjeneInsertRequest, Ocjena>();
+            CreateMap<OcjeneUpdateRequest, Ocjena>();
+
         }
     }
 }

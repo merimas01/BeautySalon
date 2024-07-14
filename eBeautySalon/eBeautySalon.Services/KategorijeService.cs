@@ -32,13 +32,13 @@ namespace eBeautySalon.Services
             return base.AddFilter(query, search);
         }
 
-        public override IQueryable<Kategorija> AddInclude(IQueryable<Kategorija> query, KategorijeSearchObject? search = null)
-        {
-            if (search?.isUslugeIncluded == true)
-            {
-                query = query.Include("Uslugas");
-            }
-            return base.AddInclude(query, search);
-        }
+        //public override IQueryable<Kategorija> AddInclude(IQueryable<Kategorija> query, KategorijeSearchObject? search = null)
+        //{
+        //    if (search?.isUslugeIncluded == true)
+        //    {
+        //        query = query.Include("Uslugas");
+        //    }
+        //    return base.AddInclude(query, search);
+        //}
     }
 }

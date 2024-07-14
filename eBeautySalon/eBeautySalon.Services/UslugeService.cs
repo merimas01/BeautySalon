@@ -17,5 +17,22 @@ namespace eBeautySalon.Services
         public UslugeService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override IQueryable<Usluga> AddFilter(IQueryable<Usluga> query, UslugeSearchObject? search = null)
+        {
+            if (!string.IsNullOrWhiteSpace(search?.Naziv))
+            {
+                query = query.Where(x => x.Naziv != null && x.Naziv.StartsWith(search.Naziv));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.Opis))
+            {
+                query = query.Where(x => x.Opis != null && x.Opis.Contains(search.Opis));
+            }
+            if (search?.Cijena != null)
+            {
+                query = query.Where(x => x.Cijena == search.Cijena);
+            }
+            return base.AddFilter(query, search);
+        }
     }
 }

@@ -10,6 +10,6 @@ namespace eBeautySalon.Models.SearchObjects
     {
         public string? Naziv { get; set; }
         public string? Opis { get; set; }
-        public bool? isUslugeIncluded { get; set; }
+        //public bool? isUslugeIncluded { get; set; }
     }
 }

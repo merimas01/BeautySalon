@@ -21,6 +21,12 @@ namespace eBeautySalon.Services
 
         }
 
+        public virtual async Task BeforeUpate(TDb entity, TUpdate update)
+        {
+
+        }
+
+
         public virtual async Task<T> Insert(TInsert insert)
         {
             var set = _context.Set<TDb>();
@@ -40,6 +46,8 @@ namespace eBeautySalon.Services
             var set = _context.Set<TDb>();
 
             var entity = await set.FindAsync(id);
+
+            await BeforeUpate(entity, update);
 
             _mapper.Map(update, entity);
 

@@ -19,9 +19,12 @@ builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 builder.Services.AddTransient<IKategorijeService, KategorijeService>();
 builder.Services.AddTransient<IKomentariService, KomentariService>();
 builder.Services.AddTransient<IOcjeneService, OcjeneService>();
-//builder.Services.AddTransient
-//    <ICRUDService<Komentari,BaseSearchObject,KomentariInsertRequest,KomentariUpdateRequest>,
-//    BaseCRUDService<Komentari, Komentar, BaseSearchObject, KomentariInsertRequest, KomentariUpdateRequest>>(); //bez interfejsa i servisa
+builder.Services.AddTransient<INovostiService, NovostiService>();
+builder.Services.AddTransient<ISlikaNovostiService, SlikaNovostiService>();
+builder.Services.AddTransient<ISlikaProfilaService, SlikaProfilaService>();
+builder.Services.AddTransient<ISlikaUslugeService, SlikaUslugeService>();
+builder.Services.AddTransient<ITerminiService, TerminiService>();
+builder.Services.AddTransient<IRezervacijeService, RezervacijeService>();
 
 builder.Services.AddControllers(x =>
 {

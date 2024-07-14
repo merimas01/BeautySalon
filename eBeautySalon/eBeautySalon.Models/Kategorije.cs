@@ -18,6 +18,6 @@ namespace eBeautySalon.Models
 
         public DateTime? DatumModifikovanja { get; set; }
 
-        public virtual ICollection<Usluge> Uslugas { get; set; } = new List<Usluge>();
+      //  public virtual ICollection<Usluge> Uslugas { get; set; } = new List<Usluge>();
     }
 }

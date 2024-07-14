@@ -10,7 +10,7 @@ namespace eBeautySalon.Models
     {
         public int OcjenaId { get; set; }
 
-        public string Opis { get; set; } = null!;
+        public int? Opis { get; set; }
 
         public DateTime DatumKreiranja { get; set; }
 

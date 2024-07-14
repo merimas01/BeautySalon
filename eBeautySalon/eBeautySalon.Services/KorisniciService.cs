@@ -58,9 +58,29 @@ namespace eBeautySalon.Services
             return base.AddInclude(query, search);
         }
 
+        public override IQueryable<Korisnik> AddFilter(IQueryable<Korisnik> query, KorisniciSearchObject? search = null)
+        {
+            if (!string.IsNullOrWhiteSpace(search?.Ime))
+            {
+                query = query.Where(x => x.Ime.StartsWith(search.Ime));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.Prezime))
+            {
+                query = query.Where(x => x.Prezime != null && x.Prezime.StartsWith(search.Prezime));
+            }
+            if (!string.IsNullOrWhiteSpace(search?.KorisnickoIme))
+            {
+                query = query.Where(x => x.KorisnickoIme != null && x.KorisnickoIme.StartsWith(search.KorisnickoIme));
+            }
+            if (search?.Status == true)
+            {
+                query = query.Where(x => x.Status == true);
+            }
+            return base.AddFilter(query, search);
+        }
         public async Task<Korisnici> Login(string username, string password)
         {
-            var entity = await _context.Korisniks.Include("KorisniciUloges.Uloga").FirstOrDefaultAsync(x => x.KorisnickoIme == username);
+            var entity = await _context.Korisniks.Include("KorisnikUlogas.Uloga").FirstOrDefaultAsync(x => x.KorisnickoIme == username);
 
             if (entity == null)
             {

@@ -27,7 +27,7 @@ public partial class Korisnik
 
     public bool? IsAdmin { get; set; }
 
-    public DateTime? DatumKreiranja { get; set; } 
+    public DateTime? DatumKreiranja { get; set; }
 
     public DateTime? DatumModifikovanja { get; set; }
 

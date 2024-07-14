@@ -22,7 +22,7 @@ namespace eBeautySalon.Models
 
         public bool Status { get; set; }
 
-        //public int? SlikaProfilaId { get; set; }
+        public int? SlikaProfilaId { get; set; }
 
         public bool? IsAdmin { get; set; }
 

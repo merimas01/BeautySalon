@@ -2,11 +2,6 @@
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Services.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
@@ -37,6 +32,29 @@ namespace eBeautySalon.Services
             CreateMap<OcjeneInsertRequest, Ocjena>();
             CreateMap<OcjeneUpdateRequest, Ocjena>();
 
+            CreateMap<Novost, Novosti>();
+            CreateMap<NovostiInsertRequest, Novost>();
+            CreateMap<NovostiUpdateRequest, Novost>();
+
+            CreateMap<SlikaNovost, SlikaNovosti>();
+            CreateMap<SlikaNovostiInsertRequest, SlikaNovost>();
+            CreateMap<SlikaNovostiUpdateRequest, SlikaNovost>();
+
+            CreateMap<Termin, Termini>();
+            CreateMap<TerminiInsertRequest, Termin>();
+            CreateMap<TerminiUpdateRequest, Termin>();
+
+            CreateMap<Rezervacija, Rezervacije>();
+            CreateMap<RezervacijeInsertRequest, Rezervacija>();
+            CreateMap<RezervacijeUpdateRequest, Rezervacija>();
+
+            CreateMap<Database.SlikaProfila, Models.SlikaProfila>();
+            CreateMap<SlikaProfilaInsertRequest, Database.SlikaProfila>();
+            CreateMap<SlikaProfilaUpdateRequest, Database.SlikaProfila>();
+
+            CreateMap<Database.SlikaUsluge, Models.SlikaUsluge>();
+            CreateMap<SlikaUslugeInsertRequest, Database.SlikaUsluge>();
+            CreateMap<SlikaUslugeUpdateRequest, Database.SlikaUsluge>();
         }
     }
 }

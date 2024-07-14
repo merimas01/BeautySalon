@@ -2,9 +2,7 @@
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services;
-using eBeautySalon.Services.Database;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eBeautySalon.Controllers
@@ -26,16 +24,5 @@ namespace eBeautySalon.Controllers
             return base.Insert(insert);
         }
 
-        //[HttpPost()]
-        //public Korisnici Insert(KorisniciInsertRequest request)
-        //{
-        //    return _korisniciService.Insert(request);
-        //}
-
-        //[HttpPut("{id}")]
-        //public Korisnici Update(int id, KorisniciUpdateRequest request)
-        //{
-        //    return (_service as IKorisniciService).Update(id, request);
-        //}
     }
 }

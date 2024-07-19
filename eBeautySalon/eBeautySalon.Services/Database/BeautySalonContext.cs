@@ -246,20 +246,19 @@ public partial class BeautySalonContext : DbContext
 
         modelBuilder.Entity<Zaposlenik>(entity =>
         {
-            entity.HasKey(e => e.KorisnikId);
-
             entity.ToTable("Zaposlenik");
 
-            entity.Property(e => e.KorisnikId)
-                .ValueGeneratedNever()
-                .HasColumnName("KorisnikID");
-            entity.Property(e => e.DatumOtkaza).HasColumnType("datetime");
+            entity.Property(e => e.ZaposlenikId).HasColumnName("ZaposlenikID");
+            entity.Property(e => e.DatumKreiranja)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DatumModifikovanja).HasColumnType("datetime");
             entity.Property(e => e.DatumRodjenja).HasColumnType("datetime");
             entity.Property(e => e.DatumZaposlenja).HasColumnType("datetime");
+            entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
 
-            entity.HasOne(d => d.Korisnik).WithOne(p => p.Zaposlenik)
-                .HasForeignKey<Zaposlenik>(d => d.KorisnikId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.Zaposleniks)
+                .HasForeignKey(d => d.KorisnikId)
                 .HasConstraintName("FK_Korisnik_Zaposlenik");
         });
 

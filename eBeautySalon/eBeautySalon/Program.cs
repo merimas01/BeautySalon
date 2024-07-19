@@ -25,6 +25,8 @@ builder.Services.AddTransient<ISlikaProfilaService, SlikaProfilaService>();
 builder.Services.AddTransient<ISlikaUslugeService, SlikaUslugeService>();
 builder.Services.AddTransient<ITerminiService, TerminiService>();
 builder.Services.AddTransient<IRezervacijeService, RezervacijeService>();
+builder.Services.AddTransient<IZaposleniciService, ZaposleniciService>();
+builder.Services.AddTransient<IZaposleniciUslugeService, ZaposleniciUslugeService>();
 
 builder.Services.AddControllers(x =>
 {

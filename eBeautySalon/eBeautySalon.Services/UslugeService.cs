@@ -34,5 +34,18 @@ namespace eBeautySalon.Services
             }
             return base.AddFilter(query, search);
         }
+
+        public override IQueryable<Usluga> AddInclude(IQueryable<Usluga> query, UslugeSearchObject? search = null)
+        {
+            if (search?.isKategorijaIncluded == true)
+            {
+                query = query.Include(c => c.Kategorija);
+            }
+            if (search?.isSlikaIncluded == true)
+            {
+                query = query.Include(c => c.SlikaUsluge);
+            }
+            return base.AddInclude(query, search);
+        }
     }
 }

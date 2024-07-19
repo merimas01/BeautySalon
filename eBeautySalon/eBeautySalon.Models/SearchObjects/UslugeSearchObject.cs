@@ -14,5 +14,8 @@ namespace eBeautySalon.Models.SearchObjects
 
         public decimal? Cijena { get; set; }
 
+        public bool? isKategorijaIncluded { get; set; } 
+        public bool? isSlikaIncluded { get; set; }
+
     }
 }

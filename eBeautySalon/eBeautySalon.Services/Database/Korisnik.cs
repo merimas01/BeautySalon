@@ -43,5 +43,5 @@ public partial class Korisnik
 
     public virtual SlikaProfila? SlikaProfila { get; set; }
 
-    public virtual Zaposlenik? Zaposlenik { get; set; }
+    public virtual ICollection<Zaposlenik> Zaposleniks { get; set; } = new List<Zaposlenik>();
 }

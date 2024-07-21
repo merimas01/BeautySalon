@@ -13,7 +13,6 @@ namespace eBeautySalon.Subscriber
 {
     public static class EmailSender
     {
-        //public static string ExtractUslugaFromMessage(string message, string )
         public static string ExtractFromMessage(string message, string wordToFind)
         {
             var index = 0;

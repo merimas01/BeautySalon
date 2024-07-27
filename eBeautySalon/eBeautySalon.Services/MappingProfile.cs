@@ -17,10 +17,6 @@ namespace eBeautySalon.Services
             CreateMap<KategorijeInsertRequest, Kategorija>();
             CreateMap<KategorijeUpdateRequest, Kategorija>();
 
-            CreateMap<Komentar, Komentari>();
-            CreateMap<KomentariInsertRequest, Komentar>();
-            CreateMap<KomentariUpdateRequest, Komentar>();
-
             CreateMap<KorisnikUloga, KorisniciUloge>();
             CreateMap<Uloga, Uloge>();
 
@@ -28,9 +24,13 @@ namespace eBeautySalon.Services
             CreateMap<UslugeInsertRequest, Usluga>();
             CreateMap<UslugeUpdateRequest, Usluga>();
 
-            CreateMap<Ocjena, Ocjene>();
-            CreateMap<OcjeneInsertRequest, Ocjena>();
-            CreateMap<OcjeneUpdateRequest, Ocjena>();
+            CreateMap<Database.RecenzijaUsluge, Models.RecenzijaUsluge>();
+            CreateMap<RecenzijaUslugeInsertRequest, Database.RecenzijaUsluge>();
+            CreateMap<RecenzijaUslugeUpdateRequest, Database.RecenzijaUsluge>();
+
+            CreateMap<Database.RecenzijaUsluznika, Models.RecenzijaUsluznika>();
+            CreateMap<RecenzijaUsluznikaInsertRequest, Database.RecenzijaUsluznika>();
+            CreateMap<RecenzijaUsluznikaUpdateRequest, Database.RecenzijaUsluznika>();
 
             CreateMap<Novost, Novosti>();
             CreateMap<NovostiInsertRequest, Novost>();

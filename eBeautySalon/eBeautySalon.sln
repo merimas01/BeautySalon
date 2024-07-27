@@ -9,7 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eBeautySalon.Models", "eBea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eBeautySalon.Services", "eBeautySalon.Services\eBeautySalon.Services.csproj", "{15A2BD68-C388-49F4-B9AA-AC5FB1691D77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eBeautySalon.Subscriber", "eBeautySalon.Subscriber\eBeautySalon.Subscriber.csproj", "{79FA01B0-6D37-46AA-9BAF-E36AE82D0750}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eBeautySalon.Subscriber", "eBeautySalon.Subscriber\eBeautySalon.Subscriber.csproj", "{79FA01B0-6D37-46AA-9BAF-E36AE82D0750}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8ECC4DA5-9B76-4F70-A2E2-AF2E0FB9BA35}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		eBeautySalon.SubscriberDockerfile = eBeautySalon.SubscriberDockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

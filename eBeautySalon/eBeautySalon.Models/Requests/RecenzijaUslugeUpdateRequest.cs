@@ -8,19 +8,22 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Models.Requests
 {
-    public class OcjeneInsertRequest
+    public class RecenzijaUslugeUpdateRequest
     {
-        [Required(ErrorMessage = "Ocjena je obavezna.")]
-        [Range(1,10)]
+        [Required(ErrorMessage = "Ocjena je obavezna: 1-5.")]
+        [Range(1, 5)]
         public int? Opis { get; set; }
 
+        public string? Komentar { get; set; }
+
         [JsonIgnore]
-        public DateTime DatumKreiranja { get; set; } = DateTime.Now;
+        public DateTime? DatumModificiranja { get; set; } = DateTime.Now;
 
         [Required]
         public int? KorisnikId { get; set; }
 
         [Required]
         public int? UslugaId { get; set; }
+
     }
 }

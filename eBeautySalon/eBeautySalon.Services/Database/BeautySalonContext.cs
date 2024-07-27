@@ -17,15 +17,15 @@ public partial class BeautySalonContext : DbContext
 
     public virtual DbSet<Kategorija> Kategorijas { get; set; }
 
-    public virtual DbSet<Komentar> Komentars { get; set; }
-
     public virtual DbSet<Korisnik> Korisniks { get; set; }
 
     public virtual DbSet<KorisnikUloga> KorisnikUlogas { get; set; }
 
     public virtual DbSet<Novost> Novosts { get; set; }
 
-    public virtual DbSet<Ocjena> Ocjenas { get; set; }
+    public virtual DbSet<RecenzijaUsluge> RecenzijaUsluges { get; set; }
+
+    public virtual DbSet<RecenzijaUsluznika> RecenzijaUsluznikas { get; set; }
 
     public virtual DbSet<Rezervacija> Rezervacijas { get; set; }
 
@@ -60,25 +60,6 @@ public partial class BeautySalonContext : DbContext
             entity.Property(e => e.DatumModifikovanja).HasColumnType("datetime");
             entity.Property(e => e.Naziv).HasMaxLength(50);
             entity.Property(e => e.Opis).HasMaxLength(200);
-        });
-
-        modelBuilder.Entity<Komentar>(entity =>
-        {
-            entity.ToTable("Komentar");
-
-            entity.Property(e => e.KomentarId).HasColumnName("KomentarID");
-            entity.Property(e => e.DatumKreiranja).HasColumnType("datetime");
-            entity.Property(e => e.DatumModificiranja).HasColumnType("datetime");
-            entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
-            entity.Property(e => e.UslugaId).HasColumnName("UslugaID");
-
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.Komentars)
-                .HasForeignKey(d => d.KorisnikId)
-                .HasConstraintName("FK_Komentar_Korisnik");
-
-            entity.HasOne(d => d.Usluga).WithMany(p => p.Komentars)
-                .HasForeignKey(d => d.UslugaId)
-                .HasConstraintName("FK_Komentar_Usluga");
         });
 
         modelBuilder.Entity<Korisnik>(entity =>
@@ -143,23 +124,46 @@ public partial class BeautySalonContext : DbContext
                 .HasConstraintName("FK_Novost_SlikaNovost");
         });
 
-        modelBuilder.Entity<Ocjena>(entity =>
+        modelBuilder.Entity<RecenzijaUsluge>(entity =>
         {
-            entity.ToTable("Ocjena");
+            entity.ToTable("RecenzijaUsluge");
 
-            entity.Property(e => e.OcjenaId).HasColumnName("OcjenaID");
-            entity.Property(e => e.DatumKreiranja).HasColumnType("datetime");
+            entity.Property(e => e.RecenzijaUslugeId).HasColumnName("RecenzijaUslugeID");
+            entity.Property(e => e.DatumKreiranja)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
             entity.Property(e => e.DatumModificiranja).HasColumnType("datetime");
             entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
             entity.Property(e => e.UslugaId).HasColumnName("UslugaID");
 
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.Ocjenas)
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.RecenzijaUsluges)
                 .HasForeignKey(d => d.KorisnikId)
-                .HasConstraintName("FK_Ocjena_Korisnik");
+                .HasConstraintName("FK_RecenzijaUsluge_Korisnik");
 
-            entity.HasOne(d => d.Usluga).WithMany(p => p.Ocjenas)
+            entity.HasOne(d => d.Usluga).WithMany(p => p.RecenzijaUsluges)
                 .HasForeignKey(d => d.UslugaId)
-                .HasConstraintName("FK_Ocjena_Usluga");
+                .HasConstraintName("FK_RecenzijaUsluge_Usluga");
+        });
+
+        modelBuilder.Entity<RecenzijaUsluznika>(entity =>
+        {
+            entity.ToTable("RecenzijaUsluznika");
+
+            entity.Property(e => e.RecenzijaUsluznikaId).HasColumnName("RecenzijaUsluznikaID");
+            entity.Property(e => e.DatumKreiranja)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DatumModificiranja).HasColumnType("datetime");
+            entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
+            entity.Property(e => e.UsluznikId).HasColumnName("UsluznikID");
+
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.RecenzijaUsluznikas)
+                .HasForeignKey(d => d.KorisnikId)
+                .HasConstraintName("FK_RecenzijaUsluznika_Korisnik");
+
+            entity.HasOne(d => d.Usluznik).WithMany(p => p.RecenzijaUsluznikas)
+                .HasForeignKey(d => d.UsluznikId)
+                .HasConstraintName("FK_RecenzijaUsluznika_Usluznik");
         });
 
         modelBuilder.Entity<Rezervacija>(entity =>
@@ -267,6 +271,10 @@ public partial class BeautySalonContext : DbContext
             entity.ToTable("ZaposlenikUsluga");
 
             entity.Property(e => e.ZaposlenikUslugaId).HasColumnName("ZaposlenikUslugaID");
+            entity.Property(e => e.DatumKreiranja)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DatumModificiranja).HasColumnType("datetime");
             entity.Property(e => e.UslugaId).HasColumnName("UslugaID");
             entity.Property(e => e.ZaposlenikId).HasColumnName("ZaposlenikID");
 

@@ -18,7 +18,7 @@ namespace eBeautySalon.Services
     {
         public RezervacijeService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
         {
-           
+            
         }
 
         public override async Task BeforeInsert(Rezervacija entity, RezervacijeInsertRequest insert)
@@ -31,7 +31,7 @@ namespace eBeautySalon.Services
             var t = termin?.Opis;
             var datum = insert.DatumRezervacije.Day + "." + insert.DatumRezervacije.Month + "." + insert.DatumRezervacije.Year;
 
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            var factory = new ConnectionFactory { HostName = "localhost", UserName = "guest", Password = "guest" };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 

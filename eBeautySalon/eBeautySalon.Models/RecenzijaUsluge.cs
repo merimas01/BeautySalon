@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Models
 {
-    public class Komentari
+    public class RecenzijaUsluge
     {
-        public int KomentarId { get; set; }
+        public int OcjenaId { get; set; }
 
-        public string Opis { get; set; } = null!;
+        public int Ocjena { get; set; }
+
+        public string? Komentar { get; set; }
 
         public DateTime DatumKreiranja { get; set; }
 
@@ -20,9 +22,8 @@ namespace eBeautySalon.Models
 
         public int? UslugaId { get; set; }
 
-        public virtual Korisnici? Korisnik { get; set; }
+       // public virtual Korisnik? Korisnik { get; set; }
 
-        public virtual Usluge? Usluga { get; set; }
-
+       // public virtual Usluga? Usluga { get; set; }
     }
 }

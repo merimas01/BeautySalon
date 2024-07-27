@@ -19,5 +19,7 @@ public partial class Zaposlenik
 
     public virtual Korisnik? Korisnik { get; set; }
 
+    public virtual ICollection<RecenzijaUsluznika> RecenzijaUsluznikas { get; set; } = new List<RecenzijaUsluznika>();
+
     public virtual ICollection<ZaposlenikUsluga> ZaposlenikUslugas { get; set; } = new List<ZaposlenikUsluga>();
 }

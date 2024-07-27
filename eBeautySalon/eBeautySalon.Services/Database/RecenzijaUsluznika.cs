@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 namespace eBeautySalon.Services.Database;
 
-public partial class Komentar
+public partial class RecenzijaUsluznika
 {
-    public int KomentarId { get; set; }
+    public int RecenzijaUsluznikaId { get; set; }
 
-    public string Opis { get; set; } = null!;
+    public int Ocjena { get; set; }
+
+    public string? Komentar { get; set; }
 
     public DateTime DatumKreiranja { get; set; }
 
@@ -15,9 +17,9 @@ public partial class Komentar
 
     public int? KorisnikId { get; set; }
 
-    public int? UslugaId { get; set; }
+    public int? UsluznikId { get; set; }
 
     public virtual Korisnik? Korisnik { get; set; }
 
-    public virtual Usluga? Usluga { get; set; }
+    public virtual Zaposlenik? Usluznik { get; set; }
 }

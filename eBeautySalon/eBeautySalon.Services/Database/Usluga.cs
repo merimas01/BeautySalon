@@ -23,9 +23,7 @@ public partial class Usluga
 
     public virtual Kategorija? Kategorija { get; set; }
 
-    public virtual ICollection<Komentar> Komentars { get; set; } = new List<Komentar>();
-
-    public virtual ICollection<Ocjena> Ocjenas { get; set; } = new List<Ocjena>();
+    public virtual ICollection<RecenzijaUsluge> RecenzijaUsluges { get; set; } = new List<RecenzijaUsluge>();
 
     public virtual ICollection<Rezervacija> Rezervacijas { get; set; } = new List<Rezervacija>();
 

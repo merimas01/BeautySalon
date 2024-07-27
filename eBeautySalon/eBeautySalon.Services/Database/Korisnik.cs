@@ -31,13 +31,13 @@ public partial class Korisnik
 
     public DateTime? DatumModifikovanja { get; set; }
 
-    public virtual ICollection<Komentar> Komentars { get; set; } = new List<Komentar>();
-
     public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
 
     public virtual ICollection<Novost> Novosts { get; set; } = new List<Novost>();
 
-    public virtual ICollection<Ocjena> Ocjenas { get; set; } = new List<Ocjena>();
+    public virtual ICollection<RecenzijaUsluge> RecenzijaUsluges { get; set; } = new List<RecenzijaUsluge>();
+
+    public virtual ICollection<RecenzijaUsluznika> RecenzijaUsluznikas { get; set; } = new List<RecenzijaUsluznika>();
 
     public virtual ICollection<Rezervacija> Rezervacijas { get; set; } = new List<Rezervacija>();
 

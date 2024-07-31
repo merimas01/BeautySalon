@@ -40,7 +40,7 @@ namespace eBeautySalon.Models
 
         //public virtual ICollection<Rezervacija> Rezervacijas { get; set; } = new List<Rezervacija>();
 
-        //public virtual SlikaProfila? SlikaProfila { get; set; }
+        public virtual SlikaProfila? SlikaProfila { get; set; }
 
         //public virtual Zaposlenik? Zaposlenik { get; set; }
     }

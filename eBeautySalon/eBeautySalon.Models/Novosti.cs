@@ -22,8 +22,8 @@ namespace eBeautySalon.Models
 
         public int? SlikaNovostId { get; set; }
 
-        //public virtual Korisnik? Korisnik { get; set; }
+        public virtual Korisnici? Korisnik { get; set; }
 
-        //public virtual SlikaNovost? SlikaNovost { get; set; }
+        public virtual SlikaNovosti? SlikaNovost { get; set; }
     }
 }

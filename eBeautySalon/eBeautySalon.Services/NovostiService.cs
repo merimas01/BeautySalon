@@ -44,5 +44,18 @@ namespace eBeautySalon.Services
             }
             return base.AddFilter(query, search);
         }
+
+        public override IQueryable<Novost> AddInclude(IQueryable<Novost> query, NovostiSearchObject? search = null)
+        {
+            if (search?.isSlikaIncluded == true)
+            {
+                query = query.Include(c => c.SlikaNovost);
+            }
+            if (search?.isKorisnikIncluded == true)
+            {
+                query = query.Include(c => c.Korisnik);
+            }
+            return base.AddInclude(query, search);
+        }
     }
 }

@@ -12,6 +12,10 @@ namespace eBeautySalon.Models.SearchObjects
 
         public string? Sadrzaj { get; set; } = null!;
 
+        public bool? isSlikaIncluded { get; set; }
+        
+        public bool? isKorisnikIncluded { get; set; }   
+
         //public DateTime? DatumKreiranja { get; set; }
 
         //public DateTime? DatumModificiranja { get; set; }

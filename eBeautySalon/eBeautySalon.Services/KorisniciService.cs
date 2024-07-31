@@ -55,6 +55,10 @@ namespace eBeautySalon.Services
             {
                 query = query.Include("KorisnikUlogas.Uloga");
             }
+            if (search?.isSlikaIncluded == true)
+            {
+                query = query.Include(c => c.SlikaProfila);
+            }
             return base.AddInclude(query, search);
         }
 

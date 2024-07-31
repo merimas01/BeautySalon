@@ -14,7 +14,7 @@ namespace eBeautySalon.Services
 {
     public class KategorijeService : BaseCRUDService<Kategorije,Kategorija,KategorijeSearchObject, KategorijeInsertRequest, KategorijeUpdateRequest>, IKategorijeService
     {
-        public KategorijeService(BeautySalonContext context, IMapper mapper) : base(context,mapper)
+        public KategorijeService(IB200070Context context, IMapper mapper) : base(context,mapper)
         {
         }
 

@@ -13,10 +13,10 @@ namespace eBeautySalon.Services
 {
     public class BaseService<T, TDb, TSearch> : IService<T,TSearch> where TDb : class where T : class where TSearch: BaseSearchObject
     {
-        protected BeautySalonContext _context;
+        protected IB200070Context _context;
         protected IMapper _mapper { get; set; }
 
-        public BaseService(BeautySalonContext context, IMapper mapper)
+        public BaseService(IB200070Context context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

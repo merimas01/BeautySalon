@@ -14,7 +14,7 @@ namespace eBeautySalon.Services
 {
     public class UslugeService : BaseCRUDService<Usluge,Usluga, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest> , IUslugeService
     {
-        public UslugeService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
+        public UslugeService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
 

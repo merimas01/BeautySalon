@@ -61,7 +61,7 @@ builder.Services.AddAuthentication("BasicAuthentication")
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<BeautySalonContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<IB200070Context>(options => options.UseSqlServer(connectionString));
 
 
 var app = builder.Build();
@@ -78,5 +78,20 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<IB200070Context>();
+
+    var con = dataContext.Database.GetConnectionString();
+
+    if (dataContext.Database.EnsureCreated())
+    {        
+        dataContext.Database.Migrate();
+    }
+}
+
+
+
 
 app.Run();

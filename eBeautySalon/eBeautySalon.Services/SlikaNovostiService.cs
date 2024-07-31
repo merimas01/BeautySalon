@@ -13,7 +13,7 @@ namespace eBeautySalon.Services
 {
     public class SlikaNovostiService : BaseCRUDService<SlikaNovosti, SlikaNovost, BaseSearchObject, SlikaNovostiInsertRequest, SlikaNovostiUpdateRequest>, ISlikaNovostiService
     {
-        public SlikaNovostiService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
+        public SlikaNovostiService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
     }

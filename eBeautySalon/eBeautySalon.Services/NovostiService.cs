@@ -14,8 +14,8 @@ namespace eBeautySalon.Services
 {
     public class NovostiService : BaseCRUDService<Novosti, Novost, NovostiSearchObject, NovostiInsertRequest, NovostiUpdateRequest>, INovostiService
     {
-        BeautySalonContext _context;
-        public NovostiService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
+        IB200070Context _context;
+        public NovostiService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
             _context = context;
         }

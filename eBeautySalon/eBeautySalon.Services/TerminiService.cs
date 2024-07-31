@@ -13,7 +13,7 @@ namespace eBeautySalon.Services
 {
     public class TerminiService : BaseCRUDService<Termini, Termin, BaseSearchObject, TerminiInsertRequest, TerminiUpdateRequest>, ITerminiService
     {
-        public TerminiService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
+        public TerminiService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
     }

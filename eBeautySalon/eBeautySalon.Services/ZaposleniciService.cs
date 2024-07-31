@@ -14,7 +14,7 @@ namespace eBeautySalon.Services
 {
     public class ZaposleniciService : BaseCRUDService<Zaposlenici, Zaposlenik, ZaposleniciSearchObject, ZaposleniciInsertRequest, ZaposleniciUpdateRequest>, IZaposleniciService
     {
-        public ZaposleniciService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
+        public ZaposleniciService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
 

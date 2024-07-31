@@ -16,9 +16,8 @@ namespace eBeautySalon.Services
 {
     public class RezervacijeService : BaseCRUDService<Rezervacije, Rezervacija, BaseSearchObject, RezervacijeInsertRequest, RezervacijeUpdateRequest>, IRezervacijeService
     {
-        public RezervacijeService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
-        {
-            
+        public RezervacijeService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        {         
         }
 
         public override async Task BeforeInsert(Rezervacija entity, RezervacijeInsertRequest insert)

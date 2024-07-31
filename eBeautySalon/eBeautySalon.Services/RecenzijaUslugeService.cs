@@ -12,7 +12,7 @@ namespace eBeautySalon.Services
 {
     public class RecenzijaUslugeService : BaseCRUDService<Models.RecenzijaUsluge, Database.RecenzijaUsluge, BaseSearchObject, RecenzijaUslugeInsertRequest, RecenzijaUslugeUpdateRequest>, IRecenzijaUslugeService
     {
-        public RecenzijaUslugeService(BeautySalonContext context, IMapper mapper) : base(context, mapper)
+        public RecenzijaUslugeService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
     }

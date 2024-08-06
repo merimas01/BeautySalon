@@ -57,35 +57,83 @@ class LoginPage extends StatelessWidget {
                       height: 8,
                     ),
                     Text(
-                      "Salon Ljepote 'Grace'",
-                      style: TextStyle(fontFamily: 'Playwrite Argentina'),
+                      "Salon ljepote 'Precious'",
+                      style: TextStyle(
+                          fontFamily: 'BeckyTahlia',
+                          fontSize: 26,
+                          color: Colors.pink),
                     ),
                     SizedBox(
-                      height: 8,
+                      height: 10,
                     ),
-                    Text("Prijavite se putem sljedeće forme:"),
+                    Text(
+                      "Prijavite se putem sljedeće forme:",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     SizedBox(
-                      height: 8,
+                      height: 12,
                     ),
                     TextField(
-                      decoration: InputDecoration(
-                          labelText: "Korisničko ime",
-                          prefixIcon: Icon(Icons.email)),
-                      controller: _korisnickoImeController,
-                    ),
+                        controller: _korisnickoImeController,
+                        decoration: InputDecoration(
+                            labelText: "Korisničko ime",
+                            labelStyle: TextStyle(fontSize: 14),
+                            prefixIcon: Icon(Icons.email),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.pink),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 238, 0, 79),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                            ))),
                     SizedBox(
-                      height: 8,
+                      height: 10,
                     ),
                     TextField(
                       decoration: InputDecoration(
                           labelText: "Lozinka",
-                          prefixIcon: Icon(Icons.password)),
+                          labelStyle: TextStyle(fontSize: 14),
+                          prefixIcon: Icon(Icons.password),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.pink),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 238, 0, 79),
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          )),
+                      obscureText: true,
                       controller: _passwordController,
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    ElevatedButton(
+                    SizedBox(
+                      height: 36,
+                      width: 380,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(255, 255, 255, 255)),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.pink),
+                            side: MaterialStateProperty.all(BorderSide(
+                              color: Colors.pink,
+                              width: 1.0,
+                              style: BorderStyle.solid,
+                            )),
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    side: BorderSide(color: Colors.pink)))),
                         onPressed: () async {
                           print("pritisnuto dugme");
 
@@ -107,8 +155,9 @@ class LoginPage extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
-                                      title: Text("Error"),
-                                      content: Text(e.toString()),
+                                      title: Text("Greška"),
+                                      content: Text(
+                                          "Neispravni podaci. Molimo pokušajte ponovo."), //Text(e.toString()),
                                       actions: [
                                         TextButton(
                                             onPressed: () =>
@@ -118,7 +167,33 @@ class LoginPage extends StatelessWidget {
                                     ));
                           }
                         },
-                        child: Text("Prijavi se"))
+                        child: Text("Prijavi se",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Nemate račun?",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.pink),
+                          ),
+                          onPressed: () {
+                            print("registracija button");
+                          },
+                          child: Text("Registracija",
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ))),

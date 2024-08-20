@@ -135,7 +135,7 @@ class LoginPage extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10.0),
                                     side: BorderSide(color: Colors.pink)))),
                         onPressed: () async {
-                          print("pritisnuto dugme");
+                          print("pritisnuto dugme Prijavi se");
 
                           var korisnickoIme = _korisnickoImeController.text;
                           var password = _passwordController.text;

@@ -1,41 +1,28 @@
 import 'dart:ffi';
 
-import 'package:desktop_app/models/slika_usluge.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 /// This allows the `User` class to access private members in
 /// the generated file. The value for this is *.g.dart, where
 /// the star denotes the source file name.
-part 'usluga.g.dart';
+part 'slika_usluge.g.dart';
 
 @JsonSerializable()
-//@MyJsonConverter()
-class Usluga {
 
-  Usluga(this.uslugaId, this.naziv, this.opis, this.cijena, 
-  this.slikaUslugeId, this.kategorijaId, this.datumKreiranja, this.datumModifikovanja,
-  this.slikaUsluge);
+class SlikaUsluge{
 
-  int? uslugaId;
-  String? naziv;
-  String? opis;
-  double? cijena;
+  SlikaUsluge(this.slikaUslugeId, this.slika);
+
   int? slikaUslugeId;
-  int? kategorijaId;
-  DateTime? datumKreiranja;
-  DateTime? datumModifikovanja;
-  SlikaUsluge slikaUsluge;
+  String slika="";
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
-  factory Usluga.fromJson(Map<String, dynamic> json) => _$UslugaFromJson(json);
+  factory SlikaUsluge.fromJson(Map<String, dynamic> json) => _$SlikaUslugeFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated
   /// helper method `_$UserToJson`.
-  Map<String, dynamic> toJson() => _$UslugaToJson(this);
+  Map<String, dynamic> toJson() => _$SlikaUslugeToJson(this);
 }
-
-//kategorija - Kategorija
-//slikaUsluge - SlikaUsluge

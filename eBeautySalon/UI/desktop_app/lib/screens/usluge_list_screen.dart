@@ -90,6 +90,10 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                 label: Expanded(
               child: Text("ID"),
             )),
+             DataColumn(
+                label: Expanded(
+              child: Text("Kategorija"),
+            )),
             DataColumn(
                 label: Expanded(
               child: Text("Naziv"),
@@ -128,6 +132,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                   },
                     cells: [
                         DataCell(Text(e.uslugaId?.toString() ?? "")),
+                        DataCell(Text(e.kategorija.naziv ?? "")),
                         DataCell(Text(e.naziv ?? "")),
                         DataCell(Text(e.opis ?? "")),
                         DataCell(Text(formatNumber(e.cijena))),

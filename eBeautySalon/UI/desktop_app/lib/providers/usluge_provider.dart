@@ -22,10 +22,10 @@ class UslugeProvider with ChangeNotifier {
 
     if (filter != null) {
       var queryString = getQueryString(filter);
-      url = "$url?$queryString&isSlikaIncluded=true";
+      url = "$url?$queryString&isKategorijaIncluded=true&isSlikaIncluded=true";
     }
     else{
-      url = "$url?isSlikaIncluded=true";
+      url = "$url?&isKategorijaIncluded=true&isSlikaIncluded=true";
     }
 
     print("url: $url");

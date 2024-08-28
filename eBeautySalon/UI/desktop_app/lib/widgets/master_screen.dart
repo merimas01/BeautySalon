@@ -1,5 +1,6 @@
 import 'package:desktop_app/main.dart';
 import 'package:desktop_app/screens/kategorije_list_screen.dart';
+import 'package:desktop_app/screens/usluge_details_screen.dart';
 import 'package:desktop_app/screens/usluge_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,13 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const KategorijeListScreen()));
+              },
+            ),
+            ListTile(
+              title: Text("Usluge Detalji"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UslugeDetaljiScreen()));
               },
             ),
           ],

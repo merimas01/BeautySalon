@@ -38,7 +38,8 @@ dependencies:
   http: ^0.13.6
   provider: ^6.1.2
   json_annotation: ^4.8.1
-  intl: ^0.18.1
+  intl: ^0.17.0
+  flutter_form_builder: ^6.1.0
 
 dev_dependencies:
   flutter_test:

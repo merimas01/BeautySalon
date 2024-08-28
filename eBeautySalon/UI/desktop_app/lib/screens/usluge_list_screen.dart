@@ -124,7 +124,6 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           rows: result?.result
                   .map((Usluga e) => DataRow( onSelectChanged: (selected)=>{
                     if(selected==true){
-                     // print("selected: ${e.uslugaId}")
                       Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     UslugeDetaljiScreen(usluga: e,)))

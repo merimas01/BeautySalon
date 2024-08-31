@@ -46,13 +46,6 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                     builder: (context) => const KategorijeListScreen()));
               },
             ),
-            ListTile(
-              title: Text("Usluge Detalji"),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => UslugeDetaljiScreen()));
-              },
-            ),
           ],
         ),
       ),

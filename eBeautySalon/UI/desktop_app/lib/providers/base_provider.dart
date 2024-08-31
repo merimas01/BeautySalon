@@ -10,12 +10,12 @@ import '../utils/util.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
-  String _endpoint = ""; 
-  String? _afterEndpoint="";
+  String _endpoint = "";
+  String _afterEndpoint = "";
 
-  BaseProvider(String endpoint, String? afterEndpoint) {
+  BaseProvider(String endpoint, String afterEndpoint) {
     _endpoint = endpoint;
-    _afterEndpoint=afterEndpoint;
+    _afterEndpoint = afterEndpoint;
     _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "http://localhost:5145/api/");
   }
@@ -26,8 +26,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     if (filter != null) {
       var queryString = getQueryString(filter);
       url = "$url?$queryString&$_afterEndpoint";
-    }
-    else{
+    } else if (_afterEndpoint != "") {
       url = "$url?$_afterEndpoint";
     }
 
@@ -54,10 +53,42 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
-  T fromJson(data){
+  T fromJson(data) {
     throw Exception("Method not implemented.");
   }
 
+  Future<T> insert(dynamic request) async {
+    var url = "$_baseUrl$_endpoint";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http.post(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw new Exception("Unknow error");
+    }
+  }
+
+  //opcionalan request
+  Future<T> update(int id, [dynamic request]) async {
+    var url = "$_baseUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var jsonRequest = jsonEncode(request);
+    var response = await http.put(uri, headers: headers, body: jsonRequest);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw new Exception("Unknow error");
+    }
+  }
 
   bool isValidResponse(Response response) {
     if (response.statusCode <= 299) {
@@ -80,8 +111,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
         "Basic ${base64Encode(utf8.encode('$username:$password'))}";
 
     var headers = {
-      "ContentType":
-          "application/json", //zelimo da nam server uvijek salje json
+      "Content-Type": "application/json",
       "Authorization": basicAuth
     };
 

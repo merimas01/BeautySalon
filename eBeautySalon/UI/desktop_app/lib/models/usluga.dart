@@ -26,8 +26,8 @@ class Usluga {
   int? kategorijaId;
   DateTime? datumKreiranja;
   DateTime? datumModifikovanja;
-  SlikaUsluge slikaUsluge;
-  Kategorija kategorija;
+  SlikaUsluge? slikaUsluge;
+  Kategorija? kategorija;
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.

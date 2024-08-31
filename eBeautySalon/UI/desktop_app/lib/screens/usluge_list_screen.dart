@@ -5,11 +5,11 @@ import 'package:desktop_app/utils/util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../models/search_result.dart';
 import '../models/usluga.dart';
+import '../providers/kategorije_provider.dart';
+import '../providers/sliks_usluge_provider.dart';
 import '../widgets/master_screen.dart';
-
 
 class UslugeListScreen extends StatefulWidget {
   const UslugeListScreen({super.key});
@@ -20,6 +20,8 @@ class UslugeListScreen extends StatefulWidget {
 
 class _UslugeListScreenState extends State<UslugeListScreen> {
   late UslugeProvider _uslugeProvider;
+  late KategorijeProvider _kategorijeProvider;
+  late SlikaUslugeProvider _slikaUslugeProvider;
   SearchResult<Usluga>? result;
   TextEditingController _ftsController = new TextEditingController();
 
@@ -28,6 +30,8 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _uslugeProvider = context.read<UslugeProvider>();
+    _kategorijeProvider = context.read<KategorijeProvider>();
+    _slikaUslugeProvider = context.read<SlikaUslugeProvider>();
   }
 
   @override
@@ -66,6 +70,8 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
 
                 var data = await _uslugeProvider
                     .get(filter: {'FTS': _ftsController.text});
+                var kategorije = await _kategorijeProvider.get();
+                var slikaUsluge = await _slikaUslugeProvider.get();
 
                 print("fts: ${_ftsController.text}");
 
@@ -73,9 +79,16 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                   result = data;
                 });
 
-                print("result: ${result?.result[1].naziv}");
+                print(
+                    "result: ${result?.result[1].naziv}, kategorija[0]: ${kategorije.result[0].naziv}");
               },
               child: Text("Traži")),
+          ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UslugeDetaljiScreen(usluga: null,)));
+              },
+              child: Text("Dodaj uslugu")),
         ],
       ),
     );
@@ -90,7 +103,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                 label: Expanded(
               child: Text("ID"),
             )),
-             DataColumn(
+            DataColumn(
                 label: Expanded(
               child: Text("Kategorija"),
             )),
@@ -122,32 +135,39 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
             )),
           ],
           rows: result?.result
-                  .map((Usluga e) => DataRow( onSelectChanged: (selected)=>{
-                    if(selected==true){
-                      Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    UslugeDetaljiScreen(usluga: e,)))
-                    }
-                  },
-                    cells: [
-                        DataCell(Text(e.uslugaId?.toString() ?? "")),
-                        DataCell(Text(e.kategorija.naziv ?? "")),
-                        DataCell(Text(e.naziv ?? "")),
-                        DataCell(Text(e.opis ?? "")),
-                        DataCell(Text(formatNumber(e.cijena))),
-                        // DataCell(Text((e.datumKreiranja == null
-                        //     ? "-"
-                        //     : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}"))),
-                        // DataCell(Text((e.datumModifikovanja == null
-                        //     ? "-"
-                        //     : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}"))),
-                        DataCell(e.slikaUsluge!=null ? Container(
-                          width: 100,
-                          height: 100,
-                          child:
-                              ImageFromBase64String(e.slikaUsluge.slika),
-                        ) : Text("")) ,
-                      ]))
+                  .map((Usluga e) => DataRow(
+                          onSelectChanged: (selected) => {
+                                if (selected == true)
+                                  {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UslugeDetaljiScreen(
+                                                  usluga: e,
+                                                )))
+                                  }
+                              },
+                          cells: [
+                            DataCell(Text(e.uslugaId?.toString() ?? "")),
+                            DataCell(Text(e.kategorija!.naziv?? "")),
+                            DataCell(Text(e.naziv ?? "")),
+                            DataCell(Text(e.opis ?? "")),
+                            DataCell(Text(formatNumber(e.cijena))),
+                            // DataCell(Text((e.datumKreiranja == null
+                            //     ? "-"
+                            //     : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}"))),
+                            // DataCell(Text((e.datumModifikovanja == null
+                            //     ? "-"
+                            //     : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}"))),
+                            DataCell(e.slikaUsluge != null
+                                ? Container(
+                                    width: 100,
+                                    height: 100,
+                                    child: ImageFromBase64String(
+                                        e.slikaUsluge!.slika),
+                                  )
+                                : Text("")),
+                          ]))
                   .toList() ??
               []),
     ));

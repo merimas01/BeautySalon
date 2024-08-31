@@ -20,6 +20,10 @@ namespace eBeautySalon.Services
 
         public override IQueryable<Kategorija> AddFilter(IQueryable<Kategorija> query, KategorijeSearchObject? search = null)
         {
+            if (!string.IsNullOrWhiteSpace(search?.FTS))
+            {
+                query = query.Where(x => x.Naziv.Contains(search.FTS) || (x.Opis != null && x.Opis.Contains(search.FTS)));
+            }
             if (!string.IsNullOrWhiteSpace(search?.Naziv))
             {
                 query = query.Where(x => x.Naziv.StartsWith(search.Naziv));

@@ -1,4 +1,7 @@
+import 'package:desktop_app/providers/kategorije_provider.dart';
+import 'package:desktop_app/providers/sliks_usluge_provider.dart';
 import 'package:desktop_app/providers/usluge_provider.dart';
+import 'package:desktop_app/screens/home_page.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +10,12 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => UslugeProvider())],
+    providers: [
+      //dependency injection
+      ChangeNotifierProvider(create: (_) => UslugeProvider()),
+      ChangeNotifierProvider(create: (_) => KategorijeProvider()),
+      ChangeNotifierProvider(create: (_) => SlikaUslugeProvider())
+    ],
     child: const MyMaterialApp(),
   ));
 }
@@ -31,10 +39,12 @@ class LoginPage extends StatelessWidget {
   TextEditingController _korisnickoImeController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   late UslugeProvider _uslugeProvider;
+  late KategorijeProvider _kategorijeProvider;
 
   @override
   Widget build(BuildContext context) {
     _uslugeProvider = context.read<UslugeProvider>();
+    _kategorijeProvider = context.read<KategorijeProvider>();
 
     return Scaffold(
         appBar: AppBar(
@@ -146,11 +156,10 @@ class LoginPage extends StatelessWidget {
                           Authorization.password = password;
 
                           try {
-                            await _uslugeProvider.get();
+                            await _kategorijeProvider.get();
 
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const UslugeListScreen()));
+                                builder: (context) => const HomePage()));
                           } on Exception catch (e) {
                             showDialog(
                                 context: context,

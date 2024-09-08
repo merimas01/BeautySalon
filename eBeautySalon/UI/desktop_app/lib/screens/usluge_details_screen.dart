@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import '../utils/constants.dart';
+
 import 'package:desktop_app/models/slika_usluge.dart';
+import 'package:desktop_app/models/slika_usluge_insert_update.dart';
 import 'package:desktop_app/providers/usluge_provider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +14,7 @@ import '../models/kategorija.dart';
 import '../models/search_result.dart';
 import '../models/usluga.dart';
 import '../providers/kategorije_provider.dart';
-import '../providers/sliks_usluge_provider.dart';
+import '../providers/slika_usluge_provider.dart';
 import '../widgets/master_screen.dart';
 
 class UslugeDetaljiScreen extends StatefulWidget {
@@ -55,7 +59,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       //   'datumKreiranja': "${widget.usluga?.datumKreiranja?.day}.${widget.usluga?.datumKreiranja?.month}.${widget.usluga?.datumKreiranja?.year}",
       //   'datumModifikovanja' : "${widget.usluga?.datumModifikovanja?.day}.${ widget.usluga?.datumModifikovanja?.month}.${ widget.usluga?.datumModifikovanja?.year}",
     };
-
     _kategorijeProvider = context.read<KategorijeProvider>();
     _slikaUslugeProvider = context.read<SlikaUslugeProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
@@ -65,8 +68,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
 
   Future initForm() async {
     _kategorijeResult = await _kategorijeProvider.get();
-    print(
-        "KATEFORIJE [0] [1]: ${_kategorijeResult?.result[0].naziv}, ${_kategorijeResult?.result[1].naziv}");
 
     _slikaUslugeResult = await _slikaUslugeProvider.get();
 
@@ -89,20 +90,16 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                     onPressed: () async {
-                      //print("dugme Spasi pritisnuto.")
                       _formKey.currentState?.saveAndValidate();
-                      print(_formKey.currentState?.value);
+                      var request_usluga =
+                          new Map.from(_formKey.currentState!.value);
 
                       try {
                         if (widget.usluga == null) {
-                          await _uslugeProvider
-                              .insert(_formKey.currentState?.value);
-                        } else {
-                          await _uslugeProvider.update(widget.usluga!.uslugaId!,
-                              _formKey.currentState?.value);
+                          doInsert();
+                        } else if (widget.usluga != null) {
+                          doUpdate();
                         }
-
-                        print("uspjesno spaseno");
 
                         showDialog(
                             context: context,
@@ -126,6 +123,18 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                       }
                     },
                     child: Text("Spasi")),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                    onPressed: () async {
+                      await _uslugeProvider.get();
+                      Navigator.pop(context);
+                    },
+                    child: Text("Nazad")),
+              ),
+              SizedBox(
+                height: 10,
               ),
             ],
           ),
@@ -162,16 +171,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                   )),
                 ],
               ),
-              // FormBuilderTextField(
-              //   name: "datumKreiranja",
-              //   enabled: false,
-              //   decoration: InputDecoration(labelText: "Datum kreiranja:"),
-              // ),
-              //  FormBuilderTextField(
-              //   name: "datumModifikovanja",
-              //   enabled: false,
-              //   decoration: InputDecoration(labelText: "Datum modifikovanja:"),
-              // ),
               FormBuilderTextField(
                 name: "cijena",
                 decoration: InputDecoration(labelText: "Cijena:"),
@@ -179,11 +178,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
               FormBuilderTextField(
                 name: "opis",
                 decoration: InputDecoration(labelText: "Opis:"),
-              ),
-              FormBuilderTextField(
-                name: "slikaUslugeId",
-                initialValue: "1",
-                decoration: InputDecoration(labelText: "Slika usluge id:"),
               ),
               Row(
                 children: [
@@ -213,9 +207,93 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                     ),
                   )
                 ],
-              )
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FormBuilderField(
+                      name: 'slikaUslugeId',
+                      builder: ((field) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                            label: Text("Odaberi sliku"),
+                            errorText: field.errorText,
+                          ),
+                          child: ListTile(
+                            leading: Icon(Icons.photo),
+                            title: Text("Odaberi sliku"),
+                            trailing: Icon(Icons.file_upload),
+                            onTap: () {
+                              getImage();
+                            },
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ));
+  }
+
+  File? _image;
+  String? _base64image;
+
+  Future getImage() async {
+    var result = await FilePicker.platform.pickFiles(type: FileType.image);
+    var path = result?.files.single.path;
+    print("path slike: ${path}");
+
+    if (result != null && path != null) {
+      _image = File(path);
+      _base64image = base64Encode(_image!.readAsBytesSync());
+    }
+  }
+
+  void doInsert() async {
+    _formKey.currentState?.saveAndValidate();
+    //print(_formKey.currentState?.value);
+    var request = new Map.from(_formKey.currentState!.value);
+    if (_base64image != null) {
+      var request_slika = new SlikaUslugeInsertUpdate(_base64image);
+      var obj = await _slikaUslugeProvider.insert(request_slika);
+
+      if (obj != null) {
+        var slikaId = obj.slikaUslugeId;
+        request['slikaUslugeId'] = slikaId;
+      } else {
+        request['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
+      }
+    } else {
+      request['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
+    }
+    print("insert request: $request");
+    var req = await _uslugeProvider.insert(request);
+    print("req: ${req.slikaUslugeId}");
+  }
+
+  void doUpdate() async {
+    _formKey.currentState?.saveAndValidate();
+    var request = new Map.from(_formKey.currentState!.value);
+    var request_slika = new SlikaUslugeInsertUpdate(_base64image);
+
+    if (_base64image != null &&
+        widget.usluga?.slikaUslugeId == DEFAULT_SlikaUslugeId) {
+      var obj = await _slikaUslugeProvider.insert(request_slika);
+      if (obj != null) {
+        var slikaId = obj.slikaUslugeId;
+        request['slikaUslugeId'] = slikaId;
+      }
+    } else if (_base64image != null &&
+        widget.usluga?.slikaUslugeId != DEFAULT_SlikaUslugeId) {
+      await _slikaUslugeProvider.update(
+          widget.usluga!.slikaUslugeId!, request_slika);
+    }
+
+    print("insert request: $request");
+    var req = await _uslugeProvider.update(widget.usluga!.uslugaId!, request);
+    print("req: ${req.slikaUslugeId}");
   }
 }

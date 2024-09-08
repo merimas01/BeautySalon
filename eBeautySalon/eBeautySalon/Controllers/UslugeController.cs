@@ -13,6 +13,5 @@ namespace eBeautySalon.Controllers
         public UslugeController(ILogger<BaseCRUDController<Usluge, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest>> logger, IUslugeService service) :base(logger,service)
         {
         }
-
     }
 }

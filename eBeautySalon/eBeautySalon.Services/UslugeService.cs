@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace eBeautySalon.Services
 {
@@ -16,6 +17,20 @@ namespace eBeautySalon.Services
     {
         public UslugeService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
+        }
+
+        public override Task BeforeInsert(Usluga entity, UslugeInsertRequest insert)
+        {
+            //if (insert.SlikaUslugeId == null)
+            //    entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
+            return base.BeforeInsert(entity, insert);
+        }
+
+        public override Task BeforeUpate(Usluga entity, UslugeUpdateRequest update)
+        {
+            //if (update.SlikaUslugeId != null)
+            //    entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
+            return base.BeforeUpate(entity, update);
         }
 
         public override IQueryable<Usluga> AddFilter(IQueryable<Usluga> query, UslugeSearchObject? search = null)

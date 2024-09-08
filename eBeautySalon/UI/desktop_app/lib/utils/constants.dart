@@ -1,0 +1,1 @@
+const int DEFAULT_SlikaUslugeId = 1;

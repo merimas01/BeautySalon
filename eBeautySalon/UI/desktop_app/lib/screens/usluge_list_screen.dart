@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/search_result.dart';
 import '../models/usluga.dart';
 import '../providers/kategorije_provider.dart';
-import '../providers/sliks_usluge_provider.dart';
+import '../providers/slika_usluge_provider.dart';
 import '../widgets/master_screen.dart';
 
 class UslugeListScreen extends StatefulWidget {
@@ -119,6 +119,10 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                 label: Expanded(
               child: Text("Cijena"),
             )),
+             DataColumn(
+                label: Expanded(
+              child: Text(""),
+            )),
             // DataColumn(
             //     label: Expanded(
             //   child: Text("Datum kreiranja"),
@@ -128,11 +132,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
             //   width: 100,
             //   child: Text("Datum modifikovanja"),
             // )),
-            DataColumn(
-                label: SizedBox(
-              width: 100,
-              child: Text("Slika"),
-            )),
+          
           ],
           rows: result?.result
                   .map((Usluga e) => DataRow(
@@ -147,6 +147,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                                                 )))
                                   }
                               },
+                              
                           cells: [
                             DataCell(Text(e.uslugaId?.toString() ?? "")),
                             DataCell(Text(e.kategorija!.naziv?? "")),
@@ -159,7 +160,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                             // DataCell(Text((e.datumModifikovanja == null
                             //     ? "-"
                             //     : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}"))),
-                            DataCell(e.slikaUsluge != null
+                            DataCell(e.slikaUsluge?.slika != null
                                 ? Container(
                                     width: 100,
                                     height: 100,
@@ -167,6 +168,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                                         e.slikaUsluge!.slika),
                                   )
                                 : Text("")),
+                               
                           ]))
                   .toList() ??
               []),

@@ -1,5 +1,5 @@
 import 'package:desktop_app/providers/kategorije_provider.dart';
-import 'package:desktop_app/providers/sliks_usluge_provider.dart';
+import 'package:desktop_app/providers/slika_usluge_provider.dart';
 import 'package:desktop_app/providers/usluge_provider.dart';
 import 'package:desktop_app/screens/home_page.dart';
 import 'package:desktop_app/utils/util.dart';

@@ -5,6 +5,8 @@ import 'package:desktop_app/screens/usluge_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/home_page.dart';
+
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
   String? title;
@@ -26,10 +28,10 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         child: ListView(
           children: [
             ListTile(
-              title: Text("Back"),
+              title: Text("Home page"),
               onTap: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => LoginPage()));
+                    .push(MaterialPageRoute(builder: (context) => HomePage()));
               },
             ),
             ListTile(
@@ -44,6 +46,13 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const KategorijeListScreen()));
+              },
+            ),
+            ListTile(
+              title: Text("Odjava"),
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => LoginPage()));
               },
             ),
           ],

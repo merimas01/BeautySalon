@@ -33,8 +33,8 @@ namespace eBeautySalon.Services
 
             TDb entity = _mapper.Map<TDb>(insert);
 
-            set.Add(entity);
             await BeforeInsert(entity, insert);
+            set.Add(entity);
 
             await _context.SaveChangesAsync();
             return _mapper.Map<T>(entity);

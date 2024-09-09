@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import '../utils/constants.dart';
 
 import 'package:desktop_app/models/slika_usluge.dart';
@@ -35,6 +36,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
   SearchResult<Kategorija>? _kategorijeResult;
   SearchResult<SlikaUsluge>? _slikaUslugeResult;
   bool isLoading = true;
+  bool isLoadingImage = true;
 
   @override //ova metoda se pokrece nakon init state-a
   void didChangeDependencies() {
@@ -68,7 +70,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
 
   Future initForm() async {
     _kategorijeResult = await _kategorijeProvider.get();
-
     _slikaUslugeResult = await _slikaUslugeProvider.get();
 
     setState(() {
@@ -87,7 +88,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(right: 15.0),
                 child: ElevatedButton(
                     onPressed: () async {
                       _formKey.currentState?.saveAndValidate();
@@ -124,18 +125,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                     },
                     child: Text("Spasi")),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                    onPressed: () async {
-                      await _uslugeProvider.get();
-                      Navigator.pop(context);
-                    },
-                    child: Text("Nazad")),
-              ),
-              SizedBox(
-                height: 10,
-              ),
             ],
           ),
         ],
@@ -149,7 +138,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
         key: _formKey,
         initialValue: _initialValue,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
               Row(
@@ -208,6 +197,37 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                   )
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  isLoadingImage
+                      ? Image.memory(
+                          displayCurrentImage(),
+                          width: 220,
+                          height: 220,
+                          fit: BoxFit.cover,
+                        )
+                      : _image != null
+                          ? Image.file(
+                              _image!,
+                              width: 220,
+                              height: 220,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.memory(
+                              displayCurrentImage(),
+                              width: 220,
+                              height: 220,
+                              fit: BoxFit.cover,
+                            ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -216,12 +236,12 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                       builder: ((field) {
                         return InputDecorator(
                           decoration: InputDecoration(
-                            label: Text("Odaberi sliku"),
+                            //label: Text("Odaberite novu sliku"),
                             errorText: field.errorText,
                           ),
                           child: ListTile(
                             leading: Icon(Icons.photo),
-                            title: Text("Odaberi sliku"),
+                            title: Text("Odaberite novu sliku"),
                             trailing: Icon(Icons.file_upload),
                             onTap: () {
                               getImage();
@@ -238,6 +258,16 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
         ));
   }
 
+  Uint8List displayCurrentImage() {
+    if (widget.usluga != null) {
+      Uint8List imageBytes = base64Decode(widget.usluga!.slikaUsluge!.slika);
+      return imageBytes;
+    } else {
+      Uint8List imageBytes = base64Decode(_slikaUslugeResult!.result[0].slika);
+      return imageBytes;
+    }
+  }
+
   File? _image;
   String? _base64image;
 
@@ -250,6 +280,10 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       _image = File(path);
       _base64image = base64Encode(_image!.readAsBytesSync());
     }
+
+    setState(() {
+      isLoadingImage = false;
+    });
   }
 
   void doInsert() async {

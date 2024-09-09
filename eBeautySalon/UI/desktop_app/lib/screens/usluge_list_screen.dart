@@ -5,6 +5,7 @@ import 'package:desktop_app/utils/util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/kategorija.dart';
 import '../models/search_result.dart';
 import '../models/usluga.dart';
 import '../providers/kategorije_provider.dart';
@@ -20,8 +21,7 @@ class UslugeListScreen extends StatefulWidget {
 
 class _UslugeListScreenState extends State<UslugeListScreen> {
   late UslugeProvider _uslugeProvider;
-  late KategorijeProvider _kategorijeProvider;
-  late SlikaUslugeProvider _slikaUslugeProvider;
+  bool isLoading = true;
   SearchResult<Usluga>? result;
   TextEditingController _ftsController = new TextEditingController();
 
@@ -30,8 +30,6 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _uslugeProvider = context.read<UslugeProvider>();
-    _kategorijeProvider = context.read<KategorijeProvider>();
-    _slikaUslugeProvider = context.read<SlikaUslugeProvider>();
   }
 
   @override
@@ -66,27 +64,24 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                print("pritisnuto dugme Dugme");
+                print("pritisnuto dugme Trazi");
 
                 var data = await _uslugeProvider
                     .get(filter: {'FTS': _ftsController.text});
-                var kategorije = await _kategorijeProvider.get();
-                var slikaUsluge = await _slikaUslugeProvider.get();
 
                 print("fts: ${_ftsController.text}");
 
                 setState(() {
                   result = data;
                 });
-
-                print(
-                    "result: ${result?.result[1].naziv}, kategorija[0]: ${kategorije.result[0].naziv}");
               },
               child: Text("Traži")),
           ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => UslugeDetaljiScreen(usluga: null,)));
+                    builder: (context) => UslugeDetaljiScreen(
+                          usluga: null,
+                        )));
               },
               child: Text("Dodaj uslugu")),
         ],
@@ -119,7 +114,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                 label: Expanded(
               child: Text("Cijena"),
             )),
-             DataColumn(
+            DataColumn(
                 label: Expanded(
               child: Text(""),
             )),
@@ -132,7 +127,6 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
             //   width: 100,
             //   child: Text("Datum modifikovanja"),
             // )),
-          
           ],
           rows: result?.result
                   .map((Usluga e) => DataRow(
@@ -147,10 +141,9 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                                                 )))
                                   }
                               },
-                              
                           cells: [
                             DataCell(Text(e.uslugaId?.toString() ?? "")),
-                            DataCell(Text(e.kategorija!.naziv?? "")),
+                            DataCell(Text(e.kategorija!.naziv ?? "")),
                             DataCell(Text(e.naziv ?? "")),
                             DataCell(Text(e.opis ?? "")),
                             DataCell(Text(formatNumber(e.cijena))),
@@ -168,7 +161,6 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                                         e.slikaUsluge!.slika),
                                   )
                                 : Text("")),
-                               
                           ]))
                   .toList() ??
               []),

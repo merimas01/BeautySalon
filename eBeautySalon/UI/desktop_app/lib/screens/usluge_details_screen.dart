@@ -37,6 +37,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
   SearchResult<SlikaUsluge>? _slikaUslugeResult;
   bool isLoading = true;
   bool isLoadingImage = true;
+  bool _imaSliku = false;
+  bool _ponistiSliku = false;
 
   @override //ova metoda se pokrece nakon init state-a
   void didChangeDependencies() {
@@ -94,12 +96,14 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                       _formKey.currentState?.saveAndValidate();
                       var request_usluga =
                           new Map.from(_formKey.currentState!.value);
+                      var request_slika =
+                          new SlikaUslugeInsertUpdate(_base64image);
 
                       try {
                         if (widget.usluga == null) {
-                          doInsert();
+                          doInsert(request_usluga, request_slika);
                         } else if (widget.usluga != null) {
-                          doUpdate();
+                          doUpdate(request_usluga, request_slika);
                         }
 
                         showDialog(
@@ -204,25 +208,79 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   isLoadingImage
-                      ? Image.memory(
-                          displayCurrentImage(),
-                          width: 220,
-                          height: 220,
-                          fit: BoxFit.cover,
-                        )
-                      : _image != null
-                          ? Image.file(
-                              _image!,
-                              width: 220,
-                              height: 220,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.memory(
-                              displayCurrentImage(),
-                              width: 220,
-                              height: 220,
-                              fit: BoxFit.cover,
+                      ? Column(
+                          children: [
+                            _ponistiSliku != true
+                                ? Image.memory(
+                                    displayCurrentImage(),
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.memory(
+                                    displayNoImage(),
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                            SizedBox(
+                              height: 8,
                             ),
+                            _imaSliku
+                                ? ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                               Color.fromARGB(255, 219, 36, 36)),
+                                    ),
+                                    onPressed: () {
+                                      ponistiSliku();
+                                    },
+                                    child: Text("Poništi sliku"))
+                                : Container()
+                          ],
+                        )
+                      : _base64image != null && _image != null
+                          ? Column(
+                              children: [
+                                Image.file(
+                                  _image!,
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color.fromARGB(255, 219, 36, 36)),
+                                    ),
+                                    onPressed: () {
+                                      ponistiSliku();
+                                    },
+                                    child: Text("Poništi sliku"))
+                              ],
+                            )
+                          : _ponistiSliku != true
+                              ? Container(
+                                  child: Image.memory(
+                                    displayCurrentImage(),
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Container(
+                                  child: Image.memory(
+                                    displayNoImage(),
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                 ],
               ),
               SizedBox(
@@ -258,14 +316,46 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
         ));
   }
 
+  Uint8List displayNoImage() {
+    Uint8List imageBytes = base64Decode(_slikaUslugeResult!.result[0].slika);
+    // setState(() {
+    //   _ponistiSliku = false;
+    //   print("ponisti sliku: $_ponistiSliku");
+    // });
+    return imageBytes;
+  }
+
   Uint8List displayCurrentImage() {
     if (widget.usluga != null) {
       Uint8List imageBytes = base64Decode(widget.usluga!.slikaUsluge!.slika);
+      setState(() {
+        _imaSliku = true;
+      });
+      if (widget.usluga!.slikaUslugeId == DEFAULT_SlikaUslugeId) {
+        setState(() {
+          _imaSliku = false;
+        });
+      }
       return imageBytes;
     } else {
       Uint8List imageBytes = base64Decode(_slikaUslugeResult!.result[0].slika);
+      setState(() {
+        _imaSliku = false;
+      });
       return imageBytes;
     }
+  }
+
+  Future ponistiSliku() async {
+    setState(() {
+      _ponistiSliku = true;
+      print("ponisti sliku: $_ponistiSliku");
+      _base64image = null;
+      print("base64image: $_base64image");
+      _image = null;
+      print("image: $_image");
+      _imaSliku = false;
+    });
   }
 
   File? _image;
@@ -279,6 +369,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     if (result != null && path != null) {
       _image = File(path);
       _base64image = base64Encode(_image!.readAsBytesSync());
+      print(
+          "${(_image != null && _base64image != null) ? "postoji slika" : "ne postoji slika"}");
     }
 
     setState(() {
@@ -286,48 +378,45 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     });
   }
 
-  void doInsert() async {
-    _formKey.currentState?.saveAndValidate();
-    //print(_formKey.currentState?.value);
-    var request = new Map.from(_formKey.currentState!.value);
+  Future doInsert(request_usluga, request_slika) async {
     if (_base64image != null) {
-      var request_slika = new SlikaUslugeInsertUpdate(_base64image);
       var obj = await _slikaUslugeProvider.insert(request_slika);
 
       if (obj != null) {
         var slikaId = obj.slikaUslugeId;
-        request['slikaUslugeId'] = slikaId;
+        request_usluga['slikaUslugeId'] = slikaId;
       } else {
-        request['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
+        request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
       }
     } else {
-      request['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
+      request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }
-    print("insert request: $request");
-    var req = await _uslugeProvider.insert(request);
+    print("insert request: $request_usluga");
+    var req = await _uslugeProvider.insert(request_usluga);
     print("req: ${req.slikaUslugeId}");
   }
 
-  void doUpdate() async {
-    _formKey.currentState?.saveAndValidate();
-    var request = new Map.from(_formKey.currentState!.value);
-    var request_slika = new SlikaUslugeInsertUpdate(_base64image);
-
+  Future doUpdate(request_usluga, request_slika) async {
     if (_base64image != null &&
         widget.usluga?.slikaUslugeId == DEFAULT_SlikaUslugeId) {
       var obj = await _slikaUslugeProvider.insert(request_slika);
       if (obj != null) {
         var slikaId = obj.slikaUslugeId;
-        request['slikaUslugeId'] = slikaId;
+        request_usluga['slikaUslugeId'] = slikaId;
       }
     } else if (_base64image != null &&
         widget.usluga?.slikaUslugeId != DEFAULT_SlikaUslugeId) {
       await _slikaUslugeProvider.update(
           widget.usluga!.slikaUslugeId!, request_slika);
+    } else if (_ponistiSliku == true && _base64image == null) {
+      // delete slikaUslugeId sto je prije bio za datu uslugu:  widget.usluga?.slikaUslugeId
+      // svaka slika koja se ponisti, usluga dobija ponovo slikaUslugeId=1, samim tim kad se doda nova slika,
+      //slikaUslugeId dobije potpuno novi Id a ne onaj stari, jer se on brise iz baze podataka.
+      request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }
-
-    print("insert request: $request");
-    var req = await _uslugeProvider.update(widget.usluga!.uslugaId!, request);
+    print("update request: $request_usluga");
+    var req =
+        await _uslugeProvider.update(widget.usluga!.uslugaId!, request_usluga);
     print("req: ${req.slikaUslugeId}");
   }
 }

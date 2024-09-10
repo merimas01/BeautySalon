@@ -90,6 +90,20 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
+  Future<bool> delete(int id) async {
+    var url = "$_baseUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.delete(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   bool isValidResponse(Response response) {
     if (response.statusCode <= 299) {
       return true;

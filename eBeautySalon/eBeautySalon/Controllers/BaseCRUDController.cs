@@ -31,5 +31,11 @@ namespace eBeautySalon.Controllers
             return await _service.Update(id, update);
         }
 
+        [HttpDelete("{id}")]
+        public virtual async Task<bool> Delete(int id)
+        {
+            return await _service.Delete(id);
+        }
+
     }
 }

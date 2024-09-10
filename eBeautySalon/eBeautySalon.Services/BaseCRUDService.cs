@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eBeautySalon.Models;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
@@ -26,6 +27,10 @@ namespace eBeautySalon.Services
 
         }
 
+        public virtual async Task BeforeDelete(TDb entity)
+        {
+
+        }
 
         public virtual async Task<T> Insert(TInsert insert)
         {
@@ -53,6 +58,24 @@ namespace eBeautySalon.Services
 
             await _context.SaveChangesAsync();
             return _mapper.Map<T>(entity);
+        }
+
+
+        public virtual async Task<bool> Delete(int id)
+        {
+            var set = _context.Set<TDb>();
+
+            var entity = await set.FindAsync(id);
+      
+            if (entity != null)
+            {
+                await BeforeDelete(entity);
+                set.Remove(entity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else return false;
+           
         }
 
     }

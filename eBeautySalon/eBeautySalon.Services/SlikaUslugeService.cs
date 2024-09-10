@@ -15,5 +15,17 @@ namespace eBeautySalon.Services
         public SlikaUslugeService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override Task BeforeDelete(SlikaUsluge entity)
+        {
+            var uslugas = _context.Uslugas.Where(x => x.SlikaUslugeId == entity.SlikaUslugeId).ToList();
+            var firstImageId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
+
+            foreach (var usluga in uslugas)
+            {
+                usluga.SlikaUslugeId = firstImageId;
+            }
+            return base.BeforeDelete(entity);
+        }
     }
 }

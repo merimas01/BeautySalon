@@ -409,9 +409,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       await _slikaUslugeProvider.update(
           widget.usluga!.slikaUslugeId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      // delete slikaUslugeId sto je prije bio za datu uslugu:  widget.usluga?.slikaUslugeId
-      // svaka slika koja se ponisti, usluga dobija ponovo slikaUslugeId=1, samim tim kad se doda nova slika,
-      //slikaUslugeId dobije potpuno novi Id a ne onaj stari, jer se on brise iz baze podataka.
+      var del = await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
+      print("delete slikaUslugeId: $del");
       request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }
     print("update request: $request_usluga");

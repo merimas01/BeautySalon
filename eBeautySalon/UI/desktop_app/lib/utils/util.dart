@@ -13,7 +13,7 @@ Image ImageFromBase64String(String base64Image){
 }
 
 String formatNumber(dynamic){
-  var f = NumberFormat('###,00');
+  var f = NumberFormat('###.##');
   if(dynamic==null){
     return "";
   }

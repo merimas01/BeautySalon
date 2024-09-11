@@ -3,6 +3,7 @@ using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
+using eBeautySalon.Models.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,16 +22,26 @@ namespace eBeautySalon.Services
 
         public override Task BeforeInsert(Usluga entity, UslugeInsertRequest insert)
         {
-            //if (insert.SlikaUslugeId == null)
-            //    entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
+            if (insert.SlikaUslugeId == null || insert.SlikaUslugeId == 0)
+                entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
             return base.BeforeInsert(entity, insert);
         }
 
         public override Task BeforeUpate(Usluga entity, UslugeUpdateRequest update)
         {
-            //if (update.SlikaUslugeId != null)
-            //    entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
+            if (update.SlikaUslugeId == null || update.SlikaUslugeId == 0)
+                entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
             return base.BeforeUpate(entity, update);
+        }
+
+        public override Task BeforeDelete(Usluga entity)
+        {
+            var slikaUslugeId = entity.SlikaUslugeId;
+            var slikaUsluge = _context.SlikaUsluges.Where(x => x.SlikaUslugeId == slikaUslugeId).First();
+            if (slikaUsluge != null && slikaUslugeId != Constants.DEFAULT_SlikaUslugeId) { 
+                _context.Remove(slikaUsluge); //deleta se ovaj objekat jer se nece koristiti vise
+            }
+            return base.BeforeDelete(entity);
         }
 
         public override IQueryable<Usluga> AddFilter(IQueryable<Usluga> query, UslugeSearchObject? search = null)

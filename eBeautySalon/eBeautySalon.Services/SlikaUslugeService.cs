@@ -19,12 +19,16 @@ namespace eBeautySalon.Services
         public override Task BeforeDelete(SlikaUsluge entity)
         {
             var uslugas = _context.Uslugas.Where(x => x.SlikaUslugeId == entity.SlikaUslugeId).ToList();
-            var firstImageId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
+            var firstImageId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First(); //DEFAULT_SlikaUslugeId
 
-            foreach (var usluga in uslugas)
+            if (firstImageId != null)
             {
-                usluga.SlikaUslugeId = firstImageId;
+                foreach (var usluga in uslugas)
+                {
+                    usluga.SlikaUslugeId = firstImageId;
+                }
             }
+            
             return base.BeforeDelete(entity);
         }
     }

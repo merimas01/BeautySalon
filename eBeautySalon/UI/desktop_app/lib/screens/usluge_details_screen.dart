@@ -231,7 +231,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                                     style: ButtonStyle(
                                       backgroundColor:
                                           MaterialStateProperty.all<Color>(
-                                               Color.fromARGB(255, 219, 36, 36)),
+                                              Color.fromARGB(255, 219, 36, 36)),
                                     ),
                                     onPressed: () {
                                       ponistiSliku();
@@ -409,7 +409,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       await _slikaUslugeProvider.update(
           widget.usluga!.slikaUslugeId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      var del = await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
+      var del =
+          await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
       print("delete slikaUslugeId: $del");
       request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }

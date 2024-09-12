@@ -36,6 +36,7 @@ class MyMaterialApp extends StatelessWidget {
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _korisnickoImeController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   late UslugeProvider _uslugeProvider;
@@ -51,8 +52,10 @@ class LoginPage extends StatelessWidget {
           title: Text("Prijava"),
         ),
         body: Center(
+            child: Form(
+          key: _formKey,
           child: Container(
-              constraints: BoxConstraints(maxWidth: 400, maxHeight: 500),
+              constraints: BoxConstraints(maxWidth: 450, maxHeight: 520),
               child: Card(
                   child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -83,7 +86,17 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       height: 12,
                     ),
-                    TextField(
+                    TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Molimo Vas unesite korisničko ime';
+                          }
+                          if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$')
+                              .hasMatch(value)) {
+                            return 'Unesite ispravno korisničko ime';
+                          }
+                          return null;
+                        },
                         controller: _korisnickoImeController,
                         decoration: InputDecoration(
                             labelText: "Korisničko ime",
@@ -103,7 +116,17 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    TextField(
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite lozinku';
+                        }
+                        if (!RegExp(r'^[a-zA-Z0-9 .,!?@%#&$/*+"\-]{3,}$')
+                            .hasMatch(value)) {
+                          return 'Unesite ispravnu lozinku';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                           labelText: "Lozinka",
                           labelStyle: TextStyle(fontSize: 14),
@@ -127,7 +150,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(
                       height: 36,
-                      width: 380,
+                      width: 450,
                       child: ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
@@ -156,10 +179,14 @@ class LoginPage extends StatelessWidget {
                           Authorization.password = password;
 
                           try {
-                            await _kategorijeProvider.get();
+                            var val = _formKey.currentState!.validate();
+                            print("${val}");
+                            if (val) {
+                              await _kategorijeProvider.get();
 
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const HomePage()));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const HomePage()));
+                            }
                           } on Exception catch (e) {
                             showDialog(
                                 context: context,
@@ -183,29 +210,29 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Nemate račun?",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.pink),
-                          ),
-                          onPressed: () {
-                            print("registracija button");
-                          },
-                          child: Text("Registracija",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        )
-                      ],
-                    )
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Text(
+                    //       "Nemate račun?",
+                    //       style: TextStyle(fontWeight: FontWeight.bold),
+                    //     ),
+                    //     TextButton(
+                    //       style: ButtonStyle(
+                    //         foregroundColor:
+                    //             MaterialStateProperty.all<Color>(Colors.pink),
+                    //       ),
+                    //       onPressed: () {
+                    //         print("registracija button");
+                    //       },
+                    //       child: Text("Registracija",
+                    //           style: TextStyle(fontWeight: FontWeight.bold)),
+                    //     )
+                    //   ],
+                    // )
                   ],
                 ),
               ))),
-        ));
+        )));
   }
 }

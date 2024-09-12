@@ -89,10 +89,6 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
         child: SingleChildScrollView(
       child: DataTable(
           columns: [
-            // DataColumn(
-            //     label: Expanded(
-            //   child: Text("ID"),
-            // )),
             DataColumn(
                 label: Expanded(
               child: Text("Kategorija"),
@@ -120,7 +116,6 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           ],
           rows: result?.result
                   .map((Kategorija e) => DataRow(cells: [
-                        //DataCell(Text(e.kategorijaId?.toString() ?? "")),
                         DataCell(Text(e.naziv ?? "")),
                         DataCell(Text(e.opis ?? "")),
                         DataCell(Container(
@@ -190,7 +185,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
   }
 
   void _obrisiZapis(e) async {
-    print("uslugaId: ${e.kategorijaId}, naziv: ${e.naziv}");
+    print("delete kategorijaId: ${e.kategorijaId}, naziv: ${e.naziv}");
     var deleted = await _kategorijeProvider.delete(e.kategorijaId);
     print('deleted? ${deleted}');
 

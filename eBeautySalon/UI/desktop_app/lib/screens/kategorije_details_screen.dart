@@ -31,8 +31,8 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
 
     _initialValue = {
       'kategorijaId': widget.kategorija?.kategorijaId == null
-       ? "0"
-      : widget.kategorija?.kategorijaId.toString(),
+          ? "0"
+          : widget.kategorija?.kategorijaId.toString(),
       'naziv': widget.kategorija?.naziv,
       'opis': widget.kategorija?.opis,
     };
@@ -55,35 +55,41 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
       child: Column(
         children: [
           isLoading ? Container() : _buildForm(),
-          //  SizedBox(height: 8,),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
                 child: ElevatedButton(
                     onPressed: () async {
-                      //print("dugme Spasi pritisnuto.")
-                      _formKey.currentState?.saveAndValidate();
+                      var val = _formKey.currentState?.saveAndValidate();
                       print(_formKey.currentState?.value);
 
                       try {
-                        if (widget.kategorija == null) {
-                          await _kategorijeProvider
-                              .insert(_formKey.currentState?.value);
+                        if (val == true) {
+                          if (widget.kategorija == null) {
+                            await _kategorijeProvider
+                                .insert(_formKey.currentState?.value);
+                          } else {
+                            await _kategorijeProvider.update(
+                                widget.kategorija!.kategorijaId!,
+                                _formKey.currentState?.value);
+                          }
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    title: Text("Informacija o uspjehu"),
+                                    content: Text("Uspješno izvršena akcija!"),
+                                  ));
                         } else {
-                          await _kategorijeProvider.update(
-                              widget.kategorija!.kategorijaId!,
-                              _formKey.currentState?.value);
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    title: Text("Neispravni podaci"),
+                                    content: Text(
+                                        "Ispravite greške i ponovite unos."),
+                                  ));
                         }
-                        print("uspjesno spaseno");
-
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                                  title: Text("Informacija"),
-                                  content: Text("Uspješno izvršena akcija!"),
-                                ));
                       } catch (e) {
                         showDialog(
                             context: context,
@@ -114,31 +120,39 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
         key: _formKey,
         initialValue: _initialValue,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
               Row(
                 children: [
-                  SizedBox(
-                      width: 100,
-                      child: FormBuilderTextField(
-                        decoration: InputDecoration(labelText: "Usluga ID:"),
-                        name: "kategorijaId",
-                        enabled: false,
-                      )),
-                  SizedBox(
-                    width: 8,
-                  ),
                   Expanded(
                       child: FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Naziv:"),
                     name: "naziv",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Molimo Vas unesite naziv';
+                      }
+                      if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
+                        return 'Unesite ispravan naziv';
+                      }
+                      return null;
+                    },
                   )),
                 ],
               ),
               FormBuilderTextField(
                 name: "opis",
                 decoration: InputDecoration(labelText: "Opis:"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo Vas unesite opis';
+                  }
+                  if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$').hasMatch(value)) {
+                    return 'Unesite ispravan opis';
+                  }
+                  return null;
+                },
               ),
             ],
           ),

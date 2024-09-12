@@ -98,10 +98,6 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
         child: SingleChildScrollView(
       child: DataTable(
           columns: [
-            // DataColumn(
-            //     label: Expanded(
-            //   child: Text("ID"),
-            // )),
             DataColumn(
                 label: Expanded(
               child: Text("Usluga"),
@@ -133,7 +129,6 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           ],
           rows: result?.result
                   .map((Usluga e) => DataRow(cells: [
-                        //DataCell(Text(e.uslugaId?.toString() ?? "")),
                         DataCell(
                             Container(width: 200, child: Text(e.naziv ?? ""))),
                         DataCell(Text(e.kategorija!.naziv ?? "")),
@@ -207,7 +202,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
   }
 
   void _obrisiZapis(e) async {
-    print("uslugaId: ${e.uslugaId}, naziv: ${e.naziv}");
+    print("delete uslugaId: ${e.uslugaId}, naziv: ${e.naziv}");
     var deleted = await _uslugeProvider.delete(e.uslugaId!);
     print('deleted? ${deleted}');
 

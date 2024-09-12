@@ -60,8 +60,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       'cijena': widget.usluga?.cijena!.toString(),
       'kategorijaId': widget.usluga?.kategorijaId.toString(),
       'slikaUslugeId': widget.usluga?.slikaUslugeId.toString(),
-      //   'datumKreiranja': "${widget.usluga?.datumKreiranja?.day}.${widget.usluga?.datumKreiranja?.month}.${widget.usluga?.datumKreiranja?.year}",
-      //   'datumModifikovanja' : "${widget.usluga?.datumModifikovanja?.day}.${ widget.usluga?.datumModifikovanja?.month}.${ widget.usluga?.datumModifikovanja?.year}",
     };
     _kategorijeProvider = context.read<KategorijeProvider>();
     _slikaUslugeProvider = context.read<SlikaUslugeProvider>();
@@ -90,28 +88,37 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.only(right: 15.0),
+                padding: const EdgeInsets.only(right: 10.0),
                 child: ElevatedButton(
                     onPressed: () async {
-                      _formKey.currentState?.saveAndValidate();
+                      var val = _formKey.currentState?.saveAndValidate();
                       var request_usluga =
                           new Map.from(_formKey.currentState!.value);
                       var request_slika =
                           new SlikaUslugeInsertUpdate(_base64image);
 
                       try {
-                        if (widget.usluga == null) {
-                          doInsert(request_usluga, request_slika);
-                        } else if (widget.usluga != null) {
-                          doUpdate(request_usluga, request_slika);
+                        if (val == true) {
+                          if (widget.usluga == null) {
+                            doInsert(request_usluga, request_slika);
+                          } else if (widget.usluga != null) {
+                            doUpdate(request_usluga, request_slika);
+                          }
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    title: Text("Informacija o uspjehu"),
+                                    content: Text("Uspješno izvršena akcija!"),
+                                  ));
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                    title: Text("Neispravni podaci"),
+                                    content: Text(
+                                        "Ispravite greške i ponovite unos."),
+                                  ));
                         }
-
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                                  title: Text("Informacija"),
-                                  content: Text("Uspješno izvršena akcija!"),
-                                ));
                       } catch (e) {
                         showDialog(
                             context: context,
@@ -142,42 +149,60 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
         key: _formKey,
         initialValue: _initialValue,
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.only(
+              right: 10.0, top: 10.0, left: 10.0, bottom: 5.0),
           child: Column(
             children: [
               Row(
                 children: [
-                  SizedBox(
-                      width: 100,
-                      child: FormBuilderTextField(
-                        decoration: InputDecoration(labelText: "Usluga ID:"),
-                        name: "uslugaId",
-                        enabled: false,
-                      )),
-                  SizedBox(
-                    width: 8,
-                  ),
                   Expanded(
                       child: FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Naziv:"),
                     name: "naziv",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Molimo Vas unesite naziv';
+                      }
+                      if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
+                        return 'Unesite ispravan naziv';
+                      }
+                      return null;
+                    },
                   )),
                 ],
               ),
               FormBuilderTextField(
                 name: "cijena",
                 decoration: InputDecoration(labelText: "Cijena:"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo Vas unesite cijenu';
+                  }
+                  if (!RegExp(r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{2})?$')
+                      .hasMatch(value)) {
+                    return 'Unesite ispravnu cijenu';
+                  }
+                  return null;
+                },
               ),
               FormBuilderTextField(
                 name: "opis",
                 decoration: InputDecoration(labelText: "Opis:"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Molimo Vas unesite opis';
+                  }
+                  if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$').hasMatch(value)) {
+                    return 'Unesite ispravan opis';
+                  }
+                  return null;
+                },
               ),
               Row(
                 children: [
                   Expanded(
                     child: FormBuilderDropdown<String>(
                       name: 'kategorijaId',
-                      //initialValue: 'Male',
                       decoration: InputDecoration(
                         labelText: 'Kategorije',
                         suffix: IconButton(
@@ -197,15 +222,23 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                                   ))
                               .toList() ??
                           [],
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Molimo Vas izaberite kategoriju';
+                        }
+                        return null;
+                      },
                     ),
                   )
                 ],
               ),
               SizedBox(
+                height: 8,
+              ),
+              SizedBox(
                 height: 10,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   isLoadingImage
                       ? Column(
@@ -213,14 +246,14 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                             _ponistiSliku != true
                                 ? Image.memory(
                                     displayCurrentImage(),
-                                    width: 200,
-                                    height: 200,
+                                    width: null,
+                                    height: 180,
                                     fit: BoxFit.cover,
                                   )
                                 : Image.memory(
                                     displayNoImage(),
-                                    width: 200,
-                                    height: 200,
+                                    width: null,
+                                    height: 180,
                                     fit: BoxFit.cover,
                                   ),
                             SizedBox(
@@ -245,8 +278,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                               children: [
                                 Image.file(
                                   _image!,
-                                  width: 200,
-                                  height: 200,
+                                  width: null,
+                                  height: 180,
                                   fit: BoxFit.cover,
                                 ),
                                 SizedBox(
@@ -268,26 +301,22 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                               ? Container(
                                   child: Image.memory(
                                     displayCurrentImage(),
-                                    width: 200,
-                                    height: 200,
+                                    width: null,
+                                    height: 180,
                                     fit: BoxFit.cover,
                                   ),
                                 )
                               : Container(
                                   child: Image.memory(
                                     displayNoImage(),
-                                    width: 200,
-                                    height: 200,
+                                    width: null,
+                                    height: 180,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
+                  SizedBox(
+                    width: 30,
+                  ),
                   Expanded(
                     child: FormBuilderField(
                       name: 'slikaUslugeId',
@@ -318,10 +347,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
 
   Uint8List displayNoImage() {
     Uint8List imageBytes = base64Decode(_slikaUslugeResult!.result[0].slika);
-    // setState(() {
-    //   _ponistiSliku = false;
-    //   print("ponisti sliku: $_ponistiSliku");
-    // });
     return imageBytes;
   }
 

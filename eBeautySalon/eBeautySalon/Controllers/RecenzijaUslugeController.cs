@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace eBeautySalon.Controllers
 {
     [ApiController]
-    public class RecenzijaUslugeController : BaseCRUDController<Models.RecenzijaUsluge, BaseSearchObject, RecenzijaUslugeInsertRequest, RecenzijaUslugeUpdateRequest>
+    public class RecenzijaUslugeController : BaseCRUDController<Models.RecenzijaUsluge, RecenzijaUslugeSearchObject, RecenzijaUslugeInsertRequest, RecenzijaUslugeUpdateRequest>
     {
-        public RecenzijaUslugeController(ILogger<BaseCRUDController<Models.RecenzijaUsluge, BaseSearchObject, RecenzijaUslugeInsertRequest, RecenzijaUslugeUpdateRequest>> logger, IRecenzijaUslugeService service)
+        public RecenzijaUslugeController(ILogger<BaseCRUDController<Models.RecenzijaUsluge, RecenzijaUslugeSearchObject, RecenzijaUslugeInsertRequest, RecenzijaUslugeUpdateRequest>> logger, IRecenzijaUslugeService service)
             : base(logger, service)
         {
         }

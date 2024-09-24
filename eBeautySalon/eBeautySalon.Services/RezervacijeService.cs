@@ -14,12 +14,29 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eBeautySalon.Services
 {
-    public class RezervacijeService : BaseCRUDService<Rezervacije, Rezervacija, BaseSearchObject, RezervacijeInsertRequest, RezervacijeUpdateRequest>, IRezervacijeService
+    public class RezervacijeService : BaseCRUDService<Rezervacije, Rezervacija, RezervacijeSearchObject, RezervacijeInsertRequest, RezervacijeUpdateRequest>, IRezervacijeService
     {
         public RezervacijeService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {         
         }
 
+        public override IQueryable<Rezervacija> AddInclude(IQueryable<Rezervacija> query, RezervacijeSearchObject? search = null)
+        {
+            if (search?.isKorisnikIncluded == true)
+            {
+                query = query.Include(x => x.Korisnik);
+            }
+            if (search?.isUslugaIncluded == true)
+            {
+                query = query.Include(x => x.Usluga);
+            }
+            if (search?.isTerminIncluded == true)
+            {
+                query = query.Include(x => x.Termin);
+            }
+          
+            return base.AddInclude(query, search);
+        }
         public override async Task BeforeInsert(Rezervacija entity, RezervacijeInsertRequest insert)
         {
             var klijent = await _context.Korisniks.FirstOrDefaultAsync(x=>x.KorisnikId == entity.KorisnikId);

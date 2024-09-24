@@ -22,8 +22,8 @@ namespace eBeautySalon.Models
 
         public int? UsluznikId { get; set; }
 
-        //public virtual Korisnik? Korisnik { get; set; }
+        public virtual Korisnici? Korisnik { get; set; }
 
-        //public virtual Zaposlenik? Usluznik { get; set; }
+        public virtual Zaposlenici? Usluznik { get; set; }
     }
 }

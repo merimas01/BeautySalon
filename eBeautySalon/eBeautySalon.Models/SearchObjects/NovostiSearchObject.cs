@@ -8,6 +8,7 @@ namespace eBeautySalon.Models.SearchObjects
 {
     public class NovostiSearchObject : BaseSearchObject
     {
+        public string? FTS { get; set; }
         public string? Naslov { get; set; } = null!;
 
         public string? Sadrzaj { get; set; } = null!;

@@ -233,9 +233,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                 ],
               ),
               SizedBox(
-                height: 8,
-              ),
-              SizedBox(
                 height: 10,
               ),
               Row(

@@ -18,10 +18,10 @@ namespace eBeautySalon.Models
 
         public DateTime DatumRezervacije { get; set; }
 
-        //public virtual Korisnik? Korisnik { get; set; }
+        public virtual Korisnici? Korisnik { get; set; }
 
-        //public virtual Termin? Termin { get; set; }
+        public virtual Termini? Termin { get; set; }
 
-        //public virtual Usluga? Usluga { get; set; }
+        public virtual Usluge? Usluga { get; set; }
     }
 }

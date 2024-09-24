@@ -57,13 +57,22 @@ namespace eBeautySalon.Services
             }
             if (search?.isSlikaIncluded == true)
             {
-                query = query.Include(c => c.SlikaProfila);
+                query = query.Include("SlikaProfila");
+            }
+            if (search?.isAdmin == false)
+            {
+                query = query.Where(x => x.IsAdmin == false).AsQueryable();
             }
             return base.AddInclude(query, search);
         }
 
         public override IQueryable<Korisnik> AddFilter(IQueryable<Korisnik> query, KorisniciSearchObject? search = null)
         {
+            if (!string.IsNullOrWhiteSpace(search?.FTS))
+            {
+                query = query.Where(x => (x.Ime != null && x.Ime.Contains(search.FTS)) || (x.Prezime != null && x.Prezime.Contains(search.FTS)
+                || (x.KorisnickoIme != null && x.KorisnickoIme.Contains(search.FTS))));
+            }
             if (!string.IsNullOrWhiteSpace(search?.Ime))
             {
                 query = query.Where(x => x.Ime.StartsWith(search.Ime));

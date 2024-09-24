@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Models.SearchObjects
 {
-    public class ZaposleniciSearchObject : BaseSearchObject
+    public class RecenzijaUslugeSearchObject : BaseSearchObject
     {
-        public string? FTS { get; set; }
         public bool? isUslugeIncluded { get; set; }
-        public bool? isKorisnikIncluded { get; set; }   
+        public bool? isKorisnikIncluded { get; set; }
     }
 }

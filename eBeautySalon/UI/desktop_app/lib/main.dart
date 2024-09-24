@@ -1,4 +1,7 @@
+import 'package:desktop_app/models/slika_profila.dart';
 import 'package:desktop_app/providers/kategorije_provider.dart';
+import 'package:desktop_app/providers/korisnik_provider.dart';
+import 'package:desktop_app/providers/slika_profila_provider.dart';
 import 'package:desktop_app/providers/slika_usluge_provider.dart';
 import 'package:desktop_app/providers/usluge_provider.dart';
 import 'package:desktop_app/screens/home_page.dart';
@@ -14,7 +17,9 @@ void main() {
       //dependency injection
       ChangeNotifierProvider(create: (_) => UslugeProvider()),
       ChangeNotifierProvider(create: (_) => KategorijeProvider()),
-      ChangeNotifierProvider(create: (_) => SlikaUslugeProvider())
+      ChangeNotifierProvider(create: (_) => SlikaUslugeProvider()),
+      ChangeNotifierProvider(create: (_) => SlikaProfilaProvider()),
+      ChangeNotifierProvider(create: (_) => KorisnikProvider()),
     ],
     child: const MyMaterialApp(),
   ));

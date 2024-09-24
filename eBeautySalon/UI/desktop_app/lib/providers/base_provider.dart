@@ -26,9 +26,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     if (filter != null) {
       var queryString = getQueryString(filter);
       url = "$url?$queryString&$_afterEndpoint";
-    } else if (_afterEndpoint != "") {
-      url = "$url?$_afterEndpoint";
-    }
+    } 
 
     print("url: $url");
 

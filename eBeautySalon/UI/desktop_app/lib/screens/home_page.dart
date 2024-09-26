@@ -18,9 +18,10 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         child: Column(children: [
         Text("home page"),
+        Text("implementirati logout button"),
         ]),
       ),
-      title_widget: Text("Home paage"),
+      title_widget: Text("Home page"),
       
     );
   }

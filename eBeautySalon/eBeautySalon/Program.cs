@@ -27,6 +27,8 @@ builder.Services.AddTransient<ITerminiService, TerminiService>();
 builder.Services.AddTransient<IRezervacijeService, RezervacijeService>();
 builder.Services.AddTransient<IZaposleniciService, ZaposleniciService>();
 builder.Services.AddTransient<IZaposleniciUslugeService, ZaposleniciUslugeService>();
+builder.Services.AddTransient<IKorisniciUlogeService, KorisniciUlogeService>();
+builder.Services.AddTransient<IUlogeService, UlogeService>();
 
 builder.Services.AddControllers(x =>
 {

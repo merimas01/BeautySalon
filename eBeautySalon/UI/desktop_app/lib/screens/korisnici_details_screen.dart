@@ -1,9 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:desktop_app/models/slika_profila_insert_update.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +10,6 @@ import '../models/search_result.dart';
 import '../models/slika_profila.dart';
 import '../providers/korisnik_provider.dart';
 import '../providers/slika_profila_provider.dart';
-import '../utils/constants.dart';
 import '../widgets/master_screen.dart';
 
 class KorisniciDetailsScreen extends StatefulWidget {
@@ -27,16 +23,12 @@ class KorisniciDetailsScreen extends StatefulWidget {
 class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
-  late KorisnikProvider _korisnikProvider;
-  SearchResult<Korisnik>? _korisniciResult;
 
   late SlikaProfilaProvider _slikaProfilaProvider;
   SearchResult<SlikaProfila>? _slikaProfilaResult;
 
   bool isLoading = true;
   bool isLoadingImage = true;
-  bool _imaSliku = false;
-  bool _ponistiSliku = false;
 
   @override
   void initState() {
@@ -53,7 +45,6 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
       'slikaProfilaId': widget.korisnik?.slikaProfilaId,
     };
 
-    _korisnikProvider = context.read<KorisnikProvider>();
     _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
 
     initForm();
@@ -96,9 +87,6 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
                         width: null,
                         height: 300,
                         fit: BoxFit.cover,
-                      ),
-                      SizedBox(
-                        height: 8,
                       ),
                     ],
                   )

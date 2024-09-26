@@ -60,7 +60,7 @@ class LoginPage extends StatelessWidget {
             child: Form(
           key: _formKey,
           child: Container(
-              constraints: BoxConstraints(maxWidth: 450, maxHeight: 520),
+              constraints: BoxConstraints(maxWidth: 450, maxHeight: 550),
               child: Card(
                   child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -215,26 +215,26 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     Text(
-                    //       "Nemate račun?",
-                    //       style: TextStyle(fontWeight: FontWeight.bold),
-                    //     ),
-                    //     TextButton(
-                    //       style: ButtonStyle(
-                    //         foregroundColor:
-                    //             MaterialStateProperty.all<Color>(Colors.pink),
-                    //       ),
-                    //       onPressed: () {
-                    //         print("registracija button");
-                    //       },
-                    //       child: Text("Registracija",
-                    //           style: TextStyle(fontWeight: FontWeight.bold)),
-                    //     )
-                    //   ],
-                    // )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Nemate račun?",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.pink),
+                          ),
+                          onPressed: () {
+                            print("registracija button");
+                          },
+                          child: Text("Registracija",
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ))),

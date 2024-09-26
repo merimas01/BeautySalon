@@ -69,14 +69,14 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           SizedBox(
             width: 8,
           ),
-          ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => KorisniciDetailsScreen(
-                          korisnik: null,
-                        )));
-              },
-              child: Text("Dodaj korisnika")),
+          // ElevatedButton(
+          //     onPressed: () async {
+          //       Navigator.of(context).push(MaterialPageRoute(
+          //           builder: (context) => KorisniciDetailsScreen(
+          //                 korisnik: null,
+          //               )));
+          //     },
+          //     child: Text("Dodaj korisnika")),
         ],
       ),
     );

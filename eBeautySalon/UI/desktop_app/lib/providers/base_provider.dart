@@ -26,7 +26,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     if (filter != null) {
       var queryString = getQueryString(filter);
       url = "$url?$queryString&$_afterEndpoint";
-    } 
+    }
 
     print("url: $url");
 
@@ -46,6 +46,21 @@ abstract class BaseProvider<T> with ChangeNotifier {
       }
 
       return result;
+    } else {
+      throw new Exception("Unknow error");
+    }
+  }
+
+  Future<T> getById(int id) async {
+     var url = "$_baseUrl$_endpoint/$id";
+    print("url: $url");
+    var uri = Uri.parse(url);
+
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
     } else {
       throw new Exception("Unknow error");
     }

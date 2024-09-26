@@ -56,9 +56,18 @@ namespace eBeautySalon.Services
             return query;
         }
 
+
+        public virtual async Task<TDb> AddIncludeForGetById(IQueryable<TDb> query, int id)
+        {
+            return (TDb)query;
+        }
+
         public virtual async Task<T> GetById(int id)
         {
-            var entity = await _context.Set<TDb>().FindAsync(id);
+            var query = _context.Set<TDb>().AsQueryable();
+
+            var entity = await AddIncludeForGetById(query, id);
+
             return _mapper.Map<T>(entity);
         }
 

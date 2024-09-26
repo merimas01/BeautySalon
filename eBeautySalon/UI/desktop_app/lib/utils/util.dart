@@ -12,6 +12,15 @@ Image ImageFromBase64String(String base64Image){
   return Image.memory(base64Decode(base64Image));
 }
 
+class LoggedUser{
+  static int? id;
+  static String? korisnickoIme;
+  static String? ime;
+  static String? prezime;
+  static String? slika;
+}
+
+
 String formatNumber(dynamic){
   var f = NumberFormat('###.##');
   if(dynamic==null){

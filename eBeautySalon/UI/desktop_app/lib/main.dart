@@ -1,4 +1,3 @@
-import 'package:desktop_app/models/slika_profila.dart';
 import 'package:desktop_app/providers/kategorije_provider.dart';
 import 'package:desktop_app/providers/korisnik_provider.dart';
 import 'package:desktop_app/providers/slika_profila_provider.dart';
@@ -7,8 +6,6 @@ import 'package:desktop_app/providers/usluge_provider.dart';
 import 'package:desktop_app/screens/home_page.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:provider/provider.dart';
-
-import './screens/usluge_list_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -44,13 +41,11 @@ class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _korisnickoImeController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
-  late UslugeProvider _uslugeProvider;
-  late KategorijeProvider _kategorijeProvider;
+  late KorisnikProvider _korisnikProvider;
 
   @override
   Widget build(BuildContext context) {
-    _uslugeProvider = context.read<UslugeProvider>();
-    _kategorijeProvider = context.read<KategorijeProvider>();
+    _korisnikProvider = context.read<KorisnikProvider>();
 
     return Scaffold(
         appBar: AppBar(
@@ -180,14 +175,27 @@ class LoginPage extends StatelessWidget {
 
                           print(" $korisnickoIme $password");
 
+                          LoggedUser.korisnickoIme = korisnickoIme;
+
                           Authorization.username = korisnickoIme;
                           Authorization.password = password;
 
                           try {
                             var val = _formKey.currentState!.validate();
                             print("${val}");
+
                             if (val) {
-                              await _kategorijeProvider.get();
+                              var obj = await _korisnikProvider.get();
+                              var korisnik = await obj.result.firstWhere(
+                                  (korisnik) => korisnik.korisnickoIme!
+                                      .startsWith(Authorization.username!));
+                              LoggedUser.id = korisnik.korisnikId;
+                              LoggedUser.slika = korisnik.slikaProfila?.slika;
+                              LoggedUser.ime = korisnik.ime;
+                              LoggedUser.prezime = korisnik.prezime;
+
+                              print(
+                                  "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
 
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => const HomePage()));

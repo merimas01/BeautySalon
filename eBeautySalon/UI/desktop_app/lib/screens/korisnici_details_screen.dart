@@ -85,7 +85,7 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
                       Image.memory(
                         displayCurrentImage(),
                         width: null,
-                        height: 300,
+                        height: 250,
                         fit: BoxFit.cover,
                       ),
                     ],

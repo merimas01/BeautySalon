@@ -1,8 +1,8 @@
 import 'package:desktop_app/main.dart';
 import 'package:desktop_app/screens/kategorije_list_screen.dart';
-import 'package:desktop_app/screens/usluge_details_screen.dart';
+import 'package:desktop_app/screens/korisnici_list_screen.dart';
+import 'package:desktop_app/screens/profil_page.dart';
 import 'package:desktop_app/screens/usluge_list_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/home_page.dart';
@@ -31,7 +31,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               title: Text("Home page"),
               onTap: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => HomePage()));
+                    .push(MaterialPageRoute(builder: (context) => const HomePage()));
               },
             ),
             ListTile(
@@ -46,6 +46,20 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const KategorijeListScreen()));
+              },
+            ),
+            ListTile(
+              title: Text("Korisnici"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const KorisniciListScreen()));
+              },
+            ),
+             ListTile(
+              title: Text("Profil"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ProfilPage()));
               },
             ),
             ListTile(

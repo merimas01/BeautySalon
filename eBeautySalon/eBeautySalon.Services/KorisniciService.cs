@@ -49,6 +49,14 @@ namespace eBeautySalon.Services
             return Convert.ToBase64String(inArray);
         }
 
+        public override async Task<Korisnik> AddIncludeForGetById(IQueryable<Korisnik> query, int id)
+        {
+            query = query.Include("KorisnikUlogas.Uloga");
+            query = query.Include("SlikaProfila");
+            var entity = await query.FirstOrDefaultAsync(x => x.KorisnikId == id);
+            return entity;
+        }
+
         public override IQueryable<Korisnik> AddInclude(IQueryable<Korisnik> query, KorisniciSearchObject? search = null)
         {
             if (search?.isUlogeIncluded == true)

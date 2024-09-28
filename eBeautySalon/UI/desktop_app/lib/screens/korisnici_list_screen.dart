@@ -56,8 +56,8 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
-                var data = await _korisniciProvider
-                    .GetKorisnike(filter: {'FTS': _ftsController.text});
+                var data = await _korisniciProvider.GetKorisnike(
+                    filter: {'FTS': _ftsController.text});
 
                 print("fts: ${_ftsController.text}");
 
@@ -143,7 +143,8 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                             onPressed: () async {
                               _blockConfirmationDialog(e);
                             },
-                            child: Text('Blokiraj'),
+                            child: Text(
+                                ' ${e.status == true ? "Blokiraj" : "Odblokiraj"}'),
                           ),
                         ),
                         DataCell(TextButton(
@@ -165,9 +166,14 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o blokiranju korisnika'),
-              content: Text(
-                  'Jeste li sigurni da želite blokirati izabranog korisnika?'),
+              title: e?.status == true
+                  ? Text('Potvrda o blokiranju korisnika')
+                  : Text('Potvrda o odblokiranju korisnika'),
+              content: e?.status == true
+                  ? Text(
+                      'Jeste li sigurni da želite blokirati izabranog korisnika?')
+                  : Text(
+                      "Jeste li sigurni da želite odblokirati izabranog korisnika?"),
               actions: <Widget>[
                 TextButton(
                   child: Text('Ne'),
@@ -180,22 +186,23 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                   style: TextButton.styleFrom(foregroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
-                    _blockUser(e);
+                    _blockUnblockUser(e);
                   },
                 ),
               ],
             ));
   }
 
-  void _blockUser(e) async {
-    var request = KorisnikUpdate(e.ime, e.prezime, e.email, e.telefon, false,e.slikaProfilaId);
-    var blocked =
-        await _korisniciProvider.update(e.korisnikId, request);
-    print('deleted? ${blocked}');
+  void _blockUnblockUser(e) async {
+    var status = e.status == true ? false : true;
+    var request = KorisnikUpdate(
+        e.ime, e.prezime, e.email, e.telefon, status, e.slikaProfilaId);
+    var obj = await _korisniciProvider.update(e.korisnikId, request);
+    print('status? ${obj.status}');
 
     //treba da se osvjezi lista
-    var data =
-        await _korisniciProvider.GetKorisnike(filter: {'FTS': _ftsController.text});
+    var data = await _korisniciProvider.GetKorisnike(
+        filter: {'FTS': _ftsController.text});
 
     setState(() {
       result = data;

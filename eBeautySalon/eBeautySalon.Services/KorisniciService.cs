@@ -5,6 +5,7 @@ using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,5 +120,31 @@ namespace eBeautySalon.Services
 
         }
 
+        public async Task<PagedResult<Korisnici>> GetKorisnike(KorisniciSearchObject? search)
+        {
+            var query = _context.Korisniks.AsQueryable();
+
+            PagedResult<Korisnici> result = new PagedResult<Korisnici>();
+
+            query = query.Where(x => x.KorisnikUlogas.Count() == 0).AsQueryable();
+
+            query = AddFilter(query, search);
+
+            query = query.Include("SlikaProfila");
+
+            result.Count = await query.CountAsync();
+
+            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
+            {
+                query = query.Take(search.PageSize.Value).Skip(search.Page.Value * search.PageSize.Value);
+            }
+            var list = await query.ToListAsync();
+
+            var tmp = _mapper.Map<List<Korisnici>>(list);
+
+            result.Result = tmp;
+
+            return result;
+        }
     }
 }

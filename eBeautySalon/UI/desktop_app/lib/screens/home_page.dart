@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../widgets/master_screen.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -17,12 +16,12 @@ class _HomePageState extends State<HomePage> {
     return MasterScreenWidget(
       child: Container(
         child: Column(children: [
-        Text("home page"),
-        Text("implementirati logout button"),
+          Text("home page"),
+          Text("implementirati logout button"),
+          Text("izvjestaj, recenzije usluga"),
         ]),
       ),
       title_widget: Text("Home page"),
-      
     );
   }
 }

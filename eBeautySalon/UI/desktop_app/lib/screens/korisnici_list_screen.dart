@@ -57,7 +57,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                 print("pritisnuto dugme Trazi");
 
                 var data = await _korisniciProvider
-                    .get(filter: {'FTS': _ftsController.text});
+                    .GetKorisnike(filter: {'FTS': _ftsController.text});
 
                 print("fts: ${_ftsController.text}");
 
@@ -195,7 +195,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
 
     //treba da se osvjezi lista
     var data =
-        await _korisniciProvider.get(filter: {'FTS': _ftsController.text});
+        await _korisniciProvider.GetKorisnike(filter: {'FTS': _ftsController.text});
 
     setState(() {
       result = data;

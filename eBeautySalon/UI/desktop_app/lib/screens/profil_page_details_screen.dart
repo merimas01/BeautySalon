@@ -97,31 +97,39 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                 name: "korisnickoIme",
                 enabled: false,
               ),
-              FormBuilderTextField(
-                decoration: InputDecoration(labelText: "Ime:"),
-                name: "ime",
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo Vas unesite ime';
-                  }
-                  if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                    return 'Unesite ispravno ime';
-                  }
-                  return null;
-                },
-              ),
-              FormBuilderTextField(
-                name: "prezime",
-                decoration: InputDecoration(labelText: "Prezime:"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo Vas unesite prezime';
-                  }
-                  if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                    return 'Unesite ispravno prezime';
-                  }
-                  return null;
-                },
+              Row(
+                children: [
+                  Expanded(
+                      child: FormBuilderTextField(
+                    decoration: InputDecoration(labelText: "Ime:"),
+                    name: "ime",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Molimo Vas unesite ime';
+                      }
+                      if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
+                        return 'Unesite ispravno ime';
+                      }
+                      return null;
+                    },
+                  )),
+                  SizedBox(width: 20,),
+                  Expanded(
+                    child: FormBuilderTextField(
+                      name: "prezime",
+                      decoration: InputDecoration(labelText: "Prezime:"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite prezime';
+                        }
+                        if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
+                          return 'Unesite ispravno prezime';
+                        }
+                        return null;
+                      },
+                    ),
+                  )
+                ],
               ),
               FormBuilderTextField(
                 name: "telefon",
@@ -130,7 +138,9 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Molimo Vas unesite telefon';
                   }
-                  if (!RegExp(r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$').hasMatch(value)) {
+                  if (!RegExp(
+                          r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
+                      .hasMatch(value)) {
                     return 'Unesite ispravan telefon: +### ## ### ###';
                   }
                   return null;
@@ -143,7 +153,8 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Molimo Vas unesite email';
                   }
-                  if (!RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
+                  if (!RegExp(
+                          r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
                       .hasMatch(value)) {
                     return 'Unesite ispravan email primjer@domena.com';
                   }

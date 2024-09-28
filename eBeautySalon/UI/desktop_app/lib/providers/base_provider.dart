@@ -20,6 +20,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
         defaultValue: "http://localhost:5145/api/");
   }
 
+  static String? get baseUrl => _baseUrl;
+
   Future<SearchResult<T>> get({dynamic filter}) async {
     var url = "$_baseUrl$_endpoint";
 
@@ -52,7 +54,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Future<T> getById(int id) async {
-     var url = "$_baseUrl$_endpoint/$id";
+    var url = "$_baseUrl$_endpoint/$id";
     print("url: $url");
     var uri = Uri.parse(url);
 

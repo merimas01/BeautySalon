@@ -18,17 +18,17 @@ namespace eBeautySalon.Services
         {
         }
 
-        public override IQueryable<Zaposlenik> AddInclude(IQueryable<Zaposlenik> query, ZaposleniciSearchObject? search = null)
-        {
-            if (search?.isKorisnikIncluded == true)
-            {
-                query = query.Include(c=>c.Korisnik);
-            }
-            if (search?.isUslugeIncluded == true)
-            {
-                query = query.Include("ZaposlenikUslugas.Usluga");
-            }
-            return base.AddInclude(query, search);
-        }
+        //public override IQueryable<Zaposlenik> AddInclude(IQueryable<Zaposlenik> query, ZaposleniciSearchObject? search = null)
+        //{
+        //    if (search?.isKorisnikIncluded == true)
+        //    {
+        //        query = query.Include(c=>c.Korisnik);
+        //    }
+        //    if (search?.isUslugeIncluded == true)
+        //    {
+        //        query = query.Include("ZaposlenikUslugas.Usluga");
+        //    }
+        //    return base.AddInclude(query, search);
+        //}
     }
 }

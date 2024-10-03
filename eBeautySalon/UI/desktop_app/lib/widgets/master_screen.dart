@@ -3,6 +3,7 @@ import 'package:desktop_app/screens/kategorije_list_screen.dart';
 import 'package:desktop_app/screens/korisnici_list_screen.dart';
 import 'package:desktop_app/screens/profil_page.dart';
 import 'package:desktop_app/screens/usluge_list_screen.dart';
+import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/home_page.dart';
@@ -53,6 +54,13 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const KorisniciListScreen()));
+              },
+            ),
+            ListTile(
+              title: Text("Zaposlenici"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ZaposleniciListScreen()));
               },
             ),
              ListTile(

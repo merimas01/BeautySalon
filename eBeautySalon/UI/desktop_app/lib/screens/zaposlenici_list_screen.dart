@@ -1,30 +1,35 @@
-import 'package:desktop_app/providers/usluge_provider.dart';
-import 'package:desktop_app/screens/usluge_details_screen.dart';
-import 'package:desktop_app/utils/util.dart';
+import 'package:desktop_app/screens/zaposlenici_details_screen.dart';
+import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/search_result.dart';
-import '../models/usluga.dart';
-import '../widgets/master_screen.dart';
 
-class UslugeListScreen extends StatefulWidget {
-  const UslugeListScreen({super.key});
+import '../models/search_result.dart';
+import '../models/zaposlenik.dart';
+import '../models/zaposlenik_usluga.dart';
+import '../providers/zaposlenici_provider.dart';
+import '../providers/zaposlenici_usluge_provider.dart';
+import '../utils/util.dart';
+
+class ZaposleniciListScreen extends StatefulWidget {
+  const ZaposleniciListScreen({super.key});
 
   @override
-  State<UslugeListScreen> createState() => _UslugeListScreenState();
+  State<ZaposleniciListScreen> createState() => _ZaposleniciListScreenState();
 }
 
-class _UslugeListScreenState extends State<UslugeListScreen> {
-  late UslugeProvider _uslugeProvider;
+class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
+  late ZaposleniciUslugeProvider _zaposleniciUslugeProvider;
+  late ZaposleniciProvider _zaposleniciProvider;
   bool isLoading = true;
-  SearchResult<Usluga>? result;
+  SearchResult<ZaposlenikUsluga>? result;
   TextEditingController _ftsController = new TextEditingController();
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    _uslugeProvider = context.read<UslugeProvider>();
+    _zaposleniciUslugeProvider = context.read<ZaposleniciUslugeProvider>();
+    _zaposleniciProvider = context.read<ZaposleniciProvider>();
   }
 
   @override
@@ -36,8 +41,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           _buildDataListView(),
         ]),
       ),
-      title_widget: Text("Usluge"),
-      //title: "Usluge",
+      title_widget: Text("Zaposlenici i usluge"),
     );
   }
 
@@ -61,7 +65,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
-                var data = await _uslugeProvider
+                var data = await _zaposleniciUslugeProvider
                     .get(filter: {'FTS': _ftsController.text});
 
                 print("fts: ${_ftsController.text}");
@@ -77,11 +81,14 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => UslugeDetaljiScreen(
+                    builder: (context) => ZaposleniciDetailsScreen(
+                          zaposlenikUsluga: null,
+                          zaposlenik: null,
                           usluga: null,
+                          korisnik: null,
                         )));
               },
-              child: Text("Dodaj uslugu")),
+              child: Text("Dodaj zaposlenika i novu uslugu")),
         ],
       ),
     );
@@ -94,24 +101,28 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
-              child: Text("Usluga"),
+              child: Text("Zaposlenik"),
             )),
             DataColumn(
                 label: Expanded(
-              child: Text("Kategorija"),
+              child: Text("Zadužen za"),
             )),
             DataColumn(
                 label: Expanded(
-              child: Text("Cijena"),
+              child: Text("Broj telefona"),
             )),
             DataColumn(
                 label: Expanded(
-              child: Text("Opis"),
+              child: Text("Email"),
             )),
             DataColumn(
                 label: Expanded(
-              child: Text("Slika"),
+              child: Text("Datum zaposlenja"),
             )),
+            // DataColumn(
+            //     label: Expanded(
+            //   child: Text("Slika"),
+            // )),
             DataColumn(
                 label: Expanded(
               child: Text(""),
@@ -122,20 +133,29 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
             )),
           ],
           rows: result?.result
-                  .map((Usluga e) => DataRow(cells: [
-                        DataCell(
-                            Container(width: 200, child: Text(e.naziv ?? ""))),
-                        DataCell(Text(e.kategorija!.naziv ?? "")),
-                        DataCell(Text((formatNumber(e.cijena)))),
-                        DataCell(Text(e.opis ?? "")),
-                        DataCell(e.slikaUsluge?.slika != null
-                            ? Container(
-                                width: 100,
-                                height: 100,
-                                child:
-                                    ImageFromBase64String(e.slikaUsluge!.slika),
-                              )
-                            : Text("")),
+                  .map((ZaposlenikUsluga e) => DataRow(cells: [
+                        DataCell(Container(
+                            width: 150,
+                            child: Text(
+                                "${e.zaposlenik?.korisnik?.ime} ${e.zaposlenik?.korisnik?.prezime}"))),
+                        DataCell(Container(
+                            width: 250, child: Text(e.usluga?.naziv ?? ""))),
+                        DataCell(Text(e.zaposlenik?.korisnik?.telefon ?? "")),
+                        DataCell(Text(e.zaposlenik?.korisnik?.email ?? "")),
+                        DataCell(Container(
+                            width: 100,
+                            child: Text((e.zaposlenik?.datumZaposlenja == null
+                                ? "-"
+                                : "${e.zaposlenik?.datumZaposlenja?.day}.${e.zaposlenik?.datumZaposlenja?.month}.${e.zaposlenik?.datumZaposlenja?.year}")))),
+                        // DataCell(
+                        //     e.zaposlenik?.korisnik?.slikaProfila?.slika != null
+                        //         ? Container(
+                        //             width: 100,
+                        //             height: 100,
+                        //             child: ImageFromBase64String(e.zaposlenik!
+                        //                 .korisnik!.slikaProfila!.slika),
+                        //           )
+                        //         : Text("")),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(
@@ -143,11 +163,14 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                             ),
                             onPressed: () async {
                               print(
-                                  "modifikuj ${e.naziv} uslugaId: ${e.uslugaId}");
+                                  "modifikuj ${e.zaposlenik} zaposlenikId: ${e.zaposlenikId}");
 
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => UslugeDetaljiScreen(
-                                        usluga: e,
+                                  builder: (context) => ZaposleniciDetailsScreen(
+                                        zaposlenikUsluga: e,
+                                        zaposlenik: e.zaposlenik,
+                                        usluga: e.usluga,
+                                        korisnik: e.zaposlenik!.korisnik,
                                       )));
                             },
                             child: Text('Modifikuj'),
@@ -196,12 +219,15 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
   }
 
   void _obrisiZapis(e) async {
-    print("delete uslugaId: ${e.uslugaId}, naziv: ${e.naziv}");
-    var deleted = await _uslugeProvider.delete(e.uslugaId!);
+    print("delete id: ${e.zaposlenikUslugaId}");
+    var deleted =
+        await _zaposleniciUslugeProvider.delete(e.zaposlenikUslugaId!);
+        //zaposlenik se brise samo ako nema vise usluga za njega - uraditi na backendu
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _uslugeProvider.get(filter: {'FTS': _ftsController.text});
+    var data = await _zaposleniciUslugeProvider
+        .get(filter: {'FTS': _ftsController.text});
 
     setState(() {
       result = data;

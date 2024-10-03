@@ -1,3 +1,5 @@
+import 'package:desktop_app/models/usluga.dart';
+import 'package:desktop_app/models/zaposlenik.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 /// This allows the `User` class to access private members in
@@ -7,12 +9,22 @@ part 'zaposlenik_usluga.g.dart';
 
 @JsonSerializable()
 class ZaposlenikUsluga {
+  int? zaposlenikUslugaId;
   int? zaposlenikId;
   int? uslugaId;
   DateTime? datumKreiranja;
   DateTime? datumModificiranja;
+  Usluga? usluga;
+  Zaposlenik? zaposlenik;
 
-  ZaposlenikUsluga(this.zaposlenikId, this.uslugaId, this.datumKreiranja, this.datumModificiranja);
+  ZaposlenikUsluga(
+      this.zaposlenikUslugaId,
+      this.zaposlenikId,
+      this.uslugaId,
+      this.datumKreiranja,
+      this.datumModificiranja,
+      this.usluga,
+      this.zaposlenik);
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.

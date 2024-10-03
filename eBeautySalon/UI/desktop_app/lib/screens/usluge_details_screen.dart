@@ -84,7 +84,15 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
         children: [
           isLoading ? Container() : _buildForm(),
           //  SizedBox(height: 8,),
-          Row(
+         _saveAction()
+        ],
+      ),
+      title: this.widget.usluga?.naziv ?? "Dodaj uslugu",
+    );
+  }
+
+  Widget _saveAction(){
+    return  Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
@@ -137,11 +145,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                     child: Text("Spasi")),
               ),
             ],
-          ),
-        ],
-      ),
-      title: this.widget.usluga?.naziv ?? "Dodaj uslugu",
-    );
+          );
   }
 
   FormBuilder _buildForm() {

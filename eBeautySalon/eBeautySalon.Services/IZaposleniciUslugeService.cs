@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public interface IZaposleniciUslugeService : ICRUDService<ZaposleniciUsluge, BaseSearchObject, ZaposleniciUslugeInsertRequest, ZaposleniciUslugeUpdateRequest>
+    public interface IZaposleniciUslugeService : ICRUDService<ZaposleniciUsluge, ZaposleniciSearchObject, ZaposleniciUslugeInsertRequest, ZaposleniciUslugeUpdateRequest>
     {
     }
 }

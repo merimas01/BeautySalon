@@ -21,18 +21,20 @@ import '../providers/usluge_provider.dart';
 import '../providers/zaposlenici_provider.dart';
 import '../providers/zaposlenici_usluge_provider.dart';
 import '../utils/constants.dart';
+import '../widgets/multiselect_dropdown.dart';
 
 class ZaposleniciDetailsScreen extends StatefulWidget {
   ZaposlenikUsluga? zaposlenikUsluga;
   Zaposlenik? zaposlenik;
   Usluga? usluga;
   Korisnik? korisnik;
-  ZaposleniciDetailsScreen(
-      {super.key,
-      this.zaposlenikUsluga,
-      this.zaposlenik,
-      this.usluga,
-      this.korisnik});
+  ZaposleniciDetailsScreen({
+    super.key,
+    this.zaposlenikUsluga,
+    this.zaposlenik,
+    this.usluga,
+    this.korisnik,
+  });
 
   @override
   State<ZaposleniciDetailsScreen> createState() =>
@@ -56,6 +58,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   bool isLoadingImage = true;
   bool _imaSliku = false;
   bool _ponistiSliku = false;
+  SearchResult<Usluga> _selectedItems = SearchResult();
 
   // @override //ova metoda se pokrece nakon init state-a
   // void didChangeDependencies() {
@@ -174,6 +177,26 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     );
   }
 
+  void _showMultiSelectDropdown() async {
+    final SearchResult<Usluga>? items = _uslugeResult;
+    final SearchResult<Usluga>? results = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return MultiSelect(usluge: items!);
+        });
+
+    if (results != null) {
+      setState(() {
+        _selectedItems = results;
+      });
+      for (var item in results.result) {
+        print("selected items: ${item.naziv} ${item.uslugaId}");
+      }
+    } else if (results?.count == 0) {
+      print("nema selektovanih usluga");
+    }
+  }
+
   FormBuilder _buildForm() {
     return FormBuilder(
         key: _formKey,
@@ -252,7 +275,56 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     )
                   : Container(),
               SizedBox(
-                width: 10,
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromARGB(255, 255, 255, 255)),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.pink),
+                        side: MaterialStateProperty.all(BorderSide(
+                          color: Colors.pink,
+                          width: 1.0,
+                          style: BorderStyle.solid,
+                        )),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    side: BorderSide(color: Colors.pink))),
+                      ),
+                      onPressed: () {
+                        _showMultiSelectDropdown();
+                      },
+                      child: const Text(
+                          "Odaberite usluge za koje je zadužen zaposlenik")),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.start,
+                    children: _selectedItems.result
+                        .map((Usluga item) => Chip(
+                              label: Text(item.naziv!),
+                              deleteIcon: Icon(Icons.delete_forever),
+                              onDeleted: () {
+                                setState(() {
+                                  _selectedItems.result.remove(item);
+                                  print("broj itema: ${_selectedItems.result}");
+                                });
+                              },
+                            ))
+                        .toList(),
+                  ),
+                ],
               ),
               Row(
                 children: [

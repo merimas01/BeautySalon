@@ -20,6 +20,6 @@ namespace eBeautySalon.Models
 
         public virtual Usluge? Usluga { get; set; }
 
-        public virtual Zaposlenici? Zaposlenik { get; set; }
+        //public virtual Zaposlenici? Zaposlenik { get; set; }
     }
 }

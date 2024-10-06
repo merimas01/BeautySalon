@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:desktop_app/models/korisnik_insert.dart';
+import 'package:desktop_app/models/korisnik_update.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +14,17 @@ import '../models/korisnik.dart';
 import '../models/search_result.dart';
 import '../models/slika_profila.dart';
 import '../models/slika_profila_insert_update.dart';
+import '../models/uloga.dart';
 import '../models/usluga.dart';
 import '../models/zaposlenik.dart';
+import '../models/zaposlenik_insert_update.dart';
 import '../models/zaposlenik_usluga.dart';
+import '../models/zaposlenik_usluga_insert_update.dart';
+import '../models/korisnik_uloga_insert_update.dart';
+import '../providers/korisnici_uloge_provider.dart';
 import '../providers/korisnik_provider.dart';
 import '../providers/slika_profila_provider.dart';
+import '../providers/uloge_provider.dart';
 import '../providers/usluge_provider.dart';
 import '../providers/zaposlenici_provider.dart';
 import '../providers/zaposlenici_usluge_provider.dart';
@@ -24,15 +32,11 @@ import '../utils/constants.dart';
 import '../widgets/multiselect_dropdown.dart';
 
 class ZaposleniciDetailsScreen extends StatefulWidget {
-  ZaposlenikUsluga? zaposlenikUsluga;
   Zaposlenik? zaposlenik;
-  Usluga? usluga;
   Korisnik? korisnik;
   ZaposleniciDetailsScreen({
     super.key,
-    this.zaposlenikUsluga,
     this.zaposlenik,
-    this.usluga,
     this.korisnik,
   });
 
@@ -49,34 +53,27 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   late SlikaProfilaProvider _slikaProfilaProvider;
   late ZaposleniciUslugeProvider _zaposleniciUslugeProvider;
   late ZaposleniciProvider _zaposleniciProvider;
-  SearchResult<ZaposlenikUsluga>? _zaposleniciUslugeResult;
+  late KorisniciUlogeProvider _korisniciUlogeProvider;
+  late UlogeProvider _ulogeProvider;
   SearchResult<SlikaProfila>? _slikaProfilaResult;
   SearchResult<Usluga>? _uslugeResult;
-  SearchResult<Zaposlenik>? _zaposleniciResult;
-  SearchResult<Korisnik>? _korisniciResult;
+  SearchResult<Uloga>? _ulogeResult;
   bool isLoading = true;
   bool isLoadingImage = true;
   bool _imaSliku = false;
   bool _ponistiSliku = false;
   SearchResult<Usluga> _selectedItems = SearchResult();
-
-  // @override //ova metoda se pokrece nakon init state-a
-  // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
-  //   super.didChangeDependencies();
-  // }
+  String? uloga;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    print("${widget.zaposlenik?.datumRodjenja}");
+
     _initialValue = {
-      'zaposlenikId': widget.zaposlenikUsluga?.zaposlenikId.toString(),
-      'uslugaId': widget.zaposlenikUsluga?.uslugaId.toString(),
-      'datumKreiranja': widget.zaposlenikUsluga?.datumKreiranja.toString(),
-      'datumModificiranja':
-          widget.zaposlenikUsluga?.datumModificiranja.toString(),
+      'zaposlenikId': widget.zaposlenik?.zaposlenikId.toString(),
       'datumRodjenja': widget.zaposlenik?.datumRodjenja.toString(),
       'datumZaposlenja': widget.zaposlenik?.datumZaposlenja.toString(),
       'korisnikId': widget.zaposlenik?.korisnikId.toString(),
@@ -87,13 +84,22 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       'korisnickoIme': widget.korisnik?.korisnickoIme,
       'status': widget.korisnik?.status,
       'slikaProfilaId': widget.korisnik?.slikaProfilaId.toString(),
-      'naziv': widget.usluga?.naziv
+      'ulogaId': widget.korisnik?.korisnikUlogas?.length == 0
+          ? DEFAULT_UlogaId.toString()
+          : widget.korisnik?.korisnikUlogas?[0].ulogaId.toString(),
     };
+
+    uloga = widget.korisnik?.korisnikUlogas?.length == 0
+        ? "Usluznik"
+        : widget.korisnik?.korisnikUlogas?[0].uloga?.naziv.toString();
 
     _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
     _zaposleniciUslugeProvider = context.read<ZaposleniciUslugeProvider>();
     _korisnikProvider = context.read<KorisnikProvider>();
+    _zaposleniciProvider = context.read<ZaposleniciProvider>();
+    _korisniciUlogeProvider = context.read<KorisniciUlogeProvider>();
+    _ulogeProvider = context.read<UlogeProvider>();
 
     initForm();
   }
@@ -101,9 +107,17 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   Future initForm() async {
     _uslugeResult = await _uslugeProvider.get();
     _slikaProfilaResult = await _slikaProfilaProvider.get();
-    _zaposleniciUslugeResult = await _zaposleniciUslugeProvider.get();
-    _korisniciResult = await _korisnikProvider.get();
+    _ulogeResult = await _ulogeProvider.get();
 
+    if (widget.zaposlenik != null) {
+      var x =
+          widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
+      if (x != null) {
+        setState(() {
+          _selectedItems.result = x;
+        });
+      }
+    }
     setState(() {
       isLoading = false;
     });
@@ -132,14 +146,28 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           child: ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
-                var request_slika = new SlikaProfilaInsertUpdate(_base64image);
+                var obj = Map.from(_formKey.currentState!.value);
+                print(obj);
+                var slika_request = SlikaProfilaInsertUpdate(_base64image);
+                var korisnik_insert = KorisnikInsert(
+                    obj['ime'],
+                    obj['prezime'],
+                    obj['email'],
+                    obj['telefon'],
+                    obj['korisnickoIme'],
+                    obj['password'],
+                    obj['passwordPotvrda'],
+                    obj['slikaProfilaId']);
+
+                var korisnik_update = KorisnikUpdate(obj['ime'], obj['prezime'],
+                    obj['email'], obj['telefon'], true, DEFAULT_SlikaProfilaId);
 
                 try {
                   if (val == true) {
                     if (widget.zaposlenik == null) {
-                      doInsert();
+                      doInsert(obj, korisnik_insert, slika_request);
                     } else if (widget.zaposlenik != null) {
-                      doUpdate();
+                      doUpdate(obj, korisnik_update, slika_request);
                     }
                     showDialog(
                         context: context,
@@ -209,6 +237,50 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               Row(
                 children: [
                   Expanded(
+                    child: FormBuilderDropdown<String>(
+                      name: 'ulogaId',
+                      decoration: InputDecoration(
+                        labelText: 'Uloge',
+                        suffix: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            _formKey.currentState!.fields['ulogaId']?.reset();
+                          },
+                        ),
+                        hintText: 'Odaberite ulogu',
+                      ),
+                      onChanged: (x) {
+                        setState(() {
+                          uloga =
+                              x == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
+                        });
+                        print(x);
+                        print(uloga);
+                      },
+                      items: _ulogeResult?.result
+                              .map((item) => DropdownMenuItem(
+                                    alignment: AlignmentDirectional.center,
+                                    value: item.ulogaId.toString(),
+                                    child: Text(item.naziv ?? ""),
+                                  ))
+                              .toList() ??
+                          [],
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Molimo Vas izaberite ulogu';
+                        }
+                        return null;
+                      },
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
                       child: FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Korisničko ime:"),
                     name: "korisnickoIme",
@@ -249,6 +321,44 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       name: "email",
                       decoration: InputDecoration(labelText: "Email:"),
                     ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: FormBuilderDateTimePicker(
+                      name: 'datumRodjenja', // The key for this input
+                      inputType: InputType
+                          .date, // Can be InputType.date, InputType.time, or InputType.both
+                      decoration: InputDecoration(
+                        labelText: 'Datum rođenja',
+                      ),
+                      initialValue: DateTime.now(),
+                      firstDate: DateTime(1900), // Earliest selectable date
+                      lastDate: DateTime(2030), // Latest selectable date
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please enter a date';
+                        } else if (value.isBefore(DateTime.now())) {
+                          return 'The date must not be in the past';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: FormBuilderDateTimePicker(
+                      name: 'datumZaposlenja', // The key for this input
+                      inputType: InputType
+                          .date, // Can be InputType.date, InputType.time, or InputType.both
+                      decoration: InputDecoration(
+                        labelText: 'Datum zaposlenja',
+                      ),
+                      initialValue: DateTime.now(),
+                      firstDate: DateTime(2010), // Earliest selectable date
+                      lastDate: DateTime.now(), // Latest selectable date
+                    ),
                   )
                 ],
               ),
@@ -277,88 +387,52 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               SizedBox(
                 height: 10,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 255, 255, 255)),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.pink),
-                        side: MaterialStateProperty.all(BorderSide(
-                          color: Colors.pink,
-                          width: 1.0,
-                          style: BorderStyle.solid,
-                        )),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    side: BorderSide(color: Colors.pink))),
-                      ),
-                      onPressed: () {
-                        _showMultiSelectDropdown();
-                      },
-                      child: const Text(
-                          "Odaberite usluge za koje je zadužen zaposlenik")),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  Wrap(
-                    alignment: WrapAlignment.start,
-                    children: _selectedItems.result
-                        .map((Usluga item) => Chip(
-                              label: Text(item.naziv!),
-                              deleteIcon: Icon(Icons.delete_forever),
-                              onDeleted: () {
-                                setState(() {
-                                  _selectedItems.result.remove(item);
-                                  print("broj itema: ${_selectedItems.result}");
-                                });
-                              },
-                            ))
-                        .toList(),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderDropdown<String>(
-                      name: 'uslugaId',
-                      decoration: InputDecoration(
-                        labelText: 'Usluge',
-                        suffix: IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            _formKey.currentState!.fields['uslugaId']?.reset();
-                          },
-                        ),
-                        hintText: 'Odaberi uslugu',
-                      ),
-                      items: _uslugeResult?.result
-                              .map((item) => DropdownMenuItem(
-                                    alignment: AlignmentDirectional.center,
-                                    value: item.uslugaId.toString(),
-                                    child: Text(item.naziv ?? ""),
+              uloga == "Usluznik"
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 255, 255, 255)),
+                              foregroundColor:
+                                  MaterialStateProperty.all<Color>(Colors.pink),
+                              side: MaterialStateProperty.all(BorderSide(
+                                color: Colors.pink,
+                                width: 1.0,
+                                style: BorderStyle.solid,
+                              )),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      side: BorderSide(color: Colors.pink))),
+                            ),
+                            onPressed: () {
+                              _showMultiSelectDropdown();
+                            },
+                            child: const Text(
+                                "Odaberite usluge za koje je zadužen zaposlenik")),
+                        SizedBox(width: 10),
+                        Wrap(
+                          alignment: WrapAlignment.start,
+                          children: _selectedItems.result
+                              .map((Usluga item) => Chip(
+                                    label: Text(item.naziv!),
+                                    deleteIcon: Icon(Icons.delete_forever),
+                                    onDeleted: () {
+                                      setState(() {
+                                        _selectedItems.result.remove(item);
+                                        print(
+                                            "broj itema: ${_selectedItems.result}");
+                                      });
+                                    },
                                   ))
-                              .toList() ??
-                          [],
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Molimo Vas izaberite uslugu';
-                        }
-                        return null;
-                      },
-                    ),
-                  )
-                ],
-              ),
+                              .toList(),
+                        ),
+                      ],
+                    )
+                  : Container(),
               SizedBox(
                 height: 10,
               ),
@@ -475,13 +549,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   }
 
   Uint8List displayCurrentImage() {
-    if (widget.zaposlenikUsluga != null) {
-      Uint8List imageBytes = base64Decode(
-          widget.zaposlenikUsluga!.zaposlenik!.korisnik!.slikaProfila!.slika);
+    if (widget.zaposlenik != null) {
+      Uint8List imageBytes =
+          base64Decode(widget.zaposlenik!.korisnik!.slikaProfila!.slika);
       setState(() {
         _imaSliku = true;
       });
-      if (widget.zaposlenikUsluga!.zaposlenik!.korisnik!.slikaProfilaId ==
+      if (widget.zaposlenik!.korisnik!.slikaProfilaId ==
           DEFAULT_SlikaProfilaId) {
         setState(() {
           _imaSliku = false;
@@ -529,7 +603,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     });
   }
 
-  Future doInsert() async {}
+  Future doInsert(obj, korisnik_insert, slika_request) async {
+    
+  }
 
-  Future doUpdate() async {}
+  Future doUpdate(obj, korisnik_update, slika_request) async {
+    
+  }
 }

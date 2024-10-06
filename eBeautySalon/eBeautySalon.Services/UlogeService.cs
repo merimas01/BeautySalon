@@ -16,5 +16,11 @@ namespace eBeautySalon.Services
         public UlogeService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override IQueryable<Uloga> AddFilter(IQueryable<Uloga> query, BaseSearchObject? search = null)
+        {
+            query = query.Where(x => x.Naziv != "Administrator");
+            return base.AddFilter(query, search);
+        }
     }
 }

@@ -4,7 +4,7 @@ import '../models/zaposlenik.dart';
 import 'base_provider.dart';
 
 class ZaposleniciUslugeProvider extends BaseProvider<ZaposlenikUsluga>{
-  ZaposleniciUslugeProvider() : super("ZaposleniciUsluge", "isUslugeIncluded=true&isKorisnikIncluded=true");
+  ZaposleniciUslugeProvider() : super("ZaposleniciUsluge", "");
 
   @override
   ZaposlenikUsluga fromJson(data) {

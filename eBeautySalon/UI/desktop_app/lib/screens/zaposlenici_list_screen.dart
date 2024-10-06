@@ -2,13 +2,11 @@ import 'package:desktop_app/screens/zaposlenici_details_screen.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../models/korisnik_uloga.dart';
 import '../models/search_result.dart';
 import '../models/zaposlenik.dart';
 import '../models/zaposlenik_usluga.dart';
 import '../providers/zaposlenici_provider.dart';
-import '../providers/zaposlenici_usluge_provider.dart';
-import '../utils/util.dart';
 
 class ZaposleniciListScreen extends StatefulWidget {
   const ZaposleniciListScreen({super.key});
@@ -18,17 +16,15 @@ class ZaposleniciListScreen extends StatefulWidget {
 }
 
 class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
-  late ZaposleniciUslugeProvider _zaposleniciUslugeProvider;
   late ZaposleniciProvider _zaposleniciProvider;
   bool isLoading = true;
-  SearchResult<ZaposlenikUsluga>? result;
+  SearchResult<Zaposlenik>? result;
   TextEditingController _ftsController = new TextEditingController();
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    _zaposleniciUslugeProvider = context.read<ZaposleniciUslugeProvider>();
     _zaposleniciProvider = context.read<ZaposleniciProvider>();
   }
 
@@ -41,7 +37,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           _buildDataListView(),
         ]),
       ),
-      title_widget: Text("Zaposlenici i usluge"),
+      title_widget: Text("Zaposlenici"),
     );
   }
 
@@ -53,7 +49,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Bilo šta",
+                labelText: "ime/prezime",
               ),
               controller: _ftsController,
             ),
@@ -65,7 +61,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
-                var data = await _zaposleniciUslugeProvider
+                var data = await _zaposleniciProvider
                     .get(filter: {'FTS': _ftsController.text});
 
                 print("fts: ${_ftsController.text}");
@@ -82,13 +78,11 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ZaposleniciDetailsScreen(
-                          zaposlenikUsluga: null,
                           zaposlenik: null,
-                          usluga: null,
                           korisnik: null,
                         )));
               },
-              child: Text("Dodaj zaposlenika i novu uslugu")),
+              child: Text("Registruj novog zaposlenika")),
         ],
       ),
     );
@@ -109,7 +103,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
             )),
             DataColumn(
                 label: Expanded(
-              child: Text("Broj telefona"),
+              child: Text("Uloga"),
             )),
             DataColumn(
                 label: Expanded(
@@ -119,10 +113,6 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                 label: Expanded(
               child: Text("Datum zaposlenja"),
             )),
-            // DataColumn(
-            //     label: Expanded(
-            //   child: Text("Slika"),
-            // )),
             DataColumn(
                 label: Expanded(
               child: Text(""),
@@ -133,29 +123,24 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
             )),
           ],
           rows: result?.result
-                  .map((ZaposlenikUsluga e) => DataRow(cells: [
-                        DataCell(Container(
-                            width: 150,
-                            child: Text(
-                                "${e.zaposlenik?.korisnik?.ime} ${e.zaposlenik?.korisnik?.prezime}"))),
-                        DataCell(Container(
-                            width: 250, child: Text(e.usluga?.naziv ?? ""))),
-                        DataCell(Text(e.zaposlenik?.korisnik?.telefon ?? "")),
-                        DataCell(Text(e.zaposlenik?.korisnik?.email ?? "")),
+                  .map((Zaposlenik e) => DataRow(cells: [
                         DataCell(Container(
                             width: 100,
-                            child: Text((e.zaposlenik?.datumZaposlenja == null
+                            child: Text(
+                                "${e.korisnik?.ime} ${e.korisnik?.prezime}"))),
+                        DataCell(Container(
+                            width: 300,
+                            child: Text(joinUslugaNaziv(e.zaposlenikUslugas)))),
+                        DataCell(Container(
+                            width: 100,
+                            child: Text(
+                                joinUlogaNaziv(e.korisnik?.korisnikUlogas)))),
+                        DataCell(Text(e.korisnik?.email ?? "")),
+                        DataCell(Container(
+                            width: 100,
+                            child: Text((e.datumZaposlenja == null
                                 ? "-"
-                                : "${e.zaposlenik?.datumZaposlenja?.day}.${e.zaposlenik?.datumZaposlenja?.month}.${e.zaposlenik?.datumZaposlenja?.year}")))),
-                        // DataCell(
-                        //     e.zaposlenik?.korisnik?.slikaProfila?.slika != null
-                        //         ? Container(
-                        //             width: 100,
-                        //             height: 100,
-                        //             child: ImageFromBase64String(e.zaposlenik!
-                        //                 .korisnik!.slikaProfila!.slika),
-                        //           )
-                        //         : Text("")),
+                                : "${e.datumZaposlenja?.day}.${e.datumZaposlenja?.month}.${e.datumZaposlenja?.year}")))),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(
@@ -163,14 +148,13 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                             ),
                             onPressed: () async {
                               print(
-                                  "modifikuj ${e.zaposlenik} zaposlenikId: ${e.zaposlenikId}");
+                                  "modifikuj ${e} zaposlenikId: ${e.zaposlenikId}");
 
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ZaposleniciDetailsScreen(
-                                        zaposlenikUsluga: e,
-                                        zaposlenik: e.zaposlenik,
-                                        usluga: e.usluga,
-                                        korisnik: e.zaposlenik!.korisnik,
+                                  builder: (context) =>
+                                      ZaposleniciDetailsScreen(
+                                        zaposlenik: e,
+                                        korisnik: e.korisnik!,
                                       )));
                             },
                             child: Text('Modifikuj'),
@@ -203,14 +187,14 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                 TextButton(
                   child: Text('Ne'),
                   onPressed: () {
-                    Navigator.of(context).pop(); //zatvori dijalog
+                    Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text('Da'),
                   style: TextButton.styleFrom(foregroundColor: Colors.red),
                   onPressed: () async {
-                    Navigator.of(context).pop(); //zatvori dijalog
+                    Navigator.of(context).pop();
                     _obrisiZapis(e);
                   },
                 ),
@@ -219,18 +203,32 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
   }
 
   void _obrisiZapis(e) async {
-    print("delete id: ${e.zaposlenikUslugaId}");
-    var deleted =
-        await _zaposleniciUslugeProvider.delete(e.zaposlenikUslugaId!);
-        //zaposlenik se brise samo ako nema vise usluga za njega - uraditi na backendu
+    print("delete id: ${e.zaposlenikId}");
+    var deleted = await _zaposleniciProvider.delete(e.zaposlenikId!);
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _zaposleniciUslugeProvider
-        .get(filter: {'FTS': _ftsController.text});
+    var data =
+        await _zaposleniciProvider.get(filter: {'FTS': _ftsController.text});
 
     setState(() {
       result = data;
     });
+  }
+
+  String joinUslugaNaziv(List<ZaposlenikUsluga>? list) {
+    if (list == null) return "";
+    return list
+        .map((z) => z.usluga?.naziv)
+        .where((naziv) => naziv != null)
+        .join(", ");
+  }
+
+  String joinUlogaNaziv(List<KorisnikUloga>? list) {
+    if (list == null) return "";
+    return list
+        .map((z) => z.uloga?.naziv)
+        .where((naziv) => naziv != null)
+        .join(", ");
   }
 }

@@ -1,9 +1,11 @@
 import 'package:desktop_app/providers/kategorije_provider.dart';
+import 'package:desktop_app/providers/korisnici_uloge_provider.dart';
 import 'package:desktop_app/providers/korisnik_provider.dart';
 import 'package:desktop_app/providers/novosti_provider.dart';
 import 'package:desktop_app/providers/slika_novost_provider.dart';
 import 'package:desktop_app/providers/slika_profila_provider.dart';
 import 'package:desktop_app/providers/slika_usluge_provider.dart';
+import 'package:desktop_app/providers/uloge_provider.dart';
 import 'package:desktop_app/providers/usluge_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_usluge_provider.dart';
@@ -25,6 +27,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => ZaposleniciProvider()),
       ChangeNotifierProvider(create: (_) => NovostiProvider()),
       ChangeNotifierProvider(create: (_) => SlikaNovostProvider()),
+      ChangeNotifierProvider(create: (_) => KorisniciUlogeProvider()),
+      ChangeNotifierProvider(create: (_) => UlogeProvider()),
     ],
     child: const MyMaterialApp(),
   ));

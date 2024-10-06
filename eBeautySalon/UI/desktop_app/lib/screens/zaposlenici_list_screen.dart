@@ -130,7 +130,8 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                                 "${e.korisnik?.ime} ${e.korisnik?.prezime}"))),
                         DataCell(Container(
                             width: 300,
-                            child: Text(joinUslugaNaziv(e.zaposlenikUslugas)))),
+                            child: _zaduzenZa(e.zaposlenikUslugas,
+                                e.korisnik?.korisnikUlogas))),
                         DataCell(Container(
                             width: 100,
                             child: Text(
@@ -230,5 +231,18 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
         .map((z) => z.uloga?.naziv)
         .where((naziv) => naziv != null)
         .join(", ");
+  }
+
+  Widget _zaduzenZa(List<ZaposlenikUsluga>? zaposlenik_usluge,
+      List<KorisnikUloga>? korisnik_uloge) {
+    var x = zaposlenik_usluge?.length != 0;
+    if (x == true) {
+      return Text(joinUslugaNaziv(zaposlenik_usluge));
+    } else {
+      var z = korisnik_uloge?.length != 0
+          ? korisnik_uloge?.map((z) => z.uloga?.opis).toList()[0]
+          : "";
+      return Text(z!);
+    }
   }
 }

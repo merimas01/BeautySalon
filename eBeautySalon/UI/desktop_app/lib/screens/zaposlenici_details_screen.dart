@@ -64,13 +64,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   bool _ponistiSliku = false;
   SearchResult<Usluga> _selectedItems = SearchResult();
   String? uloga;
+  String validationError = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    print("${widget.zaposlenik?.datumRodjenja}");
 
     _initialValue = {
       'zaposlenikId': widget.zaposlenik?.zaposlenikId.toString(),
@@ -115,8 +114,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       if (x != null) {
         setState(() {
           _selectedItems.result = x;
+          validationError = "";
         });
       }
+    } else {
+      setState(() {
+        validationError = "Molimo Vas odaberite barem jednu uslugu.";
+      });
     }
     setState(() {
       isLoading = false;
@@ -128,7 +132,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     return MasterScreenWidget(
       title: widget.zaposlenik?.korisnik?.ime == null ||
               widget.zaposlenik?.korisnik?.prezime == null
-          ? "Dodaj zaposlenika"
+          ? "Registruj novog zaposlenika"
           : "${widget.zaposlenik?.korisnik?.ime} ${widget.zaposlenik?.korisnik?.prezime}",
       child: Column(children: [
         isLoading ? Container() : _buildForm(),
@@ -163,10 +167,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     obj['email'], obj['telefon'], true, DEFAULT_SlikaProfilaId);
 
                 try {
-                  if (val == true) {
+                  if (val == true && validationError == "") {
                     if (widget.zaposlenik == null) {
                       doInsert(obj, korisnik_insert, slika_request);
-                    } else if (widget.zaposlenik != null) {
+                    } else if (widget.zaposlenik != null &&
+                        validationError != "") {
                       doUpdate(obj, korisnik_update, slika_request);
                     }
                     showDialog(
@@ -216,11 +221,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     if (results != null) {
       setState(() {
         _selectedItems = results;
+        validationError = "";
       });
       for (var item in results.result) {
         print("selected items: ${item.naziv} ${item.uslugaId}");
       }
-    } else if (results?.count == 0) {
+    } else if (results?.result.length == 0) {
       print("nema selektovanih usluga");
     }
   }
@@ -249,13 +255,25 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                         ),
                         hintText: 'Odaberite ulogu',
                       ),
-                      onChanged: (x) {
+                      onChanged: (x) async {
                         setState(() {
                           uloga =
                               x == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
                         });
+                        if (uloga == "Usluznik" &&
+                            _selectedItems.result.length == 0) {
+                          setState(() {
+                            validationError =
+                                "Molimo Vas odaberite barem jednu uslugu.";
+                          });
+                        } else {
+                          setState(() {
+                            validationError = "";
+                          });
+                        }
                         print(x);
                         print(uloga);
+                        print(validationError);
                       },
                       items: _ulogeResult?.result
                               .map((item) => DropdownMenuItem(
@@ -337,9 +355,10 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       validator: (value) {
                         if (value == null) {
                           return 'Please enter a date';
-                        } else if (value.isBefore(DateTime.now())) {
-                          return 'The date must not be in the past';
                         }
+                        // else if (value.isBefore(DateTime.now())) {
+                        //   return 'The date must not be in the past';
+                        // }
                         return null;
                       },
                     ),
@@ -423,6 +442,16 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                     onDeleted: () {
                                       setState(() {
                                         _selectedItems.result.remove(item);
+                                        if (_selectedItems.result.length == 0) {
+                                          setState(() {
+                                            validationError =
+                                                "Molimo Vas odaberite barem jednu uslugu.";
+                                          });
+                                        } else {
+                                          setState(() {
+                                            validationError = "";
+                                          });
+                                        }
                                         print(
                                             "broj itema: ${_selectedItems.result}");
                                       });
@@ -430,6 +459,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                   ))
                               .toList(),
                         ),
+                        validationError != ""
+                            ? Text(
+                                validationError,
+                                style: TextStyle(color: Colors.red),
+                              )
+                            : Container()
                       ],
                     )
                   : Container(),
@@ -608,6 +643,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   }
 
   Future doUpdate(obj, korisnik_update, slika_request) async {
-    
+   
   }
 }

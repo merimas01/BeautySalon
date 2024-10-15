@@ -84,68 +84,66 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
         children: [
           isLoading ? Container() : _buildForm(),
           //  SizedBox(height: 8,),
-         _saveAction()
+          _saveAction()
         ],
       ),
       title: this.widget.usluga?.naziv ?? "Dodaj uslugu",
     );
   }
 
-  Widget _saveAction(){
-    return  Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: ElevatedButton(
-                    onPressed: () async {
-                      var val = _formKey.currentState?.saveAndValidate();
-                      var request_usluga =
-                          new Map.from(_formKey.currentState!.value);
-                      var request_slika =
-                          new SlikaUslugeInsertUpdate(_base64image);
+  Widget _saveAction() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10.0),
+          child: ElevatedButton(
+              onPressed: () async {
+                var val = _formKey.currentState?.saveAndValidate();
+                var request_usluga = new Map.from(_formKey.currentState!.value);
+                var request_slika = new SlikaUslugeInsertUpdate(_base64image);
 
-                      try {
-                        if (val == true) {
-                          if (widget.usluga == null) {
-                            doInsert(request_usluga, request_slika);
-                          } else if (widget.usluga != null) {
-                            doUpdate(request_usluga, request_slika);
-                          }
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                    title: Text("Informacija o uspjehu"),
-                                    content: Text("Uspješno izvršena akcija!"),
-                                  ));
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                    title: Text("Neispravni podaci"),
-                                    content: Text(
-                                        "Ispravite greške i ponovite unos."),
-                                  ));
-                        }
-                      } catch (e) {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                                  title: Text("Greška"),
-                                  content: Text(
-                                      "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"), //Text(e.toString()),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text("Ok"))
-                                  ],
-                                ));
-                      }
-                    },
-                    child: Text("Spasi")),
-              ),
-            ],
-          );
+                try {
+                  if (val == true) {
+                    if (widget.usluga == null) {
+                      doInsert(request_usluga, request_slika);
+                    } else if (widget.usluga != null) {
+                      doUpdate(request_usluga, request_slika);
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: Text("Informacija o uspjehu"),
+                              content: Text("Uspješno izvršena akcija!"),
+                            ));
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: Text("Neispravni podaci"),
+                              content:
+                                  Text("Ispravite greške i ponovite unos."),
+                            ));
+                  }
+                } catch (e) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                            title: Text("Greška"),
+                            content: Text(
+                                "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"), //Text(e.toString()),
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("Ok"))
+                            ],
+                          ));
+                }
+              },
+              child: Text("Spasi")),
+        ),
+      ],
+    );
   }
 
   FormBuilder _buildForm() {
@@ -419,7 +417,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     }
     print("insert request: $request_usluga");
     var req = await _uslugeProvider.insert(request_usluga);
-    print("req: ${req.slikaUslugeId}");
+    if (req != null) print("req: ${req.slikaUslugeId}");
   }
 
   Future doUpdate(request_usluga, request_slika) async {
@@ -443,6 +441,6 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     print("update request: $request_usluga");
     var req =
         await _uslugeProvider.update(widget.usluga!.uslugaId!, request_usluga);
-    print("req: ${req.slikaUslugeId}");
+    if (req != null) print("req: ${req.slikaUslugeId}");
   }
 }

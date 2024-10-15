@@ -9,6 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 import '../models/korisnik.dart';
 import '../models/search_result.dart';
@@ -47,6 +48,7 @@ class ZaposleniciDetailsScreen extends StatefulWidget {
 
 class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
+  TextEditingController _passwordController = new TextEditingController();
   Map<String, dynamic> _initialValue = {};
   late KorisnikProvider _korisnikProvider;
   late UslugeProvider _uslugeProvider;
@@ -65,6 +67,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   SearchResult<Usluga> _selectedItems = SearchResult();
   String? uloga;
   String validationError = "";
+  List<Usluga>? _postojeceUsluge;
 
   @override
   void initState() {
@@ -73,8 +76,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
 
     _initialValue = {
       'zaposlenikId': widget.zaposlenik?.zaposlenikId.toString(),
-      'datumRodjenja': widget.zaposlenik?.datumRodjenja.toString(),
-      'datumZaposlenja': widget.zaposlenik?.datumZaposlenja.toString(),
+      'datumRodjenja': widget.zaposlenik?.datumRodjenja,
+      'datumZaposlenja': widget.zaposlenik?.datumZaposlenja,
       'korisnikId': widget.zaposlenik?.korisnikId.toString(),
       'ime': widget.korisnik?.ime,
       'prezime': widget.korisnik?.prezime,
@@ -88,6 +91,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           : widget.korisnik?.korisnikUlogas?[0].ulogaId.toString(),
     };
 
+    _postojeceUsluge =
+        widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
+    
     uloga = widget.korisnik?.korisnikUlogas?.length == 0
         ? "Usluznik"
         : widget.korisnik?.korisnikUlogas?[0].uloga?.naziv.toString();
@@ -111,10 +117,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     if (widget.zaposlenik != null) {
       var x =
           widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
-      if (x != null) {
+
+      if (x != null) 
+      {
         setState(() {
           _selectedItems.result = x;
           validationError = "";
+
+          print("${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
         });
       }
     } else {
@@ -152,27 +162,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 var val = _formKey.currentState?.saveAndValidate();
                 var obj = Map.from(_formKey.currentState!.value);
                 print(obj);
+                var ulogaID = int.parse(obj['ulogaId']);
                 var slika_request = SlikaProfilaInsertUpdate(_base64image);
-                var korisnik_insert = KorisnikInsert(
-                    obj['ime'],
-                    obj['prezime'],
-                    obj['email'],
-                    obj['telefon'],
-                    obj['korisnickoIme'],
-                    obj['password'],
-                    obj['passwordPotvrda'],
-                    obj['slikaProfilaId']);
-
-                var korisnik_update = KorisnikUpdate(obj['ime'], obj['prezime'],
-                    obj['email'], obj['telefon'], true, DEFAULT_SlikaProfilaId);
 
                 try {
                   if (val == true && validationError == "") {
                     if (widget.zaposlenik == null) {
-                      doInsert(obj, korisnik_insert, slika_request);
-                    } else if (widget.zaposlenik != null &&
-                        validationError != "") {
-                      doUpdate(obj, korisnik_update, slika_request);
+                      doInsert(obj, slika_request, ulogaID);
+                    } else if (widget.zaposlenik != null) {
+                      doUpdate(obj, slika_request, ulogaID);
                     }
                     showDialog(
                         context: context,
@@ -303,6 +301,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     decoration: InputDecoration(labelText: "Korisničko ime:"),
                     name: "korisnickoIme",
                     enabled: widget.korisnik == null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Molimo Vas unesite korisničko ime';
+                      }
+                      if (!RegExp(r'^[a-zA-Z-_.]+$').hasMatch(value)) {
+                        return 'Unesite ispravno korisničko ime (samo slova, . , _ i -)';
+                      }
+                      return null;
+                    },
                   )),
                   SizedBox(
                     width: 10,
@@ -311,6 +318,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       child: FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Ime:"),
                     name: "ime",
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Molimo Vas unesite ime';
+                      }
+                      if (!RegExp(r'^[a-zA-Z -]+$').hasMatch(value)) {
+                        return 'Unesite ispravno ime (samo slova, razmak i -)';
+                      }
+                      return null;
+                    },
                   )),
                   SizedBox(
                     width: 10,
@@ -319,6 +335,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     child: FormBuilderTextField(
                       name: "prezime",
                       decoration: InputDecoration(labelText: "Prezime:"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite prezime';
+                        }
+                        if (!RegExp(r'^[a-zA-Z -]+$').hasMatch(value)) {
+                          return 'Unesite ispravno prezime (samo slova, razmak i -)';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
@@ -329,6 +354,17 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     child: FormBuilderTextField(
                       name: "telefon",
                       decoration: InputDecoration(labelText: "Telefon:"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite telefon';
+                        }
+                        if (!RegExp(
+                                r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
+                            .hasMatch(value)) {
+                          return 'Unesite ispravan telefon: +### ## ### ###';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   SizedBox(
@@ -338,27 +374,34 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     child: FormBuilderTextField(
                       name: "email",
                       decoration: InputDecoration(labelText: "Email:"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite email';
+                        }
+                        if (!RegExp(
+                                r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
+                            .hasMatch(value)) {
+                          return 'Unesite ispravan email primjer@domena.com';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
                     child: FormBuilderDateTimePicker(
-                      name: 'datumRodjenja', // The key for this input
-                      inputType: InputType
-                          .date, // Can be InputType.date, InputType.time, or InputType.both
+                      name: 'datumRodjenja',
+                      inputType: InputType.date,
                       decoration: InputDecoration(
                         labelText: 'Datum rođenja',
                       ),
-                      initialValue: DateTime.now(),
-                      firstDate: DateTime(1900), // Earliest selectable date
-                      lastDate: DateTime(2030), // Latest selectable date
+                      //initialValue: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime(2030),
                       validator: (value) {
                         if (value == null) {
-                          return 'Please enter a date';
+                          return 'Niste unijeli datum.';
                         }
-                        // else if (value.isBefore(DateTime.now())) {
-                        //   return 'The date must not be in the past';
-                        // }
                         return null;
                       },
                     ),
@@ -368,15 +411,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   ),
                   Expanded(
                     child: FormBuilderDateTimePicker(
-                      name: 'datumZaposlenja', // The key for this input
-                      inputType: InputType
-                          .date, // Can be InputType.date, InputType.time, or InputType.both
+                      name: 'datumZaposlenja',
+                      inputType: InputType.date,
                       decoration: InputDecoration(
                         labelText: 'Datum zaposlenja',
                       ),
-                      initialValue: DateTime.now(),
-                      firstDate: DateTime(2010), // Earliest selectable date
-                      lastDate: DateTime.now(), // Latest selectable date
+                      //initialValue: DateTime.now(),
+                      firstDate: DateTime(2010),
+                      lastDate: DateTime.now(),
                     ),
                   )
                 ],
@@ -389,6 +431,17 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           decoration: InputDecoration(labelText: "Šifra:"),
                           name: "password",
                           obscureText: true,
+                          controller: _passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Molimo Vas unesite lozinku';
+                            }
+                            if (!RegExp(r'^[a-zA-Z0-9 .,!?@%#&$/*+"\-]{3,}$')
+                                .hasMatch(value)) {
+                              return 'Unesite ispravnu lozinku (minimalno 3 znaka)';
+                            }
+                            return null;
+                          },
                         )),
                         SizedBox(
                           width: 10,
@@ -399,6 +452,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                               InputDecoration(labelText: "Ponovite šifru:"),
                           name: "passwordPotvrda",
                           obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Molimo Vas ponovite lozinku';
+                            }
+                            if (_passwordController.text != value) {
+                              return 'Lozinke se ne podudaraju.';
+                            }
+                            return null;
+                          },
                         )),
                       ],
                     )
@@ -552,7 +614,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   ),
                   Expanded(
                     child: FormBuilderField(
-                      name: 'slikaUslugeId',
+                      name: 'slikaProfilaId',
                       builder: ((field) {
                         return InputDecorator(
                           decoration: InputDecoration(
@@ -561,7 +623,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           ),
                           child: ListTile(
                             leading: Icon(Icons.photo),
-                            title: Text("Odaberite novu sliku"),
+                            title: Text("Odaberite novu sliku zaposlenika"),
                             trailing: Icon(Icons.file_upload),
                             onTap: () {
                               getImage();
@@ -638,11 +700,163 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     });
   }
 
-  Future doInsert(obj, korisnik_insert, slika_request) async {
-    
+  Future doInsert(obj, slika_request, ulogaID) async {
+  
+    var korisnik_insert = KorisnikInsert(
+        obj['ime'],
+        obj['prezime'],
+        obj['email'],
+        obj['telefon'],
+        obj['korisnickoIme'],
+        obj['password'],
+        obj['passwordPotvrda'],
+        obj['slikaProfilaId']);
+
+    if (_base64image != null) {
+      var obj = await _slikaProfilaProvider.insert(slika_request);
+
+      if (obj != null) {
+        var slikaId = obj.slikaProfilaId;
+        korisnik_insert.slikaProfilaId = slikaId;
+      } else {
+        korisnik_insert.slikaProfilaId = DEFAULT_SlikaProfilaId;
+      }
+    } else {
+      korisnik_insert.slikaProfilaId = DEFAULT_SlikaProfilaId;
+    }
+    print("insert korisnik request: $korisnik_insert");
+
+    var kor_post = await _korisnikProvider.insert(korisnik_insert);
+
+    if (kor_post != null) {
+      print("kor_post: ${kor_post.slikaProfilaId}");
+      var kid = kor_post.korisnikId;
+
+      var zaposlenik_request = ZaposlenikInsertUpdate(
+          obj['datumRodjenja'], obj['datumZaposlenja'], kid);
+      var zap_post = await _zaposleniciProvider.insert(zaposlenik_request);
+      print(
+          "insert zaposlenik request request: ${zaposlenik_request} ${zap_post.datumRodjenja}");
+
+      if (zap_post != null) {
+        var zid = zap_post.zaposlenikId;
+
+        if (ulogaID != null) {
+          var korisnikUloga_request = KorisnikUlogaInsertUpdate(kid, ulogaID);
+          print("korisnikUloga_request ${korisnikUloga_request}");
+          var kor_uloga_post =
+              await _korisniciUlogeProvider.insert(korisnikUloga_request);
+        }
+
+        for (var zu in _selectedItems.result) {
+          var zaposlenik_usluga_request =
+              ZaposlenikUslugaInsertUpdate(zid, zu.uslugaId);
+          print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
+          var zap_usluga_post =
+              _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+        }
+      }
+    }
   }
 
-  Future doUpdate(obj, korisnik_update, slika_request) async {
-   
+  Future doUpdate(obj, slika_request, ulogaID) async {
+    var korisnik_update = KorisnikUpdate(obj['ime'], obj['prezime'],
+        obj['email'], obj['telefon'], true, widget.korisnik!.slikaProfilaId);
+
+    if (_base64image != null &&
+        widget.zaposlenik?.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId) {
+      var obj = await _slikaProfilaProvider.insert(slika_request);
+      if (obj != null) {
+        var slikaId = obj.slikaProfilaId;
+        korisnik_update.slikaProfilaId = slikaId;
+      }
+    } else if (_base64image != null &&
+        widget.zaposlenik?.korisnik?.slikaProfila != DEFAULT_SlikaProfilaId) {
+      await _slikaProfilaProvider.update(
+          widget.zaposlenik!.korisnik!.slikaProfilaId!, slika_request);
+    } else if (_ponistiSliku == true && _base64image == null) {
+      var del = await _slikaProfilaProvider
+          .delete(widget.zaposlenik!.korisnik!.slikaProfilaId!);
+      print("delete slikaUslugeId: $del");
+      korisnik_update.slikaProfilaId = DEFAULT_SlikaProfilaId;
+    }
+    print("update korisnik request: $korisnik_update");
+    var kor_put = await _korisnikProvider.update(
+        widget.korisnik!.korisnikId!, korisnik_update);
+
+    if (kor_put != null) {
+      print("kor_put: ${kor_put.slikaProfilaId}");
+    }
+
+    var zaposlenik_request = ZaposlenikInsertUpdate(obj['datumRodjenja'],
+        obj['datumZaposlenja'], widget.zaposlenik!.korisnikId);
+    var zap_put = await _zaposleniciProvider.update(
+        widget.zaposlenik!.zaposlenikId!, zaposlenik_request);
+    print(
+        "update zaposlenik request request: ${zaposlenik_request} ${zap_put.datumRodjenja}");
+
+    var korisnikUloga_request =
+        KorisnikUlogaInsertUpdate(widget.korisnik!.korisnikId!, ulogaID);
+    print("korisnikUloga_request ${korisnikUloga_request}");
+
+    if (ulogaID != null) {
+      var uloga_vec_postoji = widget.zaposlenik?.korisnik?.korisnikUlogas
+          ?.map((e) => e.ulogaId == ulogaID);
+      if (uloga_vec_postoji != null && !uloga_vec_postoji.contains(true)) {
+        //ako nema tu ulogu
+        var kor_uloga_id = widget.korisnik?.korisnikUlogas
+            ?.map((k) => k.korisnikUlogaId)
+            .toList()[0];
+        if (kor_uloga_id != null) {
+          var kor_uloga_post = await _korisniciUlogeProvider.update(
+              kor_uloga_id, korisnikUloga_request);
+        }
+      } else if (uloga_vec_postoji == null) {
+        var kor_uloga_post =
+            await _korisniciUlogeProvider.insert(korisnikUloga_request);
+      }
+    }
+
+    if (ulogaID == DEFAULT_UlogaId) {
+      var uloga_usluznik = widget.korisnik?.korisnikUlogas
+          ?.map((e) => e.ulogaId == DEFAULT_UlogaId)
+          .toList()[0];
+      if (uloga_usluznik == true &&
+          widget.zaposlenik?.zaposlenikUslugas?.length != 0) {
+      
+        print("selected item results length: ${_selectedItems.result.length}");
+        print("postojece usluge: ${_postojeceUsluge?.length}");
+
+        //if stara_lista != nova_lista
+        if (!areListsEqual(_selectedItems.result, _postojeceUsluge)) {
+          print("usao u if");
+          for (var zu in widget.zaposlenik!.zaposlenikUslugas!) {
+            var delete_zu =
+                _zaposleniciUslugeProvider.delete(zu.zaposlenikUslugaId!);
+          }
+          for (var zu in _selectedItems.result) {
+            var zaposlenik_usluga_request = ZaposlenikUslugaInsertUpdate(
+                widget.zaposlenik!.zaposlenikId, zu.uslugaId);
+            print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
+            var zap_usluga_post =
+                _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+          }
+        }
+      }
+    }
+  }
+
+  bool areListsEqual(List<Usluga> list1, List<Usluga>? list2) {
+    if (list1.length != list2?.length)
+      return false;
+    else if (list1.length == list2?.length) {
+      //list1 ne smije biti 0, tako da ako je ovaj uslov tacan, znaci da ce i list2 imati elemente
+      for (int i = 0; i < list1.length; i++) {
+        if (list1[i].uslugaId != list2![i].uslugaId) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }

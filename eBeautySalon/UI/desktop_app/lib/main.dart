@@ -103,9 +103,9 @@ class LoginPage extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return 'Molimo Vas unesite korisničko ime';
                           }
-                          if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$')
+                          if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]{3,}$')
                               .hasMatch(value)) {
-                            return 'Unesite ispravno korisničko ime';
+                            return 'Unesite ispravno korisničko ime (minimalno 3 znaka)';
                           }
                           return null;
                         },
@@ -135,7 +135,7 @@ class LoginPage extends StatelessWidget {
                         }
                         if (!RegExp(r'^[a-zA-Z0-9 .,!?@%#&$/*+"\-]{3,}$')
                             .hasMatch(value)) {
-                          return 'Unesite ispravnu lozinku';
+                          return 'Unesite ispravnu lozinku (minimalno 3 znaka)';
                         }
                         return null;
                       },

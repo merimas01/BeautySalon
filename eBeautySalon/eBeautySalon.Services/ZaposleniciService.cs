@@ -2,6 +2,7 @@
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
+using eBeautySalon.Models.Utils;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -42,6 +43,34 @@ namespace eBeautySalon.Services
                 query = query.Include("ZaposlenikUslugas.Usluga");
             }
             return base.AddInclude(query, search);
+        }
+
+        public override Task BeforeDelete(Zaposlenik entity)
+        {
+            var zaposlenikId = entity.ZaposlenikId;
+            var korisnikId = entity.KorisnikId;
+            var korisnik = _context.Korisniks.First(x => x.KorisnikId == korisnikId);
+            var slikaProfilaId =korisnik.SlikaProfilaId;
+            var slikaProfila = _context.SlikaProfilas.Where(x => x.SlikaProfilaId == slikaProfilaId).First();
+            var korisnik_uloge = _context.KorisnikUlogas.Where(x => x.KorisnikId == korisnikId).ToList();
+            var zaposlenik_usluge = _context.ZaposlenikUslugas.Where(x => x.ZaposlenikId == zaposlenikId).ToList();
+          
+            foreach(var zu in zaposlenik_usluge)
+            {
+                _context.Remove(zu); 
+            }
+            foreach (var ku in korisnik_uloge)
+            {
+                _context.Remove(ku);
+            }
+            if (korisnik != null) _context.Remove(korisnik);
+
+            if (slikaProfila != null && slikaProfilaId != Constants.DEFAULT_SlikaProfilaId)
+            {
+                _context.Remove(slikaProfila);
+            }
+
+            return base.BeforeDelete(entity);
         }
     }
 }

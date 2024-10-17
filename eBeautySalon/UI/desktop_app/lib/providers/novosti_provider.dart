@@ -3,7 +3,7 @@ import 'base_provider.dart';
 
 class NovostiProvider extends BaseProvider<Novost> {
   NovostiProvider()
-      : super("Novosti", "");
+      : super("Novosti", "isSlikaIncluded=true");
 
   @override
   Novost fromJson(data) {

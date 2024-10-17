@@ -93,7 +93,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
 
     _postojeceUsluge =
         widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
-    
+
     uloga = widget.korisnik?.korisnikUlogas?.length == 0
         ? "Usluznik"
         : widget.korisnik?.korisnikUlogas?[0].uloga?.naziv.toString();
@@ -118,8 +118,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       var x =
           widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
 
-      if (x != null) 
-      {
+      if (x != null) {
         setState(() {
           _selectedItems.result = x;
           validationError = "";
@@ -178,6 +177,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                               title: Text("Informacija o uspjehu"),
                               content: Text("Uspješno izvršena akcija!"),
                             ));
+
+                    if (widget.zaposlenik == null) {
+                      _formKey.currentState?.reset();
+                      ponistiSliku();
+                    }
                   } else {
                     showDialog(
                         context: context,
@@ -701,7 +705,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   }
 
   Future doInsert(obj, slika_request, ulogaID) async {
-  
+
     var korisnik_insert = KorisnikInsert(
         obj['ime'],
         obj['prezime'],

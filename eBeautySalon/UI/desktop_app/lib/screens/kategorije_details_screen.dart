@@ -55,63 +55,71 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
       child: Column(
         children: [
           isLoading ? Container() : _buildForm(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ElevatedButton(
-                    onPressed: () async {
-                      var val = _formKey.currentState?.saveAndValidate();
-                      print(_formKey.currentState?.value);
-
-                      try {
-                        if (val == true) {
-                          if (widget.kategorija == null) {
-                            await _kategorijeProvider
-                                .insert(_formKey.currentState?.value);
-                          } else {
-                            await _kategorijeProvider.update(
-                                widget.kategorija!.kategorijaId!,
-                                _formKey.currentState?.value);
-                          }
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                    title: Text("Informacija o uspjehu"),
-                                    content: Text("Uspješno izvršena akcija!"),
-                                  ));
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                    title: Text("Neispravni podaci"),
-                                    content: Text(
-                                        "Ispravite greške i ponovite unos."),
-                                  ));
-                        }
-                      } catch (e) {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => AlertDialog(
-                                  title: Text("Greška"),
-                                  content: Text(
-                                      "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"), //Text(e.toString()),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text("Ok"))
-                                  ],
-                                ));
-                      }
-                    },
-                    child: Text("Spasi")),
-              ),
-            ],
-          ),
+          _saveAction(),
         ],
       ),
       title: this.widget.kategorija?.naziv ?? "Dodaj kategoriju",
+    );
+  }
+
+  Widget _saveAction() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ElevatedButton(
+              onPressed: () async {
+                var val = _formKey.currentState?.saveAndValidate();
+                print(_formKey.currentState?.value);
+
+                try {
+                  if (val == true) {
+                    if (widget.kategorija == null) {
+                      await _kategorijeProvider
+                          .insert(_formKey.currentState?.value);
+                    } else {
+                      await _kategorijeProvider.update(
+                          widget.kategorija!.kategorijaId!,
+                          _formKey.currentState?.value);
+                    }
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: Text("Informacija o uspjehu"),
+                              content: Text("Uspješno izvršena akcija!"),
+                            ));
+
+                    if (widget.kategorija == null) {
+                      _formKey.currentState?.reset();
+                    }
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: Text("Neispravni podaci"),
+                              content:
+                                  Text("Ispravite greške i ponovite unos."),
+                            ));
+                  }
+                } catch (e) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                            title: Text("Greška"),
+                            content: Text(
+                                "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"), //Text(e.toString()),
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("Ok"))
+                            ],
+                          ));
+                }
+              },
+              child: Text("Spasi")),
+        ),
+      ],
     );
   }
 

@@ -2,43 +2,45 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:desktop_app/models/slika_novost_insert_update.dart';
+import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
-import '../models/korisnik.dart';
-
+import '../models/novost.dart';
 import '../models/search_result.dart';
-import '../models/slika_profila.dart';
-import '../models/slika_profila_insert_update.dart';
-import '../providers/korisnik_provider.dart';
-import '../providers/slika_profila_provider.dart';
+import '../models/slika_novost.dart';
+import '../providers/novosti_provider.dart';
+import '../providers/slika_novost_provider.dart';
 import '../utils/constants.dart';
-import '../widgets/master_screen.dart';
 
-class ProfilPageDetailsScreen extends StatefulWidget {
-  Korisnik? korisnik;
-  ProfilPageDetailsScreen({super.key, this.korisnik});
+class NovostiDetailsScreen extends StatefulWidget {
+  Novost? novost;
+  NovostiDetailsScreen({super.key, this.novost});
 
   @override
-  State<ProfilPageDetailsScreen> createState() =>
-      _ProfilPageDetailsScreenState();
+  State<NovostiDetailsScreen> createState() => _NovostiDetailsScreenState();
 }
 
-class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
+class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
-  late KorisnikProvider _korisnikProvider;
-  SearchResult<Korisnik>? _korisniciResult;
-
-  late SlikaProfilaProvider _slikaProfilaProvider;
-  SearchResult<SlikaProfila>? _slikaProfilaResult;
-
+  late SlikaNovostProvider _slikaNovostProvider;
+  late NovostiProvider _novostiProvider;
+  SearchResult<Novost>? _novostiResult;
+  SearchResult<SlikaNovost>? _slikaNovostResult;
   bool isLoading = true;
   bool isLoadingImage = true;
   bool _imaSliku = false;
   bool _ponistiSliku = false;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
@@ -46,27 +48,19 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
     super.initState();
 
     _initialValue = {
-      'ime': widget.korisnik?.ime,
-      'prezime': widget.korisnik?.prezime,
-      'korisnickoIme': widget.korisnik?.korisnickoIme,
-      'telefon': widget.korisnik?.telefon,
-      'email': widget.korisnik?.email,
-      'status': widget.korisnik?.status,
-      'slikaProfilaId': widget.korisnik?.slikaProfilaId,
+      'naslov': widget.novost?.naslov,
+      'sadrzaj': widget.novost?.sadrzaj,
+      'slikaNovostId': widget.novost?.slikaNovostId.toString(),
     };
-
-    _korisnikProvider = context.read<KorisnikProvider>();
-    _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
+    _slikaNovostProvider = context.read<SlikaNovostProvider>();
+    _novostiProvider = context.read<NovostiProvider>();
 
     initForm();
   }
 
   Future initForm() async {
-    _korisniciResult = await _korisnikProvider.get();
-    _slikaProfilaResult = await _slikaProfilaProvider.get();
-
-    //obicni get
-    print("result korisnici: ${_korisniciResult?.result[0].ime}");
+    _novostiResult = await _novostiProvider.get();
+    _slikaNovostResult = await _slikaNovostProvider.get();
 
     setState(() {
       isLoading = false;
@@ -76,14 +70,18 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: "${widget.korisnik?.ime} ${widget.korisnik?.prezime}",
+      title: this.widget.novost?.naslov ?? "Dodaj novost",
       child: Column(
-        children: [isLoading ? Container() : _buildForm(), _saveAction()],
+        children: [
+          isLoading ? Container() : _buildForm(),
+          //  SizedBox(height: 8,),
+          _saveAction()
+        ],
       ),
     );
   }
 
-  Widget _buildForm() {
+  FormBuilder _buildForm() {
     return FormBuilder(
         key: _formKey,
         initialValue: _initialValue,
@@ -92,76 +90,50 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
               right: 10.0, top: 10.0, left: 10.0, bottom: 5.0),
           child: Column(
             children: [
-              FormBuilderTextField(
-                decoration: InputDecoration(labelText: "Korisničko ime:"),
-                name: "korisnickoIme",
-                enabled: false,
-              ),
               Row(
                 children: [
                   Expanded(
                       child: FormBuilderTextField(
-                    decoration: InputDecoration(labelText: "Ime:"),
-                    name: "ime",
+                    decoration: InputDecoration(labelText: "Naslov:"),
+                    name: "naslov",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Molimo Vas unesite ime';
+                        return 'Molimo Vas unesite naslov';
                       }
                       if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                        return 'Unesite ispravno ime';
+                        return 'Unesite ispravan naslov';
                       }
                       return null;
                     },
                   )),
-                  SizedBox(
-                    width: 20,
-                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
                   Expanded(
                     child: FormBuilderTextField(
-                      name: "prezime",
-                      decoration: InputDecoration(labelText: "Prezime:"),
+                      name: "sadrzaj",
+                      decoration: InputDecoration(labelText: "Sadržaj:"),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 10,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Molimo Vas unesite prezime';
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().isEmpty) {
+                          return 'Molimo Vas unesite sadrzaj';
                         }
-                        if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                          return 'Unesite ispravno prezime';
+                        if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-\n]+$')
+                            .hasMatch(value)) {
+                          return 'Unesite ispravan sadrzaj';
                         }
                         return null;
                       },
                     ),
                   )
                 ],
-              ),
-              FormBuilderTextField(
-                name: "telefon",
-                decoration: InputDecoration(labelText: "Telefon:"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo Vas unesite telefon';
-                  }
-                  if (!RegExp(
-                          r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
-                      .hasMatch(value)) {
-                    return 'Unesite ispravan telefon: +### ## ### ###';
-                  }
-                  return null;
-                },
-              ),
-              FormBuilderTextField(
-                name: "email",
-                decoration: InputDecoration(labelText: "Email:"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo Vas unesite email';
-                  }
-                  if (!RegExp(
-                          r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
-                      .hasMatch(value)) {
-                    return 'Unesite ispravan email primjer@domena.com';
-                  }
-                  return null;
-                },
               ),
               SizedBox(
                 height: 10,
@@ -247,7 +219,7 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                   ),
                   Expanded(
                     child: FormBuilderField(
-                      name: 'slikaProfilaId',
+                      name: 'slikaNovostId',
                       builder: ((field) {
                         return InputDecorator(
                           decoration: InputDecoration(
@@ -272,6 +244,64 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
         ));
   }
 
+  Uint8List displayNoImage() {
+    Uint8List imageBytes = base64Decode(_slikaNovostResult!.result[0].slika);
+    return imageBytes;
+  }
+
+  Uint8List displayCurrentImage() {
+    if (widget.novost != null) {
+      Uint8List imageBytes = base64Decode(widget.novost!.slikaNovost!.slika);
+      setState(() {
+        _imaSliku = true;
+      });
+      if (widget.novost!.slikaNovostId == DEFAULT_SlikaNovostId) {
+        setState(() {
+          _imaSliku = false;
+        });
+      }
+      return imageBytes;
+    } else {
+      Uint8List imageBytes = base64Decode(_slikaNovostResult!.result[0].slika);
+      setState(() {
+        _imaSliku = false;
+      });
+      return imageBytes;
+    }
+  }
+
+  Future ponistiSliku() async {
+    setState(() {
+      _ponistiSliku = true;
+      print("ponisti sliku: $_ponistiSliku");
+      _base64image = null;
+      print("base64image: $_base64image");
+      _image = null;
+      print("image: $_image");
+      _imaSliku = false;
+    });
+  }
+
+  File? _image;
+  String? _base64image;
+
+  Future getImage() async {
+    var result = await FilePicker.platform.pickFiles(type: FileType.image);
+    var path = result?.files.single.path;
+    print("path slike: ${path}");
+
+    if (result != null && path != null) {
+      _image = File(path);
+      _base64image = base64Encode(_image!.readAsBytesSync());
+      print(
+          "${(_image != null && _base64image != null) ? "postoji slika" : "ne postoji slika"}");
+    }
+
+    setState(() {
+      isLoadingImage = false;
+    });
+  }
+
   Widget _saveAction() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -281,15 +311,15 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
           child: ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
-                print("value: $val");
-                var request_korisnik =
-                    new Map.from(_formKey.currentState!.value);
-                var request_slika = new SlikaProfilaInsertUpdate(_base64image);
+                var request_novost = new Map.from(_formKey.currentState!.value);
+                var request_slika = new SlikaNovostInsertUpdate(_base64image);
 
                 try {
                   if (val == true) {
-                    if (widget.korisnik != null) {
-                      doUpdate(request_korisnik, request_slika);
+                    if (widget.novost == null) {
+                      doInsert(request_novost, request_slika);
+                    } else if (widget.novost != null) {
+                      doUpdate(request_novost, request_slika);
                     }
                     showDialog(
                         context: context,
@@ -297,7 +327,11 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                               title: Text("Informacija o uspjehu"),
                               content: Text("Uspješno izvršena akcija!"),
                             ));
-                  
+                            
+                    if (widget.novost == null) {
+                      _formKey.currentState?.reset();
+                      ponistiSliku();
+                    }
                   } else {
                     showDialog(
                         context: context,
@@ -328,85 +362,44 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
     );
   }
 
-  File? _image;
-  String? _base64image;
-
-  Future getImage() async {
-    var result = await FilePicker.platform.pickFiles(type: FileType.image);
-    var path = result?.files.single.path;
-    print("path slike: ${path}");
-
-    if (result != null && path != null) {
-      _image = File(path);
-      _base64image = base64Encode(_image!.readAsBytesSync());
-      print(
-          "${(_image != null && _base64image != null) ? "postoji slika" : "ne postoji slika"}");
-    }
-
-    setState(() {
-      isLoadingImage = false;
-    });
-  }
-
-  Uint8List displayNoImage() {
-    Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
-    return imageBytes;
-  }
-
-  Uint8List displayCurrentImage() {
-    if (widget.korisnik != null) {
-      Uint8List imageBytes = base64Decode(widget.korisnik!.slikaProfila!.slika);
-      setState(() {
-        _imaSliku = true;
-      });
-      if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaProfilaId) {
-        setState(() {
-          _imaSliku = false;
-        });
-      }
-      return imageBytes;
-    } else {
-      Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
-      setState(() {
-        _imaSliku = false;
-      });
-      return imageBytes;
-    }
-  }
-
-  Future ponistiSliku() async {
-    setState(() {
-      _ponistiSliku = true;
-      print("ponisti sliku: $_ponistiSliku");
-      _base64image = null;
-      print("base64image: $_base64image");
-      _image = null;
-      print("image: $_image");
-      _imaSliku = false;
-    });
-  }
-
-  Future doUpdate(request_korisnik, request_slika) async {
-    if (_base64image != null &&
-        widget.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId) {
-      var obj = await _slikaProfilaProvider.insert(request_slika);
+  Future doInsert(request_novost, request_slika) async {
+    if (_base64image != null) {
+      var obj = await _slikaNovostProvider.insert(request_slika);
       if (obj != null) {
-        var slikaId = obj.slikaProfilaId;
-        request_korisnik['slikaProfilaId'] = slikaId;
+        var slikaId = obj.slikaNovostId;
+        request_novost['slikaNovostId'] = slikaId;
+      } else {
+        request_novost['slikaNovostId'] = DEFAULT_SlikaNovostId;
+      }
+    } else {
+      request_novost['slikaNovostId'] = DEFAULT_SlikaNovostId;
+    }
+    print("insert request: $request_novost");
+    var req = await _novostiProvider.insert(request_novost);
+    if (req != null) print("req: ${req.slikaNovostId}");
+  }
+
+  Future doUpdate(request_novost, request_slika) async {
+    if (_base64image != null &&
+        widget.novost?.slikaNovostId == DEFAULT_SlikaNovostId) {
+      var obj = await _slikaNovostProvider.insert(request_slika);
+      if (obj != null) {
+        var slikaId = obj.slikaNovostId;
+        request_novost['slikaNovostId'] = slikaId;
       }
     } else if (_base64image != null &&
-        widget.korisnik?.slikaProfilaId != DEFAULT_SlikaProfilaId) {
-      await _slikaProfilaProvider.update(
-          widget.korisnik!.slikaProfilaId!, request_slika);
+        widget.novost?.slikaNovostId != DEFAULT_SlikaNovostId) {
+      await _slikaNovostProvider.update(
+          widget.novost!.slikaNovostId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
       var del =
-          await _slikaProfilaProvider.delete(widget.korisnik!.slikaProfilaId!);
-      print("delete slikaProfilaId: $del");
-      request_korisnik['slikaProfilaId'] = DEFAULT_SlikaProfilaId;
+          await _slikaNovostProvider.delete(widget.novost!.slikaNovostId!);
+      print("delete slikaNovostId: $del");
+      request_novost['slikaNovostId'] = DEFAULT_SlikaUslugeId;
     }
-    print("update request: $request_korisnik");
-    var req = await _korisnikProvider.update(
-        widget.korisnik!.korisnikId!, request_korisnik);
-    print("req: ${req.slikaProfilaId}");
+    print("update request: $request_novost");
+    var req =
+        await _novostiProvider.update(widget.novost!.novostId!, request_novost);
+    if (req != null) print("req: ${req.slikaNovostId}");
   }
 }

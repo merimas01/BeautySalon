@@ -1,6 +1,7 @@
 import 'package:desktop_app/main.dart';
 import 'package:desktop_app/screens/kategorije_list_screen.dart';
 import 'package:desktop_app/screens/korisnici_list_screen.dart';
+import 'package:desktop_app/screens/novosti_list_screen.dart';
 import 'package:desktop_app/screens/profil_page.dart';
 import 'package:desktop_app/screens/usluge_list_screen.dart';
 import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
@@ -31,8 +32,15 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Text("Home page"),
               onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => const HomePage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+            ),
+            ListTile(
+              title: Text("Kategorije"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const KategorijeListScreen()));
               },
             ),
             ListTile(
@@ -43,11 +51,16 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
               },
             ),
             ListTile(
-              title: Text("Kategorije"),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const KategorijeListScreen()));
-              },
+              title: Text("Rezervacije"),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text("Termini"),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text("Recenzije"),
+              onTap: () {},
             ),
             ListTile(
               title: Text("Korisnici"),
@@ -63,7 +76,18 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                     builder: (context) => const ZaposleniciListScreen()));
               },
             ),
-             ListTile(
+            ListTile(
+              title: Text("Novi korisnici i uloge"),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text("Novosti"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NovostiListScreen()));
+              },
+            ),
+            ListTile(
               title: Text("Profil"),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(

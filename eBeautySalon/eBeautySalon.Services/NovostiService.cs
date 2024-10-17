@@ -2,6 +2,7 @@
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
+using eBeautySalon.Models.Utils;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -56,6 +57,17 @@ namespace eBeautySalon.Services
                 query = query.Include(c => c.Korisnik);
             }
             return base.AddInclude(query, search);
+        }
+
+        public override Task BeforeDelete(Novost entity)
+        {
+            var slikaNovostId = entity.SlikaNovostId;
+            var slikaNovost = _context.SlikaNovosts.Where(x => x.SlikaNovostId == slikaNovostId).First();
+            if (slikaNovost != null && slikaNovostId != Constants.DEFAULT_SlikaNovostId)
+            {
+                _context.Remove(slikaNovost); 
+            }
+            return base.BeforeDelete(entity);
         }
     }
 }

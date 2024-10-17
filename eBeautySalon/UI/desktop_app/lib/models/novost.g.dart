@@ -8,6 +8,7 @@ part of 'novost.dart';
 
 Novost _$NovostFromJson(Map<String, dynamic> json) => Novost(
       json['novostId'] as int?,
+      json['naslov'] as String?,
       json['sadrzaj'] as String?,
       json['datumKreiranja'] == null
           ? null
@@ -27,6 +28,7 @@ Novost _$NovostFromJson(Map<String, dynamic> json) => Novost(
 
 Map<String, dynamic> _$NovostToJson(Novost instance) => <String, dynamic>{
       'novostId': instance.novostId,
+      'naslov': instance.naslov,
       'sadrzaj': instance.sadrzaj,
       'datumKreiranja': instance.datumKreiranja?.toIso8601String(),
       'datumModificiranja': instance.datumModificiranja?.toIso8601String(),

@@ -1,7 +1,10 @@
+import 'package:desktop_app/models/recenzija_usluge.dart';
 import 'package:desktop_app/providers/kategorije_provider.dart';
 import 'package:desktop_app/providers/korisnici_uloge_provider.dart';
 import 'package:desktop_app/providers/korisnik_provider.dart';
 import 'package:desktop_app/providers/novosti_provider.dart';
+import 'package:desktop_app/providers/recenzija_usluznika_provider.dart';
+import 'package:desktop_app/providers/recenzije_usluga_provider.dart';
 import 'package:desktop_app/providers/slika_novost_provider.dart';
 import 'package:desktop_app/providers/slika_profila_provider.dart';
 import 'package:desktop_app/providers/slika_usluge_provider.dart';
@@ -26,6 +29,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => ZaposleniciUslugeProvider()),
       ChangeNotifierProvider(create: (_) => ZaposleniciProvider()),
       ChangeNotifierProvider(create: (_) => NovostiProvider()),
+      ChangeNotifierProvider(create: (_) => RecenzijaUslugeProvider()),
+      ChangeNotifierProvider(create: (_) => RecenzijaUsluznikaProvider()),
       ChangeNotifierProvider(create: (_) => SlikaNovostProvider()),
       ChangeNotifierProvider(create: (_) => KorisniciUlogeProvider()),
       ChangeNotifierProvider(create: (_) => UlogeProvider()),

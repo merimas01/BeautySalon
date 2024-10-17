@@ -11,6 +11,7 @@ part 'novost.g.dart';
 @JsonSerializable()
 class Novost {
   int? novostId;
+  String? naslov;
   String? sadrzaj;
   DateTime? datumKreiranja;
   DateTime? datumModificiranja;
@@ -21,6 +22,7 @@ class Novost {
 
   Novost(
       this.novostId,
+      this.naslov,
       this.sadrzaj,
       this.datumKreiranja,
       this.datumModificiranja,

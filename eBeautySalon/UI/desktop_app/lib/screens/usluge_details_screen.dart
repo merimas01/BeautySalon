@@ -116,6 +116,11 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                               title: Text("Informacija o uspjehu"),
                               content: Text("Uspješno izvršena akcija!"),
                             ));
+                            
+                    if (widget.usluga == null) {
+                      _formKey.currentState?.reset();
+                      ponistiSliku();
+                    }
                   } else {
                     showDialog(
                         context: context,

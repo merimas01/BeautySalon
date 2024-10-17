@@ -32,6 +32,16 @@ namespace eBeautySalon.Services
 
         }
 
+        public virtual async Task<bool> AddValidationInsert (TInsert request)
+        {
+            return true;
+        }
+
+        public virtual async Task<bool> AddValidationUpdate(int id, TUpdate request)
+        {
+            return true;
+        }
+
         public virtual async Task<T> Insert(TInsert insert)
         {
             var set = _context.Set<TDb>();
@@ -39,10 +49,16 @@ namespace eBeautySalon.Services
             TDb entity = _mapper.Map<TDb>(insert);
 
             await BeforeInsert(entity, insert);
-            set.Add(entity);
+            var validate = await AddValidationInsert(insert);
 
-            await _context.SaveChangesAsync();
-            return _mapper.Map<T>(entity);
+            if (validate == true)
+            {
+                set.Add(entity);
+
+                await _context.SaveChangesAsync();
+                return _mapper.Map<T>(entity);
+            }
+            else throw new Exception("podaci nisu validni (duplicirani nazivi).");
         }
 
 
@@ -53,11 +69,17 @@ namespace eBeautySalon.Services
             var entity = await set.FindAsync(id);
 
             await BeforeUpate(entity, update);
+            var validate = await AddValidationUpdate(id, update);
 
-            _mapper.Map(update, entity);
+            if (validate == true)
+            {
+                _mapper.Map(update, entity);
 
-            await _context.SaveChangesAsync();
-            return _mapper.Map<T>(entity);
+                await _context.SaveChangesAsync();
+                return _mapper.Map<T>(entity);
+            }
+            else throw new Exception("podaci nisu validni (duplicirani nazivi).");
+
         }
 
 

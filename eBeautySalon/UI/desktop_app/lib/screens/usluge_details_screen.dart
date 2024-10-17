@@ -103,45 +103,18 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                 var request_usluga = new Map.from(_formKey.currentState!.value);
                 var request_slika = new SlikaUslugeInsertUpdate(_base64image);
 
-                try {
-                  if (val == true) {
-                    if (widget.usluga == null) {
-                      doInsert(request_usluga, request_slika);
-                    } else if (widget.usluga != null) {
-                      doUpdate(request_usluga, request_slika);
-                    }
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: Text("Informacija o uspjehu"),
-                              content: Text("Uspješno izvršena akcija!"),
-                            ));
-                            
-                    if (widget.usluga == null) {
-                      _formKey.currentState?.reset();
-                      ponistiSliku();
-                    }
-                  } else {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: Text("Neispravni podaci"),
-                              content:
-                                  Text("Ispravite greške i ponovite unos."),
-                            ));
+                if (val == true) {
+                  if (widget.usluga == null) {
+                    doInsert(request_usluga, request_slika);
+                  } else if (widget.usluga != null) {
+                    doUpdate(request_usluga, request_slika);
                   }
-                } catch (e) {
+                } else {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                            title: Text("Greška"),
-                            content: Text(
-                                "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"), //Text(e.toString()),
-                            actions: [
-                              TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text("Ok"))
-                            ],
+                            title: Text("Neispravni podaci"),
+                            content: Text("Ispravite greške i ponovite unos."),
                           ));
                 }
               },
@@ -167,7 +140,9 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                     decoration: InputDecoration(labelText: "Naziv:"),
                     name: "naziv",
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim().isEmpty) {
                         return 'Molimo Vas unesite naziv';
                       }
                       if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
@@ -182,7 +157,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                 name: "cijena",
                 decoration: InputDecoration(labelText: "Cijena:"),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite cijenu';
                   }
                   if (!RegExp(r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{2})?$')
@@ -196,7 +171,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                 name: "opis",
                 decoration: InputDecoration(labelText: "Opis:"),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite opis';
                   }
                   if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$').hasMatch(value)) {
@@ -421,8 +396,34 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }
     print("insert request: $request_usluga");
-    var req = await _uslugeProvider.insert(request_usluga);
-    if (req != null) print("req: ${req.slikaUslugeId}");
+    try {
+      var req = await _uslugeProvider.insert(request_usluga);
+      if (req != null) {
+        print("req: ${req.slikaUslugeId}");
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Informacija o uspjehu"),
+                  content: Text("Uspješno izvršena akcija!"),
+                ));
+        _formKey.currentState?.reset();
+        ponistiSliku();
+      }
+    } catch (e) {
+      print("error: ${e.toString()}");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji)"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
+    }
   }
 
   Future doUpdate(request_usluga, request_slika) async {
@@ -444,8 +445,31 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }
     print("update request: $request_usluga");
-    var req =
-        await _uslugeProvider.update(widget.usluga!.uslugaId!, request_usluga);
-    if (req != null) print("req: ${req.slikaUslugeId}");
+
+    try {
+      var req = await _uslugeProvider.update(
+          widget.usluga!.uslugaId!, request_usluga);
+      if (req != null) {}
+      print("req: ${req.slikaUslugeId}");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Informacija o uspjehu"),
+                content: Text("Uspješno izvršena akcija!"),
+              ));
+    } catch (e) {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji)"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
+    }
   }
 }

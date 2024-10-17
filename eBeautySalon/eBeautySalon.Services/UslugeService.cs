@@ -14,7 +14,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace eBeautySalon.Services
 {
-    public class UslugeService : BaseCRUDService<Usluge,Usluga, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest> , IUslugeService
+    public class UslugeService : BaseCRUDService<Usluge, Usluga, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest>, IUslugeService
     {
         public UslugeService(IB200070Context context, IMapper mapper) : base(context, mapper)
         {
@@ -42,6 +42,18 @@ namespace eBeautySalon.Services
                 _context.Remove(slikaUsluge); //deleta se ovaj objekat jer se nece koristiti vise
             }
             return base.BeforeDelete(entity);
+        }
+
+        public override async Task<bool> AddValidationInsert(UslugeInsertRequest insert)
+        {
+            var usluga_nazivi = await _context.Uslugas.Select(x => x.Naziv.ToLower()).ToListAsync();
+            if (usluga_nazivi.Contains(insert.Naziv.ToLower())) return false; else return true;
+        }
+
+        public override async Task<bool> AddValidationUpdate(int id, UslugeUpdateRequest request)
+        {
+            var usluga_nazivi = await _context.Uslugas.Where(x => x.UslugaId != id).Select(x => x.Naziv.ToLower()).ToListAsync();
+            if (usluga_nazivi.Contains(request.Naziv.ToLower())) return false; else return true;
         }
 
         public override IQueryable<Usluga> AddFilter(IQueryable<Usluga> query, UslugeSearchObject? search = null)

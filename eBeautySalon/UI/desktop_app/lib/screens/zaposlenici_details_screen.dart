@@ -164,45 +164,18 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 var ulogaID = int.parse(obj['ulogaId']);
                 var slika_request = SlikaProfilaInsertUpdate(_base64image);
 
-                try {
-                  if (val == true && validationError == "") {
-                    if (widget.zaposlenik == null) {
-                      doInsert(obj, slika_request, ulogaID);
-                    } else if (widget.zaposlenik != null) {
-                      doUpdate(obj, slika_request, ulogaID);
-                    }
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: Text("Informacija o uspjehu"),
-                              content: Text("Uspješno izvršena akcija!"),
-                            ));
-
-                    if (widget.zaposlenik == null) {
-                      _formKey.currentState?.reset();
-                      ponistiSliku();
-                    }
-                  } else {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: Text("Neispravni podaci"),
-                              content:
-                                  Text("Ispravite greške i ponovite unos."),
-                            ));
+                if (val == true && validationError == "") {
+                  if (widget.zaposlenik == null) {
+                    doInsert(obj, slika_request, ulogaID);
+                  } else if (widget.zaposlenik != null) {
+                    doUpdate(obj, slika_request, ulogaID);
                   }
-                } catch (e) {
+                } else {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                            title: Text("Greška"),
-                            content: Text(
-                                "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"), //Text(e.toString()),
-                            actions: [
-                              TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text("Ok"))
-                            ],
+                            title: Text("Neispravni podaci"),
+                            content: Text("Ispravite greške i ponovite unos."),
                           ));
                 }
               },
@@ -306,7 +279,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     name: "korisnickoIme",
                     enabled: widget.korisnik == null,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim().isEmpty) {
                         return 'Molimo Vas unesite korisničko ime';
                       }
                       if (!RegExp(r'^[a-zA-Z-_.]+$').hasMatch(value)) {
@@ -323,7 +298,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     decoration: InputDecoration(labelText: "Ime:"),
                     name: "ime",
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim().isEmpty) {
                         return 'Molimo Vas unesite ime';
                       }
                       if (!RegExp(r'^[a-zA-Z -]+$').hasMatch(value)) {
@@ -340,7 +317,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       name: "prezime",
                       decoration: InputDecoration(labelText: "Prezime:"),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().isEmpty) {
                           return 'Molimo Vas unesite prezime';
                         }
                         if (!RegExp(r'^[a-zA-Z -]+$').hasMatch(value)) {
@@ -359,7 +338,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       name: "telefon",
                       decoration: InputDecoration(labelText: "Telefon:"),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().isEmpty) {
                           return 'Molimo Vas unesite telefon';
                         }
                         if (!RegExp(
@@ -379,7 +360,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       name: "email",
                       decoration: InputDecoration(labelText: "Email:"),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().isEmpty) {
                           return 'Molimo Vas unesite email';
                         }
                         if (!RegExp(
@@ -399,7 +382,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       decoration: InputDecoration(
                         labelText: 'Datum rođenja',
                       ),
-                      //initialValue: DateTime.now(),
                       firstDate: DateTime(1900),
                       lastDate: DateTime(2030),
                       validator: (value) {
@@ -415,15 +397,19 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   ),
                   Expanded(
                     child: FormBuilderDateTimePicker(
-                      name: 'datumZaposlenja',
-                      inputType: InputType.date,
-                      decoration: InputDecoration(
-                        labelText: 'Datum zaposlenja',
-                      ),
-                      //initialValue: DateTime.now(),
-                      firstDate: DateTime(2010),
-                      lastDate: DateTime.now(),
-                    ),
+                        name: 'datumZaposlenja',
+                        inputType: InputType.date,
+                        decoration: InputDecoration(
+                          labelText: 'Datum zaposlenja',
+                        ),
+                        firstDate: DateTime(2010),
+                        lastDate: DateTime.now(),
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Niste unijeli datum';
+                          }
+                          return null;
+                        }),
                   )
                 ],
               ),
@@ -437,7 +423,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           obscureText: true,
                           controller: _passwordController,
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().isEmpty) {
                               return 'Molimo Vas unesite lozinku';
                             }
                             if (!RegExp(r'^[a-zA-Z0-9 .,!?@%#&$/*+"\-]{3,}$')
@@ -457,7 +445,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           name: "passwordPotvrda",
                           obscureText: true,
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().isEmpty) {
                               return 'Molimo Vas ponovite lozinku';
                             }
                             if (_passwordController.text != value) {
@@ -705,6 +695,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   }
 
   Future doInsert(obj, slika_request, ulogaID) async {
+    //ne dozvoliti da se isti korisnik unosi dvaput, uraditi to na backendu,
+    //pa samo ispisati poruku ovde u alertu.
 
     var korisnik_insert = KorisnikInsert(
         obj['ime'],
@@ -730,36 +722,59 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     }
     print("insert korisnik request: $korisnik_insert");
 
-    var kor_post = await _korisnikProvider.insert(korisnik_insert);
+    try {
+      var kor_post = await _korisnikProvider.insert(korisnik_insert);
 
-    if (kor_post != null) {
-      print("kor_post: ${kor_post.slikaProfilaId}");
-      var kid = kor_post.korisnikId;
+      if (kor_post != null) {
+        print("kor_post: ${kor_post.slikaProfilaId}");
+        var kid = kor_post.korisnikId;
 
-      var zaposlenik_request = ZaposlenikInsertUpdate(
-          obj['datumRodjenja'], obj['datumZaposlenja'], kid);
-      var zap_post = await _zaposleniciProvider.insert(zaposlenik_request);
-      print(
-          "insert zaposlenik request request: ${zaposlenik_request} ${zap_post.datumRodjenja}");
+        var zaposlenik_request = ZaposlenikInsertUpdate(
+            obj['datumRodjenja'], obj['datumZaposlenja'], kid);
+        var zap_post = await _zaposleniciProvider.insert(zaposlenik_request);
+        print("insert zaposlenik request request: ${zaposlenik_request}");
 
-      if (zap_post != null) {
-        var zid = zap_post.zaposlenikId;
+        if (zap_post != null) {
+          var zid = zap_post.zaposlenikId;
 
-        if (ulogaID != null) {
-          var korisnikUloga_request = KorisnikUlogaInsertUpdate(kid, ulogaID);
-          print("korisnikUloga_request ${korisnikUloga_request}");
-          var kor_uloga_post =
-              await _korisniciUlogeProvider.insert(korisnikUloga_request);
-        }
+          if (ulogaID != null) {
+            var korisnikUloga_request = KorisnikUlogaInsertUpdate(kid, ulogaID);
+            print("korisnikUloga_request ${korisnikUloga_request}");
+            var kor_uloga_post =
+                await _korisniciUlogeProvider.insert(korisnikUloga_request);
+          }
 
-        for (var zu in _selectedItems.result) {
-          var zaposlenik_usluga_request =
-              ZaposlenikUslugaInsertUpdate(zid, zu.uslugaId);
-          print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
-          var zap_usluga_post =
-              _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+          for (var zu in _selectedItems.result) {
+            var zaposlenik_usluga_request =
+                ZaposlenikUslugaInsertUpdate(zid, zu.uslugaId);
+            print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
+            var zap_usluga_post =
+                _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+          }
         }
       }
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Informacija o uspjehu"),
+                content: Text("Uspješno izvršena akcija!"),
+              ));
+      _formKey.currentState?.reset();
+      ponistiSliku();
+    } catch (e) {
+      print("error: ${e.toString()}");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji)"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
     }
   }
 
@@ -784,69 +799,96 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       print("delete slikaUslugeId: $del");
       korisnik_update.slikaProfilaId = DEFAULT_SlikaProfilaId;
     }
-    print("update korisnik request: $korisnik_update");
-    var kor_put = await _korisnikProvider.update(
-        widget.korisnik!.korisnikId!, korisnik_update);
 
-    if (kor_put != null) {
-      print("kor_put: ${kor_put.slikaProfilaId}");
-    }
+    try {
+      print("update korisnik request: $korisnik_update");
+      var kor_put = await _korisnikProvider.update(
+          widget.korisnik!.korisnikId!, korisnik_update);
 
-    var zaposlenik_request = ZaposlenikInsertUpdate(obj['datumRodjenja'],
-        obj['datumZaposlenja'], widget.zaposlenik!.korisnikId);
-    var zap_put = await _zaposleniciProvider.update(
-        widget.zaposlenik!.zaposlenikId!, zaposlenik_request);
-    print(
-        "update zaposlenik request request: ${zaposlenik_request} ${zap_put.datumRodjenja}");
+      if (kor_put != null) {
+        print("kor_put: ${kor_put.slikaProfilaId}");
+      }
 
-    var korisnikUloga_request =
-        KorisnikUlogaInsertUpdate(widget.korisnik!.korisnikId!, ulogaID);
-    print("korisnikUloga_request ${korisnikUloga_request}");
+      var zaposlenik_request = ZaposlenikInsertUpdate(obj['datumRodjenja'],
+          obj['datumZaposlenja'], widget.zaposlenik!.korisnikId);
+      var zap_put = await _zaposleniciProvider.update(
+          widget.zaposlenik!.zaposlenikId!, zaposlenik_request);
+      print(
+          "update zaposlenik request request: ${zaposlenik_request} ${zap_put.datumRodjenja}");
 
-    if (ulogaID != null) {
-      var uloga_vec_postoji = widget.zaposlenik?.korisnik?.korisnikUlogas
-          ?.map((e) => e.ulogaId == ulogaID);
-      if (uloga_vec_postoji != null && !uloga_vec_postoji.contains(true)) {
-        //ako nema tu ulogu
-        var kor_uloga_id = widget.korisnik?.korisnikUlogas
-            ?.map((k) => k.korisnikUlogaId)
+      var korisnikUloga_request =
+          KorisnikUlogaInsertUpdate(widget.korisnik!.korisnikId!, ulogaID);
+      print("korisnikUloga_request ${korisnikUloga_request}");
+
+      if (ulogaID != null) {
+        var uloga_vec_postoji = widget.zaposlenik?.korisnik?.korisnikUlogas
+            ?.map((e) => e.ulogaId == ulogaID);
+        if (uloga_vec_postoji != null && !uloga_vec_postoji.contains(true)) {
+          //ako nema tu ulogu
+          var kor_uloga_id = widget.korisnik?.korisnikUlogas
+              ?.map((k) => k.korisnikUlogaId)
+              .toList()[0];
+          if (kor_uloga_id != null) {
+            var kor_uloga_post = await _korisniciUlogeProvider.update(
+                kor_uloga_id, korisnikUloga_request);
+          }
+        } else if (uloga_vec_postoji == null) {
+          var kor_uloga_post =
+              await _korisniciUlogeProvider.insert(korisnikUloga_request);
+        }
+      }
+
+      if (ulogaID == DEFAULT_UlogaId) {
+        var uloga_usluznik = widget.korisnik?.korisnikUlogas
+            ?.map((e) => e.ulogaId == DEFAULT_UlogaId)
             .toList()[0];
-        if (kor_uloga_id != null) {
-          var kor_uloga_post = await _korisniciUlogeProvider.update(
-              kor_uloga_id, korisnikUloga_request);
-        }
-      } else if (uloga_vec_postoji == null) {
-        var kor_uloga_post =
-            await _korisniciUlogeProvider.insert(korisnikUloga_request);
-      }
-    }
 
-    if (ulogaID == DEFAULT_UlogaId) {
-      var uloga_usluznik = widget.korisnik?.korisnikUlogas
-          ?.map((e) => e.ulogaId == DEFAULT_UlogaId)
-          .toList()[0];
-      if (uloga_usluznik == true &&
-          widget.zaposlenik?.zaposlenikUslugas?.length != 0) {
-      
-        print("selected item results length: ${_selectedItems.result.length}");
-        print("postojece usluge: ${_postojeceUsluge?.length}");
+        //ako je postojeca uloga bila Usluznik, provjeriti ima li usluga.
+        if (uloga_usluznik == true &&
+            widget.zaposlenik?.zaposlenikUslugas?.length != 0) {
+          //uporediti postojece usluge i nove. ako su iste, ne radi se update, ako nisu
+          //iste, brisu se stare i dodaju se nove.
+          print(
+              "selected items result length: ${_selectedItems.result.length}");
+          print("postojece usluge: ${_postojeceUsluge?.length}");
 
-        //if stara_lista != nova_lista
-        if (!areListsEqual(_selectedItems.result, _postojeceUsluge)) {
-          print("usao u if");
-          for (var zu in widget.zaposlenik!.zaposlenikUslugas!) {
-            var delete_zu =
-                _zaposleniciUslugeProvider.delete(zu.zaposlenikUslugaId!);
-          }
-          for (var zu in _selectedItems.result) {
-            var zaposlenik_usluga_request = ZaposlenikUslugaInsertUpdate(
-                widget.zaposlenik!.zaposlenikId, zu.uslugaId);
-            print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
-            var zap_usluga_post =
-                _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+          //if stara_lista != nova_lista
+          if (!areListsEqual(_selectedItems.result, _postojeceUsluge)) {
+            print("usao u if");
+            for (var zu in widget.zaposlenik!.zaposlenikUslugas!) {
+              var delete_zu =
+                  _zaposleniciUslugeProvider.delete(zu.zaposlenikUslugaId!);
+            }
+            for (var zu in _selectedItems.result) {
+              var zaposlenik_usluga_request = ZaposlenikUslugaInsertUpdate(
+                  widget.zaposlenik!.zaposlenikId, zu.uslugaId);
+              print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
+              var zap_usluga_post =
+                  _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+            }
           }
         }
       }
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Informacija o uspjehu"),
+                content: Text("Uspješno izvršena akcija!"),
+              ));
+    } catch (e) {
+      print("error: ${e.toString()}");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji)"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
     }
   }
 

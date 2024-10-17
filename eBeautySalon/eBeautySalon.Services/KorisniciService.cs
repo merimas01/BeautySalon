@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public class KorisniciService : BaseCRUDService<Korisnici, Korisnik, KorisniciSearchObject,KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
+    public class KorisniciService : BaseCRUDService<Korisnici, Korisnik, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
     {
         public KorisniciService(IB200070Context context, IMapper mapper): base(context,mapper)
         {
@@ -24,9 +24,38 @@ namespace eBeautySalon.Services
         public override async Task BeforeInsert(Korisnik korisnik, KorisniciInsertRequest request)
         {
             korisnik.LozinkaSalt = GenerateSalt();
-            korisnik.LozinkaHash = GenerateHash(korisnik.LozinkaSalt, request.Password);
+            korisnik.LozinkaHash = GenerateHash(korisnik.LozinkaSalt, request.Password);   
         }
-      
+
+        public override async Task<bool> AddValidationInsert(KorisniciInsertRequest insert)
+        {
+            var korisnici_imena = await _context.Korisniks.Select(x => x.Ime.ToLower()).ToListAsync();
+            var korisnici_telefoni = await _context.Korisniks.Select(x => x.Telefon).ToListAsync();
+            var korisnici_emailovi = await _context.Korisniks.Select(x => x.Email.ToLower()).ToListAsync();
+            var korisnici_korisnickoIme = await _context.Korisniks.Select(x => x.KorisnickoIme.ToLower()).ToListAsync();
+            
+            if (korisnici_imena.Contains(insert.Ime.ToLower()) 
+                || korisnici_korisnickoIme.Contains(insert.KorisnickoIme.ToLower())
+                || (insert.Telefon != null && korisnici_telefoni.Contains(insert.Telefon))
+                || (insert.Email != null && korisnici_emailovi.Contains(insert.Email.ToLower())))
+                return  false;
+            else return true;
+        }
+
+
+
+        public override async Task<bool> AddValidationUpdate(int id, KorisniciUpdateRequest request)
+        {
+            var korisnici_imena = await _context.Korisniks.Where(x=>x.KorisnikId != id).Select(x => x.Ime.ToLower()).ToListAsync();
+            var korisnici_telefoni = await _context.Korisniks.Where(x=>x.KorisnikId != id).Select(x => x.Telefon).ToListAsync();
+            var korisnici_emailovi = await _context.Korisniks.Where(x => x.KorisnikId != id).Select(x => x.Email.ToLower()).ToListAsync();
+
+            if (korisnici_imena.Contains(request.Ime.ToLower()) 
+                || (request.Telefon!=null && korisnici_telefoni.Contains(request.Telefon))
+                || ( request.Email!=null && korisnici_emailovi.Contains(request.Email.ToLower())))
+                return false;
+            else return true;
+        }
         public static string GenerateSalt()
         {
             var provider = new RNGCryptoServiceProvider();

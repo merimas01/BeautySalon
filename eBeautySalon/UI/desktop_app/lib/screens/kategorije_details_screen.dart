@@ -78,6 +78,7 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                     if (widget.kategorija == null) {
                       await _kategorijeProvider
                           .insert(_formKey.currentState?.value);
+                      _formKey.currentState?.reset();
                     } else {
                       await _kategorijeProvider.update(
                           widget.kategorija!.kategorijaId!,
@@ -89,10 +90,6 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                               title: Text("Informacija o uspjehu"),
                               content: Text("Uspješno izvršena akcija!"),
                             ));
-
-                    if (widget.kategorija == null) {
-                      _formKey.currentState?.reset();
-                    }
                   } else {
                     showDialog(
                         context: context,
@@ -108,7 +105,7 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Greška"),
                             content: Text(
-                                "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"), //Text(e.toString()),
+                                "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba biti imati unikatne vrijednosti (naziv kategorije možda već postoji)"),
                             actions: [
                               TextButton(
                                   onPressed: () => Navigator.pop(context),
@@ -138,7 +135,9 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                     decoration: InputDecoration(labelText: "Naziv:"),
                     name: "naziv",
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim().isEmpty) {
                         return 'Molimo Vas unesite naziv';
                       }
                       if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
@@ -152,8 +151,10 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
               FormBuilderTextField(
                 name: "opis",
                 decoration: InputDecoration(labelText: "Opis:"),
+                keyboardType: TextInputType.multiline,
+                maxLines: 3,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite opis';
                   }
                   if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$').hasMatch(value)) {

@@ -69,5 +69,17 @@ namespace eBeautySalon.Services
             }
             return base.BeforeDelete(entity);
         }
+
+        public override async Task<bool> AddValidationInsert(NovostiInsertRequest request)
+        {
+            var novost_naslovi = await _context.Novosts.Select(x => x.Naslov.ToLower()).ToListAsync();
+            if (novost_naslovi.Contains(request.Naslov.ToLower())) return false; else return true;
+        }
+
+        public override async Task<bool> AddValidationUpdate(int id, NovostiUpdateRequest request)
+        {
+            var novost_naslovi = await _context.Novosts.Where(x=>x.NovostId != id).Select(x => x.Naslov.ToLower()).ToListAsync();
+            if (novost_naslovi.Contains(request.Naslov.ToLower())) return false; else return true;
+        }
     }
 }

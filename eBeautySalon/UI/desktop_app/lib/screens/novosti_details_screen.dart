@@ -97,7 +97,9 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                     decoration: InputDecoration(labelText: "Naslov:"),
                     name: "naslov",
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.trim().isEmpty) {
                         return 'Molimo Vas unesite naslov';
                       }
                       if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
@@ -314,45 +316,18 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                 var request_novost = new Map.from(_formKey.currentState!.value);
                 var request_slika = new SlikaNovostInsertUpdate(_base64image);
 
-                try {
-                  if (val == true) {
-                    if (widget.novost == null) {
-                      doInsert(request_novost, request_slika);
-                    } else if (widget.novost != null) {
-                      doUpdate(request_novost, request_slika);
-                    }
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: Text("Informacija o uspjehu"),
-                              content: Text("Uspješno izvršena akcija!"),
-                            ));
-                            
-                    if (widget.novost == null) {
-                      _formKey.currentState?.reset();
-                      ponistiSliku();
-                    }
-                  } else {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: Text("Neispravni podaci"),
-                              content:
-                                  Text("Ispravite greške i ponovite unos."),
-                            ));
+                if (val == true) {
+                  if (widget.novost == null) {
+                    doInsert(request_novost, request_slika);
+                  } else if (widget.novost != null) {
+                    doUpdate(request_novost, request_slika);
                   }
-                } catch (e) {
+                } else {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                            title: Text("Greška"),
-                            content: Text(
-                                "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"),
-                            actions: [
-                              TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text("Ok"))
-                            ],
+                            title: Text("Neispravni podaci"),
+                            content: Text("Ispravite greške i ponovite unos."),
                           ));
                 }
               },
@@ -375,8 +350,34 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       request_novost['slikaNovostId'] = DEFAULT_SlikaNovostId;
     }
     print("insert request: $request_novost");
-    var req = await _novostiProvider.insert(request_novost);
-    if (req != null) print("req: ${req.slikaNovostId}");
+    try {
+      var req = await _novostiProvider.insert(request_novost);
+      if (req != null) {
+        print("req: ${req.slikaNovostId}");
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Informacija o uspjehu"),
+                  content: Text("Uspješno izvršena akcija!"),
+                ));
+        _formKey.currentState?.reset();
+        ponistiSliku();
+      }
+    } catch (e) {
+      print("error: ${e.toString()}");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji)"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
+    }
   }
 
   Future doUpdate(request_novost, request_slika) async {
@@ -398,8 +399,33 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       request_novost['slikaNovostId'] = DEFAULT_SlikaUslugeId;
     }
     print("update request: $request_novost");
-    var req =
-        await _novostiProvider.update(widget.novost!.novostId!, request_novost);
-    if (req != null) print("req: ${req.slikaNovostId}");
+
+    try {
+      var req = await _novostiProvider.update(
+          widget.novost!.novostId!, request_novost);
+      if (req != null) {
+        print("req: ${req.slikaNovostId}");
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Informacija o uspjehu"),
+                  content: Text("Uspješno izvršena akcija!"),
+                ));
+      }
+    } catch (e) {
+      print("error: ${e.toString()}");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji)"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
+    }
   }
 }

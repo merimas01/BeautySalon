@@ -297,7 +297,6 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                               title: Text("Informacija o uspjehu"),
                               content: Text("Uspješno izvršena akcija!"),
                             ));
-                  
                   } else {
                     showDialog(
                         context: context,
@@ -405,8 +404,33 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
       request_korisnik['slikaProfilaId'] = DEFAULT_SlikaProfilaId;
     }
     print("update request: $request_korisnik");
-    var req = await _korisnikProvider.update(
-        widget.korisnik!.korisnikId!, request_korisnik);
-    print("req: ${req.slikaProfilaId}");
+
+    try {
+      var req = await _korisnikProvider.update(
+          widget.korisnik!.korisnikId!, request_korisnik);
+      if (req != null) {
+        print("req: ${req.slikaProfilaId}");
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Informacija o uspjehu"),
+                  content: Text("Uspješno izvršena akcija!"),
+                ));
+      }
+    } catch (e) {
+      print("error: ${e.toString()}");
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji)"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
+    }
   }
 }

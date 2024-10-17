@@ -36,13 +36,17 @@ namespace eBeautySalon.Services
             return base.AddFilter(query, search);
         }
 
-        //public override IQueryable<Kategorija> AddInclude(IQueryable<Kategorija> query, KategorijeSearchObject? search = null)
-        //{
-        //    if (search?.isUslugeIncluded == true)
-        //    {
-        //        query = query.Include("Uslugas");
-        //    }
-        //    return base.AddInclude(query, search);
-        //}
+        public override async Task<bool> AddValidationInsert(KategorijeInsertRequest request)
+        {
+            var kategorija_nazivi = await _context.Kategorijas.Select(x => x.Naziv.ToLower()).ToListAsync();
+            if (kategorija_nazivi.Contains(request.Naziv.ToLower())) return false; else return true;
+        }
+
+        public override async Task<bool> AddValidationUpdate(int id, KategorijeUpdateRequest request)
+        {
+            var kategorija_nazivi = await _context.Kategorijas.Where(x => x.KategorijaId != id).Select(x => x.Naziv.ToLower()).ToListAsync();
+            if (kategorija_nazivi.Contains(request.Naziv.ToLower())) return false; else return true;
+        }
+     
     }
 }

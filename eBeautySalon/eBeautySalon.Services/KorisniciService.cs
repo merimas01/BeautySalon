@@ -17,7 +17,7 @@ namespace eBeautySalon.Services
 {
     public class KorisniciService : BaseCRUDService<Korisnici, Korisnik, KorisniciSearchObject, KorisniciInsertRequest, KorisniciUpdateRequest>, IKorisniciService
     {
-        public KorisniciService(IB200070Context context, IMapper mapper): base(context,mapper)
+        public KorisniciService(Ib200070Context context, IMapper mapper): base(context,mapper)
         {
         }
 
@@ -41,8 +41,6 @@ namespace eBeautySalon.Services
                 return  false;
             else return true;
         }
-
-
 
         public override async Task<bool> AddValidationUpdate(int id, KorisniciUpdateRequest request)
         {
@@ -108,8 +106,9 @@ namespace eBeautySalon.Services
         {
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
-                query = query.Where(x => (x.Ime != null && x.Ime.Contains(search.FTS)) || (x.Prezime != null && x.Prezime.Contains(search.FTS)
-                || (x.KorisnickoIme != null && x.KorisnickoIme.Contains(search.FTS))));
+                query = query.Where(x => (x.Ime != null && x.Ime.ToLower().Contains(search.FTS.ToLower())) 
+                || (x.Prezime != null && x.Prezime.ToLower().Contains(search.FTS.ToLower())
+                || (x.KorisnickoIme != null && x.KorisnickoIme.ToLower().Contains(search.FTS.ToLower()))));
             }
             if (!string.IsNullOrWhiteSpace(search?.Ime))
             {

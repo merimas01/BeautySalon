@@ -15,8 +15,8 @@ namespace eBeautySalon.Services
 {
     public class NovostiService : BaseCRUDService<Novosti, Novost, NovostiSearchObject, NovostiInsertRequest, NovostiUpdateRequest>, INovostiService
     {
-        IB200070Context _context;
-        public NovostiService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        Ib200070Context _context;
+        public NovostiService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
             _context = context;
         }
@@ -35,6 +35,11 @@ namespace eBeautySalon.Services
 
         public override IQueryable<Novost> AddFilter(IQueryable<Novost> query, NovostiSearchObject? search = null)
         {
+            if (!string.IsNullOrWhiteSpace(search?.FTS))
+            {
+                query = query.Where(x => (x.Naslov != null && x.Naslov.ToLower().Contains(search.FTS.ToLower()))
+                || (x.Sadrzaj != null && x.Sadrzaj.ToLower().Contains(search.FTS.ToLower())));
+            }
             if (!string.IsNullOrWhiteSpace(search?.Naslov))
             {
                 query = query.Where(x => x.Naslov != null && x.Naslov.StartsWith(search.Naslov));

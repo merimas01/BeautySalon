@@ -13,14 +13,15 @@ namespace eBeautySalon.Services
 {
     public class BaseService<T, TDb, TSearch> : IService<T,TSearch> where TDb : class where T : class where TSearch: BaseSearchObject
     {
-        protected IB200070Context _context;
+        protected Ib200070Context _context;
         protected IMapper _mapper { get; set; }
 
-        public BaseService(IB200070Context context, IMapper mapper)
+        public BaseService(Ib200070Context context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
+
         public virtual async Task<PagedResult<T>> Get(TSearch search)
         {
             var query = _context.Set<TDb>().AsQueryable();

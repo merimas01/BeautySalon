@@ -68,6 +68,8 @@ namespace eBeautySalon.Services
             CreateMap<Database.ZaposlenikUsluga, Models.ZaposleniciUsluge>();
             CreateMap<ZaposleniciUslugeInsertRequest, Database.ZaposlenikUsluga>();
             CreateMap<ZaposleniciUslugeUpdateRequest, Database.ZaposlenikUsluga>();
+
+            CreateMap<Database.Status, Models.Statusi>();
         }
     }
 }

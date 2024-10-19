@@ -12,7 +12,7 @@ namespace eBeautySalon.Services
 {
     public class SlikaProfilaService : BaseCRUDService<Models.SlikaProfila, Database.SlikaProfila, BaseSearchObject, SlikaProfilaInsertRequest, SlikaProfilaUpdateRequest>, ISlikaProfilaService
     {
-        public SlikaProfilaService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        public SlikaProfilaService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
     }

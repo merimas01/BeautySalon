@@ -1,8 +1,6 @@
 import 'package:desktop_app/screens/kategorije_details_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../models/kategorija.dart';
 import '../models/search_result.dart';
 import '../providers/kategorije_provider.dart';

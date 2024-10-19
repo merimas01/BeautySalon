@@ -8,6 +8,7 @@ import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/home_page.dart';
+import '../screens/rezervacije_list_screen.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
@@ -52,7 +53,10 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ),
             ListTile(
               title: Text("Rezervacije"),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const RezervacijeListScreen()));
+              },
             ),
             ListTile(
               title: Text("Termini"),

@@ -16,15 +16,25 @@ namespace eBeautySalon.Services
 {
     public class RezervacijeService : BaseCRUDService<Rezervacije, Rezervacija, RezervacijeSearchObject, RezervacijeInsertRequest, RezervacijeUpdateRequest>, IRezervacijeService
     {
-        public RezervacijeService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        public RezervacijeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {         
+        }
+
+        public override IQueryable<Rezervacija> AddFilter(IQueryable<Rezervacija> query, RezervacijeSearchObject? search = null)
+        {
+            if (!string.IsNullOrWhiteSpace(search?.FTS))
+            {
+                query = query.Where(x => x.Korisnik!=null && (x.Korisnik.Ime.ToLower().Contains(search.FTS.ToLower()) 
+                || x.Korisnik.Prezime.ToLower().Contains(search.FTS.ToLower())));
+            }
+            return base.AddFilter(query, search);
         }
 
         public override IQueryable<Rezervacija> AddInclude(IQueryable<Rezervacija> query, RezervacijeSearchObject? search = null)
         {
             if (search?.isKorisnikIncluded == true)
             {
-                query = query.Include(x => x.Korisnik);
+                query = query.Include(x => x.Korisnik.SlikaProfila);
             }
             if (search?.isUslugaIncluded == true)
             {
@@ -33,6 +43,10 @@ namespace eBeautySalon.Services
             if (search?.isTerminIncluded == true)
             {
                 query = query.Include(x => x.Termin);
+            }
+            if (search?.isStatusIncluded == true)
+            {
+                query = query.Include(x => x.Status);
             }
           
             return base.AddInclude(query, search);
@@ -64,8 +78,39 @@ namespace eBeautySalon.Services
                                  routingKey: "reservation_created",
                                  basicProperties: null,
                                  body: body);
-            
+
+
+            entity.StatusId = await _context.Statuses.Where(x => x.Opis != null && x.Opis == "Nova").Select(x=>x.StatusId).FirstOrDefaultAsync();
+           
             await base.BeforeInsert(entity, insert);
+        }
+
+        public async Task<PagedResult<Rezervacije>> GetRezervacijeByStatusId(int statusId, RezervacijeSearchObject? search)
+        {
+            var query = _context.Rezervacijas.Where(x => x.StatusId == statusId).AsQueryable();
+
+            PagedResult<Rezervacije> result = new PagedResult<Rezervacije>();
+
+            query = AddFilter(query, search);
+
+            query = query.Include(x => x.Korisnik.SlikaProfila);           
+            query = query.Include(x => x.Usluga);
+            query = query.Include(x => x.Termin);        
+            query = query.Include(x => x.Status);
+            
+            result.Count = await query.CountAsync();
+
+            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
+            {
+                query = query.Take(search.PageSize.Value).Skip(search.Page.Value * search.PageSize.Value);
+            }
+            var list = await query.ToListAsync();
+
+            var tmp = _mapper.Map<List<Rezervacije>>(list);
+
+            result.Result = tmp;
+
+            return result;
         }
     }
 }

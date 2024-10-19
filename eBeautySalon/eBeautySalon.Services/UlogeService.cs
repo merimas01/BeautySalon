@@ -13,7 +13,7 @@ namespace eBeautySalon.Services
 {
     public class UlogeService : BaseCRUDService<Uloge, Uloga, BaseSearchObject, UlogeInsertRequest, UlogeUpdateRequest>, IUlogeService
     {
-        public UlogeService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        public UlogeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
 

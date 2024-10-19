@@ -9,7 +9,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
-import 'package:collection/collection.dart';
 
 import '../models/korisnik.dart';
 import '../models/search_result.dart';
@@ -19,7 +18,6 @@ import '../models/uloga.dart';
 import '../models/usluga.dart';
 import '../models/zaposlenik.dart';
 import '../models/zaposlenik_insert_update.dart';
-import '../models/zaposlenik_usluga.dart';
 import '../models/zaposlenik_usluga_insert_update.dart';
 import '../models/korisnik_uloga_insert_update.dart';
 import '../providers/korisnici_uloge_provider.dart';

@@ -18,6 +18,10 @@ namespace eBeautySalon.Models
 
         public DateTime DatumRezervacije { get; set; }
 
+        public int? StatusId { get; set; }
+
+        public virtual Statusi? Status { get; set; }
+
         public virtual Korisnici? Korisnik { get; set; }
 
         public virtual Termini? Termin { get; set; }

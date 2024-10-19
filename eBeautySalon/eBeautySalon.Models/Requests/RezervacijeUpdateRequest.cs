@@ -20,5 +20,8 @@ namespace eBeautySalon.Models.Requests
 
         [Required(ErrorMessage = "Datum je obavezan.")]
         public DateTime DatumRezervacije { get; set; }
+
+        [Required]
+        public int? StatusId { get; set; }
     }
 }

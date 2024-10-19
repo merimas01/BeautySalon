@@ -1,23 +1,22 @@
 import 'dart:convert';
-import 'package:desktop_app/models/korisnik.dart';
 import '../models/search_result.dart';
+import '../models/status.dart';
 import 'base_provider.dart';
 import 'package:http/http.dart' as http;
 
-class KorisnikProvider extends BaseProvider<Korisnik> {
-  KorisnikProvider()
-      : super("Korisnici",
-            "isAdmin=false&isUlogeIncluded=true&isSlikaIncluded=true");
+
+class StatusiProvider extends BaseProvider<Status>{
+  StatusiProvider() : super("Statusi", "");
 
   @override
-  Korisnik fromJson(data) {
+  Status fromJson(data) {
     // TODO: implement fromJson
-    return Korisnik.fromJson(data);
+    return Status.fromJson(data);
   }
 
-  Future<SearchResult<Korisnik>> GetKorisnike({dynamic filter}) async {
+  Future<SearchResult<Status>> GetStatuse({dynamic filter}) async {
    
-    var url = "${BaseProvider.baseUrl}Korisnici/GetKorisnike";
+    var url = "${BaseProvider.baseUrl}Statusi/GetStatuse";
 
     if (filter != null) {
       var queryString = getQueryString(filter);
@@ -33,11 +32,11 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
 
-      var result = SearchResult<Korisnik>();
+      var result = SearchResult<Status>();
       result.count = data['count'];
 
       for (var item in data['result']) {
-        result.result.add(Korisnik.fromJson(item));
+        result.result.add(Status.fromJson(item));
       }
       return result;
     } else {

@@ -14,7 +14,7 @@ namespace eBeautySalon.Services
 {
     public class KorisniciUlogeService : BaseCRUDService<KorisniciUloge, KorisnikUloga, KorisniciUlogeSearchObject, KorisniciUlogeInsertRequest, KorisniciUlogeUpdateRequest>, IKorisniciUlogeService
     {
-        public KorisniciUlogeService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        public KorisniciUlogeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
 

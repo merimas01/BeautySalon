@@ -29,6 +29,7 @@ builder.Services.AddTransient<IZaposleniciService, ZaposleniciService>();
 builder.Services.AddTransient<IZaposleniciUslugeService, ZaposleniciUslugeService>();
 builder.Services.AddTransient<IKorisniciUlogeService, KorisniciUlogeService>();
 builder.Services.AddTransient<IUlogeService, UlogeService>();
+builder.Services.AddTransient<IStatusService, StatusiService>();
 
 builder.Services.AddControllers(x =>
 {
@@ -63,7 +64,7 @@ builder.Services.AddAuthentication("BasicAuthentication")
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<IB200070Context>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<Ib200070Context>(options => options.UseSqlServer(connectionString));
 
 
 var app = builder.Build();
@@ -83,7 +84,7 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dataContext = scope.ServiceProvider.GetRequiredService<IB200070Context>();
+    var dataContext = scope.ServiceProvider.GetRequiredService<Ib200070Context>();
 
     var con = dataContext.Database.GetConnectionString();
 

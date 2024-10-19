@@ -13,7 +13,7 @@ namespace eBeautySalon.Services
 {
     public class RecenzijaUslugeService : BaseCRUDService<Models.RecenzijaUsluge, Database.RecenzijaUsluge, RecenzijaUslugeSearchObject, RecenzijaUslugeInsertRequest, RecenzijaUslugeUpdateRequest>, IRecenzijaUslugeService
     {
-        public RecenzijaUslugeService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        public RecenzijaUslugeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
         public override IQueryable<RecenzijaUsluge> AddInclude(IQueryable<RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)

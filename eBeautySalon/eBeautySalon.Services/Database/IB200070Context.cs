@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eBeautySalon.Services.Database;
 
-public partial class IB200070Context : DbContext
+public partial class Ib200070Context : DbContext
 {
-    public IB200070Context()
+    public Ib200070Context()
     {
     }
 
-    public IB200070Context(DbContextOptions<IB200070Context> options)
+    public Ib200070Context(DbContextOptions<Ib200070Context> options)
         : base(options)
     {
     }
@@ -35,6 +35,8 @@ public partial class IB200070Context : DbContext
 
     public virtual DbSet<SlikaUsluge> SlikaUsluges { get; set; }
 
+    public virtual DbSet<Status> Statuses { get; set; }
+
     public virtual DbSet<Termin> Termins { get; set; }
 
     public virtual DbSet<Uloga> Ulogas { get; set; }
@@ -45,9 +47,9 @@ public partial class IB200070Context : DbContext
 
     public virtual DbSet<ZaposlenikUsluga> ZaposlenikUslugas { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Data Source=localhost; Initial Catalog=IB200070; Trusted_Connection=True; TrustServerCertificate=True");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=localhost; Database=IB200070; User Id=sa; Password=password!; Trusted_Connection=True; TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,6 +67,8 @@ public partial class IB200070Context : DbContext
         modelBuilder.Entity<Korisnik>(entity =>
         {
             entity.ToTable("Korisnik");
+
+            entity.HasIndex(e => e.SlikaProfilaId, "IX_Korisnik_SlikaProfilaID");
 
             entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
             entity.Property(e => e.DatumKreiranja).HasColumnType("datetime");
@@ -88,6 +92,10 @@ public partial class IB200070Context : DbContext
         {
             entity.ToTable("KorisnikUloga");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_KorisnikUloga_KorisnikID");
+
+            entity.HasIndex(e => e.UlogaId, "IX_KorisnikUloga_UlogaID");
+
             entity.Property(e => e.KorisnikUlogaId).HasColumnName("KorisnikUlogaID");
             entity.Property(e => e.DatumIzmjene).HasColumnType("datetime");
             entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
@@ -108,6 +116,10 @@ public partial class IB200070Context : DbContext
         {
             entity.ToTable("Novost");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_Novost_KorisnikID");
+
+            entity.HasIndex(e => e.SlikaNovostId, "IX_Novost_SlikaNovostID");
+
             entity.Property(e => e.NovostId).HasColumnName("NovostID");
             entity.Property(e => e.DatumKreiranja).HasColumnType("datetime");
             entity.Property(e => e.DatumModificiranja).HasColumnType("datetime");
@@ -127,6 +139,10 @@ public partial class IB200070Context : DbContext
         modelBuilder.Entity<RecenzijaUsluge>(entity =>
         {
             entity.ToTable("RecenzijaUsluge");
+
+            entity.HasIndex(e => e.KorisnikId, "IX_RecenzijaUsluge_KorisnikID");
+
+            entity.HasIndex(e => e.UslugaId, "IX_RecenzijaUsluge_UslugaID");
 
             entity.Property(e => e.RecenzijaUslugeId).HasColumnName("RecenzijaUslugeID");
             entity.Property(e => e.DatumKreiranja)
@@ -149,6 +165,10 @@ public partial class IB200070Context : DbContext
         {
             entity.ToTable("RecenzijaUsluznika");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_RecenzijaUsluznika_KorisnikID");
+
+            entity.HasIndex(e => e.UsluznikId, "IX_RecenzijaUsluznika_UsluznikID");
+
             entity.Property(e => e.RecenzijaUsluznikaId).HasColumnName("RecenzijaUsluznikaID");
             entity.Property(e => e.DatumKreiranja)
                 .HasDefaultValueSql("(getdate())")
@@ -170,15 +190,26 @@ public partial class IB200070Context : DbContext
         {
             entity.ToTable("Rezervacija");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_Rezervacija_KorisnikID");
+
+            entity.HasIndex(e => e.TerminId, "IX_Rezervacija_TerminID");
+
+            entity.HasIndex(e => e.UslugaId, "IX_Rezervacija_UslugaID");
+
             entity.Property(e => e.RezervacijaId).HasColumnName("RezervacijaID");
             entity.Property(e => e.DatumRezervacije).HasColumnType("datetime");
             entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
+            entity.Property(e => e.StatusId).HasColumnName("StatusID");
             entity.Property(e => e.TerminId).HasColumnName("TerminID");
             entity.Property(e => e.UslugaId).HasColumnName("UslugaID");
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Rezervacijas)
                 .HasForeignKey(d => d.KorisnikId)
                 .HasConstraintName("FK_Rezervacija_Korisnik");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.Rezervacijas)
+                .HasForeignKey(d => d.StatusId)
+                .HasConstraintName("FK_Rezervacija_Status");
 
             entity.HasOne(d => d.Termin).WithMany(p => p.Rezervacijas)
                 .HasForeignKey(d => d.TerminId)
@@ -210,6 +241,14 @@ public partial class IB200070Context : DbContext
             entity.Property(e => e.SlikaUslugeId).HasColumnName("SlikaUslugeID");
         });
 
+        modelBuilder.Entity<Status>(entity =>
+        {
+            entity.ToTable("Status");
+
+            entity.Property(e => e.StatusId).HasColumnName("StatusID");
+            entity.Property(e => e.Opis).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<Termin>(entity =>
         {
             entity.ToTable("Termin");
@@ -230,6 +269,10 @@ public partial class IB200070Context : DbContext
         modelBuilder.Entity<Usluga>(entity =>
         {
             entity.ToTable("Usluga");
+
+            entity.HasIndex(e => e.KategorijaId, "IX_Usluga_KategorijaID");
+
+            entity.HasIndex(e => e.SlikaUslugeId, "IX_Usluga_SlikaUslugeID");
 
             entity.Property(e => e.UslugaId).HasColumnName("UslugaID");
             entity.Property(e => e.Cijena).HasColumnType("decimal(18, 0)");
@@ -252,6 +295,8 @@ public partial class IB200070Context : DbContext
         {
             entity.ToTable("Zaposlenik");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_Zaposlenik_KorisnikID");
+
             entity.Property(e => e.ZaposlenikId).HasColumnName("ZaposlenikID");
             entity.Property(e => e.DatumKreiranja)
                 .HasDefaultValueSql("(getdate())")
@@ -269,6 +314,10 @@ public partial class IB200070Context : DbContext
         modelBuilder.Entity<ZaposlenikUsluga>(entity =>
         {
             entity.ToTable("ZaposlenikUsluga");
+
+            entity.HasIndex(e => e.UslugaId, "IX_ZaposlenikUsluga_UslugaID");
+
+            entity.HasIndex(e => e.ZaposlenikId, "IX_ZaposlenikUsluga_ZaposlenikID");
 
             entity.Property(e => e.ZaposlenikUslugaId).HasColumnName("ZaposlenikUslugaID");
             entity.Property(e => e.DatumKreiranja)

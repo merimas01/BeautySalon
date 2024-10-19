@@ -16,7 +16,7 @@ namespace eBeautySalon.Services
 {
     public class UslugeService : BaseCRUDService<Usluge, Usluga, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest>, IUslugeService
     {
-        public UslugeService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        public UslugeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
 
@@ -60,7 +60,8 @@ namespace eBeautySalon.Services
         {
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
-                query = query.Where(x => (x.Naziv != null && x.Naziv.Contains(search.FTS)) || (x.Opis!=null && x.Opis.Contains(search.FTS)
+                query = query.Where(x => (x.Naziv != null && x.Naziv.ToLower().Contains(search.FTS.ToLower())) 
+                || (x.Opis!=null && x.Opis.ToLower().Contains(search.FTS.ToLower())
                 || (x.Cijena.ToString().Contains(search.FTS)) || (x.Kategorija.Naziv != null && x.Kategorija.Naziv.Contains(search.FTS))));
             }
             if (!string.IsNullOrWhiteSpace(search?.Naziv))

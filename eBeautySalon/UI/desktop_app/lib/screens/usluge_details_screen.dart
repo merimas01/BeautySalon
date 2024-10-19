@@ -146,7 +146,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                         return 'Molimo Vas unesite naziv';
                       }
                       if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                        return 'Unesite ispravan naziv';
+                        return 'Unesite ispravan naziv (bez brojeva i specijalnih znakova)';
                       }
                       return null;
                     },

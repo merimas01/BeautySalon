@@ -13,7 +13,7 @@ namespace eBeautySalon.Services
 {
     public class BaseCRUDService<T, TDb, TSearch, TInsert,TUpdate> : BaseService<T, TDb, TSearch> where T : class where TDb : class where TSearch : BaseSearchObject
     {
-        public BaseCRUDService(IB200070Context context, IMapper mapper) : base(context, mapper)
+        public BaseCRUDService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:desktop_app/screens/korisnici_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -64,6 +65,12 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
       child: Column(
         children: [
           isLoading ? Container() : _buildForm(),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => KorisniciListScreen()));
+              },
+              child: Text("Nazad na korisnike"))
         ],
       ),
     );

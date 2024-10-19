@@ -122,13 +122,13 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                             child: Text(
                                 "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}"))),
                         DataCell(Container(
-                            width: 80,
+                            width: 100,
                             child: Text((e.datumRezervacije == null
                                 ? "-"
                                 : "${e.datumRezervacije?.day}.${e.datumRezervacije?.month}.${e.datumRezervacije?.year}")))),
                         DataCell(Text(e.termin?.opis ?? "")),
                         DataCell(Container(
-                            width: 400, child: Text(e.usluga?.naziv ?? ""))),
+                            width: 380, child: Text(e.usluga?.naziv ?? ""))),
                         DataCell(Text(e.status?.opis ?? "-")),
                         DataCell(TextButton(
                           style: TextButton.styleFrom(

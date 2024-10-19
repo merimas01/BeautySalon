@@ -89,7 +89,10 @@ class _RezervacijeUpdateStatusState extends State<RezervacijeUpdateStatus> {
                     _initialValue['datumRezervacije'],
                     int.parse(request['statusId']));
 
-                if (val == true) {
+                print(
+                    "${widget.rezervacija?.statusId} ${int.parse(request['statusId'])}");
+
+                if (widget.rezervacija?.statusId!=int.parse(request['statusId'])) {
                   if (widget.rezervacija?.rezervacijaId != null) {
                     var update_status = await _rezervacijeProvider.update(
                         widget.rezervacija!.rezervacijaId!, rezervacija_update);
@@ -108,15 +111,25 @@ class _RezervacijeUpdateStatusState extends State<RezervacijeUpdateStatus> {
                                             builder: (context) =>
                                                 RezervacijeListScreen()));
                                   },
-                                  child: Text("Ok"))
+                                  child: Text("Nazad na rezervacije"))
                             ],
                           ));
                 } else {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                            title: Text("Čreška"),
-                            content: Text("Molimo Vas izaberite status."),
+                            title: Text("Greška"),
+                            content: Text("Molimo Vas izaberite novi status."),
+                            actions: <Widget>[
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RezervacijeListScreen()));
+                                  },
+                                  child: Text("Nazad na rezervacije"))
+                            ],
                           ));
                 }
               },

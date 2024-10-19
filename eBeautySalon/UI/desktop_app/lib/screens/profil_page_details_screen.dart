@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:desktop_app/screens/profil_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -415,6 +416,14 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
             builder: (BuildContext context) => AlertDialog(
                   title: Text("Informacija o uspjehu"),
                   content: Text("Uspješno izvršena akcija!"),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ProfilPage()));
+                        },
+                        child: Text("Nazad na profil"))
+                  ],
                 ));
       }
     } catch (e) {

@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import '../models/korisnik.dart';
 import '../models/search_result.dart';
 import '../models/slika_profila.dart';
-import '../providers/korisnik_provider.dart';
 import '../providers/slika_profila_provider.dart';
 import '../widgets/master_screen.dart';
 

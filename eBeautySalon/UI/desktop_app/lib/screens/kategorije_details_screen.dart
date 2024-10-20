@@ -1,5 +1,4 @@
 import 'package:desktop_app/models/kategorija.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -140,8 +139,12 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                           value.trim().isEmpty) {
                         return 'Molimo Vas unesite naziv';
                       }
-                      if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                        return 'Unesite ispravan naziv';
+                      if (RegExp(r'[@#$?!%()\d~°^ˇ`˙´.;:,"<>+=*]+')
+                          .hasMatch(value)) {
+                        return 'Brojevi i specijalni znakovi (@#\$?!%()<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                      }
+                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                        return 'Unesite ispravan naziv.';
                       }
                       return null;
                     },
@@ -157,8 +160,11 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                   if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite opis';
                   }
-                  if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$').hasMatch(value)) {
-                    return 'Unesite ispravan opis';
+                  if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
+                    return 'Specijalni znakovi (@\$#<>+=*~°^ˇ`˙´) su nedozvoljeni.';
+                  }
+                  if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                    return 'Unesite ispravan opis.';
                   }
                   return null;
                 },

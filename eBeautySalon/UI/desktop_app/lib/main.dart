@@ -48,7 +48,7 @@ class MyMaterialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp( 
       title: 'Neki naslov',
       theme: ThemeData(primarySwatch: Colors.pink),
       home: LoginPage(),
@@ -142,9 +142,9 @@ class LoginPage extends StatelessWidget {
                         if (value == null || value.isEmpty) {
                           return 'Molimo Vas unesite lozinku';
                         }
-                        if (!RegExp(r'^[a-zA-Z0-9 .,!?@%#&$/*+"\-]{3,}$')
+                        if (!RegExp(r'[\u0000-\uFFFF]{3,}')
                             .hasMatch(value)) {
-                          return 'Unesite ispravnu lozinku (minimalno 3 znaka)';
+                          return 'Vaša lozinka treba sačinjavati minimalno 3 znaka';
                         }
                         return null;
                       },

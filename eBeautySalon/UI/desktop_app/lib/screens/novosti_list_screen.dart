@@ -105,6 +105,10 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
             )),
             DataColumn(
                 label: Expanded(
+              child: Text("Datum izmjene"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text(""),
             )),
             DataColumn(
@@ -115,7 +119,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
           rows: result?.result
                   .map((Novost e) => DataRow(cells: [
                         DataCell(
-                            Container(width: 300, child: Text(e.naslov ?? ""))),
+                            Container(width: 200, child: Text(e.naslov ?? ""))),
                         DataCell(e.slikaNovost?.slika != null
                             ? Container(
                                 width: 100,
@@ -125,9 +129,15 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                               )
                             : Text("")),
                         DataCell(Container(
-                          width: 450,
+                          width: 400,
                           child: Text(e.sadrzaj ?? ""),
                         )),
+                        DataCell(Container(
+                            child: e.datumModificiranja == null
+                                ? Text(
+                                    "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")
+                                : Text(
+                                    "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}"))),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(

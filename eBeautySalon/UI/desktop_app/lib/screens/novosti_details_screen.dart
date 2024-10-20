@@ -102,8 +102,11 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                           value.trim().isEmpty) {
                         return 'Molimo Vas unesite naslov';
                       }
-                      if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                        return 'Unesite ispravan naslov';
+                      if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
+                        return 'Specijalni znakovi su nedozvoljeni (@#<>+=*~°^ˇ`˙´).';
+                      }
+                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                        return 'Unesite ispravan naslov.';
                       }
                       return null;
                     },
@@ -127,9 +130,13 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                             value.trim().isEmpty) {
                           return 'Molimo Vas unesite sadrzaj';
                         }
-                        if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-\n]+$')
-                            .hasMatch(value)) {
-                          return 'Unesite ispravan sadrzaj';
+                        if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
+                          return 'Specijalni znakovi su nedozvoljeni (@#<>+=*~°^ˇ`˙´).';
+                        }
+                        if (value
+                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                            .isEmpty) {
+                          return 'Unesite ispravan sadržaj.';
                         }
                         return null;
                       },
@@ -404,7 +411,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       var req = await _novostiProvider.update(
           widget.novost!.novostId!, request_novost);
       if (req != null) {
-        print("req: ${req.slikaNovostId}");
+        print("req: ${req.slikaNovostId}, ${req.datumModificiranja}");
         await showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(

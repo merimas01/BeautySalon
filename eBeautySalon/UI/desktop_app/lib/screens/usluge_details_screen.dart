@@ -145,8 +145,12 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                           value.trim().isEmpty) {
                         return 'Molimo Vas unesite naziv';
                       }
-                      if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                        return 'Unesite ispravan naziv (bez brojeva i specijalnih znakova)';
+                      if (RegExp(r'[@#$?!%()\d~°^ˇ`˙´.;:,"<>+=*]+')
+                          .hasMatch(value)) {
+                        return 'Brojevi i specijalni znakovi (@#\$?!%()<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                      }
+                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                        return 'Unesite ispravan naziv.';
                       }
                       return null;
                     },
@@ -160,9 +164,9 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                   if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite cijenu';
                   }
-                  if (!RegExp(r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{2})?$')
+                  if (!RegExp(r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{1,2})?$')
                       .hasMatch(value)) {
-                    return 'Unesite ispravnu cijenu';
+                    return 'Unesite ispravnu cijenu. Npr: 50.60 (ne smije biti 0, negaitvan broj, broj sa više od 3 cifre, niti bilo koji specijalan karakter osim broja)';
                   }
                   return null;
                 },
@@ -174,8 +178,11 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                   if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite opis';
                   }
-                  if (!RegExp(r'^[a-zA-Z0-9 .,!?"\-]+$').hasMatch(value)) {
-                    return 'Unesite ispravan opis';
+                  if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
+                    return 'Specijalni znakovi (@#\$<>+=*~°^ˇ`˙´) su nedozvoljeni.';
+                  }
+                  if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                    return 'Unesite ispravan opis.';
                   }
                   return null;
                 },

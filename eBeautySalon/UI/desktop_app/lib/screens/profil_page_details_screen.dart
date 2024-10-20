@@ -108,8 +108,12 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Molimo Vas unesite ime';
                       }
-                      if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                        return 'Unesite ispravno ime';
+                      if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                          .hasMatch(value)) {
+                        return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                      }
+                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                        return 'Unesite ispravno ime.';
                       }
                       return null;
                     },
@@ -125,8 +129,14 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Molimo Vas unesite prezime';
                         }
-                        if (!RegExp(r'^[a-zA-Z .,"\-]+$').hasMatch(value)) {
-                          return 'Unesite ispravno prezime';
+                        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                            .hasMatch(value)) {
+                          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                        }
+                        if (value
+                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                            .isEmpty) {
+                          return 'Unesite ispravno prezime.';
                         }
                         return null;
                       },
@@ -159,7 +169,7 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                   if (!RegExp(
                           r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
                       .hasMatch(value)) {
-                    return 'Unesite ispravan email primjer@domena.com';
+                    return 'Unesite ispravan email: primjer@domena.com';
                   }
                   return null;
                 },

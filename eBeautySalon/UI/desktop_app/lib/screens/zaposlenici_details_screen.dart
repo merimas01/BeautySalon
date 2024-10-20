@@ -159,10 +159,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 var val = _formKey.currentState?.saveAndValidate();
                 var obj = Map.from(_formKey.currentState!.value);
                 print(obj);
-                var ulogaID = int.parse(obj['ulogaId']);
+                var ulogaID =
+                    obj['ulogaId'] != null ? int.parse(obj['ulogaId']) : null;
                 var slika_request = SlikaProfilaInsertUpdate(_base64image);
 
-                if (val == true && validationError == "") {
+                if (val == true && ulogaID != null && validationError == "") {
                   if (widget.zaposlenik == null) {
                     doInsert(obj, slika_request, ulogaID);
                   } else if (widget.zaposlenik != null) {
@@ -283,7 +284,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                         return 'Molimo Vas unesite korisničko ime';
                       }
                       if (!RegExp(r'^[a-zA-Z-_.]+$').hasMatch(value)) {
-                        return 'Unesite ispravno korisničko ime (samo slova, . , _ i -)';
+                        return 'Brojevi i specijalni znakovi (osim ._-) su nedozvoljeni.';
                       }
                       return null;
                     },
@@ -301,8 +302,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           value.trim().isEmpty) {
                         return 'Molimo Vas unesite ime';
                       }
-                      if (!RegExp(r'^[a-zA-Z -]+$').hasMatch(value)) {
-                        return 'Unesite ispravno ime (samo slova, razmak i -)';
+                      if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                          .hasMatch(value)) {
+                        return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                      }
+                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                        return 'Unesite ispravno ime.';
                       }
                       return null;
                     },
@@ -320,8 +325,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                             value.trim().isEmpty) {
                           return 'Molimo Vas unesite prezime';
                         }
-                        if (!RegExp(r'^[a-zA-Z -]+$').hasMatch(value)) {
-                          return 'Unesite ispravno prezime (samo slova, razmak i -)';
+                        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                            .hasMatch(value)) {
+                          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                        }
+                        if (value
+                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                            .isEmpty) {
+                          return 'Unesite ispravno prezime.';
                         }
                         return null;
                       },
@@ -426,9 +437,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                 value.trim().isEmpty) {
                               return 'Molimo Vas unesite lozinku';
                             }
-                            if (!RegExp(r'^[a-zA-Z0-9 .,!?@%#&$/*+"\-]{3,}$')
+                            if (!RegExp(r'[\u0000-\uFFFF]{3,}')
                                 .hasMatch(value)) {
-                              return 'Unesite ispravnu lozinku (minimalno 3 znaka)';
+                              return 'Vaša lozinka treba sačinjavati minimalno 3 znaka';
                             }
                             return null;
                           },
@@ -758,6 +769,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 content: Text("Uspješno izvršena akcija!"),
               ));
       _formKey.currentState?.reset();
+      print(_formKey.currentState!.value);
       ponistiSliku();
     } catch (e) {
       print("error: ${e.toString()}");

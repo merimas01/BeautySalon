@@ -149,7 +149,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                             ),
                             onPressed: () async {
                               print(
-                                  "modifikuj ${e} zaposlenikId: ${e.zaposlenikId}");
+                                  "modifikuj ${e} zaposlenikId: ${e.zaposlenikId} korisnikId ${e.korisnik?.korisnikId}");
 
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>

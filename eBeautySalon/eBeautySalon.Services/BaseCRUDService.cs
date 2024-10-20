@@ -58,7 +58,7 @@ namespace eBeautySalon.Services
                 await _context.SaveChangesAsync();
                 return _mapper.Map<T>(entity);
             }
-            else throw new Exception("podaci nisu validni (duplicirani nazivi).");
+            else throw new Exception("podaci nisu validni (duplicirani nazivi ili zabranjena radnja).");
         }
 
 
@@ -78,7 +78,7 @@ namespace eBeautySalon.Services
                 await _context.SaveChangesAsync();
                 return _mapper.Map<T>(entity);
             }
-            else throw new Exception("podaci nisu validni (duplicirani nazivi).");
+            else throw new Exception("podaci nisu validni (duplicirani nazivi ili zabranjena radnja).");
 
         }
 

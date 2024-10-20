@@ -2,6 +2,7 @@
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
+using eBeautySalon.Models.Utils;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,7 +30,15 @@ namespace eBeautySalon.Services
         public override async Task<bool> AddValidationInsert(ZaposleniciUslugeInsertRequest request)
         {
             var _postojece_usluge = await _context.ZaposlenikUslugas.Where(x => x.ZaposlenikId == request.ZaposlenikId).Select(x => x.UslugaId).ToListAsync();
-            if (_postojece_usluge.Count() < 5) return true; else return false;
+            var _zaposlenik = await _context.Zaposleniks.Where(x => x.ZaposlenikId == request.ZaposlenikId).FirstOrDefaultAsync();
+            var _zaposlenik_uloge = await _context.KorisnikUlogas.Where(x => x.KorisnikId == _zaposlenik.KorisnikId).Select(x=>x.UlogaId).ToListAsync();
+
+            if (_zaposlenik_uloge.Contains(Constants.DEFAULT_Uloga_Usluznik))
+            {
+                if (_postojece_usluge != null && _postojece_usluge.Count() < 5) return true; else return false;
+            }
+            else return false;
+           
         }
     }
 }

@@ -11,5 +11,6 @@ namespace eBeautySalon.Models.Utils
         public static int DEFAULT_SlikaUslugeId = 1;
         public static int DEFAULT_SlikaProfilaId = 1;
         public static int DEFAULT_SlikaNovostId = 1;
+        public static int DEFAULT_Uloga_Usluznik = 2;
     }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:desktop_app/models/slika_novost_insert_update.dart';
+import 'package:desktop_app/screens/novosti_list_screen.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -74,8 +75,8 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       child: Column(
         children: [
           isLoading ? Container() : _buildForm(),
-          //  SizedBox(height: 8,),
-          _saveAction()
+          _saveAction(),
+          
         ],
       ),
     );
@@ -123,7 +124,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                       name: "sadrzaj",
                       decoration: InputDecoration(labelText: "Sadržaj:"),
                       keyboardType: TextInputType.multiline,
-                      maxLines: 10,
+                      maxLines: 9,
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
@@ -316,6 +317,22 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 255, 255, 255)),
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 139, 132, 134)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => NovostiListScreen()));
+                },
+                child: Text("Nazad na novosti")),
+        ),
+        SizedBox(width:10.0),
+        Padding(
           padding: const EdgeInsets.only(right: 10.0),
           child: ElevatedButton(
               onPressed: () async {
@@ -335,6 +352,13 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
                             content: Text("Ispravite greške i ponovite unos."),
+                            actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Ok"))
+                              ],
                           ));
                 }
               },
@@ -366,6 +390,14 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
             builder: (BuildContext context) => AlertDialog(
                   title: Text("Informacija o uspjehu"),
                   content: Text("Uspješno izvršena akcija!"),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NovostiListScreen()));
+                        },
+                        child: Text("Nazad na novosti"))
+                  ],
                 ));
         _formKey.currentState?.reset();
         ponistiSliku();
@@ -417,6 +449,14 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
             builder: (BuildContext context) => AlertDialog(
                   title: Text("Informacija o uspjehu"),
                   content: Text("Uspješno izvršena akcija!"),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NovostiListScreen()));
+                        },
+                        child: Text("Nazad na novosti"))
+                  ],
                 ));
       }
     } catch (e) {

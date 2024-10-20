@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:desktop_app/models/korisnik_insert.dart';
 import 'package:desktop_app/models/korisnik_update.dart';
+import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +127,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       }
     } else {
       setState(() {
-        validationError = "Molimo Vas odaberite barem jednu uslugu.";
+        validationError = "Molimo Vas odaberite barem jednu uslugu (maksimalno 5).";
       });
     }
     setState(() {
@@ -153,6 +154,23 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 255, 255, 255)),
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromARGB(255, 139, 132, 134)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ZaposleniciListScreen()));
+                },
+                child: Text("Nazad na zaposlenike"))),
+        SizedBox(
+          width: 10,
+        ),
+        Padding(
           padding: const EdgeInsets.only(right: 10.0),
           child: ElevatedButton(
               onPressed: () async {
@@ -175,6 +193,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
                             content: Text("Ispravite greške i ponovite unos."),
+                            actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Ok"))
+                              ],
                           ));
                 }
               },
@@ -200,9 +225,16 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       for (var item in results.result) {
         print("selected items: ${item.naziv} ${item.uslugaId}");
       }
+
+      if(results.result.length > 5){
+        setState(() {
+          validationError = "Dozvoljeno je maksimalno 5 usluga. Pokušajte ponovo.";
+        });
+      }
     } else if (results?.result.length == 0) {
       print("nema selektovanih usluga");
     }
+    
   }
 
   FormBuilder _buildForm() {
@@ -238,7 +270,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                             _selectedItems.result.length == 0) {
                           setState(() {
                             validationError =
-                                "Molimo Vas odaberite barem jednu uslugu.";
+                                "Molimo Vas odaberite barem jednu uslugu (maksimalno 5).";
                           });
                         } else {
                           setState(() {
@@ -267,9 +299,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   )
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
+              // SizedBox(
+              //   height: 10,
+              // ),
               Row(
                 children: [
                   Expanded(
@@ -471,71 +503,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               SizedBox(
                 height: 10,
               ),
-              uloga == "Usluznik"
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color.fromARGB(255, 255, 255, 255)),
-                              foregroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.pink),
-                              side: MaterialStateProperty.all(BorderSide(
-                                color: Colors.pink,
-                                width: 1.0,
-                                style: BorderStyle.solid,
-                              )),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      side: BorderSide(color: Colors.pink))),
-                            ),
-                            onPressed: () {
-                              _showMultiSelectDropdown();
-                            },
-                            child: const Text(
-                                "Odaberite usluge za koje je zadužen zaposlenik")),
-                        SizedBox(width: 10),
-                        Wrap(
-                          alignment: WrapAlignment.start,
-                          children: _selectedItems.result
-                              .map((Usluga item) => Chip(
-                                    label: Text(item.naziv!),
-                                    deleteIcon: Icon(Icons.delete_forever),
-                                    onDeleted: () {
-                                      setState(() {
-                                        _selectedItems.result.remove(item);
-                                        if (_selectedItems.result.length == 0) {
-                                          setState(() {
-                                            validationError =
-                                                "Molimo Vas odaberite barem jednu uslugu.";
-                                          });
-                                        } else {
-                                          setState(() {
-                                            validationError = "";
-                                          });
-                                        }
-                                        print(
-                                            "broj itema: ${_selectedItems.result}");
-                                      });
-                                    },
-                                  ))
-                              .toList(),
-                        ),
-                        validationError != ""
-                            ? Text(
-                                validationError,
-                                style: TextStyle(color: Colors.red),
-                              )
-                            : Container()
-                      ],
-                    )
-                  : Container(),
-              SizedBox(
-                height: 10,
-              ),
               Row(
                 children: [
                   isLoadingImage
@@ -555,7 +522,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                     fit: BoxFit.cover,
                                   ),
                             SizedBox(
-                              height: 8,
+                              height: 3,
                             ),
                             _imaSliku
                                 ? ElevatedButton(
@@ -581,7 +548,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                   fit: BoxFit.cover,
                                 ),
                                 SizedBox(
-                                  height: 8,
+                                  height: 3,
                                 ),
                                 ElevatedButton(
                                     style: ButtonStyle(
@@ -636,6 +603,66 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       }),
                     ),
                   ),
+                  SizedBox(width:30),
+                  uloga == "Usluznik"
+                      ? Column(
+                          children: [
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Color.fromARGB(255, 255, 255, 255)),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Color.fromARGB(255, 33, 33, 33)),
+                                 
+                                 
+                                ),
+                                onPressed: () {
+                                  _showMultiSelectDropdown();
+                                },
+                                child: const Text(
+                                    "Odaberite usluge za koje je zadužen zaposlenik")),
+                            SizedBox(height: 5),
+                            _selectedItems.result.length<=5 ?
+                            Wrap(
+                              alignment: WrapAlignment.start,
+                              children: _selectedItems.result
+                                  .map((Usluga item) => Chip(
+                                        label: Text(item.naziv!),
+                                        deleteIcon: Icon(Icons.delete_forever),
+                                        onDeleted: () {
+                                          setState(() {
+                                            _selectedItems.result.remove(item);
+                                            if (_selectedItems.result.length ==
+                                                0) {
+                                              setState(() {
+                                                validationError =
+                                                    "Molimo Vas odaberite barem jednu uslugu (maksimalno 5).";
+                                              });
+                                            } else if (_selectedItems
+                                                    .result.length !=
+                                                0) {
+                                              setState(() {
+                                                validationError = "";
+                                              });
+                                            }
+                                            print(
+                                                "broj itema: ${_selectedItems.result}");
+                                          });
+                                        },
+                                      ))
+                                  .toList(),
+                            ) : Container(),  
+                            validationError != ""
+                                ? Text(
+                                    validationError,
+                                    style: TextStyle(color: Colors.red),
+                                  )
+                                : Container()
+                          ],
+                        )
+                      : Container(),
                 ],
               ),
             ],
@@ -767,9 +794,17 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Informacija o uspjehu"),
                 content: Text("Uspješno izvršena akcija!"),
+                actions: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ZaposleniciListScreen()));
+                      },
+                      child: Text("Nazad na zaposlenike"))
+                ],
               ));
       _formKey.currentState?.reset();
-      print(_formKey.currentState!.value);
+      //print(_formKey.currentState!.value);
       ponistiSliku();
     } catch (e) {
       print("error: ${e.toString()}");
@@ -884,6 +919,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Informacija o uspjehu"),
                 content: Text("Uspješno izvršena akcija!"),
+                actions: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ZaposleniciListScreen()));
+                      },
+                      child: Text("Nazad na zaposlenike"))
+                ],
               ));
     } catch (e) {
       print("error: ${e.toString()}");

@@ -64,12 +64,27 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
       child: Column(
         children: [
           isLoading ? Container() : _buildForm(),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => KorisniciListScreen()));
-              },
-              child: Text("Nazad na korisnike"))
+          SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(255, 255, 255, 255)),
+                      foregroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromARGB(255, 139, 132, 134)),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => KorisniciListScreen()));
+                    },
+                    child: Text("Nazad na korisnike")),
+              ),
+            ],
+          )
         ],
       ),
     );

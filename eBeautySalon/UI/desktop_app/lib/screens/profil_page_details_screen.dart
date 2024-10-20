@@ -79,7 +79,10 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
     return MasterScreenWidget(
       title: "${widget.korisnik?.ime} ${widget.korisnik?.prezime}",
       child: Column(
-        children: [isLoading ? Container() : _buildForm(), _saveAction()],
+        children: [
+          isLoading ? Container() : _buildForm(),
+          _saveAction(),
+        ],
       ),
     );
   }
@@ -288,6 +291,22 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfilPage()));
+              },
+              child: Text("Nazad na profil")),
+        ),
+        SizedBox(width: 10.0),
+        Padding(
           padding: const EdgeInsets.only(right: 10.0),
           child: ElevatedButton(
               onPressed: () async {
@@ -307,6 +326,16 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                         builder: (BuildContext context) => AlertDialog(
                               title: Text("Informacija o uspjehu"),
                               content: Text("Uspješno izvršena akcija!"),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfilPage()));
+                                    },
+                                    child: Text("Nazad na profil"))
+                              ],
                             ));
                   } else {
                     showDialog(
@@ -315,6 +344,13 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                               title: Text("Neispravni podaci"),
                               content:
                                   Text("Ispravite greške i ponovite unos."),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Ok"))
+                              ],
                             ));
                   }
                 } catch (e) {

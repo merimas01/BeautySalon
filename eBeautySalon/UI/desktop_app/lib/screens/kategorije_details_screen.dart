@@ -1,4 +1,5 @@
 import 'package:desktop_app/models/kategorija.dart';
+import 'package:desktop_app/screens/kategorije_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +67,22 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => KategorijeListScreen()));
+              },
+              child: Text("Nazad na kategorije")),
+        ),
+        SizedBox(width: 10.0),
+        Padding(
           padding: const EdgeInsets.all(10.0),
           child: ElevatedButton(
               onPressed: () async {
@@ -88,6 +105,16 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                         builder: (BuildContext context) => AlertDialog(
                               title: Text("Informacija o uspjehu"),
                               content: Text("Uspješno izvršena akcija!"),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  KategorijeListScreen()));
+                                    },
+                                    child: Text("Nazad na kategorije"))
+                              ],
                             ));
                   } else {
                     showDialog(
@@ -96,6 +123,13 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                               title: Text("Neispravni podaci"),
                               content:
                                   Text("Ispravite greške i ponovite unos."),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Ok"))
+                              ],
                             ));
                   }
                 } catch (e) {

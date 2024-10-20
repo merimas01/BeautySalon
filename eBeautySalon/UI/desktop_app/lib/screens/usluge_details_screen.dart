@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:desktop_app/screens/usluge_list_screen.dart';
+
 import '../utils/constants.dart';
 
 import 'package:desktop_app/models/slika_usluge.dart';
@@ -83,8 +85,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       child: Column(
         children: [
           isLoading ? Container() : _buildForm(),
-          //  SizedBox(height: 8,),
-          _saveAction()
+          SizedBox(height: 8,),
+          _saveAction(),
         ],
       ),
       title: this.widget.usluga?.naziv ?? "Dodaj uslugu",
@@ -95,6 +97,22 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        Padding(
+          padding: EdgeInsets.only(left: 10.0),
+          child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UslugeListScreen()));
+              },
+              child: Text("Nazad na usluge")),
+        ),
+        SizedBox(width: 10.0,),
         Padding(
           padding: const EdgeInsets.only(right: 10.0),
           child: ElevatedButton(
@@ -115,6 +133,13 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
                             content: Text("Ispravite greške i ponovite unos."),
+                            actions: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Ok"))
+                              ],
                           ));
                 }
               },
@@ -164,7 +189,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                   if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite cijenu';
                   }
-                  if (!RegExp(r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{1,2})?$')
+                  if (!RegExp(
+                          r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{1,2})?$')
                       .hasMatch(value)) {
                     return 'Unesite ispravnu cijenu. Npr: 50.60 (ne smije biti 0, negaitvan broj, broj sa više od 3 cifre, niti bilo koji specijalan karakter osim broja)';
                   }
@@ -412,6 +438,14 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
             builder: (BuildContext context) => AlertDialog(
                   title: Text("Informacija o uspjehu"),
                   content: Text("Uspješno izvršena akcija!"),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => UslugeListScreen()));
+                        },
+                        child: Text("Nazad na usluge"))
+                  ],
                 ));
         _formKey.currentState?.reset();
         ponistiSliku();
@@ -463,6 +497,14 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Informacija o uspjehu"),
                 content: Text("Uspješno izvršena akcija!"),
+                actions: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => UslugeListScreen()));
+                      },
+                      child: Text("Nazad na usluge"))
+                ],
               ));
     } catch (e) {
       await showDialog(

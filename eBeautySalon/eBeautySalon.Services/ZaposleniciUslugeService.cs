@@ -19,5 +19,17 @@ namespace eBeautySalon.Services
         public ZaposleniciUslugeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override Task BeforeInsert(ZaposlenikUsluga entity, ZaposleniciUslugeInsertRequest insert)
+        {
+            
+            return base.BeforeInsert(entity, insert);
+        }
+
+        public override async Task<bool> AddValidationInsert(ZaposleniciUslugeInsertRequest request)
+        {
+            var _postojece_usluge = await _context.ZaposlenikUslugas.Where(x => x.ZaposlenikId == request.ZaposlenikId).Select(x => x.UslugaId).ToListAsync();
+            if (_postojece_usluge.Count() < 5) return true; else return false;
+        }
     }
 }

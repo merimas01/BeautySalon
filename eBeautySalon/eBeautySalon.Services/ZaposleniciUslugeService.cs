@@ -35,10 +35,10 @@ namespace eBeautySalon.Services
 
             if (_zaposlenik_uloge.Contains(Constants.DEFAULT_Uloga_Usluznik))
             {
-                if (_postojece_usluge != null && _postojece_usluge.Count() < 5) return true; else return false;
+                if (_postojece_usluge != null && _postojece_usluge.Count() < 3) 
+                    return true; else return false;
             }
-            else return false;
-           
+            else return false;  
         }
     }
 }

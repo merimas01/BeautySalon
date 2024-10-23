@@ -72,5 +72,11 @@ namespace eBeautySalon.Services
 
             return base.BeforeDelete(entity);
         }
+
+        public override async Task<bool> AddValidationInsert(ZaposleniciInsertRequest request)
+        {
+            var zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => request.KorisnikId == x.KorisnikId);
+            if (zaposlenik == null) return true; else return false;
+        }
     }
 }

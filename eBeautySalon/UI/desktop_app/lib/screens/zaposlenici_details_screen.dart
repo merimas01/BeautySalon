@@ -48,6 +48,9 @@ class ZaposleniciDetailsScreen extends StatefulWidget {
 class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   TextEditingController _passwordController = new TextEditingController();
+  final _dateController = TextEditingController();
+  DateTime? _selectedDate;
+  String? _hoveredItemText;
   Map<String, dynamic> _initialValue = {};
   late KorisnikProvider _korisnikProvider;
   late UslugeProvider _uslugeProvider;
@@ -122,13 +125,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           _selectedItems.result = x;
           validationError = "";
 
-          print("${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
+          print(
+              "selectedItems, postojeceUsluge ${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
+        });
+      } else {
+        setState(() {
+          validationError =
+              "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
         });
       }
-    } else {
-      setState(() {
-        validationError = "Molimo Vas odaberite barem jednu uslugu (maksimalno 5).";
-      });
     }
     setState(() {
       isLoading = false;
@@ -194,12 +199,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                             title: Text("Neispravni podaci"),
                             content: Text("Ispravite greške i ponovite unos."),
                             actions: <Widget>[
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Ok"))
-                              ],
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Ok"))
+                            ],
                           ));
                 }
               },
@@ -226,15 +231,16 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         print("selected items: ${item.naziv} ${item.uslugaId}");
       }
 
-      if(results.result.length > 5){
+      if (results.result.length > 3) {
         setState(() {
-          validationError = "Dozvoljeno je maksimalno 5 usluga. Pokušajte ponovo.";
+          _selectedItems.result = [];
+          validationError =
+              "Dozvoljeno je izabrati maksimalno 3 usluge. Pokušajte ponovo.";
         });
       }
     } else if (results?.result.length == 0) {
       print("nema selektovanih usluga");
     }
-    
   }
 
   FormBuilder _buildForm() {
@@ -270,7 +276,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                             _selectedItems.result.length == 0) {
                           setState(() {
                             validationError =
-                                "Molimo Vas odaberite barem jednu uslugu (maksimalno 5).";
+                                "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
+                          });
+                        }
+                        if (uloga == "Usluznik" &&
+                            _selectedItems.result.length > 3) {
+                          setState(() {
+                            validationError =
+                                "Dozvoljeno je izabrati maksimalno 3 usluge. Pokušajte ponovo.";
                           });
                         } else {
                           setState(() {
@@ -316,7 +329,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                         return 'Molimo Vas unesite korisničko ime';
                       }
                       if (!RegExp(r'^[a-zA-Z-_.]+$').hasMatch(value)) {
-                        return 'Brojevi i specijalni znakovi (osim ._-) su nedozvoljeni.';
+                        return 'Brojevi, razmak i specijalni znakovi (osim ._-) su nedozvoljeni.';
                       }
                       return null;
                     },
@@ -428,6 +441,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       validator: (value) {
                         if (value == null) {
                           return 'Niste unijeli datum.';
+                        }
+                        if (value != null && value != _selectedDate) {
+                          setState(() {
+                            _selectedDate = value;
+                            _dateController.text =
+                                "${value.toLocal()}".split(' ')[0];
+                          });
                         }
                         return null;
                       },
@@ -603,7 +623,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       }),
                     ),
                   ),
-                  SizedBox(width:30),
+                  SizedBox(width: 30),
                   uloga == "Usluznik"
                       ? Column(
                           children: [
@@ -615,8 +635,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                   foregroundColor:
                                       MaterialStateProperty.all<Color>(
                                           Color.fromARGB(255, 33, 33, 33)),
-                                 
-                                 
                                 ),
                                 onPressed: () {
                                   _showMultiSelectDropdown();
@@ -624,36 +642,59 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                 child: const Text(
                                     "Odaberite usluge za koje je zadužen zaposlenik")),
                             SizedBox(height: 5),
-                            _selectedItems.result.length<=5 ?
-                            Wrap(
-                              alignment: WrapAlignment.start,
-                              children: _selectedItems.result
-                                  .map((Usluga item) => Chip(
-                                        label: Text(item.naziv!),
-                                        deleteIcon: Icon(Icons.delete_forever),
-                                        onDeleted: () {
-                                          setState(() {
-                                            _selectedItems.result.remove(item);
-                                            if (_selectedItems.result.length ==
-                                                0) {
-                                              setState(() {
-                                                validationError =
-                                                    "Molimo Vas odaberite barem jednu uslugu (maksimalno 5).";
-                                              });
-                                            } else if (_selectedItems
-                                                    .result.length !=
-                                                0) {
-                                              setState(() {
-                                                validationError = "";
-                                              });
-                                            }
-                                            print(
-                                                "broj itema: ${_selectedItems.result}");
-                                          });
-                                        },
-                                      ))
-                                  .toList(),
-                            ) : Container(),  
+                            _selectedItems.result.length <= 3
+                                ? Wrap(
+                                    alignment: WrapAlignment.start,
+                                    children: _selectedItems.result
+                                        .map((Usluga item) => SizedBox(
+                                            width: 150,
+                                            child: MouseRegion(
+                                                onEnter: (_) {
+                                                  setState(() {
+                                                    _hoveredItemText =
+                                                        item.naziv;
+                                                  });
+                                                },
+                                                onExit: (_) {
+                                                  setState(() {
+                                                    _hoveredItemText = null;
+                                                  });
+                                                },
+                                                child: Tooltip(
+                                                    message: item.naziv!,
+                                                    child: Chip(
+                                                      label: Text(item.naziv!),
+                                                      deleteIcon: Icon(
+                                                          Icons.delete_forever),
+                                                      onDeleted: () {
+                                                        setState(() {
+                                                          _selectedItems.result
+                                                              .remove(item);
+                                                          if (_selectedItems
+                                                                  .result
+                                                                  .length ==
+                                                              0) {
+                                                            setState(() {
+                                                              validationError =
+                                                                  "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
+                                                            });
+                                                          } else if (_selectedItems
+                                                                  .result
+                                                                  .length !=
+                                                              0) {
+                                                            setState(() {
+                                                              validationError =
+                                                                  "";
+                                                            });
+                                                          }
+                                                          print(
+                                                              "broj itema: ${_selectedItems.result}");
+                                                        });
+                                                      },
+                                                    )))))
+                                        .toList(),
+                                  )
+                                : Container(),
                             validationError != ""
                                 ? Text(
                                     validationError,
@@ -806,6 +847,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       _formKey.currentState?.reset();
       //print(_formKey.currentState!.value);
       ponistiSliku();
+      _selectedItems.result = [];
+      uloga = null;
+      _formKey.currentState!.reset();
+      setState(() {
+        _selectedDate = null;
+        _dateController.clear();
+      });
     } catch (e) {
       print("error: ${e.toString()}");
       await showDialog(
@@ -813,7 +861,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji)"),
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (korisničko ime, email ili telefon možda već postoji)"),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -828,20 +876,22 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         obj['email'], obj['telefon'], true, widget.korisnik!.slikaProfilaId);
 
     if (_base64image != null &&
-        widget.zaposlenik?.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId) {
+        widget.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId) {
       var obj = await _slikaProfilaProvider.insert(slika_request);
       if (obj != null) {
         var slikaId = obj.slikaProfilaId;
         korisnik_update.slikaProfilaId = slikaId;
       }
     } else if (_base64image != null &&
-        widget.zaposlenik?.korisnik?.slikaProfila != DEFAULT_SlikaProfilaId) {
+        widget.korisnik?.slikaProfila != DEFAULT_SlikaProfilaId) {
       await _slikaProfilaProvider.update(
-          widget.zaposlenik!.korisnik!.slikaProfilaId!, slika_request);
+          widget.korisnik!.slikaProfilaId!, slika_request);
     } else if (_ponistiSliku == true && _base64image == null) {
-      var del = await _slikaProfilaProvider
-          .delete(widget.zaposlenik!.korisnik!.slikaProfilaId!);
-      print("delete slikaUslugeId: $del");
+      if (widget.korisnik!.slikaProfilaId != DEFAULT_SlikaProfilaId) {
+        var del = await _slikaProfilaProvider
+            .delete(widget.korisnik!.slikaProfilaId!);
+        print("delete slikaUslugeId: $del");
+      }
       korisnik_update.slikaProfilaId = DEFAULT_SlikaProfilaId;
     }
 
@@ -863,7 +913,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
 
       var korisnikUloga_request =
           KorisnikUlogaInsertUpdate(widget.korisnik!.korisnikId!, ulogaID);
-      print("korisnikUloga_request ${korisnikUloga_request}");
 
       if (ulogaID != null) {
         var uloga_vec_postoji = widget.zaposlenik?.korisnik?.korisnikUlogas
@@ -874,10 +923,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               ?.map((k) => k.korisnikUlogaId)
               .toList()[0];
           if (kor_uloga_id != null) {
+            print("korisnikUloga_request update ${korisnikUloga_request}");
             var kor_uloga_post = await _korisniciUlogeProvider.update(
                 kor_uloga_id, korisnikUloga_request);
           }
         } else if (uloga_vec_postoji == null) {
+          print("korisnikUloga_request insert ${korisnikUloga_request}");
           var kor_uloga_post =
               await _korisniciUlogeProvider.insert(korisnikUloga_request);
         }
@@ -889,8 +940,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
             .toList()[0];
 
         //ako je postojeca uloga bila Usluznik, provjeriti ima li usluga.
-        if (uloga_usluznik == true &&
-            widget.zaposlenik?.zaposlenikUslugas?.length != 0) {
+        if (uloga_usluznik == true) {
           //uporediti postojece usluge i nove. ako su iste, ne radi se update, ako nisu
           //iste, brisu se stare i dodaju se nove.
           print(
@@ -904,6 +954,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               var delete_zu =
                   _zaposleniciUslugeProvider.delete(zu.zaposlenikUslugaId!);
             }
+
             for (var zu in _selectedItems.result) {
               var zaposlenik_usluga_request = ZaposlenikUslugaInsertUpdate(
                   widget.zaposlenik!.zaposlenikId, zu.uslugaId);
@@ -935,7 +986,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji)"),
+                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (email ili telefon možda već postoji)"),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

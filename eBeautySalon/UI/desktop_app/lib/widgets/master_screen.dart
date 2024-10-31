@@ -3,6 +3,7 @@ import 'package:desktop_app/screens/kategorije_list_screen.dart';
 import 'package:desktop_app/screens/korisnici_list_screen.dart';
 import 'package:desktop_app/screens/novosti_list_screen.dart';
 import 'package:desktop_app/screens/profil_page.dart';
+import 'package:desktop_app/screens/recenzije_list_screen.dart';
 import 'package:desktop_app/screens/usluge_list_screen.dart';
 import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,10 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ),
             ListTile(
               title: Text("Recenzije"),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const RecenzijeListScreen()));
+              },
             ),
             ListTile(
               title: Text("Korisnici"),
@@ -79,10 +83,6 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const ZaposleniciListScreen()));
               },
-            ),
-            ListTile(
-              title: Text("Novi korisnici i uloge"),
-              onTap: () {},
             ),
             ListTile(
               title: Text("Novosti"),

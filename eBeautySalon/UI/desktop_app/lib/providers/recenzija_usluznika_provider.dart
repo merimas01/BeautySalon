@@ -3,7 +3,7 @@ import 'base_provider.dart';
 
 class RecenzijaUsluznikaProvider extends BaseProvider<RecenzijaUsluznika> {
   RecenzijaUsluznikaProvider()
-      : super("RecenzijaUsluznika", "");
+      : super("RecenzijaUsluznika", "isKorisnikIncluded=true&isZaposlenikIncluded=true");
 
   @override
   RecenzijaUsluznika fromJson(data) {

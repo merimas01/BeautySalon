@@ -8,7 +8,7 @@ part of 'recenzija_usluge.dart';
 
 RecenzijaUsluge _$RecenzijaUslugeFromJson(Map<String, dynamic> json) =>
     RecenzijaUsluge(
-      json['ocjenaId'] as int?,
+      json['recenzijaUslugeId'] as int?,
       (json['ocjena'] as num?)?.toDouble(),
       json['komentar'] as String?,
       json['datumKreiranja'] == null
@@ -29,7 +29,7 @@ RecenzijaUsluge _$RecenzijaUslugeFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$RecenzijaUslugeToJson(RecenzijaUsluge instance) =>
     <String, dynamic>{
-      'ocjenaId': instance.ocjenaId,
+      'recenzijaUslugeId': instance.recenzijaUslugeId,
       'ocjena': instance.ocjena,
       'komentar': instance.komentar,
       'datumKreiranja': instance.datumKreiranja?.toIso8601String(),

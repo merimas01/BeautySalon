@@ -89,6 +89,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
 
   Expanded _buildDataListView() {
     return Expanded(
+        child: SingleChildScrollView(
       child: DataTable(
           columns: [
             DataColumn(
@@ -169,7 +170,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                       ]))
                   .toList() ??
               []),
-    );
+    ));
   }
 
   void _deleteConfirmationDialog(e) {

@@ -11,7 +11,7 @@ part 'recenzija_usluge.g.dart';
 
 @JsonSerializable()
 class RecenzijaUsluge {
-  int? ocjenaId;
+  int? recenzijaUslugeId;
   double? ocjena;
   String? komentar;
   DateTime? datumKreiranja;
@@ -22,7 +22,7 @@ class RecenzijaUsluge {
   Usluga? usluga;
 
   RecenzijaUsluge(
-      this.ocjenaId,
+      this.recenzijaUslugeId,
       this.ocjena,
       this.komentar,
       this.datumKreiranja,

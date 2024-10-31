@@ -20,13 +20,22 @@ namespace eBeautySalon.Services
         {
             if (search?.isKorisnikIncluded == true)
             {
-                query = query.Include(x => x.Korisnik);
+                query = query.Include(x => x.Korisnik.SlikaProfila);
             }
             if (search?.isUslugeIncluded == true)
             {
                 query = query.Include(x => x.Usluga);
             }
             return base.AddInclude(query, search);
+        }
+        public override Task<bool> AddValidationInsert(RecenzijaUslugeInsertRequest request)
+        {
+            return base.AddValidationInsert(request);
+        }
+
+        public override Task<bool> AddValidationUpdate(int id, RecenzijaUslugeUpdateRequest request)
+        {
+            return base.AddValidationUpdate(id, request);
         }
     }
 }

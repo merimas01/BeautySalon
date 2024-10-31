@@ -8,7 +8,7 @@ namespace eBeautySalon.Models
 {
     public class RecenzijaUsluge
     {
-        public int OcjenaId { get; set; }
+        public int RecenzijaUslugeId { get; set; }
 
         public int Ocjena { get; set; }
 

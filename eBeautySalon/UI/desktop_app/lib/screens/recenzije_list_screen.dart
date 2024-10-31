@@ -1,4 +1,5 @@
 import 'package:desktop_app/models/search_result.dart';
+import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -134,8 +135,13 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUslugeResult?.result
                   .map((RecenzijaUsluge e) => DataRow(cells: [
-                        DataCell(Text("${e.korisnik?.ime} ${e.korisnik?.prezime}")),
-                        DataCell(Text(e.usluga?.naziv ?? "")),
+                        DataCell(Container(
+                          width: 150,
+                          child:
+                              Text("${e.korisnik?.ime} ${e.korisnik?.prezime}"),
+                        )),
+                        DataCell(Container(
+                            width: 150, child: Text(e.usluga?.naziv ?? ""))),
                         DataCell(Container(
                             width: 80,
                             child: Text((e.datumKreiranja == null
@@ -147,8 +153,12 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                                 ? "-"
                                 : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
                         DataCell(Text(e.ocjena.toString())),
-                        DataCell(Text(e.komentar ?? "")),
-
+                        DataCell(Tooltip(
+                            message: "${e.komentar ?? ""}",
+                            child: Container(
+                              width: 200,
+                              child: Text(e.komentar ?? ""),
+                            ))),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(
@@ -283,8 +293,15 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUsluznikaResult?.result
                   .map((RecenzijaUsluznika e) => DataRow(cells: [
-                        DataCell(Text("${e.korisnik?.ime} ${e.korisnik?.prezime}")),
-                        DataCell(Text("${e.usluznik?.korisnik?.ime} ${e.usluznik?.korisnik?.prezime}")),
+                        DataCell(Container(
+                          width: 150,
+                          child:
+                              Text("${e.korisnik?.ime} ${e.korisnik?.prezime}"),
+                        )),
+                        DataCell(Container(
+                            width: 150,
+                            child: Text(
+                                "${e.usluznik?.korisnik?.ime} ${e.usluznik?.korisnik?.prezime}"))),
                         DataCell(Container(
                             width: 80,
                             child: Text((e.datumKreiranja == null
@@ -296,7 +313,12 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                                 ? "-"
                                 : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
                         DataCell(Text(e.ocjena.toString())),
-                        DataCell(Text(e.komentar ?? "")),
+                        DataCell(Tooltip(
+                            message: "${e.komentar ?? ""}",
+                            child: Container(
+                              width: 200,
+                              child: Text(e.komentar ?? ""),
+                            ))),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(

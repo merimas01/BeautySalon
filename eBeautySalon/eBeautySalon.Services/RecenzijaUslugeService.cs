@@ -28,14 +28,35 @@ namespace eBeautySalon.Services
             }
             return base.AddInclude(query, search);
         }
-        public override Task<bool> AddValidationInsert(RecenzijaUslugeInsertRequest request)
+        public override async Task<bool> AddValidationInsert(RecenzijaUslugeInsertRequest request)
         {
-            return base.AddValidationInsert(request);
+            //ne smiju zaposlenici recenzirati
+            //ne smiju postojati dvije recenzije sa istim korisnikom i uslugom
+            //usluga i korisnik trebaju biti validni
+
+            var korisnik_zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => x.KorisnikId == request.KorisnikId);
+            var recenzija_usluge = await _context.RecenzijaUsluges.Where(x => x.KorisnikId == request.KorisnikId && x.UslugaId == request.UslugaId).FirstOrDefaultAsync();
+            var usluge = await _context.Uslugas.Select(x => x.UslugaId).ToListAsync();
+            var korisnici = await _context.Korisniks.Where(x => x.KorisnikUlogas.Count() == 0).Select(x => x.KorisnikId).ToListAsync();
+
+            if (korisnik_zaposlenik != null) return false;
+            if (recenzija_usluge != null) return false;
+            else if(!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
+            return true;
+
         }
 
-        public override Task<bool> AddValidationUpdate(int id, RecenzijaUslugeUpdateRequest request)
+        public override async Task<bool> AddValidationUpdate(int id, RecenzijaUslugeUpdateRequest request)
         {
-            return base.AddValidationUpdate(id, request);
+            var korisnik_zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => x.KorisnikId == request.KorisnikId);
+            var recenzija_usluge = await _context.RecenzijaUsluges.Where(x => (x.KorisnikId == request.KorisnikId && x.UslugaId == request.UslugaId) && x.RecenzijaUslugeId != id).FirstOrDefaultAsync();
+            var usluge = await _context.Uslugas.Select(x => x.UslugaId).ToListAsync();
+            var korisnici = await _context.Korisniks.Where(x => x.KorisnikUlogas.Count() == 0).Select(x => x.KorisnikId).ToListAsync();
+
+            if (korisnik_zaposlenik != null) return false;
+            if (recenzija_usluge != null) return false;
+            else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
+            return true;
         }
     }
 }

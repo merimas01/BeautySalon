@@ -20,10 +20,10 @@ namespace eBeautySalon.Models.Requests
         public DateTime? DatumModificiranja { get; set; } = DateTime.Now;
 
         [Required]
-        public int? KorisnikId { get; set; }
+        public int KorisnikId { get; set; }
 
         [Required]
-        public int? UslugaId { get; set; }
+        public int UslugaId { get; set; }
 
     }
 }

@@ -35,10 +35,28 @@ namespace eBeautySalon.Services
 
             if (_zaposlenik_uloge.Contains(Constants.DEFAULT_Uloga_Usluznik))
             {
-                if (_postojece_usluge != null && _postojece_usluge.Count() < 3) 
+                if (_postojece_usluge.Count() < 3) 
                     return true; else return false;
             }
             else return false;  
+        }
+
+        public override async Task<bool> AddValidationUpdate(int id, ZaposleniciUslugeUpdateRequest request)
+        {
+            //ne moze se dodati ista usluga opet
+            var _postojece_usluge = await _context.ZaposlenikUslugas.Where(x => x.ZaposlenikId == request.ZaposlenikId).Select(x => x.UslugaId).ToListAsync();
+            if (_postojece_usluge.Contains(request.UslugaId)) return false;
+            
+            var _zaposlenik = await _context.Zaposleniks.Where(x => x.ZaposlenikId == request.ZaposlenikId).FirstOrDefaultAsync();
+            var _zaposlenik_uloge = await _context.KorisnikUlogas.Where(x => x.KorisnikId == _zaposlenik.KorisnikId).Select(x => x.UlogaId).ToListAsync();
+
+            if (_zaposlenik_uloge.Contains(Constants.DEFAULT_Uloga_Usluznik))
+            {
+                if (_postojece_usluge.Count() < 3)
+                    return true;
+                else return false;
+            }
+            else return false;
         }
     }
 }

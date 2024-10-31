@@ -54,6 +54,7 @@ namespace eBeautySalon.Services
             var slikaProfila = _context.SlikaProfilas.Where(x => x.SlikaProfilaId == slikaProfilaId).First();
             var korisnik_uloge = _context.KorisnikUlogas.Where(x => x.KorisnikId == korisnikId).ToList();
             var zaposlenik_usluge = _context.ZaposlenikUslugas.Where(x => x.ZaposlenikId == zaposlenikId).ToList();
+            var recenzije_usluznika = _context.RecenzijaUsluznikas.Where(x => x.UsluznikId == zaposlenikId).ToList();
           
             foreach(var zu in zaposlenik_usluge)
             {
@@ -69,13 +70,22 @@ namespace eBeautySalon.Services
             {
                 _context.Remove(slikaProfila);
             }
-
+            foreach (var rec in recenzije_usluznika)
+            {
+                _context.Remove(rec);
+            }
             return base.BeforeDelete(entity);
         }
 
         public override async Task<bool> AddValidationInsert(ZaposleniciInsertRequest request)
         {
-            var zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => request.KorisnikId == x.KorisnikId);
+            var zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => request.KorisnikId == x.KorisnikId); 
+            if (zaposlenik == null) return true; else return false;
+        }
+
+        public override async Task<bool> AddValidationUpdate(int id, ZaposleniciUpdateRequest request)
+        {
+            var zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => request.KorisnikId == x.KorisnikId && x.ZaposlenikId != id);
             if (zaposlenik == null) return true; else return false;
         }
     }

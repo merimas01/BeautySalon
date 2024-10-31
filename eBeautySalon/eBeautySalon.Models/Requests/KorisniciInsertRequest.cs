@@ -38,5 +38,8 @@ namespace eBeautySalon.Models.Requests
 
         [JsonIgnore]
         public bool? IsAdmin { get; set; } = false;
+
+        [JsonIgnore]
+        public bool? Status { get; set; } = true;
     }
 }

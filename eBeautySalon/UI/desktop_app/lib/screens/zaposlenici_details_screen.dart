@@ -326,10 +326,10 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       if (value == null ||
                           value.isEmpty ||
                           value.trim().isEmpty) {
-                        return 'Molimo Vas unesite korisničko ime';
+                        return 'Molimo Vas unesite korisničko ime.';
                       }
-                      if (!RegExp(r'^[a-zA-Z-_.]+$').hasMatch(value)) {
-                        return 'Brojevi, razmak i specijalni znakovi (osim ._-) su nedozvoljeni.';
+                      if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$').hasMatch(value)) {
+                        return 'Korisničko ime treba počinjati sa slovom i smije sadržavati \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
                       }
                       return null;
                     },

@@ -20,28 +20,30 @@ namespace eBeautySalon.Services
         {
         }
 
-        public override Task BeforeInsert(Usluga entity, UslugeInsertRequest insert)
+        public override async Task BeforeInsert(Usluga entity, UslugeInsertRequest insert)
         {
             if (insert.SlikaUslugeId == null || insert.SlikaUslugeId == 0)
-                entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
-            return base.BeforeInsert(entity, insert);
+                entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();          
         }
 
-        public override Task BeforeUpate(Usluga entity, UslugeUpdateRequest update)
+        public override async Task BeforeUpate(Usluga entity, UslugeUpdateRequest update)
         {
             if (update.SlikaUslugeId == null || update.SlikaUslugeId == 0)
-                entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();
-            return base.BeforeUpate(entity, update);
+                entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();  
         }
 
-        public override Task BeforeDelete(Usluga entity)
+        public override async Task BeforeDelete(Usluga entity)
         {
             var slikaUslugeId = entity.SlikaUslugeId;
-            var slikaUsluge = _context.SlikaUsluges.Where(x => x.SlikaUslugeId == slikaUslugeId).First();
+            var slikaUsluge = await _context.SlikaUsluges.Where(x => x.SlikaUslugeId == slikaUslugeId).FirstAsync();
+            var recenzije_usluga = await _context.RecenzijaUsluges.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
             if (slikaUsluge != null && slikaUslugeId != Constants.DEFAULT_SlikaUslugeId) { 
                 _context.Remove(slikaUsluge); //deleta se ovaj objekat jer se nece koristiti vise
             }
-            return base.BeforeDelete(entity);
+            foreach (var item in recenzije_usluga)
+            {
+                _context.Remove(item);
+            }
         }
 
         public override async Task<bool> AddValidationInsert(UslugeInsertRequest insert)

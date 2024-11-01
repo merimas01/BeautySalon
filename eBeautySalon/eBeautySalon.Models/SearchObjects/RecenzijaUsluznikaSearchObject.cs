@@ -8,6 +8,7 @@ namespace eBeautySalon.Models.SearchObjects
 {
     public class RecenzijaUsluznikaSearchObject : BaseSearchObject
     {
+        public string? FTS { get; set; }
         public bool? isKorisnikIncluded { get; set; }
         public bool? isZaposlenikIncluded { get; set; }
     }

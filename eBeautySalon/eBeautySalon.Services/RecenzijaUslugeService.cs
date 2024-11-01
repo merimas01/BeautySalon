@@ -16,6 +16,19 @@ namespace eBeautySalon.Services
         public RecenzijaUslugeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override IQueryable<RecenzijaUsluge> AddFilter(IQueryable<RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)
+        {
+            if (!string.IsNullOrEmpty(search.FTS))
+            {
+                query = query.Where(x => x.Usluga.Naziv.Contains(search.FTS)
+                || x.Korisnik.Ime.Contains(search.FTS)
+                || x.Korisnik.Prezime.Contains(search.FTS)
+                || x.Ocjena.ToString().StartsWith(search.FTS)
+                || x.Komentar.StartsWith(search.FTS));
+            }
+            return base.AddFilter(query, search);
+        }
         public override IQueryable<RecenzijaUsluge> AddInclude(IQueryable<RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)
         {
             if (search?.isKorisnikIncluded == true)

@@ -30,6 +30,7 @@ builder.Services.AddTransient<IZaposleniciUslugeService, ZaposleniciUslugeServic
 builder.Services.AddTransient<IKorisniciUlogeService, KorisniciUlogeService>();
 builder.Services.AddTransient<IUlogeService, UlogeService>();
 builder.Services.AddTransient<IStatusService, StatusiService>();
+builder.Services.AddTransient<IUslugeTerminiService, UslugeTerminiService>();
 
 builder.Services.AddControllers(x =>
 {

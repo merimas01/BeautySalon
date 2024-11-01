@@ -29,5 +29,7 @@ public partial class Usluga
 
     public virtual SlikaUsluge? SlikaUsluge { get; set; }
 
+    public virtual ICollection<UslugaTermin> UslugaTermins { get; set; } = new List<UslugaTermin>();
+
     public virtual ICollection<ZaposlenikUsluga> ZaposlenikUslugas { get; set; } = new List<ZaposlenikUsluga>();
 }

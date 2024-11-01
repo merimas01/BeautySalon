@@ -10,8 +10,10 @@ import 'package:desktop_app/providers/slika_novost_provider.dart';
 import 'package:desktop_app/providers/slika_profila_provider.dart';
 import 'package:desktop_app/providers/slika_usluge_provider.dart';
 import 'package:desktop_app/providers/status_provider.dart';
+import 'package:desktop_app/providers/termini_provider.dart';
 import 'package:desktop_app/providers/uloge_provider.dart';
 import 'package:desktop_app/providers/usluge_provider.dart';
+import 'package:desktop_app/providers/usluge_termini_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_usluge_provider.dart';
 import 'package:desktop_app/screens/home_page.dart';
@@ -38,6 +40,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => UlogeProvider()),
       ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
       ChangeNotifierProvider(create: (_) => StatusiProvider()),
+      ChangeNotifierProvider(create: (_) => TerminProvider()),
+      ChangeNotifierProvider(create: (_) => UslugeTerminiProvider()),
     ],
     child: const MyMaterialApp(),
   ));
@@ -48,7 +52,7 @@ class MyMaterialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp( 
+    return MaterialApp(
       title: 'Neki naslov',
       theme: ThemeData(primarySwatch: Colors.pink),
       home: LoginPage(),
@@ -142,8 +146,7 @@ class LoginPage extends StatelessWidget {
                         if (value == null || value.isEmpty) {
                           return 'Molimo Vas unesite lozinku';
                         }
-                        if (!RegExp(r'[\u0000-\uFFFF]{3,}')
-                            .hasMatch(value)) {
+                        if (!RegExp(r'[\u0000-\uFFFF]{3,}').hasMatch(value)) {
                           return 'Vaša lozinka treba sačinjavati minimalno 3 znaka';
                         }
                         return null;

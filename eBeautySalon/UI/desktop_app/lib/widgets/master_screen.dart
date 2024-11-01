@@ -5,6 +5,7 @@ import 'package:desktop_app/screens/novosti_list_screen.dart';
 import 'package:desktop_app/screens/profil_page.dart';
 import 'package:desktop_app/screens/recenzije_list_screen.dart';
 import 'package:desktop_app/screens/usluge_list_screen.dart';
+import 'package:desktop_app/screens/usluge_termini_list_screen.dart';
 import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -61,7 +62,10 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ),
             ListTile(
               title: Text("Termini"),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const UslugeTerminiListScreen()));
+              },
             ),
             ListTile(
               title: Text("Recenzije"),

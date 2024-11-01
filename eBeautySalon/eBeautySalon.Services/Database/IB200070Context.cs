@@ -43,6 +43,8 @@ public partial class Ib200070Context : DbContext
 
     public virtual DbSet<Usluga> Uslugas { get; set; }
 
+    public virtual DbSet<UslugaTermin> UslugaTermins { get; set; }
+
     public virtual DbSet<Zaposlenik> Zaposleniks { get; set; }
 
     public virtual DbSet<ZaposlenikUsluga> ZaposlenikUslugas { get; set; }
@@ -289,6 +291,29 @@ public partial class Ib200070Context : DbContext
             entity.HasOne(d => d.SlikaUsluge).WithMany(p => p.Uslugas)
                 .HasForeignKey(d => d.SlikaUslugeId)
                 .HasConstraintName("FK_Usluga_SlikaUsluge");
+        });
+
+        modelBuilder.Entity<UslugaTermin>(entity =>
+        {
+            entity.ToTable("UslugaTermin");
+
+            entity.Property(e => e.UslugaTerminId).HasColumnName("UslugaTerminID");
+            entity.Property(e => e.DatumIzmjene).HasColumnType("datetime");
+            entity.Property(e => e.IsPrikazan)
+                .HasDefaultValue(true)
+                .HasColumnName("isPrikazan");
+            entity.Property(e => e.TerminId).HasColumnName("TerminID");
+            entity.Property(e => e.UslugaId).HasColumnName("UslugaID");
+
+            entity.HasOne(d => d.Termin).WithMany(p => p.UslugaTermins)
+                .HasForeignKey(d => d.TerminId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UslugaTermin_Termin");
+
+            entity.HasOne(d => d.Usluga).WithMany(p => p.UslugaTermins)
+                .HasForeignKey(d => d.UslugaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UslugaTermin_Usluga");
         });
 
         modelBuilder.Entity<Zaposlenik>(entity =>

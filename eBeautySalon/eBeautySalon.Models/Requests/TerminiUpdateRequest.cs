@@ -11,5 +11,6 @@ namespace eBeautySalon.Models.Requests
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "Ovo polje je obavezno.")]
         public string Opis { get; set; } = null!;
+
     }
 }

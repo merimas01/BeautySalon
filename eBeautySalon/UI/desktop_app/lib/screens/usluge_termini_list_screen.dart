@@ -29,12 +29,11 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
   SearchResult<Usluga>? _uslugaResult;
   SearchResult<Termin>? _terminiResult;
   TextEditingController inputTerminController = TextEditingController();
-  bool showMessage = false;
+  bool showErrorMessage = false;
   bool switchPrikazan = true;
   String? selectedUsluga;
   String? selectedTermin;
   String? selectedTerminOpis;
-  bool? isLoading = true;
   bool? kliknuoDodajDrugiTermin = false;
   UslugaTermin? uslugaTermin;
 
@@ -53,10 +52,6 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
   initForm() async {
     _uslugaResult = await _uslugeProvider.get();
     _terminiResult = await _terminiProvider.get();
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
@@ -76,7 +71,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
     );
   }
 
-  getTermine() async {
+  getUslugaTermine() async {
     var data =
         await _uslugeTerminiProvider.get(filter: {'uslugaId': selectedUsluga});
 
@@ -112,9 +107,9 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 }).toList(),
                 onChanged: (String? newValue) {
                   setState(() {
-                    showMessage = false;
+                    showErrorMessage = false;
                     selectedUsluga = newValue;
-                    getTermine();
+                    getUslugaTermine();
                   });
                 },
               ),
@@ -136,7 +131,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 kliknuoDodajDrugiTermin = false;
                 if (selectedUsluga == null) {
                   setState(() {
-                    showMessage = true;
+                    showErrorMessage = true;
                   });
                 } else {
                   _showDialog(context);
@@ -149,7 +144,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
           SizedBox(
             width: 10,
           ),
-          showMessage == true
+          showErrorMessage == true
               ? Text(
                   "Molimo vas odaberite uslugu.",
                   style: TextStyle(color: Colors.red),
@@ -238,7 +233,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               builder: (BuildContext context) => AlertDialog(
                     title: Text("Greška"),
                     content: Text(
-                        "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (izabrani možda već postoji za datu uslugu)"),
+                        "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (izabrani termin možda već postoji za datu uslugu)"),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(context),

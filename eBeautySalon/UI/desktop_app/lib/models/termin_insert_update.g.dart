@@ -1,16 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'termin_update.dart';
+part of 'termin_insert_update.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TerminUpdate _$TerminUpdateFromJson(Map<String, dynamic> json) => TerminUpdate(
+TerminInsertUpdate _$TerminInsertUpdateFromJson(Map<String, dynamic> json) =>
+    TerminInsertUpdate(
       json['opis'] as String?,
     );
 
-Map<String, dynamic> _$TerminUpdateToJson(TerminUpdate instance) =>
+Map<String, dynamic> _$TerminInsertUpdateToJson(TerminInsertUpdate instance) =>
     <String, dynamic>{
       'opis': instance.opis,
     };

@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../models/search_result.dart';
 import '../models/termin.dart';
-import '../models/termin_update.dart';
+import '../models/termin_insert_update.dart';
 import '../models/usluga_termin.dart';
+import '../models/usluga_termin_insert.dart';
 import '../models/usluga_termin_update.dart';
 import '../providers/termini_provider.dart';
 import '../providers/usluge_provider.dart';
@@ -26,10 +27,16 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
   late UslugeProvider _uslugeProvider;
   SearchResult<UslugaTermin>? _uslugaTerminResult;
   SearchResult<Usluga>? _uslugaResult;
+  SearchResult<Termin>? _terminiResult;
+  TextEditingController inputTerminController = TextEditingController();
   bool showMessage = false;
   bool switchPrikazan = true;
-  String? selectedValue;
+  String? selectedUsluga;
+  String? selectedTermin;
+  String? selectedTerminOpis;
   bool? isLoading = true;
+  bool? kliknuoDodajDrugiTermin = false;
+  UslugaTermin? uslugaTermin;
 
   @override
   void didChangeDependencies() {
@@ -45,6 +52,8 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
 
   initForm() async {
     _uslugaResult = await _uslugeProvider.get();
+    _terminiResult = await _terminiProvider.get();
+
     setState(() {
       isLoading = false;
     });
@@ -69,9 +78,9 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
 
   getTermine() async {
     var data =
-        await _uslugeTerminiProvider.get(filter: {'uslugaId': selectedValue});
+        await _uslugeTerminiProvider.get(filter: {'uslugaId': selectedUsluga});
 
-    print("uslugaId: ${selectedValue}");
+    print("uslugaId: ${selectedUsluga}");
 
     setState(() {
       _uslugaTerminResult = data;
@@ -93,7 +102,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: selectedValue,
+                value: selectedUsluga,
                 hint: Text('Izaberite uslugu'),
                 items: _uslugaResult?.result.map((Usluga item) {
                   return DropdownMenuItem<String>(
@@ -104,7 +113,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 onChanged: (String? newValue) {
                   setState(() {
                     showMessage = false;
-                    selectedValue = newValue;
+                    selectedUsluga = newValue;
                     getTermine();
                   });
                 },
@@ -116,7 +125,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
           ),
           SizedBox(
             height: 40,
-            width: 200,
+            width: 300,
             child: ElevatedButton(
               style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -124,13 +133,16 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                           borderRadius: BorderRadius.circular(10.0),
                           side: BorderSide(color: Colors.pink)))),
               onPressed: () async {
-                if (selectedValue == null) {
+                kliknuoDodajDrugiTermin = false;
+                if (selectedUsluga == null) {
                   setState(() {
                     showMessage = true;
                   });
+                } else {
+                  _showDialog(context);
                 }
               },
-              child: Text("Dodaj novi termin",
+              child: Text("Dodaj novi termin za izabranu uslugu",
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
@@ -191,9 +203,210 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
     print("obj: ${obj.isPrikazan}");
     //treba da se osvjezi lista
     var data =
-        await _uslugeTerminiProvider.get(filter: {'uslugaId': selectedValue});
+        await _uslugeTerminiProvider.get(filter: {'uslugaId': selectedUsluga});
     setState(() {
       _uslugaTerminResult = data;
     });
+  }
+
+  void _insertUslugaTermin() async {
+    if (selectedUsluga != null && selectedTermin != null) {
+      if (kliknuoDodajDrugiTermin == false) {
+        try {
+          var obj_uslugaTermin = UslugaTerminInsert(
+              int.parse(selectedUsluga!), int.parse(selectedTermin!));
+          var uslugaTerminInsert =
+              await _uslugeTerminiProvider.insert(obj_uslugaTermin);
+          print("${uslugaTerminInsert.termin?.opis}");
+
+          await showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                    title: Text("Informacija o uspjehu"),
+                    content: Text("Uspješno izvršena akcija!"),
+                    actions: <Widget>[
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Ok"))
+                    ],
+                  ));
+        } catch (e) {
+          await showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                    title: Text("Greška"),
+                    content: Text(
+                        "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (izabrani možda već postoji za datu uslugu)"),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text("Ok"))
+                    ],
+                  ));
+        }
+      }
+      //osvjezi listu
+      var data = await _uslugeTerminiProvider
+          .get(filter: {'uslugaId': selectedUsluga});
+      setState(() {
+        _uslugaTerminResult = data;
+      });
+    }
+  }
+
+  void _insertTermin() async {
+    if (selectedUsluga != null) {
+      if (kliknuoDodajDrugiTermin == true) {
+        if (selectedTerminOpis != null) {
+          try {
+            var obj_termin = TerminInsertUpdate(selectedTerminOpis);
+            var terminInsert = await _terminiProvider.insert(obj_termin);
+            print("${terminInsert.opis}");
+
+            //dodati uslugatermin objekat (terminid= obj_termin.id)
+            if (terminInsert != null) {
+              var termin = terminInsert.terminId;
+              var obj_uslugaTermin =
+                  UslugaTerminInsert(int.parse(selectedUsluga!), termin);
+              var uslugaTerminInsert =
+                  await _uslugeTerminiProvider.insert(obj_uslugaTermin);
+              print("${uslugaTerminInsert.termin?.opis}");
+            }
+
+            await showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                      title: Text("Informacija o uspjehu"),
+                      content: Text("Uspješno izvršena akcija!"),
+                      actions: <Widget>[
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("Ok"))
+                      ],
+                    ));
+          } catch (e) {
+            await showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                      title: Text("Greška"),
+                      content: Text(
+                          "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti i termin treba biti u formatu ##:##"),
+                      actions: [
+                        TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("Ok"))
+                      ],
+                    ));
+          }
+        }
+      }
+      //osvjezi listu
+      var data = await _uslugeTerminiProvider
+          .get(filter: {'uslugaId': selectedUsluga});
+      var termini = await _terminiProvider.get();
+      setState(() {
+        _uslugaTerminResult = data;
+        _terminiResult = termini;
+      });
+    }
+  }
+
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Izaberite novi termin za odabranu uslugu'),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return DropdownButton<String>(
+                hint: Text("Izaberite termin"),
+                value: selectedTermin,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedTermin = newValue;
+                  });
+                },
+                items: _terminiResult?.result.map((Termin item) {
+                  return DropdownMenuItem<String>(
+                    value: item.terminId.toString(),
+                    child: Text(item.opis ?? ""),
+                  );
+                }).toList(),
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                kliknuoDodajDrugiTermin = false;
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Otkaži'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Handle selection
+                kliknuoDodajDrugiTermin = true;
+                Navigator.of(context).pop(); // Close the dialog
+                _showInputTerminDialog(context);
+              },
+              child: Text('Dodaj drugi termin?'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Handle selection
+                kliknuoDodajDrugiTermin = false;
+                print('Selected value: $selectedTermin');
+                Navigator.of(context).pop(); // Close the dialog
+                _insertUslugaTermin();
+              },
+              child: Text('Spasi'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showInputTerminDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Unesite novi termin'),
+          content: TextField(
+            controller: inputTerminController,
+            decoration: InputDecoration(
+              hintText: "primjer: 10:00",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Otkaži'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Retrieve the input text and handle it
+                print('Input: ${inputTerminController.text}');
+                setState(() {
+                  selectedTerminOpis = inputTerminController.text;
+                });
+                Navigator.of(context).pop(); // Close the dialog
+                _insertTermin();
+              },
+              child: Text('Spasi novi termin'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

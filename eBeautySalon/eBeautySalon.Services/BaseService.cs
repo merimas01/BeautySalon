@@ -40,11 +40,18 @@ namespace eBeautySalon.Services
             }
             var list = await query.ToListAsync();
 
+            list = SortAZ(list);
+
             var tmp = _mapper.Map<List<T>>(list);
 
             result.Result = tmp;
 
             return result;
+        }
+
+        public virtual List<TDb> SortAZ (List<TDb> list)
+        {
+            return list;
         }
 
         public virtual IQueryable<TDb> AddInclude(IQueryable<TDb> query, TSearch? search = null)

@@ -40,5 +40,27 @@ namespace eBeautySalon.Services
             }
             return base.AddInclude(query, search);
         }
+
+        public override async Task<bool> AddValidationInsert(UslugeTerminiInsertRequest request)
+        {
+            var uslugeTermini = await _context.UslugaTermins.ToListAsync();
+            foreach (var item in uslugeTermini)
+            {
+                if (item.TerminId == request.TerminId && item.UslugaId == request.UslugaId)
+                    return false;
+            }
+            return true;
+        }
+
+        public override async Task<bool> AddValidationUpdate(int id, UslugeTerminiUpdateRequest request)
+        {
+            var uslugeTermini = await _context.UslugaTermins.Where(x=>x.UslugaTerminId != id).ToListAsync();
+            foreach (var item in uslugeTermini)
+            {
+                if (item.TerminId == request.TerminId && item.UslugaId == request.UslugaId)
+                    return false;
+            }
+            return true;
+        }
     }
 }

@@ -42,6 +42,12 @@ namespace eBeautySalon.Services
             return true;
         }
 
+        public virtual async Task<bool> AddValidationDelete(int id)
+        {
+            return true;
+        }
+
+
         public virtual async Task<T> Insert(TInsert insert)
         {
             var set = _context.Set<TDb>();
@@ -92,9 +98,13 @@ namespace eBeautySalon.Services
             if (entity != null)
             {
                 await BeforeDelete(entity);
-                set.Remove(entity);
-                await _context.SaveChangesAsync();
-                return true;
+                var validate = await AddValidationDelete(id);
+                if(validate == true) {
+                    set.Remove(entity);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
             }
             else return false;
            

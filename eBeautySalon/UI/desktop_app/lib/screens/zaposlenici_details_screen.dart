@@ -16,6 +16,7 @@ import '../models/search_result.dart';
 import '../models/slika_profila.dart';
 import '../models/slika_profila_insert_update.dart';
 import '../models/uloga.dart';
+import '../models/uloga_insert_update.dart';
 import '../models/usluga.dart';
 import '../models/zaposlenik.dart';
 import '../models/zaposlenik_insert_update.dart';
@@ -70,6 +71,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   String? uloga;
   String validationError = "";
   List<Usluga>? _postojeceUsluge;
+  String? selectedUlogaId = "";
 
   @override
   void initState() {
@@ -88,9 +90,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       'korisnickoIme': widget.korisnik?.korisnickoIme,
       'status': widget.korisnik?.status,
       'slikaProfilaId': widget.korisnik?.slikaProfilaId.toString(),
-      'ulogaId': widget.korisnik?.korisnikUlogas?.length == 0
-          ? DEFAULT_UlogaId.toString()
-          : widget.korisnik?.korisnikUlogas?[0].ulogaId.toString(),
+      'ulogaId': widget.korisnik?.korisnikUlogas?[0].ulogaId.toString(),
     };
 
     _postojeceUsluge =
@@ -124,7 +124,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         setState(() {
           _selectedItems.result = x;
           validationError = "";
-
+          uloga = "Usluznik";
+          selectedUlogaId = widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
           print(
               "selectedItems, postojeceUsluge ${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
         });
@@ -214,6 +215,59 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     );
   }
 
+  void dodajUloguDialog() async {
+    TextEditingController inputUlogaNazivController = TextEditingController();
+    TextEditingController inputUlogaOpisController = TextEditingController();
+    String newUlogaNaziv = "";
+    String newUlogaOpis = "";
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Unesite novu ulogu'),
+          content: SizedBox(
+            height: 150,
+            child: Column(
+              children: [
+                TextField(
+                  controller: inputUlogaNazivController,
+                  decoration: InputDecoration(hintText: 'Naziv uloge'),
+                ),
+                TextField(
+                  controller: inputUlogaOpisController,
+                  decoration: InputDecoration(hintText: 'Opis uloge'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Otkaži'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Retrieve the input text and handle it
+                print(
+                    'Input: ${inputUlogaNazivController.text}, ${inputUlogaOpisController.text}');
+                setState(() {
+                  newUlogaNaziv = inputUlogaNazivController.text;
+                  newUlogaOpis = inputUlogaOpisController.text;
+                });
+                Navigator.of(context).pop(); // Close the dialog
+
+                _insertUpdateUloga(newUlogaNaziv, newUlogaOpis, "");
+              },
+              child: Text('Spasi novu ulogu'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showMultiSelectDropdown() async {
     final SearchResult<Usluga>? items = _uslugeResult;
     final SearchResult<Usluga>? results = await showDialog(
@@ -267,8 +321,22 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                         ),
                         hintText: 'Odaberite ulogu',
                       ),
+                      onReset: () async {
+                        if (widget.zaposlenik == null) {
+                          setState(() {
+                            selectedUlogaId = "";
+                            uloga = null;
+                          });
+                        } else {
+                          setState(() {
+                            selectedUlogaId = widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
+                            uloga = selectedUlogaId == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
+                          });
+                        }
+                      },
                       onChanged: (x) async {
                         setState(() {
+                          selectedUlogaId = x;
                           uloga =
                               x == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
                         });
@@ -284,10 +352,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           setState(() {
                             validationError =
                                 "Dozvoljeno je izabrati maksimalno 3 usluge. Pokušajte ponovo.";
-                          });
-                        } else {
-                          setState(() {
-                            validationError = "";
                           });
                         }
                         print(x);
@@ -309,12 +373,59 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                         return null;
                       },
                     ),
-                  )
+                  ),
+                  SizedBox(width: 10),
+                  widget.zaposlenik == null
+                      ? Expanded(
+                          child: TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.blue,
+                              ),
+                              // style: ButtonStyle(
+                              //     backgroundColor: MaterialStateProperty.all<Color>(
+                              //         Color.fromARGB(255, 255, 255, 255)),
+                              //     foregroundColor: MaterialStateProperty.all<Color>(
+                              //         Colors.pink),
+                              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                              //         borderRadius: BorderRadius.circular(10.0),
+                              //         side: BorderSide(color: Colors.pink)))),
+                              onPressed: () {
+                                dodajUloguDialog();
+                              },
+                              child: Text("Dodaj novu ulogu")))
+                      : Expanded(
+                          child: TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.blue,
+                              ),
+                              // style: ButtonStyle(
+                              //     backgroundColor: MaterialStateProperty.all<Color>(
+                              //         Color.fromARGB(255, 255, 255, 255)),
+                              //     foregroundColor: MaterialStateProperty.all<Color>(Colors.pink),
+                              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.pink)))),
+                              onPressed: () {
+                                if (selectedUlogaId != "") {
+                                  urediUloguDialog(selectedUlogaId);
+                                }
+                              },
+                              child: Text("Uredi ulogu"))),
+                  SizedBox(width: 10),
+                  // uloga != null
+                  //     ? Expanded(
+                  //         child: TextButton(
+                  //           style: TextButton.styleFrom(
+                  //             foregroundColor: Colors.red,
+                  //           ),
+                  //           onPressed: () async {
+                  //             if (selectedUlogaId != "")
+                  //               obrisiUloguDialog(selectedUlogaId);
+                  //           },
+                  //           child: Text('Obriši ulogu'),
+                  //         ),
+                  //       )
+                  //     : Container(),
                 ],
               ),
-              // SizedBox(
-              //   height: 10,
-              // ),
               Row(
                 children: [
                   Expanded(
@@ -328,7 +439,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           value.trim().isEmpty) {
                         return 'Molimo Vas unesite korisničko ime.';
                       }
-                      if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$').hasMatch(value)) {
+                      if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$')
+                          .hasMatch(value)) {
                         return 'Korisničko ime treba počinjati sa slovom i smije sadržavati \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
                       }
                       return null;
@@ -642,64 +754,62 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                 child: const Text(
                                     "Odaberite usluge za koje je zadužen zaposlenik")),
                             SizedBox(height: 5),
-                            _selectedItems.result.length <= 3
-                                ? Wrap(
-                                    alignment: WrapAlignment.start,
-                                    children: _selectedItems.result
-                                        .map((Usluga item) => SizedBox(
-                                            width: 150,
-                                            child: MouseRegion(
-                                                onEnter: (_) {
+                            // _selectedItems.result.length <= 3
+                            //     ?
+                            Wrap(
+                              alignment: WrapAlignment.start,
+                              children: _selectedItems.result
+                                  .map((Usluga item) => SizedBox(
+                                      width: 150,
+                                      child: MouseRegion(
+                                          onEnter: (_) {
+                                            setState(() {
+                                              _hoveredItemText = item.naziv;
+                                            });
+                                          },
+                                          onExit: (_) {
+                                            setState(() {
+                                              _hoveredItemText = null;
+                                            });
+                                          },
+                                          child: Tooltip(
+                                              message: item.naziv!,
+                                              child: Chip(
+                                                label: Text(item.naziv!),
+                                                deleteIcon:
+                                                    Icon(Icons.delete_forever),
+                                                onDeleted: () {
                                                   setState(() {
-                                                    _hoveredItemText =
-                                                        item.naziv;
+                                                    _selectedItems.result
+                                                        .remove(item);
+                                                    if (_selectedItems
+                                                            .result.length ==
+                                                        0) {
+                                                      setState(() {
+                                                        validationError =
+                                                            "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
+                                                      });
+                                                    } else if (_selectedItems
+                                                            .result.length !=
+                                                        0) {
+                                                      setState(() {
+                                                        validationError = "";
+                                                      });
+                                                    }
+                                                    print(
+                                                        "broj itema: ${_selectedItems.result}");
                                                   });
                                                 },
-                                                onExit: (_) {
-                                                  setState(() {
-                                                    _hoveredItemText = null;
-                                                  });
-                                                },
-                                                child: Tooltip(
-                                                    message: item.naziv!,
-                                                    child: Chip(
-                                                      label: Text(item.naziv!),
-                                                      deleteIcon: Icon(
-                                                          Icons.delete_forever),
-                                                      onDeleted: () {
-                                                        setState(() {
-                                                          _selectedItems.result
-                                                              .remove(item);
-                                                          if (_selectedItems
-                                                                  .result
-                                                                  .length ==
-                                                              0) {
-                                                            setState(() {
-                                                              validationError =
-                                                                  "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
-                                                            });
-                                                          } else if (_selectedItems
-                                                                  .result
-                                                                  .length !=
-                                                              0) {
-                                                            setState(() {
-                                                              validationError =
-                                                                  "";
-                                                            });
-                                                          }
-                                                          print(
-                                                              "broj itema: ${_selectedItems.result}");
-                                                        });
-                                                      },
-                                                    )))))
-                                        .toList(),
-                                  )
-                                : Container(),
-                            validationError != ""
-                                ? Text(
-                                    validationError,
-                                    style: TextStyle(color: Colors.red),
-                                  )
+                                              )))))
+                                  .toList(),
+                            ),
+                            _selectedItems.result.length > 3
+                                ? validationError != ""
+                                    ? Text(
+                                        validationError,
+                                        style: TextStyle(color: Colors.red),
+                                      )
+                                    : Container()
                                 : Container()
                           ],
                         )
@@ -1008,5 +1118,162 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       }
     }
     return true;
+  }
+
+  void _insertUpdateUloga(
+      String newUlogaNaziv, String newUlogaOpis, String odabranaUlogaId) async {
+    if (newUlogaNaziv != "") {
+      try {
+        var obj_uloga = UlogaInsertUpdate(newUlogaNaziv, newUlogaOpis);
+        if (odabranaUlogaId == "") {
+          var ulogeInsert = await _ulogeProvider.insert(obj_uloga);
+          print("${ulogeInsert.naziv}, ${ulogeInsert.opis}");
+        } else {
+          var ulogeUpdate = await _ulogeProvider.update(
+              int.parse(odabranaUlogaId), obj_uloga);
+          print("${ulogeUpdate.naziv}, ${ulogeUpdate.opis}");
+        }
+
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Informacija o uspjehu"),
+                  content: Text("Uspješno izvršena akcija!"),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Ok"))
+                  ],
+                ));
+      } catch (e) {
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Greška"),
+                  content: Text(
+                      "Neispravni podaci. Molimo pokušajte ponovo. Nazivi i opisi ne smiju sadržavati brojeve niti specijalne znakove. Svaki zapis treba imati unikatne vrijednosti"),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("Ok"))
+                  ],
+                ));
+      }
+    } else {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text("Naziv ne smije biti prazna vrijednost"),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
+    }
+    var data = await _ulogeProvider.get();
+    setState(() {
+      _ulogeResult = data;
+    });
+  }
+
+  void urediUloguDialog(String? selectedUlogaId) async {
+    TextEditingController inputUlogaNazivController = TextEditingController();
+    TextEditingController inputUlogaOpisController = TextEditingController();
+    String newUlogaNaziv = "";
+    String newUlogaOpis = "";
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Uredite ulogu'),
+          content: SizedBox(
+            height: 150,
+            child: Column(
+              children: [
+                TextField(
+                  controller: inputUlogaNazivController,
+                  decoration: InputDecoration(hintText: 'Naziv uloge'),
+                ),
+                TextField(
+                  controller: inputUlogaOpisController,
+                  decoration: InputDecoration(hintText: 'Opis uloge'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Otkaži'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print(
+                    'Input: ${inputUlogaNazivController.text}, ${inputUlogaOpisController.text}');
+                setState(() {
+                  newUlogaNaziv = inputUlogaNazivController.text;
+                  newUlogaOpis = inputUlogaOpisController.text;
+                });
+                Navigator.of(context).pop(); // Close the dialog
+
+                _insertUpdateUloga(
+                    newUlogaNaziv, newUlogaOpis, selectedUlogaId!);
+              },
+              child: Text('Spasi promjene'),
+            ),
+          ],
+        );
+      },
+    );
+    var data = await _ulogeProvider.get();
+    setState(() {
+      _ulogeResult = data;
+    });
+  }
+
+  void _obrisiZapis(e) async {
+    var delete = await _ulogeProvider.delete(int.parse(selectedUlogaId!));
+    print("deleted? ${delete}");
+    if (delete == true) {
+      //treba da se osvjezi lista
+      var data = await _ulogeProvider.get();
+
+      setState(() {
+        selectedUlogaId = "";
+        uloga = null;
+        _ulogeResult = data;
+      });
+    }
+  }
+
+  void obrisiUloguDialog(String? selectedUlogaId) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text('Potvrda o brisanju zapisa'),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Ne'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                  },
+                ),
+                TextButton(
+                  child: Text('Da'),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                    _obrisiZapis(selectedUlogaId);
+                  },
+                ),
+              ],
+            ));
   }
 }

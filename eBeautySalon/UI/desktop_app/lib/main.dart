@@ -1,4 +1,3 @@
-import 'package:desktop_app/models/recenzija_usluge.dart';
 import 'package:desktop_app/providers/kategorije_provider.dart';
 import 'package:desktop_app/providers/korisnici_uloge_provider.dart';
 import 'package:desktop_app/providers/korisnik_provider.dart';

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
@@ -17,7 +18,7 @@ namespace eBeautySalon.Services
         {
         }
 
-        public override IQueryable<RecenzijaUsluge> AddFilter(IQueryable<RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)
+        public override IQueryable<Database.RecenzijaUsluge> AddFilter(IQueryable<Database.RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)
         {
             if (!string.IsNullOrEmpty(search.FTS))
             {
@@ -29,7 +30,7 @@ namespace eBeautySalon.Services
             }
             return base.AddFilter(query, search);
         }
-        public override IQueryable<RecenzijaUsluge> AddInclude(IQueryable<RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)
+        public override IQueryable<Database.RecenzijaUsluge> AddInclude(IQueryable<Database.RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)
         {
             if (search?.isKorisnikIncluded == true)
             {
@@ -70,6 +71,35 @@ namespace eBeautySalon.Services
             if (recenzija_usluge != null) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
             return true;
+        }
+
+        public async Task<List<dynamic>> GetProsjecneOcjeneUsluga()
+        {
+            var recenzijeUsluga = await _context.RecenzijaUsluges.Include(x=>x.Korisnik.SlikaProfila).Include(x=>x.Usluga).ToListAsync();
+            var uslugaIdDistinct = await _context.RecenzijaUsluges.Select(x => x.UslugaId).Distinct().ToListAsync();          
+            var prosjecneOcjene_usluge = new List<dynamic>();
+
+            foreach (var index in uslugaIdDistinct)
+            {
+                string usluga = "";
+                double suma = 0.0;
+                double prosjek = 0.0;
+                int brojac = 0;
+                foreach (var ru in recenzijeUsluga)
+                {
+                    if(ru.UslugaId == index)
+                    {
+                        usluga = ru.Usluga.Naziv;
+                        suma += ru.Ocjena;
+                        brojac++;
+                    }                 
+                }
+                prosjek = suma / brojac;
+                var obj = new { uslugaId = index, nazivUsluge = usluga, prosjecnaOcjena = prosjek };
+                prosjecneOcjene_usluge.Add(obj);
+            }
+          
+            return prosjecneOcjene_usluge;
         }
     }
 }

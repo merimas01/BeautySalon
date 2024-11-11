@@ -16,6 +16,7 @@ import 'package:desktop_app/providers/usluge_termini_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_usluge_provider.dart';
 import 'package:desktop_app/screens/home_page.dart';
+import 'package:desktop_app/screens/zaposlenici_details_screen.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -246,26 +247,7 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Nemate račun?",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        TextButton(
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all<Color>(Colors.pink),
-                          ),
-                          onPressed: () {
-                            print("registracija button");
-                          },
-                          child: Text("Registracija",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        )
-                      ],
-                    )
+                    
                   ],
                 ),
               ))),

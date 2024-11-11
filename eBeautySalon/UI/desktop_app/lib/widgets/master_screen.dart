@@ -16,7 +16,7 @@ class MasterScreenWidget extends StatefulWidget {
   Widget? child;
   String? title;
   Widget? title_widget;
-  MasterScreenWidget({this.child, this.title, this.title_widget, super.key});
+  MasterScreenWidget({required this.child, this.title, this.title_widget, super.key});
 
   @override
   State<MasterScreenWidget> createState() => _MasterScreenWidgetState();
@@ -33,7 +33,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         child: ListView(
           children: [
             ListTile(
-              title: Text("Home page"),
+              title: Text("Početna stranica"),
               onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const HomePage()));

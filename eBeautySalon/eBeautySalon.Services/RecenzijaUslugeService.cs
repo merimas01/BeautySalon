@@ -85,17 +85,19 @@ namespace eBeautySalon.Services
                 double suma = 0.0;
                 double prosjek = 0.0;
                 int brojac = 0;
+                List<int> ocjene = new List<int>();
                 foreach (var ru in recenzijeUsluga)
                 {
                     if(ru.UslugaId == index)
                     {
+                        ocjene.Add(ru.Ocjena);
                         usluga = ru.Usluga.Naziv;
                         suma += ru.Ocjena;
                         brojac++;
                     }                 
                 }
                 prosjek = suma / brojac;
-                var obj = new { uslugaId = index, nazivUsluge = usluga, prosjecnaOcjena = prosjek };
+                var obj = new { uslugaId = index, nazivUsluge = usluga, prosjecnaOcjena = prosjek, sveOcjene = ocjene };
                 prosjecneOcjene_usluge.Add(obj);
             }
           

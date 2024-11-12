@@ -48,6 +48,15 @@ namespace eBeautySalon.Services
             return true;
         }
 
+        public override Task BeforeUpate(Uloga entity, UlogeUpdateRequest update)
+        {
+            if (string.IsNullOrWhiteSpace(update.Opis))
+            {
+                update.Opis = entity.Opis;
+            }
+            return base.BeforeUpate(entity, update);
+        }
+
         public override async Task<bool> AddValidationDelete(int id)
         {
             //ne moze se obrisati uloga koju neko koristi.

@@ -66,6 +66,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           _builSearch(),
+          _showResultCount(),
           SizedBox(
             height: 10,
           ),
@@ -171,6 +172,22 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
         ],
       ),
     );
+  }
+
+  Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${selectedUsluga == null && _uslugaTerminResult?.result != null ? 0 : _uslugaTerminResult?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
   }
 
   Widget _buildDataListView() {

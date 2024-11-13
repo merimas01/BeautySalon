@@ -35,6 +35,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
       child: Column(
         children: [
           _buildSearch(),
+          _showResultCount(),
           _buildDataListView(),
         ],
       ),
@@ -209,5 +210,21 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
     setState(() {
       result = data;
     });
+  }
+
+  Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${result?.count == null ? 0 : result?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
   }
 }

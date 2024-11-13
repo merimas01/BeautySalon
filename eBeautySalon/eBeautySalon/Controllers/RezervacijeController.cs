@@ -15,11 +15,5 @@ namespace eBeautySalon.Controllers
         {
             _service = service;
         }
-
-        [HttpGet("status/{statusId}")]
-        public Task<PagedResult<Rezervacije>> GetRezervacijeByStatusId(int statusId, [FromQuery] RezervacijeSearchObject? search)
-        {
-            return _service.GetRezervacijeByStatusId(statusId, search);
-        }
     }
 }

@@ -50,12 +50,28 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
       child: Container(
         child: Column(children: [
           _builSearch(),
+          _showResultCount(),
           _buildDataListView(),
         ]),
       ),
       title_widget: Text("Usluge"),
-      //title: "Usluge",
     );
+  }
+
+  Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${result?.count == null ? 0 : result?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
   }
 
   Widget _builSearch() {
@@ -77,15 +93,17 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           Expanded(
             child: searchByKategorije(),
           ),
-           SizedBox(width: 20),
-           selectedKategorija!=null? TextButton(
-              onPressed: (){
-                setState(() {
-                  selectedKategorija=null;
-                });
-              },
-              child: Text("Poništi selekciju"),
-            ): Container(),
+          SizedBox(width: 20),
+          selectedKategorija != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedKategorija = null;
+                    });
+                  },
+                  child: Text("Poništi selekciju"),
+                )
+              : Container(),
           SizedBox(
             width: 10,
           ),
@@ -236,7 +254,13 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _uslugeProvider.get(filter: {'FTS': _ftsController.text});
+    var data = await _uslugeProvider.get(filter: {
+      'FTS': _ftsController.text,
+      'kategorijaId': selectedKategorija?.kategorijaId.toString()
+    });
+
+    print(
+        "fts: ${_ftsController.text}, kategorijaId: ${selectedKategorija?.kategorijaId}");
 
     setState(() {
       result = data;
@@ -253,22 +277,24 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.grey),
         ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<Kategorija>(
-            hint: Text("Izaberi kategoriju"),
-            value: selectedKategorija,
-            onChanged: (Kategorija? newValue) {
-              setState(() {
-                selectedKategorija = newValue;
-              });
-            },
-            items: _kategorijeResult?.result
-                .map<DropdownMenuItem<Kategorija>>((Kategorija service) {
-              return DropdownMenuItem<Kategorija>(
-                value: service,
-                child: Text(service.naziv!),
-              );
-            }).toList(),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Kategorija>(
+              hint: Text("Izaberi kategoriju"),
+              value: selectedKategorija,
+              onChanged: (Kategorija? newValue) {
+                setState(() {
+                  selectedKategorija = newValue;
+                });
+              },
+              items: _kategorijeResult?.result
+                  .map<DropdownMenuItem<Kategorija>>((Kategorija service) {
+                return DropdownMenuItem<Kategorija>(
+                  value: service,
+                  child: Text(service.naziv!),
+                );
+              }).toList(),
+            ),
           ),
         ),
       );

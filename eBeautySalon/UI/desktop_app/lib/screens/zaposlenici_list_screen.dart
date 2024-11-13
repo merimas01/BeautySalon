@@ -34,6 +34,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
       child: Container(
         child: Column(children: [
           _builSearch(),
+          _showResultCount(),
           _buildDataListView(),
         ]),
       ),
@@ -244,5 +245,21 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           : "";
       return Text(z!);
     }
+  }
+
+  Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${result?.count == null ? 0 : result?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
   }
 }

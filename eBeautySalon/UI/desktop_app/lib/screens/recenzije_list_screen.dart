@@ -1,5 +1,4 @@
 import 'package:desktop_app/models/search_result.dart';
-import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,9 +19,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
   late RecenzijaUsluznikaProvider _recenzijeUsluznikaProvider;
   SearchResult<RecenzijaUsluge>? _recenzijaUslugeResult;
   SearchResult<RecenzijaUsluznika>? _recenzijaUsluznikaResult;
-  TextEditingController _ftsController = new TextEditingController();
+  TextEditingController _ftsController1 = new TextEditingController();
+  TextEditingController _ftsController2 = new TextEditingController();
 
-  //tooltip na komentar ako je veliki
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,11 +42,13 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                   Column(
                     children: [
                       _getRecenzijeUsluge(),
+                      _showResultUslugeCount(),
                       _buildRecenzijeUslugaListView(),
                     ],
                   ),
                   Column(children: [
                     _getRecenzijeUsluznika(),
+                    _showResultUsluzniciCount(),
                     _buildRecenzijeUsluznikaListView()
                   ])
                 ],
@@ -57,6 +58,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
 
   Widget _getRecenzijeUsluge() {
     _recenzijeUslugeProvider = context.read<RecenzijaUslugeProvider>();
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -66,7 +68,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
               decoration: InputDecoration(
                 labelText: "",
               ),
-              controller: _ftsController,
+              controller: _ftsController1,
             ),
           ),
           SizedBox(
@@ -76,10 +78,11 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
               onPressed: () async {
                 print("pritisnuto dugme trazi rec. usluge");
 
-                var data = await _recenzijeUslugeProvider
-                    .get(filter: {'FTS': _ftsController.text});
+                var data = await _recenzijeUslugeProvider.get(filter: {
+                  'FTS': _ftsController1.text,
+                });
 
-                print("fts: ${_ftsController.text}");
+                print("fts: ${_ftsController1.text}");
 
                 setState(() {
                   _recenzijaUslugeResult = data;
@@ -208,7 +211,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
 
     //treba da se osvjezi lista
     var data = await _recenzijeUslugeProvider
-        .get(filter: {'FTS': _ftsController.text});
+        .get(filter: {'FTS': _ftsController1.text});
 
     setState(() {
       _recenzijaUslugeResult = data;
@@ -217,6 +220,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
 
   Widget _getRecenzijeUsluznika() {
     _recenzijeUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -226,7 +230,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
               decoration: InputDecoration(
                 labelText: "",
               ),
-              controller: _ftsController,
+              controller: _ftsController2,
             ),
           ),
           SizedBox(
@@ -237,9 +241,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                 print("pritisnuto dugme trazi rec. usluznika");
 
                 var data = await _recenzijeUsluznikaProvider
-                    .get(filter: {'FTS': _ftsController.text});
+                    .get(filter: {'FTS': _ftsController2.text});
 
-                print("fts: ${_ftsController.text}");
+                print("fts: ${_ftsController2.text}");
 
                 setState(() {
                   _recenzijaUsluznikaResult = data;
@@ -368,10 +372,42 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
 
     //treba da se osvjezi lista
     var data = await _recenzijeUsluznikaProvider
-        .get(filter: {'FTS': _ftsController.text});
+        .get(filter: {'FTS': _ftsController2.text});
 
     setState(() {
       _recenzijaUsluznikaResult = data;
     });
+  }
+
+  Widget _showResultUslugeCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${_recenzijaUslugeResult?.count == null ? 0 : _recenzijaUslugeResult?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
+  }
+
+  Widget _showResultUsluzniciCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${_recenzijaUsluznikaResult?.count == null ? 0 : _recenzijaUsluznikaResult?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
   }
 }

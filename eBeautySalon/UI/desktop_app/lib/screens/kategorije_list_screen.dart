@@ -30,6 +30,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
     return MasterScreenWidget(
       child: Column(children: [
         _builSearch(),
+        _showResultCount(),
         _buildDataListView(),
       ]),
       title: "Kategorije",
@@ -195,4 +196,21 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
       result = data;
     });
   }
+
+     Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${result?.count == null ? 0 : result?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
+  }
+
 }

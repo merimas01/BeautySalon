@@ -32,8 +32,24 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     return MasterScreenWidget(
         title: "Korisnici",
         child: Column(
-          children: [_buildSearch(), _buildDataListView()],
+          children: [_buildSearch(), _showResultCount(), _buildDataListView()],
         ));
+  }
+
+   Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${result?.count == null ? 0 : result?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
   }
 
   Widget _buildSearch() {
@@ -69,14 +85,6 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           SizedBox(
             width: 8,
           ),
-          // ElevatedButton(
-          //     onPressed: () async {
-          //       Navigator.of(context).push(MaterialPageRoute(
-          //           builder: (context) => KorisniciDetailsScreen(
-          //                 korisnik: null,
-          //               )));
-          //     },
-          //     child: Text("Dodaj korisnika")),
         ],
       ),
     );

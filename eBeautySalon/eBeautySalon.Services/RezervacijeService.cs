@@ -30,6 +30,10 @@ namespace eBeautySalon.Services
                 || x.Termin.Opis.StartsWith(search.FTS)
                 || x.Usluga.Naziv.StartsWith(search.FTS)));
             }
+            if (search.StatusId != null)
+            {
+                query = query.Where(x => x.StatusId == search.StatusId);
+            }
             return base.AddFilter(query, search);
         }
 
@@ -86,34 +90,6 @@ namespace eBeautySalon.Services
             entity.StatusId = await _context.Statuses.Where(x => x.Opis != null && x.Opis == "Nova").Select(x=>x.StatusId).FirstOrDefaultAsync();
            
             await base.BeforeInsert(entity, insert);
-        }
-
-        public async Task<PagedResult<Rezervacije>> GetRezervacijeByStatusId(int statusId, RezervacijeSearchObject? search)
-        {
-            var query = _context.Rezervacijas.Where(x => x.StatusId == statusId).AsQueryable();
-
-            PagedResult<Rezervacije> result = new PagedResult<Rezervacije>();
-
-            query = AddFilter(query, search);
-
-            query = query.Include(x => x.Korisnik.SlikaProfila);           
-            query = query.Include(x => x.Usluga);
-            query = query.Include(x => x.Termin);        
-            query = query.Include(x => x.Status);
-            
-            result.Count = await query.CountAsync();
-
-            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
-            {
-                query = query.Take(search.PageSize.Value).Skip(search.Page.Value * search.PageSize.Value);
-            }
-            var list = await query.ToListAsync();
-
-            var tmp = _mapper.Map<List<Rezervacije>>(list);
-
-            result.Result = tmp;
-
-            return result;
         }
     }
 }

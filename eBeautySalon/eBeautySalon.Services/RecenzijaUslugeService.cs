@@ -28,6 +28,10 @@ namespace eBeautySalon.Services
                 || x.Ocjena.ToString().StartsWith(search.FTS)
                 || x.Komentar.StartsWith(search.FTS));
             }
+            if(search.UslugaId != null)
+            {
+                query = query.Where(x => x.UslugaId == search.UslugaId);
+            }
             return base.AddFilter(query, search);
         }
         public override IQueryable<Database.RecenzijaUsluge> AddInclude(IQueryable<Database.RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)

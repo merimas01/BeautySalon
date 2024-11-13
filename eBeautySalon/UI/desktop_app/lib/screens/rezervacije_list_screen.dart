@@ -23,6 +23,8 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   SearchResult<Rezervacija>? result;
   SearchResult<Status>? _statusResult;
   TextEditingController _ftsController = new TextEditingController();
+  bool isLoadingStatus = true;
+  Status? selectedStatus;
 
   @override
   void didChangeDependencies() {
@@ -30,6 +32,66 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     super.didChangeDependencies();
     _rezervacijeProvider = context.read<RezervacijeProvider>();
     _statusiProvider = context.read<StatusiProvider>();
+    initForm();
+  }
+
+  void initForm() async {
+    var statusi = await _statusiProvider.get();
+    setState(() {
+      _statusResult = statusi;
+      isLoadingStatus = false;
+    });
+  }
+
+   Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Broj rezultata: ${result?.count == null ? 0 : result?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
+  }
+
+  Widget searchByStatus() {
+    print("search by status");
+    if (isLoadingStatus == false) {
+      return Container(
+        padding: EdgeInsets.all(3.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Status>(
+              hint: Text("Izaberi status"),
+              value: selectedStatus,
+              onChanged: (Status? newValue) {
+                setState(() {
+                  selectedStatus = newValue;
+                });
+              },
+              items: _statusResult?.result
+                  .map<DropdownMenuItem<Status>>((Status service) {
+                return DropdownMenuItem<Status>(
+                  value: service,
+                  child: Text(service.opis!),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    }
+    return Container();
   }
 
   @override
@@ -38,6 +100,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       title: 'Rezervacije',
       child: Column(children: [
         _builSearch(),
+        _showResultCount(),
         _buildDataListView(),
       ]),
     );
@@ -59,22 +122,36 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           SizedBox(
             width: 8,
           ),
+          Expanded(
+            child: searchByStatus(),
+          ),
+          SizedBox(width: 20),
+          selectedStatus != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedStatus = null;
+                    });
+                  },
+                  child: Text("Poništi selekciju"),
+                )
+              : Container(),
+              SizedBox(width: 20),
           ElevatedButton(
               onPressed: () async {
-                print("pritisnuto dugme Dugme");
+                print("pritisnuto dugme Traži");
 
-                var data = await _rezervacijeProvider
-                    .get(filter: {'FTS': _ftsController.text});
+                var data = await _rezervacijeProvider.get(filter: {
+                  'FTS': _ftsController.text,
+                  'statusId': selectedStatus?.statusId
+                });
 
-                var statusi = await _statusiProvider.get();
-
-                print("fts: ${_ftsController.text}");
+                print(
+                    "fts: ${_ftsController.text}, statusId: ${selectedStatus?.statusId}");
 
                 setState(() {
                   result = data;
-                  _statusResult = statusi;
                 });
-                print("${_statusResult?.result[0].opis}");
               },
               child: Text("Traži")),
           SizedBox(
@@ -147,5 +224,4 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
               []),
     ));
   }
-
 }

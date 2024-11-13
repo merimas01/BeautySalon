@@ -9,6 +9,7 @@ namespace eBeautySalon.Models.SearchObjects
     public class UslugeSearchObject : BaseSearchObject
     {
         public string? FTS { get; set; } //full text search
+        public int? KategorijaId { get; set; }
         public string? Naziv { get; set; }
 
         public string? Opis { get; set; } = null!;

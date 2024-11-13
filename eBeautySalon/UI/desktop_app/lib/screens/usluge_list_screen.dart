@@ -3,8 +3,10 @@ import 'package:desktop_app/screens/usluge_details_screen.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/kategorija.dart';
 import '../models/search_result.dart';
 import '../models/usluga.dart';
+import '../providers/kategorije_provider.dart';
 import '../widgets/master_screen.dart';
 
 class UslugeListScreen extends StatefulWidget {
@@ -16,15 +18,30 @@ class UslugeListScreen extends StatefulWidget {
 
 class _UslugeListScreenState extends State<UslugeListScreen> {
   late UslugeProvider _uslugeProvider;
+  late KategorijeProvider _kategorijeProvider;
   bool isLoading = true;
   SearchResult<Usluga>? result;
   TextEditingController _ftsController = new TextEditingController();
+  SearchResult<Kategorija>? _kategorijeResult;
+  Kategorija? selectedKategorija;
+  bool isLoadingKategorije = true;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _uslugeProvider = context.read<UslugeProvider>();
+    _kategorijeProvider = context.read<KategorijeProvider>();
+
+    initForm();
+  }
+
+  initForm() async {
+    _kategorijeResult = await _kategorijeProvider.get();
+    print("kategorije: ${_kategorijeResult?.result[0].naziv}");
+    setState(() {
+      isLoadingKategorije = false;
+    });
   }
 
   @override
@@ -55,16 +72,34 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
             ),
           ),
           SizedBox(
-            width: 8,
+            width: 10,
+          ),
+          Expanded(
+            child: searchByKategorije(),
+          ),
+           SizedBox(width: 20),
+           selectedKategorija!=null? TextButton(
+              onPressed: (){
+                setState(() {
+                  selectedKategorija=null;
+                });
+              },
+              child: Text("Poništi selekciju"),
+            ): Container(),
+          SizedBox(
+            width: 10,
           ),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
-                var data = await _uslugeProvider
-                    .get(filter: {'FTS': _ftsController.text});
+                var data = await _uslugeProvider.get(filter: {
+                  'FTS': _ftsController.text,
+                  'kategorijaId': selectedKategorija?.kategorijaId.toString()
+                });
 
-                print("fts: ${_ftsController.text}");
+                print(
+                    "fts: ${_ftsController.text}, kategorijaId: ${selectedKategorija?.kategorijaId}");
 
                 setState(() {
                   result = data;
@@ -206,5 +241,38 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     setState(() {
       result = data;
     });
+  }
+
+  Widget searchByKategorije() {
+    print("search by kategorije");
+    if (isLoadingKategorije == false) {
+      return Container(
+        padding: EdgeInsets.all(3.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<Kategorija>(
+            hint: Text("Izaberi kategoriju"),
+            value: selectedKategorija,
+            onChanged: (Kategorija? newValue) {
+              setState(() {
+                selectedKategorija = newValue;
+              });
+            },
+            items: _kategorijeResult?.result
+                .map<DropdownMenuItem<Kategorija>>((Kategorija service) {
+              return DropdownMenuItem<Kategorija>(
+                value: service,
+                child: Text(service.naziv!),
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    }
+    return Container();
   }
 }

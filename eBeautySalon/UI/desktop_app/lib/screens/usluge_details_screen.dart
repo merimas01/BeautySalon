@@ -85,7 +85,9 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       child: Column(
         children: [
           isLoading ? Container() : _buildForm(),
-          SizedBox(height: 8,),
+          SizedBox(
+            height: 8,
+          ),
           _saveAction(),
         ],
       ),
@@ -112,7 +114,9 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
               },
               child: Text("Nazad na usluge")),
         ),
-        SizedBox(width: 10.0,),
+        SizedBox(
+          width: 10.0,
+        ),
         Padding(
           padding: const EdgeInsets.only(right: 10.0),
           child: ElevatedButton(
@@ -134,12 +138,12 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                             title: Text("Neispravni podaci"),
                             content: Text("Ispravite greške i ponovite unos."),
                             actions: <Widget>[
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Ok"))
-                              ],
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Ok"))
+                            ],
                           ));
                 }
               },
@@ -200,6 +204,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
               FormBuilderTextField(
                 name: "opis",
                 decoration: InputDecoration(labelText: "Opis:"),
+                keyboardType: TextInputType.multiline,
+                maxLines: 3,
                 validator: (value) {
                   if (value == null || value.isEmpty || value.trim().isEmpty) {
                     return 'Molimo Vas unesite opis';

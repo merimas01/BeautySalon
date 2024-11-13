@@ -66,6 +66,10 @@ namespace eBeautySalon.Services
                 || (x.Opis!=null && x.Opis.ToLower().Contains(search.FTS.ToLower())
                 || (x.Cijena.ToString().Contains(search.FTS)) || (x.Kategorija.Naziv != null && x.Kategorija.Naziv.Contains(search.FTS))));
             }
+            if (search.KategorijaId !=null)
+            {
+                query = query.Where(x => x.KategorijaId == search.KategorijaId);
+            }
             if (!string.IsNullOrWhiteSpace(search?.Naziv))
             {
                 query = query.Where(x => x.Naziv != null && x.Naziv.StartsWith(search.Naziv));

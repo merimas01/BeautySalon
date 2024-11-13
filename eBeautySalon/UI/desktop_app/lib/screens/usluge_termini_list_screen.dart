@@ -36,6 +36,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
   String? selectedTerminOpis;
   bool? kliknuoDodajDrugiTermin = false;
   UslugaTermin? uslugaTermin;
+  bool isLoadingUsluge = true;
 
   @override
   void didChangeDependencies() {
@@ -52,6 +53,10 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
   initForm() async {
     _uslugaResult = await _uslugeProvider.get();
     _terminiResult = await _terminiProvider.get();
+
+    setState(() {
+      isLoadingUsluge = false;
+    });
   }
 
   @override
@@ -88,6 +93,19 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          selectedUsluga != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedUsluga = null;
+                    });
+                  },
+                  child: Text("Poništi selekciju"),
+                )
+              : Container(),
+          SizedBox(
+            width: 10,
+          ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
@@ -156,39 +174,43 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
   }
 
   Widget _buildDataListView() {
-    return Expanded(
-        child: SingleChildScrollView(
-      child: DataTable(
-          columns: [
-            DataColumn(
-                label: Expanded(
-              child: Text("Termin"),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Text("Prikaži termin?"),
-            ))
-          ],
-          rows: _uslugaTerminResult?.result
-                  .map((UslugaTermin e) => DataRow(cells: [
-                        DataCell(Text(e.termin?.opis ?? "")),
-                        DataCell(Container(
-                          child: Switch(
-                            value: e.isPrikazan == null ? true : e.isPrikazan!,
-                            activeColor: Colors.green,
-                            onChanged: (bool value) {
-                              setState(() {
-                                e.isPrikazan = value;
-                                switchPrikazan = value;
-                              });
-                              _updateUslugaTermin(e);
-                            },
-                          ),
-                        ))
-                      ]))
-                  .toList() ??
-              []),
-    ));
+    return selectedUsluga != null
+        ? Expanded(
+            child: SingleChildScrollView(
+            child: DataTable(
+                columns: [
+                  DataColumn(
+                      label: Expanded(
+                    child: Text("Termin"),
+                  )),
+                  DataColumn(
+                      label: Expanded(
+                    child: Text("Prikaži termin?"),
+                  ))
+                ],
+                rows: _uslugaTerminResult?.result
+                        .map((UslugaTermin e) => DataRow(cells: [
+                              DataCell(Text(e.termin?.opis ?? "")),
+                              DataCell(Container(
+                                child: Switch(
+                                  value: e.isPrikazan == null
+                                      ? true
+                                      : e.isPrikazan!,
+                                  activeColor: Colors.green,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      e.isPrikazan = value;
+                                      switchPrikazan = value;
+                                    });
+                                    _updateUslugaTermin(e);
+                                  },
+                                ),
+                              ))
+                            ]))
+                        .toList() ??
+                    []),
+          ))
+        : Container();
   }
 
   void _updateUslugaTermin(UslugaTermin e) async {

@@ -102,13 +102,6 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                     builder: (context) => const ProfilPage()));
               },
             ),
-            ListTile(
-              title: Text("Odjava"),
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-            ),
           ],
         ),
       ),

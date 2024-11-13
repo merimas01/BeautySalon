@@ -1,7 +1,7 @@
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:desktop_app/main.dart';
 import 'package:desktop_app/screens/recenzije_list_screen.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +122,15 @@ class _HomePageState extends State<HomePage> {
   Widget buttonOdjava() => Padding(
         padding: const EdgeInsets.all(8.0),
         child: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            //clear data
+            Authorization.username = "";
+            Authorization.password = "";
+
+            //navigate to login
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => LoginPage()));
+          },
           child: Tooltip(
             message: 'Odjavi se',
             child: Icon(
@@ -273,7 +281,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buttonRecenzije() {
     return ElevatedButton(
-      style: ButtonStyle(
+        style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
               Color.fromARGB(255, 255, 255, 255)),
           foregroundColor: MaterialStateProperty.all<Color>(Colors.pink),
@@ -281,7 +289,8 @@ class _HomePageState extends State<HomePage> {
             color: Colors.pink,
             width: 1.0,
             style: BorderStyle.solid,
-          )),),
+          )),
+        ),
         onPressed: () {
           Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => RecenzijeListScreen()));
@@ -328,13 +337,12 @@ class _HomePageState extends State<HomePage> {
               pw.Text(
                   "Datum: ${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}"),
               pw.SizedBox(height: 20),
-              pw.Text(
-                  "Preuzeo: ${LoggedUser.ime} ${LoggedUser.prezime}"),
+              pw.Text("Preuzeo: ${LoggedUser.ime} ${LoggedUser.prezime}"),
               pw.SizedBox(height: 20),
               pw.SizedBox(
-                height: 1, 
+                height: 1,
                 child: pw.Container(
-                  color: PdfColors.black, 
+                  color: PdfColors.black,
                 ),
               ),
               pw.SizedBox(height: 20),
@@ -344,13 +352,12 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18, fontWeight: pw.FontWeight.bold, font: ttf),
               ),
               pw.SizedBox(height: 20),
-
               pw.Text(
                 "U sljedećoj tabeli prikazane su sve ocijenjivane usluge, sa svim ocijenama koje imaju. Prikazana je i prosječna ocjena za svaku od njih.",
                 style: pw.TextStyle(
                   fontSize: 15,
                   fontWeight: pw.FontWeight.normal,
-                  font: ttf, 
+                  font: ttf,
                 ),
               ),
               pw.SizedBox(height: 20),
@@ -359,34 +366,34 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   pw.TableRow(
                     children: [
-                     
                       pw.Padding(
-                        padding: const pw.EdgeInsets.all(
-                            8.0), 
+                        padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
                           "Naziv usluge",
                           style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold, fontSize: 16, font: ttf),
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 16,
+                              font: ttf),
                         ),
                       ),
                       pw.Padding(
-                        padding: const pw.EdgeInsets.all(
-                            8.0),
+                        padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
                           "Ocjene",
                           style: pw.TextStyle(
-                              fontWeight: pw.FontWeight.bold, fontSize: 16, font: ttf),
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 16,
+                              font: ttf),
                         ),
                       ),
-                      
                       pw.Padding(
-                        padding: const pw.EdgeInsets.all(
-                            8.0), 
+                        padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
                           "Prosječna ocjena",
                           style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold, fontSize: 16,
-                            font: ttf, 
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 16,
+                            font: ttf,
                           ),
                         ),
                       ),
@@ -396,20 +403,17 @@ class _HomePageState extends State<HomePage> {
                     pw.TableRow(
                       children: [
                         pw.Padding(
-                          padding: const pw.EdgeInsets.all(
-                              8.0), 
+                          padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(item['nazivUsluge'],
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
-                          padding: const pw.EdgeInsets.all(
-                              8.0), 
+                          padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(item['sveOcjene'].join(", "),
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
-                          padding: const pw.EdgeInsets.all(
-                              8.0), 
+                          padding: const pw.EdgeInsets.all(8.0),
                           child: pw.Text(item['prosjecnaOcjena'].toString(),
                               style: pw.TextStyle(font: ttf)),
                         ),

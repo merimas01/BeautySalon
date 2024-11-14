@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:desktop_app/models/korisnik_insert.dart';
 import 'package:desktop_app/models/korisnik_update.dart';
+import 'package:desktop_app/screens/uloge_list_screen.dart';
 import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:file_picker/file_picker.dart';
@@ -125,7 +126,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           _selectedItems.result = x;
           validationError = "";
           uloga = "Usluznik";
-          selectedUlogaId = widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
+          selectedUlogaId =
+              widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
           print(
               "selectedItems, postojeceUsluge ${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
         });
@@ -215,59 +217,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     );
   }
 
-  void dodajUloguDialog() async {
-    TextEditingController inputUlogaNazivController = TextEditingController();
-    TextEditingController inputUlogaOpisController = TextEditingController();
-    String newUlogaNaziv = "";
-    String newUlogaOpis = "";
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Unesite novu ulogu'),
-          content: SizedBox(
-            height: 150,
-            child: Column(
-              children: [
-                TextField(
-                  controller: inputUlogaNazivController,
-                  decoration: InputDecoration(hintText: 'Naziv uloge'),
-                ),
-                TextField(
-                  controller: inputUlogaOpisController,
-                  decoration: InputDecoration(hintText: 'Opis uloge'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text('Otkaži'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Retrieve the input text and handle it
-                print(
-                    'Input: ${inputUlogaNazivController.text}, ${inputUlogaOpisController.text}');
-                setState(() {
-                  newUlogaNaziv = inputUlogaNazivController.text;
-                  newUlogaOpis = inputUlogaOpisController.text;
-                });
-                Navigator.of(context).pop(); // Close the dialog
-
-                _insertUpdateUloga(newUlogaNaziv, newUlogaOpis, "");
-              },
-              child: Text('Spasi novu ulogu'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _showMultiSelectDropdown() async {
     final SearchResult<Usluga>? items = _uslugeResult;
     final SearchResult<Usluga>? results = await showDialog(
@@ -329,8 +278,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           });
                         } else {
                           setState(() {
-                            selectedUlogaId = widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
-                            uloga = selectedUlogaId == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
+                            selectedUlogaId = widget
+                                .korisnik?.korisnikUlogas?[0].ulogaId
+                                .toString();
+                            uloga =
+                                selectedUlogaId == DEFAULT_UlogaId.toString()
+                                    ? "Usluznik"
+                                    : "";
                           });
                         }
                       },
@@ -375,55 +329,19 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     ),
                   ),
                   SizedBox(width: 10),
-                  widget.zaposlenik == null
-                      ? Expanded(
-                          child: TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.blue,
-                              ),
-                              // style: ButtonStyle(
-                              //     backgroundColor: MaterialStateProperty.all<Color>(
-                              //         Color.fromARGB(255, 255, 255, 255)),
-                              //     foregroundColor: MaterialStateProperty.all<Color>(
-                              //         Colors.pink),
-                              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.circular(10.0),
-                              //         side: BorderSide(color: Colors.pink)))),
-                              onPressed: () {
-                                dodajUloguDialog();
-                              },
-                              child: Text("Dodaj novu ulogu")))
-                      : Expanded(
-                          child: TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.blue,
-                              ),
-                              // style: ButtonStyle(
-                              //     backgroundColor: MaterialStateProperty.all<Color>(
-                              //         Color.fromARGB(255, 255, 255, 255)),
-                              //     foregroundColor: MaterialStateProperty.all<Color>(Colors.pink),
-                              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.pink)))),
-                              onPressed: () {
-                                if (selectedUlogaId != "") {
-                                  urediUloguDialog(selectedUlogaId);
-                                }
-                              },
-                              child: Text("Uredi ulogu"))),
-                  SizedBox(width: 10),
-                  // uloga != null
-                  //     ? Expanded(
-                  //         child: TextButton(
-                  //           style: TextButton.styleFrom(
-                  //             foregroundColor: Colors.red,
-                  //           ),
-                  //           onPressed: () async {
-                  //             if (selectedUlogaId != "")
-                  //               obrisiUloguDialog(selectedUlogaId);
-                  //           },
-                  //           child: Text('Obriši ulogu'),
-                  //         ),
-                  //       )
-                  //     : Container(),
+                  Expanded(
+                      child: Tooltip(
+                        message:"Po potrebi dodaj novu ulogu, uredi ili izbriši već postojeću.",
+                    child: TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.blue,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => UlogeListScreen()));
+                        },
+                        child: Text("Upravljaj ulogama")),
+                  )),
                 ],
               ),
               Row(
@@ -1118,162 +1036,5 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       }
     }
     return true;
-  }
-
-  void _insertUpdateUloga(
-      String newUlogaNaziv, String newUlogaOpis, String odabranaUlogaId) async {
-    if (newUlogaNaziv != "") {
-      try {
-        var obj_uloga = UlogaInsertUpdate(newUlogaNaziv, newUlogaOpis);
-        if (odabranaUlogaId == "") {
-          var ulogeInsert = await _ulogeProvider.insert(obj_uloga);
-          print("${ulogeInsert.naziv}, ${ulogeInsert.opis}");
-        } else {
-          var ulogeUpdate = await _ulogeProvider.update(
-              int.parse(odabranaUlogaId), obj_uloga);
-          print("${ulogeUpdate.naziv}, ${ulogeUpdate.opis}");
-        }
-
-        await showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                  title: Text("Informacija o uspjehu"),
-                  content: Text("Uspješno izvršena akcija!"),
-                  actions: <Widget>[
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("Ok"))
-                  ],
-                ));
-      } catch (e) {
-        await showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                  title: Text("Greška"),
-                  content: Text(
-                      "Neispravni podaci. Molimo pokušajte ponovo. Nazivi i opisi ne smiju sadržavati brojeve niti specijalne znakove. Svaki zapis treba imati unikatne vrijednosti"),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("Ok"))
-                  ],
-                ));
-      }
-    } else {
-      await showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                title: Text("Greška"),
-                content: Text("Naziv ne smije biti prazna vrijednost"),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text("Ok"))
-                ],
-              ));
-    }
-    var data = await _ulogeProvider.get();
-    setState(() {
-      _ulogeResult = data;
-    });
-  }
-
-  void urediUloguDialog(String? selectedUlogaId) async {
-    TextEditingController inputUlogaNazivController = TextEditingController();
-    TextEditingController inputUlogaOpisController = TextEditingController();
-    String newUlogaNaziv = "";
-    String newUlogaOpis = "";
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Uredite ulogu'),
-          content: SizedBox(
-            height: 150,
-            child: Column(
-              children: [
-                TextField(
-                  controller: inputUlogaNazivController,
-                  decoration: InputDecoration(hintText: 'Naziv uloge'),
-                ),
-                TextField(
-                  controller: inputUlogaOpisController,
-                  decoration: InputDecoration(hintText: 'Opis uloge'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text('Otkaži'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print(
-                    'Input: ${inputUlogaNazivController.text}, ${inputUlogaOpisController.text}');
-                setState(() {
-                  newUlogaNaziv = inputUlogaNazivController.text;
-                  newUlogaOpis = inputUlogaOpisController.text;
-                });
-                Navigator.of(context).pop(); // Close the dialog
-
-                _insertUpdateUloga(
-                    newUlogaNaziv, newUlogaOpis, selectedUlogaId!);
-              },
-              child: Text('Spasi promjene'),
-            ),
-          ],
-        );
-      },
-    );
-    var data = await _ulogeProvider.get();
-    setState(() {
-      _ulogeResult = data;
-    });
-  }
-
-  void _obrisiZapis(e) async {
-    var delete = await _ulogeProvider.delete(int.parse(selectedUlogaId!));
-    print("deleted? ${delete}");
-    if (delete == true) {
-      //treba da se osvjezi lista
-      var data = await _ulogeProvider.get();
-
-      setState(() {
-        selectedUlogaId = "";
-        uloga = null;
-        _ulogeResult = data;
-      });
-    }
-  }
-
-  void obrisiUloguDialog(String? selectedUlogaId) async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Ne'),
-                  onPressed: () {
-                    Navigator.of(context).pop(); //zatvori dijalog
-                  },
-                ),
-                TextButton(
-                  child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
-                  onPressed: () async {
-                    Navigator.of(context).pop(); //zatvori dijalog
-                    _obrisiZapis(selectedUlogaId);
-                  },
-                ),
-              ],
-            ));
   }
 }

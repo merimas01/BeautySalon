@@ -1,40 +1,41 @@
-import 'package:desktop_app/screens/kategorije_details_screen.dart';
+import 'package:desktop_app/screens/uloge_details_screen.dart';
+import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/kategorija.dart';
+
 import '../models/search_result.dart';
-import '../providers/kategorije_provider.dart';
+import '../models/uloga.dart';
+import '../providers/uloge_provider.dart';
 import '../widgets/master_screen.dart';
 
-class KategorijeListScreen extends StatefulWidget {
-  const KategorijeListScreen({super.key});
+class UlogeListScreen extends StatefulWidget {
+  const UlogeListScreen({super.key});
 
   @override
-  State<KategorijeListScreen> createState() => _KategorijeListScreenState();
+  State<UlogeListScreen> createState() => _UlogeListScreenState();
 }
 
-class _KategorijeListScreenState extends State<KategorijeListScreen> {
-  late KategorijeProvider _kategorijeProvider;
-  SearchResult<Kategorija>? result;
+class _UlogeListScreenState extends State<UlogeListScreen> {
+  late UlogeProvider _ulogeProvider;
+  SearchResult<Uloga>? result;
   TextEditingController _ftsController = new TextEditingController();
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    _kategorijeProvider = context.read<KategorijeProvider>();
+    _ulogeProvider = context.read<UlogeProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      child: Column(children: [
-        _builSearch(),
-        _showResultCount(),
-        _buildDataListView(),
-      ]),
-      title: "Kategorije",
-    );
+        title: "Upravljaj ulogama",
+        child: Column(children: [
+          _builSearch(),
+          _showResultCount(),
+          _buildDataListView(),
+        ]));
   }
 
   Widget _builSearch() {
@@ -42,10 +43,22 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ZaposleniciListScreen()));
+              },
+              child: Text("Nazad na zaposlenike")),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Naziv ili opis",
+                labelText: "",
               ),
               controller: _ftsController,
             ),
@@ -57,7 +70,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
               onPressed: () async {
                 print("pritisnuto dugme Dugme");
 
-                var data = await _kategorijeProvider
+                var data = await _ulogeProvider
                     .get(filter: {'FTS': _ftsController.text});
 
                 print("fts: ${_ftsController.text}");
@@ -73,11 +86,11 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => KategorijeDetailsScreen(
-                          kategorija: null,
+                    builder: (context) => UlogeDetailsScreen(
+                          uloga: null,
                         )));
               },
-              child: Text("Dodaj kategoriju")),
+              child: Text("Dodaj ulogu")),
         ],
       ),
     );
@@ -90,19 +103,11 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
-              child: Text("Kategorija"),
+              child: Text("Uloga"),
             )),
             DataColumn(
                 label: Expanded(
               child: Text("Opis"),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Text("Datum kreiranja"),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Text("Datum modifikovanja"),
             )),
             DataColumn(
                 label: Expanded(
@@ -114,30 +119,19 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
             ))
           ],
           rows: result?.result
-                  .map((Kategorija e) => DataRow(cells: [
+                  .map((Uloga e) => DataRow(cells: [
                         DataCell(Text(e.naziv ?? "")),
                         DataCell(Text(e.opis ?? "")),
-                        DataCell(Container(
-                            width: 80,
-                            child: Text((e.datumKreiranja == null
-                                ? "-"
-                                : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
-                        DataCell(Container(
-                            width: 80,
-                            child: Text((e.datumModifikovanja == null
-                                ? "-"
-                                : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}")))),
                         DataCell(TextButton(
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.green,
                           ),
                           child: Text("Modifikuj"),
                           onPressed: () {
-                            print(
-                                "modifikacija: ${e.naziv}, id: ${e.kategorijaId}");
+                            print("modifikacija: ${e.naziv}, id: ${e.ulogaId}");
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => KategorijeDetailsScreen(
-                                      kategorija: e,
+                                builder: (context) => UlogeDetailsScreen(
+                                      uloga: e,
                                     )));
                           },
                         )),
@@ -184,13 +178,27 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
   }
 
   void _obrisiZapis(e) async {
-    print("delete kategorijaId: ${e.kategorijaId}, naziv: ${e.naziv}");
-    var deleted = await _kategorijeProvider.delete(e.kategorijaId);
-    print('deleted? ${deleted}');
+    print("delete ulogaId: ${e.ulogaId}, naziv: ${e.naziv}");
 
+    try {
+      var deleted = await _ulogeProvider.delete(e.ulogaId);
+      //print('deleted? ${deleted}');
+    } catch (e) {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Greška"),
+                content: Text(
+                    "Uloga se ne može izbrisati jer se već koristi kod pojedinih zaposlenika ili jednog zaposlenika."),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Ok"))
+                ],
+              ));
+    }
     //treba da se osvjezi lista
-    var data =
-        await _kategorijeProvider.get(filter: {'FTS': _ftsController.text});
+    var data = await _ulogeProvider.get(filter: {'FTS': _ftsController.text});
 
     setState(() {
       result = data;

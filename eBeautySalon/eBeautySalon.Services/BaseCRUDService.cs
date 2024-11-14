@@ -104,10 +104,9 @@ namespace eBeautySalon.Services
                     await _context.SaveChangesAsync();
                     return true;
                 }
-                return false;
+                throw new Exception("nije moguće brisanje ovog zapisa.");
             }
-            else return false;
-           
+            else throw new Exception("nije moguće brisanje ovog zapisa.");
         }
 
     }

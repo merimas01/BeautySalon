@@ -118,12 +118,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     _ulogeResult = await _ulogeProvider.get();
 
     if (widget.zaposlenik != null) {
-      var x =
-          widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
+      var role = widget.korisnik?.korisnikUlogas
+          ?.map((e) => e.ulogaId)
+          .where((id) => id == DEFAULT_UlogaId)
+          .toList()[0]; //svaki korisnik ima samo jednu ulogu
 
-      if (x != null) {
+      if (_postojeceUsluge?.length != 0) {
+        //ako ima usluge, on je vec usluznik
         setState(() {
-          _selectedItems.result = x;
+          _selectedItems.result = _postojeceUsluge!;
           validationError = "";
           uloga = "Usluznik";
           selectedUlogaId =
@@ -131,7 +134,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           print(
               "selectedItems, postojeceUsluge ${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
         });
-      } else {
+      }
+      if (role == DEFAULT_UlogaId && _postojeceUsluge?.length == 0) {
+        //ako je usluznik i ako nema nijednu uslugu
         setState(() {
           validationError =
               "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
@@ -235,6 +240,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       }
 
       if (results.result.length > 3) {
+        print("greska, vece od 3");
         setState(() {
           _selectedItems.result = [];
           validationError =
@@ -243,6 +249,10 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       }
     } else if (results?.result.length == 0) {
       print("nema selektovanih usluga");
+      setState(() {
+        validationError =
+            "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
+      });
     }
   }
 
@@ -331,7 +341,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   SizedBox(width: 10),
                   Expanded(
                       child: Tooltip(
-                        message:"Po potrebi dodaj novu ulogu, uredi ili izbriši već postojeću.",
+                    message:
+                        "Po potrebi dodaj novu ulogu, uredi ili izbriši već postojeću.",
                     child: TextButton(
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.blue,
@@ -721,13 +732,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                               )))))
                                   .toList(),
                             ),
-                            _selectedItems.result.length > 3
-                                ? validationError != ""
-                                    ? Text(
-                                        validationError,
-                                        style: TextStyle(color: Colors.red),
-                                      )
-                                    : Container()
+                            validationError != ""
+                                ? Text(
+                                    validationError,
+                                    style: TextStyle(color: Colors.red),
+                                  )
                                 : Container()
                           ],
                         )

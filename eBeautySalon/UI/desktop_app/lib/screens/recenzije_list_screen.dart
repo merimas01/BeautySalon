@@ -1,4 +1,5 @@
 import 'package:desktop_app/models/search_result.dart';
+import 'package:desktop_app/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +94,11 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
             width: 8,
           ),
           ElevatedButton(
-              onPressed: () {}, child: Text("Izvještaj recenzija usluga")),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => HomePage()));
+              },
+              child: Text("Izvještaj recenzija usluga")),
           SizedBox(
             width: 8,
           ),
@@ -254,7 +259,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
             width: 8,
           ),
           ElevatedButton(
-              onPressed: () {}, child: Text("Izvještaj recenzija uslužnika")),
+              onPressed: () {
+                  Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => HomePage()));
+              }, child: Text("Izvještaj recenzija uslužnika")),
           SizedBox(width: 8),
         ],
       ),

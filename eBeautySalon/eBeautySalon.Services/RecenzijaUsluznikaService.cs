@@ -85,5 +85,36 @@ namespace eBeautySalon.Services
             else if (!usluznici.Contains(request.UsluznikId) || !korisnici.Contains(request.KorisnikId)) return false; //nije validan usluznik ili korisnik
             return true;
         }
+
+        public async Task<List<dynamic>> GetProsjecneOcjeneUsluznika()
+        {
+            var recenzijeUsluznika = await _context.RecenzijaUsluznikas.Include(x => x.Usluznik.Korisnik.SlikaProfila).Include(x => x.Korisnik.SlikaProfila).ToListAsync();
+            var usluznikIdDistinct = await _context.RecenzijaUsluznikas.Select(x => x.UsluznikId).Distinct().ToListAsync();
+            var prosjecneOcjene_usluznik = new List<dynamic>();
+
+            foreach (var index in usluznikIdDistinct)
+            {
+                string usluznik = "";
+                double suma = 0.0;
+                double prosjek = 0.0;
+                int brojac = 0;
+                List<int> ocjene = new List<int>();
+                foreach (var ru in recenzijeUsluznika)
+                {
+                    if (ru.UsluznikId == index)
+                    {
+                        ocjene.Add(ru.Ocjena);
+                        usluznik = ru.Usluznik.Korisnik.Ime + " " + ru.Usluznik.Korisnik.Prezime;
+                        suma += ru.Ocjena;
+                        brojac++;
+                    }
+                }
+                prosjek = suma / brojac;
+                var obj = new { usluznikId = index, nazivUsluznik = usluznik, prosjecnaOcjena = prosjek, sveOcjene = ocjene };
+                prosjecneOcjene_usluznik.Add(obj);
+            }
+
+            return prosjecneOcjene_usluznik;
+        }
     }
 }

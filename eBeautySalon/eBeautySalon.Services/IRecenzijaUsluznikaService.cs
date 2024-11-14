@@ -10,5 +10,6 @@ namespace eBeautySalon.Services
 {
     public interface IRecenzijaUsluznikaService : ICRUDService<Models.RecenzijaUsluznika, RecenzijaUsluznikaSearchObject, RecenzijaUsluznikaInsertRequest, RecenzijaUsluznikaUpdateRequest>
     {
+        public Task<List<dynamic>> GetProsjecneOcjeneUsluznika();
     }
 }

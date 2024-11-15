@@ -106,6 +106,14 @@ namespace eBeautySalon.Services
                 || (x.Prezime != null && x.Prezime.ToLower().Contains(search.FTS.ToLower())
                 || (x.KorisnickoIme != null && x.KorisnickoIme.ToLower().Contains(search.FTS.ToLower()))));
             }
+            if(search.isBlokiran == "da")
+            {
+                query = query.Where(x => x.Status == false);
+            }
+            if(search.isBlokiran == "ne")
+            {
+                query = query.Where(x => x.Status == true);
+            }
             if (!string.IsNullOrWhiteSpace(search?.Ime))
             {
                 query = query.Where(x => x.Ime.StartsWith(search.Ime));

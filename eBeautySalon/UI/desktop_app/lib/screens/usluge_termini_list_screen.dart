@@ -101,7 +101,14 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                       selectedUsluga = null;
                     });
                   },
-                  child: Text("Poništi selekciju"),
+                  child: Tooltip(
+                    child: Text(
+                      "X",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                    message: "Poništi selekciju",
+                  ),
                 )
               : Container(),
           SizedBox(
@@ -184,7 +191,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
             children: [
           TextSpan(
             text:
-                'Broj rezultata: ${selectedUsluga == null && _uslugaTerminResult?.result != null ? 0 : _uslugaTerminResult?.count}',
+                'Broj rezultata: ${selectedUsluga == null || _uslugaTerminResult?.result == null ? 0 : _uslugaTerminResult?.count}',
             style: TextStyle(fontWeight: FontWeight.normal),
           )
         ]));

@@ -93,7 +93,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           Expanded(
             child: searchByKategorije(),
           ),
-          SizedBox(width: 20),
+          SizedBox(width: 8),
           selectedKategorija != null
               ? TextButton(
                   onPressed: () {
@@ -101,7 +101,14 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                       selectedKategorija = null;
                     });
                   },
-                  child: Text("Poništi selekciju"),
+                  child: Tooltip(
+                    child: Text(
+                      "X",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                    message: "Poništi selekciju",
+                  ),
                 )
               : Container(),
           SizedBox(

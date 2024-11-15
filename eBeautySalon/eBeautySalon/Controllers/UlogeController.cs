@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace eBeautySalon.Controllers
 {
     [ApiController]
-    public class UlogeController : BaseCRUDController<Models.Uloge, BaseSearchObject, UlogeInsertRequest, UlogeUpdateRequest>
+    public class UlogeController : BaseCRUDController<Models.Uloge, UlogeSearchObject, UlogeInsertRequest, UlogeUpdateRequest>
     {
-        public UlogeController(ILogger<BaseCRUDController<Models.Uloge, BaseSearchObject, UlogeInsertRequest, UlogeUpdateRequest>> logger, IUlogeService service)
+        public UlogeController(ILogger<BaseCRUDController<Models.Uloge, UlogeSearchObject, UlogeInsertRequest, UlogeUpdateRequest>> logger, IUlogeService service)
             : base(logger, service)
         {
         }

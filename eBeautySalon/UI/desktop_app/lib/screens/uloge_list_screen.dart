@@ -55,6 +55,9 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
                     builder: (context) => ZaposleniciListScreen()));
               },
               child: Text("Nazad na zaposlenike")),
+          SizedBox(
+            width: 8,
+          ),
           Expanded(
             child: TextField(
               decoration: InputDecoration(

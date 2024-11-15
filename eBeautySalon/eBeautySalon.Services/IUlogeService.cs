@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public interface IUlogeService : ICRUDService<Uloge, BaseSearchObject, UlogeInsertRequest, UlogeUpdateRequest>
+    public interface IUlogeService : ICRUDService<Uloge, UlogeSearchObject, UlogeInsertRequest, UlogeUpdateRequest>
     {
     }
 }

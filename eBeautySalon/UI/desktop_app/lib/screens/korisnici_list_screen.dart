@@ -20,11 +20,52 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   late KorisnikProvider _korisniciProvider;
   SearchResult<Korisnik>? result;
   TextEditingController _ftsController = new TextEditingController();
+
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _korisniciProvider = context.read<KorisnikProvider>();
+  }
+
+   var dropdown_lista = [
+    {'opis': 'da', 'vrijednost': true},
+    {'opis': 'ne', 'vrijednost': false}
+  ];
+
+  String? selectedOpis; 
+
+  Widget _showDropdownDialog() {
+    return Container(
+      width: 150,
+        padding: EdgeInsets.all(3.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+            value: selectedOpis,
+           // isExpanded: true,
+            hint: Text("Blokiran?"),
+            items: dropdown_lista.map((item) {
+              return DropdownMenuItem<String>(
+                value: item['opis'] as String,
+                child: Text(item['opis'] as String),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedOpis = value;
+              });
+              print(selectedOpis);
+            },
+            ),
+          ),
+        ),
+      );
   }
 
   @override
@@ -66,16 +107,36 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
             ),
           ),
           SizedBox(
-            width: 8,
+            width: 20,
           ),
+          _showDropdownDialog(),
+          SizedBox(width: 10,),
+          selectedOpis != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedOpis = null;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Text(
+                      "X",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                    message: "Poništi selekciju",
+                  ),
+                )
+              : Container(),
+              SizedBox(width: 20),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
                 var data = await _korisniciProvider.GetKorisnike(
-                    filter: {'FTS': _ftsController.text});
+                    filter: {'FTS': _ftsController.text, 'isBlokiran': selectedOpis});
 
-                print("fts: ${_ftsController.text}");
+                print("fts: ${_ftsController.text}, isBlokiran: ${selectedOpis}");
 
                 setState(() {
                   result = data;
@@ -208,7 +269,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     var obj = await _korisniciProvider.update(e.korisnikId, request);
     print('status? ${obj.status}');
 
-    //treba da se osvjezi lista
+    //treba da se osvjezi dropdown_lista
     var data = await _korisniciProvider.GetKorisnike(
         filter: {'FTS': _ftsController.text});
 

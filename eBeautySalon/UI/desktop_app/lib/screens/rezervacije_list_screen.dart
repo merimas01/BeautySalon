@@ -43,7 +43,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     });
   }
 
-   Widget _showResultCount() {
+  Widget _showResultCount() {
     return RichText(
         text: TextSpan(
             style: TextStyle(
@@ -114,7 +114,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Bilo šta",
+                labelText: "korisnik/usluga/termin",
               ),
               controller: _ftsController,
             ),
@@ -125,7 +125,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           Expanded(
             child: searchByStatus(),
           ),
-          SizedBox(width: 20),
+          SizedBox(width: 8),
           selectedStatus != null
               ? TextButton(
                   onPressed: () {
@@ -133,10 +133,17 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                       selectedStatus = null;
                     });
                   },
-                  child: Text("Poništi selekciju"),
+                  child: Tooltip(
+                    child: Text(
+                      "X",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                    message: "Poništi selekciju",
+                  ),
                 )
               : Container(),
-              SizedBox(width: 20),
+          SizedBox(width: 10),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Traži");

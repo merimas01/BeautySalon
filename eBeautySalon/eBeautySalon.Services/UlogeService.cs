@@ -13,15 +13,19 @@ using System.Text.RegularExpressions;
 
 namespace eBeautySalon.Services
 {
-    public class UlogeService : BaseCRUDService<Uloge, Uloga, BaseSearchObject, UlogeInsertRequest, UlogeUpdateRequest>, IUlogeService
+    public class UlogeService : BaseCRUDService<Uloge, Uloga, UlogeSearchObject, UlogeInsertRequest, UlogeUpdateRequest>, IUlogeService
     {
         public UlogeService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
 
-        public override IQueryable<Uloga> AddFilter(IQueryable<Uloga> query, BaseSearchObject? search = null)
+        public override IQueryable<Uloga> AddFilter(IQueryable<Uloga> query, UlogeSearchObject? search = null)
         {
             query = query.Where(x => x.Naziv != "Administrator");
+            if (!string.IsNullOrWhiteSpace(search.FTS))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.FTS) || x.Opis.StartsWith(search.FTS));
+            }
             return base.AddFilter(query, search);
         }
 

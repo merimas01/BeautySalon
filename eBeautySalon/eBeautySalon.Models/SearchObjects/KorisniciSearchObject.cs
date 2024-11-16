@@ -12,6 +12,7 @@ namespace eBeautySalon.Models.SearchObjects
         public string? isBlokiran { get; set; }
 
         public bool? isAdmin { get; set; }
+        public bool? isZaposlenik { get; set; }
         
         public bool? isUlogeIncluded { get; set; }
         

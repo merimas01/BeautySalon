@@ -5,8 +5,12 @@ import 'package:provider/provider.dart';
 
 import '../models/recenzija_usluge.dart';
 import '../models/recenzija_usluznika.dart';
+import '../models/usluga.dart';
+import '../models/zaposlenik.dart';
 import '../providers/recenzija_usluznika_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
+import '../providers/usluge_provider.dart';
+import '../providers/zaposlenici_provider.dart';
 
 class RecenzijeListScreen extends StatefulWidget {
   const RecenzijeListScreen({super.key});
@@ -18,10 +22,116 @@ class RecenzijeListScreen extends StatefulWidget {
 class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
   late RecenzijaUslugeProvider _recenzijeUslugeProvider;
   late RecenzijaUsluznikaProvider _recenzijeUsluznikaProvider;
+  late UslugeProvider _uslugeProvider;
+  late ZaposleniciProvider _zaposleniciProvider;
   SearchResult<RecenzijaUsluge>? _recenzijaUslugeResult;
   SearchResult<RecenzijaUsluznika>? _recenzijaUsluznikaResult;
+  SearchResult<Usluga>? _uslugeResult;
+  SearchResult<Zaposlenik>? _usluzniciResult;
   TextEditingController _ftsController1 = new TextEditingController();
   TextEditingController _ftsController2 = new TextEditingController();
+  bool isLoadingUsluge = true;
+  bool isLoadingUsluznici = true;
+  Usluga? selectedUsluga;
+  Zaposlenik? selectedUsluznik;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _uslugeProvider = context.read<UslugeProvider>();
+    _zaposleniciProvider = context.read<ZaposleniciProvider>();
+    getUsluge();
+    getUsluznici();
+  }
+
+  getUsluge() async {
+    var usluge = await _uslugeProvider.get();
+    setState(() {
+      _uslugeResult = usluge;
+      isLoadingUsluge = false;
+    });
+  }
+
+  getUsluznici() async {
+    var usluznici = await _zaposleniciProvider.get(filter: {'isUsluznik': true}); 
+    setState(() {
+      _usluzniciResult = usluznici;
+      isLoadingUsluznici = false;
+    });
+  }
+
+  Widget searchByUsluga() {
+    print("search by usluga");
+    if (isLoadingUsluge == false) {
+      return Container(
+        padding: EdgeInsets.all(3.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Usluga>(
+              hint: Text("Izaberi uslugu"),
+              value: selectedUsluga,
+              onChanged: (Usluga? newValue) {
+                setState(() {
+                  selectedUsluga = newValue;
+                  print(selectedUsluga?.naziv);
+                });
+              },
+              items: _uslugeResult?.result
+                  .map<DropdownMenuItem<Usluga>>((Usluga service) {
+                return DropdownMenuItem<Usluga>(
+                  value: service,
+                  child: Text(service.naziv!),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    }
+    return Container();
+  }
+
+Widget searchByUsluznik() {
+    print("search by usluznik");
+    if (isLoadingUsluznici == false) {
+      return Container(
+        padding: EdgeInsets.all(3.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Zaposlenik>(
+              hint: Text("Izaberi uslužnika"),
+              value: selectedUsluznik,
+              onChanged: (Zaposlenik? newValue) {
+                setState(() {
+                  selectedUsluznik = newValue;
+                  print(selectedUsluznik?.zaposlenikId);
+                });
+              },
+              items: _usluzniciResult?.result
+                  .map<DropdownMenuItem<Zaposlenik>>((Zaposlenik service) {
+                return DropdownMenuItem<Zaposlenik>(
+                  value: service,
+                  child: Text("${service.korisnik!.ime!} ${service.korisnik!.prezime!}"), 
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    }
+    return Container();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,15 +185,38 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           SizedBox(
             width: 8,
           ),
+          Expanded(
+            child: searchByUsluga(),
+          ),
+          SizedBox(width: 8),
+          selectedUsluga != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedUsluga = null;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Text(
+                      "X",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                    message: "Poništi selekciju",
+                  ),
+                )
+              : Container(),
+          SizedBox(width: 10),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme trazi rec. usluge");
 
                 var data = await _recenzijeUslugeProvider.get(filter: {
                   'FTS': _ftsController1.text,
+                  'uslugaId': selectedUsluga?.uslugaId
                 });
-
-                print("fts: ${_ftsController1.text}");
+                print(
+                    "fts: ${_ftsController1.text}, uslugaId: ${selectedUsluga?.uslugaId}");
 
                 setState(() {
                   _recenzijaUslugeResult = data;
@@ -215,8 +348,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _recenzijeUslugeProvider
-        .get(filter: {'FTS': _ftsController1.text});
+    var data = await _recenzijeUslugeProvider.get(filter: {
+      'FTS': _ftsController1.text,
+      'uslugaId': selectedUsluga?.uslugaId
+    });
 
     setState(() {
       _recenzijaUslugeResult = data;
@@ -241,12 +376,34 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           SizedBox(
             width: 8,
           ),
+          Expanded(
+            child: searchByUsluznik(),
+          ),
+          SizedBox(width: 8),
+          selectedUsluznik != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedUsluznik = null;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Text(
+                      "X",
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                    message: "Poništi selekciju",
+                  ),
+                )
+              : Container(),
+          SizedBox(width: 10),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme trazi rec. usluznika");
 
                 var data = await _recenzijeUsluznikaProvider
-                    .get(filter: {'FTS': _ftsController2.text});
+                    .get(filter: {'FTS': _ftsController2.text, 'usluznikId': selectedUsluznik?.zaposlenikId});
 
                 print("fts: ${_ftsController2.text}");
 
@@ -260,9 +417,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ),
           ElevatedButton(
               onPressed: () {
-                  Navigator.of(context)
+                Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => HomePage()));
-              }, child: Text("Izvještaj recenzija uslužnika")),
+              },
+              child: Text("Izvještaj recenzija uslužnika")),
           SizedBox(width: 8),
         ],
       ),
@@ -380,7 +538,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
 
     //treba da se osvjezi lista
     var data = await _recenzijeUsluznikaProvider
-        .get(filter: {'FTS': _ftsController2.text});
+        .get(filter: {'FTS': _ftsController2.text, 'usluznikId': selectedUsluznik?.zaposlenikId});
 
     setState(() {
       _recenzijaUsluznikaResult = data;

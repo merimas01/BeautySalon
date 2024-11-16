@@ -106,6 +106,10 @@ namespace eBeautySalon.Services
                 || (x.Prezime != null && x.Prezime.ToLower().Contains(search.FTS.ToLower())
                 || (x.KorisnickoIme != null && x.KorisnickoIme.ToLower().Contains(search.FTS.ToLower()))));
             }
+            if(search.isAdmin==false && search.isZaposlenik == false)
+            {
+                query = query.Include("KorisnikUlogas.Uloga").Include(x=>x.SlikaProfila).Where(x => x.IsAdmin == false && x.KorisnikUlogas.Count() == 0); //ako nema nijedne uloge, onda je obicni korisnik (nije ni admin ni zaposlenik)
+            }
             if(search.isBlokiran == "da")
             {
                 query = query.Where(x => x.Status == false);
@@ -150,33 +154,6 @@ namespace eBeautySalon.Services
             }
             return _mapper.Map<Korisnici>(entity);
 
-        }
-
-        public async Task<PagedResult<Korisnici>> GetKorisnike(KorisniciSearchObject? search)
-        {
-            var query = _context.Korisniks.AsQueryable();
-
-            PagedResult<Korisnici> result = new PagedResult<Korisnici>();
-
-            query = query.Where(x => x.KorisnikUlogas.Count() == 0).AsQueryable();
-
-            query = AddFilter(query, search);
-
-            query = query.Include("SlikaProfila");
-
-            result.Count = await query.CountAsync();
-
-            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
-            {
-                query = query.Take(search.PageSize.Value).Skip(search.Page.Value * search.PageSize.Value);
-            }
-            var list = await query.ToListAsync();
-
-            var tmp = _mapper.Map<List<Korisnici>>(list);
-
-            result.Result = tmp;
-
-            return result;
         }
     }
 }

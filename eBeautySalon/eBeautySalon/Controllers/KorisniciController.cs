@@ -23,12 +23,5 @@ namespace eBeautySalon.Controllers
         {
             return base.Insert(insert);
         }
-
-        [HttpGet("GetKorisnike")]
-        public Task<PagedResult<Korisnici>> GetKorisnike ([FromQuery] KorisniciSearchObject? search)
-        {
-            return _korisniciService.GetKorisnike(search);
-        }
-
     }
 }

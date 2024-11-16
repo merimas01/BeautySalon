@@ -29,6 +29,10 @@ namespace eBeautySalon.Services
                 || (x.ZaposlenikUslugas != null && x.ZaposlenikUslugas.Select(z => z.Usluga.Naziv).Contains(search.FTS))
                ));
             }
+            if(search.isUsluznik == true)
+            {
+                query = query.Where(x => x.ZaposlenikUslugas.Count() != 0).Include(x=>x.Korisnik.SlikaProfila);
+            }
             return base.AddFilter(query, search);
         }
         public override IQueryable<Zaposlenik> AddInclude(IQueryable<Zaposlenik> query, ZaposleniciSearchObject? search = null)

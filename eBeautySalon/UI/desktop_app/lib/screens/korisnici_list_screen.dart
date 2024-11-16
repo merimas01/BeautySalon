@@ -133,7 +133,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
-                var data = await _korisniciProvider.GetKorisnike(
+                var data = await _korisniciProvider.get(
                     filter: {'FTS': _ftsController.text, 'isBlokiran': selectedOpis});
 
                 print("fts: ${_ftsController.text}, isBlokiran: ${selectedOpis}");
@@ -270,8 +270,8 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     print('status? ${obj.status}');
 
     //treba da se osvjezi dropdown_lista
-    var data = await _korisniciProvider.GetKorisnike(
-        filter: {'FTS': _ftsController.text});
+    var data = await _korisniciProvider.get(
+        filter: {'FTS': _ftsController.text, 'isBlokiran' : selectedOpis}); 
 
     setState(() {
       result = data;

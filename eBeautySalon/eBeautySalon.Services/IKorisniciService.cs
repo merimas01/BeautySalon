@@ -13,6 +13,5 @@ namespace eBeautySalon.Services
     public interface IKorisniciService : ICRUDService<Korisnici, KorisniciSearchObject, KorisniciInsertRequest,KorisniciUpdateRequest>
     {
         public Task<Korisnici> Login(string username, string password);
-        public Task<PagedResult<Korisnici>> GetKorisnike(KorisniciSearchObject? search);
     }
 }

@@ -11,6 +11,7 @@ import '../providers/recenzija_usluznika_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
 import '../providers/usluge_provider.dart';
 import '../providers/zaposlenici_provider.dart';
+import '../widgets/master_screen.dart';
 
 class RecenzijeListScreen extends StatefulWidget {
   const RecenzijeListScreen({super.key});
@@ -111,7 +112,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
         ),
       );
     }
-    return Center( child: CircularProgressIndicator());
+    return Center(child: CircularProgressIndicator());
   }
 
   Widget searchByUsluznik() {
@@ -153,40 +154,54 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: AppBar(
-                bottom: const TabBar(
-                  tabs: [
-                    Tab(text: "Recenzije usluga", icon: Icon(Icons.reviews)),
-                    Tab(text: "Recenzije uslužnika", icon: Icon(Icons.people)),
-                  ],
-                ),
-                title: const Text('Recenzije'),
-              ),
-              body: TabBarView(
+    return MasterScreenWidget(
+      title: "Recenzije",
+      child: Container(
+          child: DefaultTabController(
+              length: 2,
+              child: Column(
                 children: [
-                  Column(
-                    children: [
-                      _getRecenzijeUsluge(),
-                      _showResultUslugeCount(),
-                      isLoadingData == false
-                          ? _buildRecenzijeUslugaListView()
-                          : Container(child: CircularProgressIndicator()),
-                    ],
+                  Container(
+                      color: Colors.pink,
+                      child: const TabBar(
+                        labelColor: Colors.white, // Color for selected tab
+                        unselectedLabelColor:
+                            Color.fromARGB(255, 0, 0, 0), // Color for unselected tabs
+                        indicatorColor: Colors.white,
+                        tabs: [
+                          Tab(
+                              text: "Recenzije usluga",
+                              icon: Icon(Icons.reviews)),
+                          Tab(
+                              text: "Recenzije uslužnika",
+                              icon: Icon(Icons.people)),
+                        ],
+                      )),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        Column(
+                          children: [
+                            _getRecenzijeUsluge(),
+                            _showResultUslugeCount(),
+                            isLoadingData == false
+                                ? _buildRecenzijeUslugaListView()
+                                : Container(child: CircularProgressIndicator()),
+                          ],
+                        ),
+                        Column(children: [
+                          _getRecenzijeUsluznika(),
+                          _showResultUsluzniciCount(),
+                          isLoadingData == false
+                              ? _buildRecenzijeUsluznikaListView()
+                              : Container(child: CircularProgressIndicator()),
+                        ])
+                      ],
+                    ),
                   ),
-                  Column(children: [
-                    _getRecenzijeUsluznika(),
-                    _showResultUsluzniciCount(),
-                    isLoadingData == false
-                        ? _buildRecenzijeUsluznikaListView()
-                        : Container(child: CircularProgressIndicator()),
-                  ])
                 ],
-              ),
-            )));
+              ))),
+    );
   }
 
   Widget _getRecenzijeUsluge() {

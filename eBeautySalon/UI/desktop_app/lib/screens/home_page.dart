@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:desktop_app/main.dart';
 import 'package:desktop_app/screens/recenzije_list_screen.dart';
 import 'package:desktop_app/utils/util.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
@@ -39,6 +40,10 @@ class _HomePageState extends State<HomePage> {
   int listUsluznikCount = 0;
   List<String> nazivUslugeList = [];
   List<String> nazivUsluznikaList = [];
+  File? _pdfFileUsluge;
+  File? _pdfFileUsluznici;
+  int pdfUsluge = 0;
+  int pdfUsluznici = 0;
 
   @override
   void initState() {
@@ -203,6 +208,34 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _showDialogPDF(BuildContext context, bool isUsluge) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'PDF je spreman',
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            'Kliknite "Preuzmi PDF" da preuzmete PDF na željenu lokaciju.',
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            Center(
+                child: ElevatedButton(
+              child: Text('Preuzmi PDF'),
+              onPressed: () async {
+                isUsluge ? openPDFUsluge() : openPDFUsluznik();
+                Navigator.of(context).pop();
+              },
+            ))
+          ],
+        );
+      },
+    );
+  }
+
   Widget buttonOdjava() => Padding(
         padding: const EdgeInsets.all(8.0),
         child: TextButton(
@@ -324,106 +357,120 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildBarChartUsluge() {
-    return nazivUslugeList.length !=0 ? SizedBox(
-      width: 400,
-      height: 300,
-      child: BarChart(
-        BarChartData(
-          barTouchData: BarTouchData(
-              enabled: true,
-              touchTooltipData: BarTouchTooltipData(
-                tooltipBgColor: Colors.blueGrey,
-                getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  String label = nazivUslugeList[group.x.toInt()];
-                  return BarTooltipItem(
-                    'Prosječna ocjena: ${rod.toY.toStringAsFixed(2)}\nUsluga: ${label}',
-                    TextStyle(color: Colors.white),
-                  );
-                },
-              ),),
-          barGroups: generateData(listUsluge),
-          borderData: FlBorderData(show: false),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true, reservedSize: 28)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  final index = value.toInt();
-                  final labels = nazivUslugeList;
+    return nazivUslugeList.length != 0
+        ? SizedBox(
+            width: 400,
+            height: 300,
+            child: BarChart(
+              BarChartData(
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    tooltipBgColor: Colors.blueGrey,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      String label = nazivUslugeList[group.x.toInt()];
+                      return BarTooltipItem(
+                        'Prosječna ocjena: ${rod.toY.toStringAsFixed(2)}\nUsluga: ${label}',
+                        TextStyle(color: Colors.white),
+                      );
+                    },
+                  ),
+                ),
+                barGroups: generateData(listUsluge),
+                borderData: FlBorderData(show: false),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: AxisTitles(
+                      sideTitles:
+                          SideTitles(showTitles: true, reservedSize: 28)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        final labels = nazivUslugeList;
 
-                  return Text(
-                    labels[index],
-                    style: TextStyle(fontSize: 10),
-                    softWrap: true, // Allows text to wrap to the next line
-                    overflow: TextOverflow.visible, // Ensures all text is shown
-                  );
-                },
+                        return Text(
+                          labels[index],
+                          style: TextStyle(fontSize: 10),
+                          softWrap:
+                              true, // Allows text to wrap to the next line
+                          overflow:
+                              TextOverflow.visible, // Ensures all text is shown
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                gridData: FlGridData(show: false),
+                alignment: BarChartAlignment.spaceEvenly,
+                //groupsSpace: 50,
               ),
             ),
-          ),
-          gridData: FlGridData(show: false),
-          alignment: BarChartAlignment.spaceEvenly,
-          //groupsSpace: 50,
-        ),
-      ),
-    ) : Text("Nema podataka.");
+          )
+        : Text("Nema podataka.");
   }
 
   Widget buildBarChartUsluznici() {
-    return nazivUsluznikaList.length != 0 ? SizedBox(
-      width: 400,
-      height: 300,
-      child: BarChart(
-        BarChartData(
-          barTouchData: BarTouchData(
-              enabled: true,
-              touchTooltipData: BarTouchTooltipData(
-                tooltipBgColor: Colors.blueGrey,
-                getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  String label = nazivUsluznikaList[group.x.toInt()];
-                  return BarTooltipItem(
-                    'Prosječna ocjena: ${rod.toY.toStringAsFixed(2)}\nUslužnik: ${label}',
-                    TextStyle(color: Colors.white),
-                  );
-                },
-              ),),
-          barGroups: generateData(listUsluznici),
-          borderData: FlBorderData(show: false),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true, reservedSize: 28)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  final index = value.toInt();
-                  final labels = nazivUsluznikaList;
+    return nazivUsluznikaList.length != 0
+        ? SizedBox(
+            width: 400,
+            height: 300,
+            child: BarChart(
+              BarChartData(
+                barTouchData: BarTouchData(
+                  enabled: true,
+                  touchTooltipData: BarTouchTooltipData(
+                    tooltipBgColor: Colors.blueGrey,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      String label = nazivUsluznikaList[group.x.toInt()];
+                      return BarTooltipItem(
+                        'Prosječna ocjena: ${rod.toY.toStringAsFixed(2)}\nUslužnik: ${label}',
+                        TextStyle(color: Colors.white),
+                      );
+                    },
+                  ),
+                ),
+                barGroups: generateData(listUsluznici),
+                borderData: FlBorderData(show: false),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: AxisTitles(
+                      sideTitles:
+                          SideTitles(showTitles: true, reservedSize: 28)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        final labels = nazivUsluznikaList;
 
-                  return Text(
-                    labels.isNotEmpty ? labels[index] : "empty",
-                    style: TextStyle(fontSize: 10),
-                    softWrap: true, // Allows text to wrap to the next line
-                    overflow: TextOverflow.visible, // Ensures all text is shown
-                  );
-                },
+                        return Text(
+                          labels.isNotEmpty ? labels[index] : "empty",
+                          style: TextStyle(fontSize: 10),
+                          softWrap:
+                              true, // Allows text to wrap to the next line
+                          overflow:
+                              TextOverflow.visible, // Ensures all text is shown
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                gridData: FlGridData(show: false),
+                alignment: BarChartAlignment.spaceEvenly,
               ),
             ),
-          ),
-          gridData: FlGridData(show: false),
-          alignment: BarChartAlignment.spaceEvenly,
-        ),
-      ),
-    ) : Text("Nema podataka.");
+          )
+        : Text("Nema podataka.");
   }
 
   Widget buttonRecenzije() {
@@ -450,7 +497,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           generatePDF();
         },
-        child: Text("Isprintaj PDF dokument"));
+        child: Text("Generiši PDF dokument"));
   }
 
   Widget buttonPrintajPDFUsluznici() {
@@ -458,7 +505,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           generatePDFUsluznici();
         },
-        child: Text("Isprintaj PDF dokument"));
+        child: Text("Generiši PDF dokument"));
   }
 
   void generatePDF() async {
@@ -509,6 +556,7 @@ class _HomePageState extends State<HomePage> {
               pw.SizedBox(height: 20),
               pw.Text(
                 "U sljedećoj tabeli prikazane su sve ocijenjivane usluge, sa svim ocijenama koje imaju. Prikazana je i prosječna ocjena za svaku od njih.",
+                textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
                   fontSize: 15,
                   fontWeight: pw.FontWeight.normal,
@@ -599,6 +647,7 @@ class _HomePageState extends State<HomePage> {
 
               pw.Text(
                 "Na dijagramu su prikazane sve usluge koje su ocjenjivane. Uslužnici koje nisu prikazani na dijagramu, nisu nijednom recenzirani.\nNa osnovu dijagrama se primjećuje koje usluge imaju najveću prosječnu ocjenu, kao i one koje imaju najnižu.",
+                textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
                   font: ttf,
                   fontSize: 15,
@@ -624,18 +673,46 @@ class _HomePageState extends State<HomePage> {
 
     // Save PDF file
     final output = await getApplicationDocumentsDirectory();
+    //final directory = await getTemporaryDirectory();
     final file = File("${output.path}/izvjestajRecenzijaUsluga.pdf");
     await file.writeAsBytes(await pdf.save());
 
     print("PDF saved at ${file.path}");
 
-    openPDFUsluge();
+    setState(() {
+      _pdfFileUsluge = file;
+
+      if (_pdfFileUsluge != null) {
+        print("is pdf ready true");
+        _showDialogPDF(context, true);
+      }
+    });
   }
 
   void openPDFUsluge() async {
-    final output = await getApplicationDocumentsDirectory();
-    final filePath = "${output.path}/izvjestajRecenzijaUsluga.pdf";
-    OpenFile.open(filePath);
+    pdfUsluge++;
+    if (_pdfFileUsluge != null) {
+      // Allow the user to select where to save the file
+      String? outputFilePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save PDF to...',
+        fileName: 'izvjestajRecenzijaUsluga${pdfUsluge}.pdf',
+        allowedExtensions: ['pdf'],
+        type: FileType.custom,
+      );
+
+      if (outputFilePath != null) {
+        // Copy the generated PDF to the selected location
+        try {
+          await _pdfFileUsluge!.copy(outputFilePath);
+
+          // Open the saved PDF
+          await OpenFile.open(outputFilePath);
+        } catch (e) {
+          //print("error catched");
+          _showDialogPDF(context, true);
+        }
+      }
+    }
   }
 
   void generatePDFUsluznici() async {
@@ -686,6 +763,7 @@ class _HomePageState extends State<HomePage> {
               pw.SizedBox(height: 20),
               pw.Text(
                 "U sljedećoj tabeli prikazane su svi ocijenjivani uslužnici, sa svim ocijenama koje imaju. Prikazana je i prosječna ocjena za svakog od njih.",
+                textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
                   fontSize: 15,
                   fontWeight: pw.FontWeight.normal,
@@ -776,6 +854,7 @@ class _HomePageState extends State<HomePage> {
 
               pw.Text(
                 "Na dijagramu su prikazani svi uslužnici koji su ocjenjivani. Usluge koje nisu prikazane na dijagramu, nisu nijednom recenzirane.\nNa osnovu dijagrama se primjećuje koje usluge imaju najveću prosječnu ocjenu, kao i one koje imaju najnižu.",
+                textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
                   font: ttf,
                   fontSize: 15,
@@ -801,18 +880,51 @@ class _HomePageState extends State<HomePage> {
 
     // Save PDF file
     final output = await getApplicationDocumentsDirectory();
+    //final directory = await getTemporaryDirectory();
     final file = File("${output.path}/izvjestajRecenzijaUsluznika.pdf");
     await file.writeAsBytes(await pdf.save());
 
     print("PDF saved at ${file.path}");
 
-    openPDFUsluznik();
+    setState(() {
+      _pdfFileUsluznici = file;
+
+      if (_pdfFileUsluznici != null) {
+        print("is pdf ready true");
+        _showDialogPDF(context, false);
+      }
+    });
   }
 
   void openPDFUsluznik() async {
-    final output = await getApplicationDocumentsDirectory();
-    final filePath = "${output.path}/izvjestajRecenzijaUsluznika.pdf";
-    OpenFile.open(filePath);
+    pdfUsluznici++;
+    if (_pdfFileUsluznici != null) {
+      // // Allow the user to select where to save the file
+      String? outputFilePath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save PDF to...',
+        fileName: 'izvjestajRecenzijaUsluznika${pdfUsluznici}.pdf',
+        allowedExtensions: ['pdf'],
+        type: FileType.custom,
+      );
+
+      if (outputFilePath != null) {
+        // Copy the generated PDF to the selected location
+        try {
+          await _pdfFileUsluznici!.copy(outputFilePath);
+
+          // Open the saved PDF
+          await OpenFile.open(outputFilePath);
+        } catch (e) {
+          //print("error catched");
+          _showDialogPDF(context, false);
+        }
+      }
+    }
+
+    // final output = await getApplicationDocumentsDirectory();
+    // final filePath =
+    //     "${output.path}/izvjestajRecenzijaUsluznika${pdfUsluznici}.pdf";
+    //OpenFile.open(filePath);
   }
 
   Future<Uint8List> captureChartImageUsluge() async {

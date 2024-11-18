@@ -47,73 +47,164 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
         ]),
       ),
       drawer: Drawer(
+        backgroundColor: Color.fromARGB(255, 255, 200, 219),
         child: ListView(
           children: [
             ListTile(
-              title: Text("Početna stranica"),
+              title: Icon(Icons.home, color: Colors.black),
               onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const HomePage()));
               },
             ),
             ListTile(
-              title: Text("Kategorije"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.category, color: Colors.black),
+                  Text(
+                    'Kategorije',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const KategorijeListScreen()));
               },
             ),
             ListTile(
-              title: Text("Usluge"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.face_retouching_natural, color: Colors.black),
+                  Text(
+                    'Usluge',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const UslugeListScreen()));
               },
             ),
             ListTile(
-              title: Text("Rezervacije"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.notes_outlined, color: Colors.black),
+                  Text(
+                    'Rezervacije',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const RezervacijeListScreen()));
               },
             ),
             ListTile(
-              title: Text("Termini"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.timer, color: Colors.black),
+                  Text(
+                    'Termini',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const UslugeTerminiListScreen()));
               },
             ),
             ListTile(
-              title: Text("Recenzije"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.star, color: Colors.black),
+                  Text(
+                    'Recenzije',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const RecenzijeListScreen()));
               },
             ),
             ListTile(
-              title: Text("Korisnici"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.people, color: Colors.black),
+                  Text(
+                    'Korisnici',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const KorisniciListScreen()));
               },
             ),
             ListTile(
-              title: Text("Zaposlenici"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.work, color: Colors.black),
+                  Text(
+                    'Zaposlenici',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const ZaposleniciListScreen()));
               },
             ),
             ListTile(
-              title: Text("Novosti"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.screen_search_desktop_rounded, color: Colors.black),
+                  Text(
+                    'Novosti',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const NovostiListScreen()));
               },
             ),
             ListTile(
-              title: Text("Profil"),
+              title: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8, 
+                children: [
+                  Icon(Icons.person, color: Colors.black),
+                  Text(
+                    'Profil',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const ProfilPage()));

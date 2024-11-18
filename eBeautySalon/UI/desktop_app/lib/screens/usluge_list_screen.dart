@@ -19,12 +19,12 @@ class UslugeListScreen extends StatefulWidget {
 class _UslugeListScreenState extends State<UslugeListScreen> {
   late UslugeProvider _uslugeProvider;
   late KategorijeProvider _kategorijeProvider;
-  bool isLoading = true;
   SearchResult<Usluga>? result;
   TextEditingController _ftsController = new TextEditingController();
   SearchResult<Kategorija>? _kategorijeResult;
   Kategorija? selectedKategorija;
   bool isLoadingKategorije = true;
+  bool isLoadingData = true;
 
   @override
   void didChangeDependencies() {
@@ -33,13 +33,17 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     _uslugeProvider = context.read<UslugeProvider>();
     _kategorijeProvider = context.read<KategorijeProvider>();
 
-    initForm();
+    getData();
   }
 
-  initForm() async {
-    _kategorijeResult = await _kategorijeProvider.get();
-    print("kategorije: ${_kategorijeResult?.result[0].naziv}");
+ void getData() async {
+    var data = await _uslugeProvider.get(filter: {'FTS': ''});
+     var kategorije = await _kategorijeProvider.get();
+
     setState(() {
+      result = data;
+      isLoadingData = false;
+      _kategorijeResult=kategorije;      
       isLoadingKategorije = false;
     });
   }
@@ -51,7 +55,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
         child: Column(children: [
           _builSearch(),
           _showResultCount(),
-          _buildDataListView(),
+          isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
         ]),
       ),
       title_widget: Text("Usluge"),
@@ -306,6 +310,6 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
         ),
       );
     }
-    return Container();
+    return Center(child: CircularProgressIndicator());
   }
 }

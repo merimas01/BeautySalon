@@ -71,13 +71,42 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: this.widget.novost?.naslov ?? "Dodaj novost",
-      child: Column(
-        children: [
-          isLoading ? Container() : _buildForm(),
-          _saveAction(),
-          
-        ],
+        title: "Novosti",
+        child: Center(
+          child: isLoading
+              ? Container(child: CircularProgressIndicator())
+              : _buildForm(),
+        ));
+  }
+
+  Widget _naslov() {
+    var naslov = this.widget.novost?.naslov != null
+        ? "Uredi novost: ${this.widget.novost?.naslov}"
+        : "Dodaj novost";
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 244, 201, 215), // Set background color
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+          child: Center(
+            child: RichText(
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.pink,
+                    ),
+                    children: [
+                  TextSpan(
+                    text: naslov,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ])),
+          ),
+        ),
       ),
     );
   }
@@ -86,172 +115,205 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
     return FormBuilder(
         key: _formKey,
         initialValue: _initialValue,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              right: 10.0, top: 10.0, left: 10.0, bottom: 5.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                      child: FormBuilderTextField(
-                    decoration: InputDecoration(labelText: "Naslov:"),
-                    name: "naslov",
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim().isEmpty) {
-                        return 'Molimo Vas unesite naslov';
-                      }
-                      if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
-                        return 'Specijalni znakovi su nedozvoljeni (@#<>+=*~°^ˇ`˙´).';
-                      }
-                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
-                        return 'Unesite ispravan naslov.';
-                      }
-                      return null;
-                    },
-                  )),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderTextField(
-                      name: "sadrzaj",
-                      decoration: InputDecoration(labelText: "Sadržaj:"),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 9,
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().isEmpty) {
-                          return 'Molimo Vas unesite sadrzaj';
-                        }
-                        if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
-                          return 'Specijalni znakovi su nedozvoljeni (@#<>+=*~°^ˇ`˙´).';
-                        }
-                        if (value
-                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
-                            .isEmpty) {
-                          return 'Unesite ispravan sadržaj.';
-                        }
-                        return null;
-                      },
+        child: Container(
+          width: 600,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _naslov(),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: FormBuilderTextField(
+                          decoration: InputDecoration(labelText: "Naslov:"),
+                          name: "naslov",
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().isEmpty) {
+                              return 'Molimo Vas unesite naslov';
+                            }
+                            if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
+                              return 'Specijalni znakovi su nedozvoljeni (@#<>+=*~°^ˇ`˙´).';
+                            }
+                            if (value
+                                .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                                .isEmpty) {
+                              return 'Unesite ispravan naslov.';
+                            }
+                            return null;
+                          },
+                        )),
+                      ],
                     ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  isLoadingImage
-                      ? Column(
-                          children: [
-                            _ponistiSliku != true
-                                ? Image.memory(
-                                    displayCurrentImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.memory(
-                                    displayNoImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            _imaSliku
-                                ? ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color.fromARGB(255, 219, 36, 36)),
-                                    ),
-                                    onPressed: () {
-                                      ponistiSliku();
-                                    },
-                                    child: Text("Poništi sliku"))
-                                : Container()
-                          ],
-                        )
-                      : _base64image != null && _image != null
-                          ? Column(
-                              children: [
-                                Image.file(
-                                  _image!,
-                                  width: null,
-                                  height: 180,
-                                  fit: BoxFit.cover,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color.fromARGB(255, 219, 36, 36)),
-                                    ),
-                                    onPressed: () {
-                                      ponistiSliku();
-                                    },
-                                    child: Text("Poništi sliku"))
-                              ],
-                            )
-                          : _ponistiSliku != true
-                              ? Container(
-                                  child: Image.memory(
-                                    displayCurrentImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Container(
-                                  child: Image.memory(
-                                    displayNoImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Expanded(
-                    child: FormBuilderField(
-                      name: 'slikaNovostId',
-                      builder: ((field) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                            errorText: field.errorText,
-                          ),
-                          child: ListTile(
-                            leading: Icon(Icons.photo),
-                            title: Text("Odaberite novu sliku"),
-                            trailing: Icon(Icons.file_upload),
-                            onTap: () {
-                              getImage();
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FormBuilderTextField(
+                            name: "sadrzaj",
+                            decoration: InputDecoration(labelText: "Sadržaj:"),
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 9,
+                            validator: (value) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.trim().isEmpty) {
+                                return 'Molimo Vas unesite sadrzaj';
+                              }
+                              if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+')
+                                  .hasMatch(value)) {
+                                return 'Specijalni znakovi su nedozvoljeni (@#<>+=*~°^ˇ`˙´).';
+                              }
+                              if (value
+                                  .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                                  .isEmpty) {
+                                return 'Unesite ispravan sadržaj.';
+                              }
+                              return null;
                             },
                           ),
-                        );
-                      }),
+                        )
+                      ],
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _buttonOdaberiSliku(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _odaberiSliku(),
+                    _saveAction(),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ));
+  }
+
+  Widget _buttonOdaberiSliku() {
+    return FormBuilderField(
+      name: 'slikaProfilaId',
+      builder: ((field) {
+        return Container(
+          width: 100,
+          height: 30,
+          child: ElevatedButton(
+              child: Center(
+                child: Tooltip(
+                    message: "Izaberi sliku",
+                    child: Icon(
+                      Icons.file_upload,
+                      size: 30,
+                    )),
+              ),
+              onPressed: () => getImage(),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 194, 191, 191)),
+                iconColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 0, 0, 0)),
+              )),
+        );
+      }),
+    );
+  }
+
+  Widget _odaberiSliku() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        isLoadingImage
+            ? Column(
+                children: [
+                  _ponistiSliku != true
+                      ? Image.memory(
+                          displayCurrentImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.memory(
+                          displayNoImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  _imaSliku
+                      ? SizedBox(
+                          width: 60,
+                          child: TextButton(
+                              style: ButtonStyle(
+                                iconColor: MaterialStateProperty.all<Color>(
+                                    Color.fromARGB(255, 225, 34, 34)),
+                              ),
+                              onPressed: () {
+                                ponistiSliku();
+                              },
+                              child: Tooltip(
+                                  message: "Poništi sliku",
+                                  child: Icon(Icons.delete))),
+                        )
+                      : Container()
+                ],
+              )
+            : _base64image != null && _image != null
+                ? Column(
+                    children: [
+                      Image.file(
+                        _image!,
+                        width: null,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      SizedBox(
+                        width: 60,
+                        child: TextButton(
+                            style: ButtonStyle(
+                              iconColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 225, 34, 34)),
+                            ),
+                            onPressed: () {
+                              ponistiSliku();
+                            },
+                            child: Tooltip(
+                                message: "Poništi sliku",
+                                child: Icon(Icons.delete))),
+                      )
+                    ],
+                  )
+                : _ponistiSliku != true
+                    ? Container(
+                        child: Image.memory(
+                          displayCurrentImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Container(
+                        child: Image.memory(
+                          displayNoImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+      ],
+    );
   }
 
   Uint8List displayNoImage() {
@@ -313,28 +375,25 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
   }
 
   Widget _saveAction() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 255, 255, 255)),
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 139, 132, 134)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => NovostiListScreen()));
-                },
-                child: Text("Nazad na novosti")),
-        ),
-        SizedBox(width:10.0),
-        Padding(
-          padding: const EdgeInsets.only(right: 10.0),
-          child: ElevatedButton(
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => NovostiListScreen()));
+              },
+              child: Text("Nazad na novosti")),
+          SizedBox(width: 10.0),
+          ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
                 var request_novost = new Map.from(_formKey.currentState!.value);
@@ -353,18 +412,18 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                             title: Text("Neispravni podaci"),
                             content: Text("Ispravite greške i ponovite unos."),
                             actions: <Widget>[
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Ok"))
-                              ],
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Ok"))
+                            ],
                           ));
                 }
               },
               child: Text("Spasi")),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

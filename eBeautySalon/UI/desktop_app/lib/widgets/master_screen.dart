@@ -16,7 +16,8 @@ class MasterScreenWidget extends StatefulWidget {
   Widget? child;
   String? title;
   Widget? title_widget;
-  MasterScreenWidget({required this.child, this.title, this.title_widget, super.key});
+  MasterScreenWidget(
+      {required this.child, this.title, this.title_widget, super.key});
 
   @override
   State<MasterScreenWidget> createState() => _MasterScreenWidgetState();
@@ -27,7 +28,23 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.title_widget ?? Text(widget.title ?? ""),
+        title:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Container(
+              child: widget.title_widget ??
+                  (widget.title != null ? Text(widget.title!) : Text(""))),
+          Image.asset(
+            "assets/images/slika4.png",
+            width: 55,
+            height: 55,
+          ),
+          Text(
+            "Salon ljepote 'Precious'",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.white),
+          ),
+        ]),
       ),
       drawer: Drawer(
         child: ListView(

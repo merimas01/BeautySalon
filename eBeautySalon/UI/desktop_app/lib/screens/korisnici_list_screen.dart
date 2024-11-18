@@ -20,35 +20,47 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   late KorisnikProvider _korisniciProvider;
   SearchResult<Korisnik>? result;
   TextEditingController _ftsController = new TextEditingController();
+  bool isLoadingData = true;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _korisniciProvider = context.read<KorisnikProvider>();
+    getData();
   }
 
-   var dropdown_lista = [
+  void getData() async {
+    var data = await _korisniciProvider
+        .get(filter: {'FTS': '', 'isBlokiran': selectedOpis});
+
+    setState(() {
+      result = data;
+      isLoadingData = false;
+    });
+  }
+
+  var dropdown_lista = [
     {'opis': 'da', 'vrijednost': true},
     {'opis': 'ne', 'vrijednost': false}
   ];
 
-  String? selectedOpis; 
+  String? selectedOpis;
 
   Widget _showDropdownDialog() {
     return Container(
       width: 150,
-        padding: EdgeInsets.all(3.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey),
-        ),
-        child: Center(
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
+      padding: EdgeInsets.all(3.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
             value: selectedOpis,
-           // isExpanded: true,
+            // isExpanded: true,
             hint: Text("Blokiran?"),
             items: dropdown_lista.map((item) {
               return DropdownMenuItem<String>(
@@ -62,10 +74,10 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
               });
               print(selectedOpis);
             },
-            ),
           ),
         ),
-      );
+      ),
+    );
   }
 
   @override
@@ -73,11 +85,15 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     return MasterScreenWidget(
         title: "Korisnici",
         child: Column(
-          children: [_buildSearch(), _showResultCount(), _buildDataListView()],
+          children: [
+            _buildSearch(),
+            _showResultCount(),
+            isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator())
+          ],
         ));
   }
 
-   Widget _showResultCount() {
+  Widget _showResultCount() {
     return RichText(
         text: TextSpan(
             style: TextStyle(
@@ -110,7 +126,9 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
             width: 20,
           ),
           _showDropdownDialog(),
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
           selectedOpis != null
               ? TextButton(
                   onPressed: () {
@@ -128,15 +146,18 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                   ),
                 )
               : Container(),
-              SizedBox(width: 20),
+          SizedBox(width: 20),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
-                var data = await _korisniciProvider.get(
-                    filter: {'FTS': _ftsController.text, 'isBlokiran': selectedOpis});
+                var data = await _korisniciProvider.get(filter: {
+                  'FTS': _ftsController.text,
+                  'isBlokiran': selectedOpis
+                });
 
-                print("fts: ${_ftsController.text}, isBlokiran: ${selectedOpis}");
+                print(
+                    "fts: ${_ftsController.text}, isBlokiran: ${selectedOpis}");
 
                 setState(() {
                   result = data;
@@ -270,8 +291,8 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     print('status? ${obj.status}');
 
     //treba da se osvjezi dropdown_lista
-    var data = await _korisniciProvider.get(
-        filter: {'FTS': _ftsController.text, 'isBlokiran' : selectedOpis}); 
+    var data = await _korisniciProvider
+        .get(filter: {'FTS': _ftsController.text, 'isBlokiran': selectedOpis});
 
     setState(() {
       result = data;

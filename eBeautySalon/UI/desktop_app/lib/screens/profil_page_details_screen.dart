@@ -77,12 +77,41 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: "${widget.korisnik?.ime} ${widget.korisnik?.prezime}",
-      child: Column(
-        children: [
-          isLoading ? Container() : _buildForm(),
-          _saveAction(),
-        ],
+      title: "Profil",
+      child: Center(
+        child: isLoading
+            ? Container(child: CircularProgressIndicator())
+            : _buildForm(),
+      ),
+    );
+  }
+
+  Widget _naslov() {
+    var naslov = this.widget.korisnik != null ? "Uredi profil" : "";
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 244, 201, 215), // Set background color
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+          child: Center(
+            child: RichText(
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.pink,
+                    ),
+                    children: [
+                  TextSpan(
+                    text: naslov,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ])),
+          ),
+        ),
       ),
     );
   }
@@ -91,208 +120,242 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
     return FormBuilder(
         key: _formKey,
         initialValue: _initialValue,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              right: 10.0, top: 10.0, left: 10.0, bottom: 5.0),
-          child: Column(
-            children: [
-              FormBuilderTextField(
-                decoration: InputDecoration(labelText: "Korisničko ime:"),
-                name: "korisnickoIme",
-                enabled: false,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                      child: FormBuilderTextField(
-                    decoration: InputDecoration(labelText: "Ime:"),
-                    name: "ime",
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Molimo Vas unesite ime';
-                      }
-                      if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
-                          .hasMatch(value)) {
-                        return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
-                      }
-                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
-                        return 'Unesite ispravno ime.';
-                      }
-                      return null;
-                    },
-                  )),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: FormBuilderTextField(
-                      name: "prezime",
-                      decoration: InputDecoration(labelText: "Prezime:"),
+        child: Container(
+          width: 500,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _naslov(),
+                    FormBuilderTextField(
+                      decoration: InputDecoration(labelText: "Korisničko ime:"),
+                      name: "korisnickoIme",
+                      enabled: false,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: FormBuilderTextField(
+                          decoration: InputDecoration(labelText: "Ime:"),
+                          name: "ime",
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Molimo Vas unesite ime';
+                            }
+                            if (RegExp(
+                                    r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                                .hasMatch(value)) {
+                              return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                            }
+                            if (value
+                                .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                                .isEmpty) {
+                              return 'Unesite ispravno ime.';
+                            }
+                            return null;
+                          },
+                        )),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: FormBuilderTextField(
+                            name: "prezime",
+                            decoration: InputDecoration(labelText: "Prezime:"),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Molimo Vas unesite prezime';
+                              }
+                              if (RegExp(
+                                      r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                                  .hasMatch(value)) {
+                                return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                              }
+                              if (value
+                                  .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                                  .isEmpty) {
+                                return 'Unesite ispravno prezime.';
+                              }
+                              return null;
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                    FormBuilderTextField(
+                      name: "telefon",
+                      decoration: InputDecoration(labelText: "Telefon:"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Molimo Vas unesite prezime';
+                          return 'Molimo Vas unesite telefon';
                         }
-                        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                        if (!RegExp(
+                                r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
                             .hasMatch(value)) {
-                          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
-                        }
-                        if (value
-                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
-                            .isEmpty) {
-                          return 'Unesite ispravno prezime.';
+                          return 'Unesite ispravan telefon: +### ## ### ###';
                         }
                         return null;
                       },
                     ),
-                  )
-                ],
-              ),
-              FormBuilderTextField(
-                name: "telefon",
-                decoration: InputDecoration(labelText: "Telefon:"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo Vas unesite telefon';
-                  }
-                  if (!RegExp(
-                          r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
-                      .hasMatch(value)) {
-                    return 'Unesite ispravan telefon: +### ## ### ###';
-                  }
-                  return null;
-                },
-              ),
-              FormBuilderTextField(
-                name: "email",
-                decoration: InputDecoration(labelText: "Email:"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Molimo Vas unesite email';
-                  }
-                  if (!RegExp(
-                          r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
-                      .hasMatch(value)) {
-                    return 'Unesite ispravan email: primjer@domena.com';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  isLoadingImage
-                      ? Column(
-                          children: [
-                            _ponistiSliku != true
-                                ? Image.memory(
-                                    displayCurrentImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.memory(
-                                    displayNoImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            _imaSliku
-                                ? ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color.fromARGB(255, 219, 36, 36)),
-                                    ),
-                                    onPressed: () {
-                                      ponistiSliku();
-                                    },
-                                    child: Text("Poništi sliku"))
-                                : Container()
-                          ],
-                        )
-                      : _base64image != null && _image != null
-                          ? Column(
-                              children: [
-                                Image.file(
-                                  _image!,
-                                  width: null,
-                                  height: 180,
-                                  fit: BoxFit.cover,
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color.fromARGB(255, 219, 36, 36)),
-                                    ),
-                                    onPressed: () {
-                                      ponistiSliku();
-                                    },
-                                    child: Text("Poništi sliku"))
-                              ],
-                            )
-                          : _ponistiSliku != true
-                              ? Container(
-                                  child: Image.memory(
-                                    displayCurrentImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Container(
-                                  child: Image.memory(
-                                    displayNoImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Expanded(
-                    child: FormBuilderField(
-                      name: 'slikaProfilaId',
-                      builder: ((field) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                            errorText: field.errorText,
-                          ),
-                          child: ListTile(
-                            leading: Icon(Icons.photo),
-                            title: Text("Odaberite novu sliku"),
-                            trailing: Icon(Icons.file_upload),
-                            onTap: () {
-                              getImage();
-                            },
-                          ),
-                        );
-                      }),
+                    FormBuilderTextField(
+                      name: "email",
+                      decoration: InputDecoration(labelText: "Email:"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite email';
+                        }
+                        if (!RegExp(
+                                r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
+                            .hasMatch(value)) {
+                          return 'Unesite ispravan email: primjer@domena.com';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _buttonOdaberiSliku(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _odaberiSliku(),
+                    _saveAction(),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ));
   }
 
-  Widget _saveAction() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0),
+  Widget _buttonOdaberiSliku() {
+    return FormBuilderField(
+      name: 'slikaProfilaId',
+      builder: ((field) {
+        return Container(
+          width: 100,
+          height: 30,
           child: ElevatedButton(
+              child: Center(
+                child: Tooltip(
+                    message: "Izaberi sliku",
+                    child: Icon(
+                      Icons.file_upload,
+                      size: 30,
+                    )),
+              ),
+              onPressed: () => getImage(),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 194, 191, 191)),
+                iconColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 0, 0, 0)),
+              )),
+        );
+      }),
+    );
+  }
+
+  Widget _odaberiSliku() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        isLoadingImage
+            ? Column(
+                children: [
+                  _ponistiSliku != true
+                      ? Image.memory(
+                          displayCurrentImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.memory(
+                          displayNoImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  _imaSliku
+                      ? SizedBox(
+                          width: 60,
+                          child: TextButton(
+                              style: ButtonStyle(
+                                iconColor: MaterialStateProperty.all<Color>(
+                                    Color.fromARGB(255, 225, 34, 34)),
+                              ),
+                              onPressed: () {
+                                ponistiSliku();
+                              },
+                              child: Tooltip(
+                                  message: "Poništi sliku",
+                                  child: Icon(Icons.delete))),
+                        )
+                      : Container()
+                ],
+              )
+            : _base64image != null && _image != null
+                ? Column(
+                    children: [
+                      Image.file(
+                        _image!,
+                        width: null,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      SizedBox(
+                        width: 60,
+                        child: TextButton(
+                            style: ButtonStyle(
+                              iconColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 225, 34, 34)),
+                            ),
+                            onPressed: () {
+                              ponistiSliku();
+                            },
+                            child: Tooltip(
+                                message: "Poništi sliku",
+                                child: Icon(Icons.delete))),
+                      )
+                    ],
+                  )
+                : _ponistiSliku != true
+                    ? Container(
+                        child: Image.memory(
+                          displayCurrentImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Container(
+                        child: Image.memory(
+                          displayNoImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+      ],
+    );
+  }
+
+  Widget _saveAction() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
                     Color.fromARGB(255, 255, 255, 255)),
@@ -304,11 +367,8 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                     MaterialPageRoute(builder: (context) => ProfilPage()));
               },
               child: Text("Nazad na profil")),
-        ),
-        SizedBox(width: 10.0),
-        Padding(
-          padding: const EdgeInsets.only(right: 10.0),
-          child: ElevatedButton(
+          SizedBox(width: 10.0),
+          ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
                 print("value: $val");
@@ -369,8 +429,8 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                 }
               },
               child: Text("Spasi")),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

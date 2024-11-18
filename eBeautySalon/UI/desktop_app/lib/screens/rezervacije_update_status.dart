@@ -64,20 +64,36 @@ class _RezervacijeUpdateStatusState extends State<RezervacijeUpdateStatus> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      child: Column(
-        children: [isLoading ? Container() : _buildForm(), _saveAction()],
+      child: Center(
+        child: isLoading
+            ? Container(child: CircularProgressIndicator())
+            : _buildForm(),
       ),
-      title: "Promijeni status",
     );
   }
 
   Widget _saveAction() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 600.0),
-          child: ElevatedButton(
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => RezervacijeListScreen()));
+              },
+              child: Text("Nazad na rezervacije")),
+          SizedBox(
+            width: 10.0,
+          ),
+          ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
                 var request = new Map.from(_formKey.currentState!.value);
@@ -92,7 +108,8 @@ class _RezervacijeUpdateStatusState extends State<RezervacijeUpdateStatus> {
                 print(
                     "${widget.rezervacija?.statusId} ${int.parse(request['statusId'])}");
 
-                if (widget.rezervacija?.statusId!=int.parse(request['statusId'])) {
+                if (widget.rezervacija?.statusId !=
+                    int.parse(request['statusId'])) {
                   if (widget.rezervacija?.rezervacijaId != null) {
                     var update_status = await _rezervacijeProvider.update(
                         widget.rezervacija!.rezervacijaId!, rezervacija_update);
@@ -134,53 +151,96 @@ class _RezervacijeUpdateStatusState extends State<RezervacijeUpdateStatus> {
                 }
               },
               child: Text("Spasi")),
+        ],
+      ),
+    );
+  }
+
+  Widget _naslov() {
+    var naslov =
+        this.widget.rezervacija != null ? "Promijeni status rezervacije" : "";
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 244, 201, 215), // Set background color
+          borderRadius: BorderRadius.circular(5),
         ),
-      ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+          child: Center(
+            child: RichText(
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.pink,
+                    ),
+                    children: [
+                  TextSpan(
+                    text: naslov,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ])),
+          ),
+        ),
+      ),
     );
   }
 
   FormBuilder _buildForm() {
     return FormBuilder(
-        key: _formKey,
-        initialValue: _initialValue,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              right: 300.0, top: 100.0, left: 300.0, bottom: 50.0),
-          child: Column(children: [
-            Row(
-              children: [
-                Expanded(
-                  child: FormBuilderDropdown<String>(
-                    name: 'statusId',
-                    decoration: InputDecoration(
-                      labelText: 'Statusi',
-                      suffix: IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          _formKey.currentState!.fields['statusId']?.reset();
-                        },
+      key: _formKey,
+      initialValue: _initialValue,
+      child: Container(
+        width: 400,
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _naslov(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FormBuilderDropdown<String>(
+                          name: 'statusId',
+                          decoration: InputDecoration(
+                            labelText: 'Statusi',
+                            suffix: IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () {
+                                _formKey.currentState!.fields['statusId']
+                                    ?.reset();
+                              },
+                            ),
+                            hintText: 'Odaberite novi status',
+                          ),
+                          items: _statusiResult?.result
+                                  .map((item) => DropdownMenuItem(
+                                        alignment: AlignmentDirectional.center,
+                                        value: item.statusId.toString(),
+                                        child: Text(item.opis ?? ""),
+                                      ))
+                                  .toList() ??
+                              [],
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Molimo Vas izaberite novi status';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      hintText: 'Odaberite novi status',
-                    ),
-                    items: _statusiResult?.result
-                            .map((item) => DropdownMenuItem(
-                                  alignment: AlignmentDirectional.center,
-                                  value: item.statusId.toString(),
-                                  child: Text(item.opis ?? ""),
-                                ))
-                            .toList() ??
-                        [],
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Molimo Vas izaberite novi status';
-                      }
-                      return null;
-                    },
+                    ],
                   ),
-                )
-              ],
+                  _saveAction()
+                ],
+              ),
             ),
-          ]),
-        ));
+          ),
+        ),
+      ),
+    );
   }
 }

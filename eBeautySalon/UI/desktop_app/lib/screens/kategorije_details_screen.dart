@@ -52,23 +52,22 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      child: Column(
-        children: [
-          isLoading ? Container() : _buildForm(),
-          _saveAction(),
-        ],
+      title: "Kategorije",
+      child: Center(
+        child: isLoading
+            ? Container(child: CircularProgressIndicator())
+            : _buildForm(),
       ),
-      title: this.widget.kategorija?.naziv ?? "Dodaj kategoriju",
     );
   }
 
   Widget _saveAction() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: ElevatedButton(
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
                     Color.fromARGB(255, 255, 255, 255)),
@@ -80,11 +79,8 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                     builder: (context) => KategorijeListScreen()));
               },
               child: Text("Nazad na kategorije")),
-        ),
-        SizedBox(width: 10.0),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ElevatedButton(
+          SizedBox(width: 10.0),
+          ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
                 print(_formKey.currentState?.value);
@@ -148,8 +144,40 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                 }
               },
               child: Text("Spasi")),
+        ],
+      ),
+    );
+  }
+
+  Widget _naslov() {
+    var naslov = this.widget.kategorija != null
+        ? "Uredi kategoriju: ${this.widget.kategorija?.naziv}"
+        : "Dodaj novu kategoriju";
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 244, 201, 215), // Set background color
+          borderRadius: BorderRadius.circular(5),
         ),
-      ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+          child: Center(
+            child: RichText(
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.pink,
+                    ),
+                    children: [
+                  TextSpan(
+                    text: naslov,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ])),
+          ),
+        ),
+      ),
     );
   }
 
@@ -159,51 +187,65 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
         initialValue: _initialValue,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                      child: FormBuilderTextField(
-                    decoration: InputDecoration(labelText: "Naziv:"),
-                    name: "naziv",
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim().isEmpty) {
-                        return 'Molimo Vas unesite naziv';
-                      }
-                      if (RegExp(r'[@#$?!%()\d~°^ˇ`˙´.;:,"<>+=*]+')
-                          .hasMatch(value)) {
-                        return 'Brojevi i specijalni znakovi (@#\$?!%()<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
-                      }
-                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
-                        return 'Unesite ispravan naziv.';
-                      }
-                      return null;
-                    },
-                  )),
-                ],
+          child: Container(
+            width: 500,
+            //height: 500,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _naslov(),
+                      FormBuilderTextField(
+                        decoration: InputDecoration(labelText: "Naziv:"),
+                        name: "naziv",
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.trim().isEmpty) {
+                            return 'Molimo Vas unesite naziv';
+                          }
+                          if (RegExp(r'[@#$?!%()\d~°^ˇ`˙´.;:,"<>+=*]+')
+                              .hasMatch(value)) {
+                            return 'Brojevi i specijalni znakovi (@#\$?!%()<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                          }
+                          if (value
+                              .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                              .isEmpty) {
+                            return 'Unesite ispravan naziv.';
+                          }
+                          return null;
+                        },
+                      ),
+                      FormBuilderTextField(
+                        name: "opis",
+                        decoration: InputDecoration(labelText: "Opis:"),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.trim().isEmpty) {
+                            return 'Molimo Vas unesite opis';
+                          }
+                          if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
+                            return 'Specijalni znakovi (@\$#<>+=*~°^ˇ`˙´) su nedozvoljeni.';
+                          }
+                          if (value
+                              .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                              .isEmpty) {
+                            return 'Unesite ispravan opis.';
+                          }
+                          return null;
+                        },
+                      ),
+                      _saveAction()
+                    ],
+                  ),
+                ),
               ),
-              FormBuilderTextField(
-                name: "opis",
-                decoration: InputDecoration(labelText: "Opis:"),
-                keyboardType: TextInputType.multiline,
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.isEmpty || value.trim().isEmpty) {
-                    return 'Molimo Vas unesite opis';
-                  }
-                  if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+').hasMatch(value)) {
-                    return 'Specijalni znakovi (@\$#<>+=*~°^ˇ`˙´) su nedozvoljeni.';
-                  }
-                  if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
-                    return 'Unesite ispravan opis.';
-                  }
-                  return null;
-                },
-              ),
-            ],
+            ),
           ),
         ));
   }

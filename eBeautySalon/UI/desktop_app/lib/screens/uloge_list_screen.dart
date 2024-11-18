@@ -19,12 +19,23 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
   late UlogeProvider _ulogeProvider;
   SearchResult<Uloga>? result;
   TextEditingController _ftsController = new TextEditingController();
+  bool isLoadingData = true;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _ulogeProvider = context.read<UlogeProvider>();
+    getData();
+  }
+
+  void getData() async {
+    var data = await _ulogeProvider.get(filter: {'FTS': ''});
+
+    setState(() {
+      result = data;
+      isLoadingData = false;
+    });
   }
 
   @override
@@ -34,7 +45,7 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
         child: Column(children: [
           _builSearch(),
           _showResultCount(),
-          _buildDataListView(),
+          isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
         ]));
   }
 

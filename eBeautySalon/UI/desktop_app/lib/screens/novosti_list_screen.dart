@@ -17,15 +17,25 @@ class NovostiListScreen extends StatefulWidget {
 
 class _NovostiListScreenState extends State<NovostiListScreen> {
   late NovostiProvider _novostiProvider;
-  bool isLoading = true;
   SearchResult<Novost>? result;
   TextEditingController _ftsController = new TextEditingController();
+  bool isLoadingData = true;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _novostiProvider = context.read<NovostiProvider>();
+    getData();
+  }
+
+  void getData() async {
+    var data = await _novostiProvider.get(filter: {'FTS': ''});
+
+    setState(() {
+      result = data;
+      isLoadingData = false;
+    });
   }
 
   @override
@@ -36,7 +46,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
         children: [
           _buildSearch(),
           _showResultCount(),
-          _buildDataListView(),
+          isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
         ],
       ),
     );

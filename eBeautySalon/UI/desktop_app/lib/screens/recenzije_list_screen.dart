@@ -32,6 +32,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
   TextEditingController _ftsController2 = new TextEditingController();
   bool isLoadingUsluge = true;
   bool isLoadingUsluznici = true;
+  bool isLoadingData = true;
   Usluga? selectedUsluga;
   Zaposlenik? selectedUsluznik;
 
@@ -41,8 +42,23 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     super.didChangeDependencies();
     _uslugeProvider = context.read<UslugeProvider>();
     _zaposleniciProvider = context.read<ZaposleniciProvider>();
+    _recenzijeUslugeProvider = context.read<RecenzijaUslugeProvider>();
+    _recenzijeUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
+    getData();
     getUsluge();
     getUsluznici();
+  }
+
+  void getData() async {
+    var recenzijeUsluge =
+        await _recenzijeUslugeProvider.get(filter: {'FTS': ''});
+    var recenzijeUsluznika =
+        await _recenzijeUsluznikaProvider.get(filter: {'FTS': ''});
+    setState(() {
+      _recenzijaUslugeResult = recenzijeUsluge;
+      _recenzijaUsluznikaResult = recenzijeUsluznika;
+      isLoadingData = false;
+    });
   }
 
   getUsluge() async {
@@ -54,7 +70,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
   }
 
   getUsluznici() async {
-    var usluznici = await _zaposleniciProvider.get(filter: {'isUsluznik': true}); 
+    var usluznici =
+        await _zaposleniciProvider.get(filter: {'isUsluznik': true});
     setState(() {
       _usluzniciResult = usluznici;
       isLoadingUsluznici = false;
@@ -94,10 +111,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
         ),
       );
     }
-    return Container();
+    return Center( child: CircularProgressIndicator());
   }
 
-Widget searchByUsluznik() {
+  Widget searchByUsluznik() {
     print("search by usluznik");
     if (isLoadingUsluznici == false) {
       return Container(
@@ -122,7 +139,8 @@ Widget searchByUsluznik() {
                   .map<DropdownMenuItem<Zaposlenik>>((Zaposlenik service) {
                 return DropdownMenuItem<Zaposlenik>(
                   value: service,
-                  child: Text("${service.korisnik!.ime!} ${service.korisnik!.prezime!}"), 
+                  child: Text(
+                      "${service.korisnik!.ime!} ${service.korisnik!.prezime!}"),
                 );
               }).toList(),
             ),
@@ -130,7 +148,7 @@ Widget searchByUsluznik() {
         ),
       );
     }
-    return Container();
+    return Center(child: CircularProgressIndicator());
   }
 
   @override
@@ -154,13 +172,17 @@ Widget searchByUsluznik() {
                     children: [
                       _getRecenzijeUsluge(),
                       _showResultUslugeCount(),
-                      _buildRecenzijeUslugaListView(),
+                      isLoadingData == false
+                          ? _buildRecenzijeUslugaListView()
+                          : Container(child: CircularProgressIndicator()),
                     ],
                   ),
                   Column(children: [
                     _getRecenzijeUsluznika(),
                     _showResultUsluzniciCount(),
-                    _buildRecenzijeUsluznikaListView()
+                    isLoadingData == false
+                        ? _buildRecenzijeUsluznikaListView()
+                        : Container(child: CircularProgressIndicator()),
                   ])
                 ],
               ),
@@ -168,8 +190,6 @@ Widget searchByUsluznik() {
   }
 
   Widget _getRecenzijeUsluge() {
-    _recenzijeUslugeProvider = context.read<RecenzijaUslugeProvider>();
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -359,8 +379,6 @@ Widget searchByUsluznik() {
   }
 
   Widget _getRecenzijeUsluznika() {
-    _recenzijeUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -402,8 +420,10 @@ Widget searchByUsluznik() {
               onPressed: () async {
                 print("pritisnuto dugme trazi rec. usluznika");
 
-                var data = await _recenzijeUsluznikaProvider
-                    .get(filter: {'FTS': _ftsController2.text, 'usluznikId': selectedUsluznik?.zaposlenikId});
+                var data = await _recenzijeUsluznikaProvider.get(filter: {
+                  'FTS': _ftsController2.text,
+                  'usluznikId': selectedUsluznik?.zaposlenikId
+                });
 
                 print("fts: ${_ftsController2.text}");
 
@@ -537,8 +557,10 @@ Widget searchByUsluznik() {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _recenzijeUsluznikaProvider
-        .get(filter: {'FTS': _ftsController2.text, 'usluznikId': selectedUsluznik?.zaposlenikId});
+    var data = await _recenzijeUsluznikaProvider.get(filter: {
+      'FTS': _ftsController2.text,
+      'usluznikId': selectedUsluznik?.zaposlenikId
+    });
 
     setState(() {
       _recenzijaUsluznikaResult = data;

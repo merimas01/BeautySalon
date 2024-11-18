@@ -118,29 +118,36 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     _ulogeResult = await _ulogeProvider.get();
 
     if (widget.zaposlenik != null) {
-      var role = widget.korisnik?.korisnikUlogas
-          ?.map((e) => e.ulogaId)
-          .where((id) => id == DEFAULT_UlogaId)
-          .toList()[0]; //svaki korisnik ima samo jednu ulogu
+      var korisnikUloge = widget.korisnik?.korisnikUlogas;
+      if (korisnikUloge?.length != 0) {
+        var ulogeIsUsluznik = korisnikUloge!
+            .map((e) => e.ulogaId)
+            .where((id) => id == DEFAULT_UlogaId);
+        var role = ulogeIsUsluznik.length != 0
+            ? ulogeIsUsluznik.toList()[0]
+            : null; //svaki korisnik ima samo jednu ulogu
 
-      if (_postojeceUsluge?.length != 0) {
-        //ako ima usluge, on je vec usluznik
-        setState(() {
-          _selectedItems.result = _postojeceUsluge!;
-          validationError = "";
-          uloga = "Usluznik";
-          selectedUlogaId =
-              widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
-          print(
-              "selectedItems, postojeceUsluge ${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
-        });
-      }
-      if (role == DEFAULT_UlogaId && _postojeceUsluge?.length == 0) {
-        //ako je usluznik i ako nema nijednu uslugu
-        setState(() {
-          validationError =
-              "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
-        });
+        if (_postojeceUsluge?.length != 0) {
+          //ako ima usluge, on je vec usluznik
+          setState(() {
+            _selectedItems.result = _postojeceUsluge!;
+            validationError = "";
+            uloga = "Usluznik";
+            selectedUlogaId =
+                widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
+            print(
+                "selectedItems, postojeceUsluge ${_selectedItems.result.length}, ${_postojeceUsluge?.length}");
+          });
+        }
+        if (role != null &&
+            role == DEFAULT_UlogaId &&
+            _postojeceUsluge?.length == 0) {
+          //ako je usluznik i ako nema nijednu uslugu
+          setState(() {
+            validationError =
+                "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
+          });
+        }
       }
     }
     setState(() {
@@ -151,41 +158,36 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: widget.zaposlenik?.korisnik?.ime == null ||
-              widget.zaposlenik?.korisnik?.prezime == null
-          ? "Registruj novog zaposlenika"
-          : "${widget.zaposlenik?.korisnik?.ime} ${widget.zaposlenik?.korisnik?.prezime}",
-      child: Column(children: [
-        isLoading ? Container() : _buildForm(),
-        _saveAction(),
-      ]),
-    );
+        title: "Zaposlenici",
+        child: Center(
+          child: isLoading
+              ? Container(child: CircularProgressIndicator())
+              : _buildForm(),
+        ));
   }
 
   Widget _saveAction() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 255, 255, 255)),
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 139, 132, 134)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ZaposleniciListScreen()));
-                },
-                child: Text("Nazad na zaposlenike"))),
-        SizedBox(
-          width: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 10.0),
-          child: ElevatedButton(
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ZaposleniciListScreen()));
+              },
+              child: Text("Nazad na zaposlenike")),
+          SizedBox(
+            width: 10,
+          ),
+          ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
                 var obj = Map.from(_formKey.currentState!.value);
@@ -217,8 +219,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 }
               },
               child: Text("Spasi")),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -256,496 +258,369 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     }
   }
 
+  Widget _odaberiUlogu() {
+    return Row(
+      children: [
+        Expanded(
+          child: FormBuilderDropdown<String>(
+            name: 'ulogaId',
+            decoration: InputDecoration(
+              labelText: 'Uloge',
+              suffix: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  _formKey.currentState!.fields['ulogaId']?.reset();
+                },
+              ),
+              hintText: 'Odaberite ulogu',
+            ),
+            onReset: () async {
+              if (widget.zaposlenik == null) {
+                setState(() {
+                  selectedUlogaId = "";
+                  uloga = null;
+                });
+              } else {
+                setState(() {
+                  selectedUlogaId =
+                      widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
+                  uloga = selectedUlogaId == DEFAULT_UlogaId.toString()
+                      ? "Usluznik"
+                      : "";
+                });
+              }
+            },
+            onChanged: (x) async {
+              setState(() {
+                selectedUlogaId = x;
+                uloga = x == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
+              });
+              if (uloga == "Usluznik" && _selectedItems.result.length == 0) {
+                setState(() {
+                  validationError =
+                      "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
+                });
+              }
+              if (uloga == "Usluznik" && _selectedItems.result.length > 3) {
+                setState(() {
+                  validationError =
+                      "Dozvoljeno je izabrati maksimalno 3 usluge. Pokušajte ponovo.";
+                });
+              }
+              print(x);
+              print(uloga);
+              print(validationError);
+            },
+            items: _ulogeResult?.result
+                    .map((item) => DropdownMenuItem(
+                          alignment: AlignmentDirectional.center,
+                          value: item.ulogaId.toString(),
+                          child: Text(item.naziv ?? ""),
+                        ))
+                    .toList() ??
+                [],
+            validator: (value) {
+              if (value == null) {
+                return 'Molimo Vas izaberite ulogu';
+              }
+              return null;
+            },
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+            child: Tooltip(
+          message:
+              "Po potrebi dodaj novu ulogu, uredi ili izbriši već postojeću.",
+          child: TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blue,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => UlogeListScreen()));
+              },
+              child: Text("Upravljaj ulogama")),
+        )),
+      ],
+    );
+  }
+
   FormBuilder _buildForm() {
     return FormBuilder(
         key: _formKey,
         initialValue: _initialValue,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              right: 10.0, top: 10.0, left: 10.0, bottom: 5.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderDropdown<String>(
-                      name: 'ulogaId',
-                      decoration: InputDecoration(
-                        labelText: 'Uloge',
-                        suffix: IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            _formKey.currentState!.fields['ulogaId']?.reset();
-                          },
-                        ),
-                        hintText: 'Odaberite ulogu',
-                      ),
-                      onReset: () async {
-                        if (widget.zaposlenik == null) {
-                          setState(() {
-                            selectedUlogaId = "";
-                            uloga = null;
-                          });
-                        } else {
-                          setState(() {
-                            selectedUlogaId = widget
-                                .korisnik?.korisnikUlogas?[0].ulogaId
-                                .toString();
-                            uloga =
-                                selectedUlogaId == DEFAULT_UlogaId.toString()
-                                    ? "Usluznik"
-                                    : "";
-                          });
-                        }
-                      },
-                      onChanged: (x) async {
-                        setState(() {
-                          selectedUlogaId = x;
-                          uloga =
-                              x == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
-                        });
-                        if (uloga == "Usluznik" &&
-                            _selectedItems.result.length == 0) {
-                          setState(() {
-                            validationError =
-                                "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
-                          });
-                        }
-                        if (uloga == "Usluznik" &&
-                            _selectedItems.result.length > 3) {
-                          setState(() {
-                            validationError =
-                                "Dozvoljeno je izabrati maksimalno 3 usluge. Pokušajte ponovo.";
-                          });
-                        }
-                        print(x);
-                        print(uloga);
-                        print(validationError);
-                      },
-                      items: _ulogeResult?.result
-                              .map((item) => DropdownMenuItem(
-                                    alignment: AlignmentDirectional.center,
-                                    value: item.ulogaId.toString(),
-                                    child: Text(item.naziv ?? ""),
-                                  ))
-                              .toList() ??
-                          [],
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Molimo Vas izaberite ulogu';
-                        }
-                        return null;
-                      },
+        child: Container(
+          width: 800,
+          height: 700,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _naslov(),
+                    _odaberiUlogu(),
+                    _inputImePrezime(),
+                    _inputTelefonEmail(),
+                    _inputDatume(),
+                    _inputSifra(),
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                      child: Tooltip(
-                    message:
-                        "Po potrebi dodaj novu ulogu, uredi ili izbriši već postojeću.",
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.blue,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => UlogeListScreen()));
-                        },
-                        child: Text("Upravljaj ulogama")),
-                  )),
-                ],
+                    _buttonOdaberiSliku(),
+                    SizedBox(height: 10),
+                    _odaberiSliku(),
+                    uloga == "Usluznik"
+                        ? SizedBox(
+                            height: 20,
+                          )
+                        : Container(),
+                    _buttonOdaberiUsluge(),
+                    uloga == "Usluznik"
+                        ? SizedBox(
+                            height: 20,
+                          )
+                        : Container(),
+                    _odaberiUsluge(),
+                    uloga == "Usluznik"
+                        ? SizedBox(
+                            height: 20,
+                          )
+                        : Container(),
+                    _saveAction(),
+                  ],
+                ),
               ),
-              Row(
-                children: [
-                  Expanded(
-                      child: FormBuilderTextField(
-                    decoration: InputDecoration(labelText: "Korisničko ime:"),
-                    name: "korisnickoIme",
-                    enabled: widget.korisnik == null,
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim().isEmpty) {
-                        return 'Molimo Vas unesite korisničko ime.';
-                      }
-                      if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$')
-                          .hasMatch(value)) {
-                        return 'Korisničko ime treba počinjati sa slovom i smije sadržavati \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
-                      }
-                      return null;
-                    },
-                  )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: FormBuilderTextField(
-                    decoration: InputDecoration(labelText: "Ime:"),
-                    name: "ime",
-                    validator: (value) {
-                      if (value == null ||
-                          value.isEmpty ||
-                          value.trim().isEmpty) {
-                        return 'Molimo Vas unesite ime';
-                      }
-                      if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
-                          .hasMatch(value)) {
-                        return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
-                      }
-                      if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
-                        return 'Unesite ispravno ime.';
-                      }
-                      return null;
-                    },
-                  )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: FormBuilderTextField(
-                      name: "prezime",
-                      decoration: InputDecoration(labelText: "Prezime:"),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().isEmpty) {
-                          return 'Molimo Vas unesite prezime';
-                        }
-                        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
-                            .hasMatch(value)) {
-                          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
-                        }
-                        if (value
-                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
-                            .isEmpty) {
-                          return 'Unesite ispravno prezime.';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderTextField(
-                      name: "telefon",
-                      decoration: InputDecoration(labelText: "Telefon:"),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().isEmpty) {
-                          return 'Molimo Vas unesite telefon';
-                        }
-                        if (!RegExp(
-                                r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
-                            .hasMatch(value)) {
-                          return 'Unesite ispravan telefon: +### ## ### ###';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: FormBuilderTextField(
-                      name: "email",
-                      decoration: InputDecoration(labelText: "Email:"),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.trim().isEmpty) {
-                          return 'Molimo Vas unesite email';
-                        }
-                        if (!RegExp(
-                                r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
-                            .hasMatch(value)) {
-                          return 'Unesite ispravan email primjer@domena.com';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: FormBuilderDateTimePicker(
-                      name: 'datumRodjenja',
-                      inputType: InputType.date,
-                      decoration: InputDecoration(
-                        labelText: 'Datum rođenja',
-                      ),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2030),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Niste unijeli datum.';
-                        }
-                        if (value != null && value != _selectedDate) {
-                          setState(() {
-                            _selectedDate = value;
-                            _dateController.text =
-                                "${value.toLocal()}".split(' ')[0];
-                          });
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: FormBuilderDateTimePicker(
-                        name: 'datumZaposlenja',
-                        inputType: InputType.date,
-                        decoration: InputDecoration(
-                          labelText: 'Datum zaposlenja',
-                        ),
-                        firstDate: DateTime(2010),
-                        lastDate: DateTime.now(),
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Niste unijeli datum';
-                          }
-                          return null;
-                        }),
-                  )
-                ],
-              ),
-              widget.korisnik == null
-                  ? Row(
-                      children: [
-                        Expanded(
-                            child: FormBuilderTextField(
-                          decoration: InputDecoration(labelText: "Šifra:"),
-                          name: "password",
-                          obscureText: true,
-                          controller: _passwordController,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.trim().isEmpty) {
-                              return 'Molimo Vas unesite lozinku';
-                            }
-                            if (!RegExp(r'[\u0000-\uFFFF]{3,}')
-                                .hasMatch(value)) {
-                              return 'Vaša lozinka treba sačinjavati minimalno 3 znaka';
-                            }
-                            return null;
-                          },
-                        )),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                            child: FormBuilderTextField(
-                          decoration:
-                              InputDecoration(labelText: "Ponovite šifru:"),
-                          name: "passwordPotvrda",
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null ||
-                                value.isEmpty ||
-                                value.trim().isEmpty) {
-                              return 'Molimo Vas ponovite lozinku';
-                            }
-                            if (_passwordController.text != value) {
-                              return 'Lozinke se ne podudaraju.';
-                            }
-                            return null;
-                          },
-                        )),
-                      ],
-                    )
-                  : Container(),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  isLoadingImage
-                      ? Column(
-                          children: [
-                            _ponistiSliku != true
-                                ? Image.memory(
-                                    displayCurrentImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.memory(
-                                    displayNoImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            _imaSliku
-                                ? ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color.fromARGB(255, 219, 36, 36)),
-                                    ),
-                                    onPressed: () {
-                                      ponistiSliku();
-                                    },
-                                    child: Text("Poništi sliku"))
-                                : Container()
-                          ],
-                        )
-                      : _base64image != null && _image != null
-                          ? Column(
-                              children: [
-                                Image.file(
-                                  _image!,
-                                  width: null,
-                                  height: 180,
-                                  fit: BoxFit.cover,
-                                ),
-                                SizedBox(
-                                  height: 3,
-                                ),
-                                ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color.fromARGB(255, 219, 36, 36)),
-                                    ),
-                                    onPressed: () {
-                                      ponistiSliku();
-                                    },
-                                    child: Text("Poništi sliku"))
-                              ],
-                            )
-                          : _ponistiSliku != true
-                              ? Container(
-                                  child: Image.memory(
-                                    displayCurrentImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Container(
-                                  child: Image.memory(
-                                    displayNoImage(),
-                                    width: null,
-                                    height: 180,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Expanded(
-                    child: FormBuilderField(
-                      name: 'slikaProfilaId',
-                      builder: ((field) {
-                        return InputDecorator(
-                          decoration: InputDecoration(
-                            //label: Text("Odaberite novu sliku"),
-                            errorText: field.errorText,
-                          ),
-                          child: ListTile(
-                            leading: Icon(Icons.photo),
-                            title: Text("Odaberite novu sliku zaposlenika"),
-                            trailing: Icon(Icons.file_upload),
-                            onTap: () {
-                              getImage();
-                            },
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                  SizedBox(width: 30),
-                  uloga == "Usluznik"
-                      ? Column(
-                          children: [
-                            ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color.fromARGB(255, 255, 255, 255)),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color.fromARGB(255, 33, 33, 33)),
-                                ),
-                                onPressed: () {
-                                  _showMultiSelectDropdown();
-                                },
-                                child: const Text(
-                                    "Odaberite usluge za koje je zadužen zaposlenik")),
-                            SizedBox(height: 5),
-                            // _selectedItems.result.length <= 3
-                            //     ?
-                            Wrap(
-                              alignment: WrapAlignment.start,
-                              children: _selectedItems.result
-                                  .map((Usluga item) => SizedBox(
-                                      width: 150,
-                                      child: MouseRegion(
-                                          onEnter: (_) {
-                                            setState(() {
-                                              _hoveredItemText = item.naziv;
-                                            });
-                                          },
-                                          onExit: (_) {
-                                            setState(() {
-                                              _hoveredItemText = null;
-                                            });
-                                          },
-                                          child: Tooltip(
-                                              message: item.naziv!,
-                                              child: Chip(
-                                                label: Text(item.naziv!),
-                                                deleteIcon:
-                                                    Icon(Icons.delete_forever),
-                                                onDeleted: () {
-                                                  setState(() {
-                                                    _selectedItems.result
-                                                        .remove(item);
-                                                    if (_selectedItems
-                                                            .result.length ==
-                                                        0) {
-                                                      setState(() {
-                                                        validationError =
-                                                            "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
-                                                      });
-                                                    } else if (_selectedItems
-                                                            .result.length !=
-                                                        0) {
-                                                      setState(() {
-                                                        validationError = "";
-                                                      });
-                                                    }
-                                                    print(
-                                                        "broj itema: ${_selectedItems.result}");
-                                                  });
-                                                },
-                                              )))))
-                                  .toList(),
-                            ),
-                            validationError != ""
-                                ? Text(
-                                    validationError,
-                                    style: TextStyle(color: Colors.red),
-                                  )
-                                : Container()
-                          ],
-                        )
-                      : Container(),
-                ],
-              ),
-            ],
+            ),
           ),
         ));
+  }
+
+  Widget _naslov() {
+    var naslov = this.widget.korisnik != null
+        ? "Uredi zaposlenika: ${widget.korisnik?.ime} ${widget.korisnik?.prezime}"
+        : "Registruj novog zaposlenika";
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 244, 201, 215), // Set background color
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+          child: Center(
+            child: RichText(
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.pink,
+                    ),
+                    children: [
+                  TextSpan(
+                    text: naslov,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ])),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buttonOdaberiUsluge() {
+    return uloga == "Usluznik"
+        ? ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  Color.fromARGB(255, 255, 255, 255)),
+              foregroundColor: MaterialStateProperty.all<Color>(
+                  Color.fromARGB(255, 33, 33, 33)),
+            ),
+            onPressed: () {
+              _showMultiSelectDropdown();
+            },
+            child: const Text("Odaberite usluge za koje je zadužen zaposlenik"))
+        : Container();
+  }
+
+  Widget _odaberiUsluge() {
+    return Center(
+      child: uloga == "Usluznik"
+          ? Column(
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.start,
+                  children: _selectedItems.result
+                      .map((Usluga item) => SizedBox(
+                          width: 150,
+                          child: MouseRegion(
+                              onEnter: (_) {
+                                setState(() {
+                                  _hoveredItemText = item.naziv;
+                                });
+                              },
+                              onExit: (_) {
+                                setState(() {
+                                  _hoveredItemText = null;
+                                });
+                              },
+                              child: Tooltip(
+                                  message: item.naziv!,
+                                  child: Chip(
+                                    label: Text(item.naziv!),
+                                    deleteIcon: Icon(Icons.delete_forever),
+                                    onDeleted: () {
+                                      setState(() {
+                                        _selectedItems.result.remove(item);
+                                        if (_selectedItems.result.length == 0) {
+                                          setState(() {
+                                            validationError =
+                                                "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
+                                          });
+                                        } else if (_selectedItems
+                                                .result.length !=
+                                            0) {
+                                          setState(() {
+                                            validationError = "";
+                                          });
+                                        }
+                                        print(
+                                            "broj itema: ${_selectedItems.result}");
+                                      });
+                                    },
+                                  )))))
+                      .toList(),
+                ),
+                validationError != ""
+                    ? Center(
+                        child: Text(validationError,
+                            style: TextStyle(color: Colors.red)),
+                      )
+                    : Container()
+              ],
+            )
+          : Container(),
+    );
+  }
+
+  Widget _buttonOdaberiSliku() {
+    return FormBuilderField(
+      name: 'slikaProfilaId',
+      builder: ((field) {
+        return Container(
+          width: 100,
+          height: 30,
+          child: ElevatedButton(
+              child: Center(
+                child: Tooltip(
+                    message: "Izaberi sliku",
+                    child: Icon(
+                      Icons.file_upload,
+                      size: 30,
+                    )),
+              ),
+              onPressed: () => getImage(),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 194, 191, 191)),
+                iconColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 0, 0, 0)),
+              )),
+        );
+      }),
+    );
+  }
+
+  Widget _odaberiSliku() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        isLoadingImage
+            ? Column(
+                children: [
+                  _ponistiSliku != true
+                      ? Image.memory(
+                          displayCurrentImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.memory(
+                          displayNoImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  _imaSliku
+                      ? SizedBox(
+                          width: 60,
+                          child: TextButton(
+                              style: ButtonStyle(
+                                iconColor: MaterialStateProperty.all<Color>(
+                                    Color.fromARGB(255, 225, 34, 34)),
+                              ),
+                              onPressed: () {
+                                ponistiSliku();
+                              },
+                              child: Tooltip(
+                                  message: "Poništi sliku",
+                                  child: Icon(Icons.delete))),
+                        )
+                      : Container()
+                ],
+              )
+            : _base64image != null && _image != null
+                ? Column(
+                    children: [
+                      Image.file(
+                        _image!,
+                        width: null,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      SizedBox(
+                        width: 60,
+                        child: TextButton(
+                            style: ButtonStyle(
+                              iconColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 225, 34, 34)),
+                            ),
+                            onPressed: () {
+                              ponistiSliku();
+                            },
+                            child: Tooltip(
+                                message: "Poništi sliku",
+                                child: Icon(Icons.delete))),
+                      )
+                    ],
+                  )
+                : _ponistiSliku != true
+                    ? Container(
+                        child: Image.memory(
+                          displayCurrentImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Container(
+                        child: Image.memory(
+                          displayNoImage(),
+                          width: null,
+                          height: 180,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+      ],
+    );
   }
 
   Uint8List displayNoImage() {
@@ -1045,5 +920,206 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       }
     }
     return true;
+  }
+
+  Widget _inputImePrezime() {
+    return Row(
+      children: [
+        Expanded(
+            child: FormBuilderTextField(
+          decoration: InputDecoration(labelText: "Korisničko ime:"),
+          name: "korisnickoIme",
+          enabled: widget.korisnik == null,
+          validator: (value) {
+            if (value == null || value.isEmpty || value.trim().isEmpty) {
+              return 'Molimo Vas unesite korisničko ime.';
+            }
+            if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$').hasMatch(value)) {
+              return 'Korisničko ime treba počinjati sa slovom i smije sadržavati \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
+            }
+            return null;
+          },
+        )),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+            child: FormBuilderTextField(
+          decoration: InputDecoration(labelText: "Ime:"),
+          name: "ime",
+          validator: (value) {
+            if (value == null || value.isEmpty || value.trim().isEmpty) {
+              return 'Molimo Vas unesite ime';
+            }
+            if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                .hasMatch(value)) {
+              return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+            }
+            if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+              return 'Unesite ispravno ime.';
+            }
+            return null;
+          },
+        )),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: FormBuilderTextField(
+            name: "prezime",
+            decoration: InputDecoration(labelText: "Prezime:"),
+            validator: (value) {
+              if (value == null || value.isEmpty || value.trim().isEmpty) {
+                return 'Molimo Vas unesite prezime';
+              }
+              if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                  .hasMatch(value)) {
+                return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+              }
+              if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+                return 'Unesite ispravno prezime.';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _inputTelefonEmail() {
+    return Row(
+      children: [
+        Expanded(
+          child: FormBuilderTextField(
+            name: "telefon",
+            decoration: InputDecoration(labelText: "Telefon:"),
+            validator: (value) {
+              if (value == null || value.isEmpty || value.trim().isEmpty) {
+                return 'Molimo Vas unesite telefon';
+              }
+              if (!RegExp(
+                      r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
+                  .hasMatch(value)) {
+                return 'Unesite ispravan telefon: +### ## ### ###';
+              }
+              return null;
+            },
+          ),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: FormBuilderTextField(
+            name: "email",
+            decoration: InputDecoration(labelText: "Email:"),
+            validator: (value) {
+              if (value == null || value.isEmpty || value.trim().isEmpty) {
+                return 'Molimo Vas unesite email';
+              }
+              if (!RegExp(
+                      r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
+                  .hasMatch(value)) {
+                return 'Unesite ispravan email primjer@domena.com';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _inputDatume() {
+    return Row(
+      children: [
+        Expanded(
+          child: FormBuilderDateTimePicker(
+            name: 'datumRodjenja',
+            inputType: InputType.date,
+            decoration: InputDecoration(
+              labelText: 'Datum rođenja',
+            ),
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2030),
+            validator: (value) {
+              if (value == null) {
+                return 'Niste unijeli datum.';
+              }
+              if (value != null && value != _selectedDate) {
+                setState(() {
+                  _selectedDate = value;
+                  _dateController.text = "${value.toLocal()}".split(' ')[0];
+                });
+              }
+              return null;
+            },
+          ),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: FormBuilderDateTimePicker(
+              name: 'datumZaposlenja',
+              inputType: InputType.date,
+              decoration: InputDecoration(
+                labelText: 'Datum zaposlenja',
+              ),
+              firstDate: DateTime(2010),
+              lastDate: DateTime.now(),
+              validator: (value) {
+                if (value == null) {
+                  return 'Niste unijeli datum';
+                }
+                return null;
+              }),
+        )
+      ],
+    );
+  }
+
+  Widget _inputSifra() {
+    return widget.korisnik == null
+        ? Row(
+            children: [
+              Expanded(
+                  child: FormBuilderTextField(
+                decoration: InputDecoration(labelText: "Šifra:"),
+                name: "password",
+                obscureText: true,
+                controller: _passwordController,
+                validator: (value) {
+                  if (value == null || value.isEmpty || value.trim().isEmpty) {
+                    return 'Molimo Vas unesite lozinku';
+                  }
+                  if (!RegExp(r'[\u0000-\uFFFF]{3,}').hasMatch(value)) {
+                    return 'Vaša lozinka treba sačinjavati minimalno 3 znaka';
+                  }
+                  return null;
+                },
+              )),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  child: FormBuilderTextField(
+                decoration: InputDecoration(labelText: "Ponovite šifru:"),
+                name: "passwordPotvrda",
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty || value.trim().isEmpty) {
+                    return 'Molimo Vas ponovite lozinku';
+                  }
+                  if (_passwordController.text != value) {
+                    return 'Lozinke se ne podudaraju.';
+                  }
+                  return null;
+                },
+              )),
+            ],
+          )
+        : Container();
   }
 }

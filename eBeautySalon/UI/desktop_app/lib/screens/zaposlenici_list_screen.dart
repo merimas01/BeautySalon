@@ -17,7 +17,7 @@ class ZaposleniciListScreen extends StatefulWidget {
 
 class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
   late ZaposleniciProvider _zaposleniciProvider;
-  bool isLoading = true;
+  bool isLoadingData = true;
   SearchResult<Zaposlenik>? result;
   TextEditingController _ftsController = new TextEditingController();
 
@@ -26,6 +26,16 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _zaposleniciProvider = context.read<ZaposleniciProvider>();
+    getData();
+  }
+
+  void getData() async {
+    var data = await _zaposleniciProvider.get(filter: {'FTS': ''});
+
+    setState(() {
+      result = data;
+      isLoadingData = false;
+    });
   }
 
   @override
@@ -35,7 +45,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
         child: Column(children: [
           _builSearch(),
           _showResultCount(),
-          _buildDataListView(),
+          isLoadingData == false ? _buildDataListView(): Container(child: CircularProgressIndicator()),
         ]),
       ),
       title_widget: Text("Zaposlenici"),

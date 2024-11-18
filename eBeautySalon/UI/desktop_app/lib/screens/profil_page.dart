@@ -34,13 +34,12 @@ class _ProfilPageState extends State<ProfilPage> {
 
   bool isLoading = true;
   bool isEnabled = false;
-  bool isLoadingImage = true;
   Korisnik? korisnik;
 
   @override
   void initState() {
     _korisniciProvider = context.read<KorisnikProvider>();
-    
+
     _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
     initForm();
   }
@@ -52,28 +51,19 @@ class _ProfilPageState extends State<ProfilPage> {
         korisnik = data;
         isLoading = false;
       });
-      
-    _slikaProfilaResult = await _slikaProfilaProvider.get();
+
+      _slikaProfilaResult = await _slikaProfilaProvider.get();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        title: "${korisnik?.ime} ${korisnik?.prezime}",
-        child: Column(
-          children: [
-            isLoading ? Container() : _buildForm(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: korisnik!=null ? Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  _editButton(),
-                ],
-              ) : Container(),
-            )
-          ],
+        title: "Profil",
+        child: Center(
+          child: isLoading
+              ? Container(child: CircularProgressIndicator())
+              : _buildForm(),
         ));
   }
 
@@ -91,52 +81,63 @@ class _ProfilPageState extends State<ProfilPage> {
   Widget _buildForm() {
     return FormBuilder(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              right: 10.0, top: 10.0, left: 10.0, bottom: 5.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Image.memory(
-                    displayCurrentImage(),
-                    width: null,
-                    height: 250,
-                    fit: BoxFit.cover,
-                  ),
-                ],
+        child: Container(
+          width: 500,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.memory(
+                          displayCurrentImage(),
+                          width: null,
+                          height: 250,
+                          fit: BoxFit.cover,
+                        ),
+                      ],
+                    ),
+                    FormBuilderTextField(
+                      decoration: InputDecoration(labelText: "Korisničko ime:"),
+                      name: "korisnickoIme",
+                      initialValue: korisnik?.korisnickoIme,
+                      enabled: false,
+                    ),
+                    FormBuilderTextField(
+                      decoration: InputDecoration(labelText: "Ime:"),
+                      name: "ime",
+                      initialValue: korisnik?.ime,
+                      enabled: false,
+                    ),
+                    FormBuilderTextField(
+                      name: "prezime",
+                      enabled: false,
+                      initialValue: korisnik?.prezime,
+                      decoration: InputDecoration(labelText: "Prezime:"),
+                    ),
+                    FormBuilderTextField(
+                      name: "telefon",
+                      enabled: isEnabled,
+                      initialValue: korisnik?.telefon,
+                      decoration: InputDecoration(labelText: "Telefon:"),
+                    ),
+                    FormBuilderTextField(
+                      name: "email",
+                      enabled: isEnabled,
+                      initialValue: korisnik?.email,
+                      decoration: InputDecoration(labelText: "Email:"),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    korisnik != null ? _editButton() : Container()
+                  ],
+                ),
               ),
-              FormBuilderTextField(
-                decoration: InputDecoration(labelText: "Korisničko ime:"),
-                name: "korisnickoIme",
-                initialValue: korisnik?.korisnickoIme,
-                enabled: false,
-              ),
-              FormBuilderTextField(
-                decoration: InputDecoration(labelText: "Ime:"),
-                name: "ime",
-                initialValue: korisnik?.ime,
-                enabled: false,
-              ),
-              FormBuilderTextField(
-                name: "prezime",
-                enabled: false,
-                initialValue: korisnik?.prezime,
-                decoration: InputDecoration(labelText: "Prezime:"),
-              ),
-              FormBuilderTextField(
-                name: "telefon",
-                enabled: isEnabled,
-                initialValue: korisnik?.telefon,
-                decoration: InputDecoration(labelText: "Telefon:"),
-              ),
-              FormBuilderTextField(
-                name: "email",
-                enabled: isEnabled,
-                initialValue: korisnik?.email,
-                decoration: InputDecoration(labelText: "Email:"),
-              ),
-            ],
+            ),
           ),
         ));
   }

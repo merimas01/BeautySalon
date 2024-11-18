@@ -70,7 +70,9 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
           SizedBox(
             height: 10,
           ),
-          _buildDataListView(),
+          isLoadingUsluge == false
+              ? _buildDataListView()
+              : Center(child: CircularProgressIndicator()),
         ]),
       ),
       title: "Termini",

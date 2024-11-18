@@ -17,12 +17,23 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
   late KategorijeProvider _kategorijeProvider;
   SearchResult<Kategorija>? result;
   TextEditingController _ftsController = new TextEditingController();
+  bool isLoadingData = true;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _kategorijeProvider = context.read<KategorijeProvider>();
+    getData();
+  }
+
+  void getData() async {
+    var data = await _kategorijeProvider.get();
+
+    setState(() {
+      result = data;
+      isLoadingData = false;
+    });
   }
 
   @override
@@ -31,7 +42,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
       child: Column(children: [
         _builSearch(),
         _showResultCount(),
-        _buildDataListView(),
+        isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
       ]),
       title: "Kategorije",
     );
@@ -115,15 +126,17 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           ],
           rows: result?.result
                   .map((Kategorija e) => DataRow(cells: [
-                        DataCell(Text(e.naziv ?? "")),
-                        DataCell(Text(e.opis ?? "")),
+                        DataCell(
+                            Container(width: 100, child: Text(e.naziv ?? ""))),
+                        DataCell(
+                            Container(width: 460, child: Text(e.opis ?? ""))),
                         DataCell(Container(
-                            width: 80,
+                            width: 100,
                             child: Text((e.datumKreiranja == null
                                 ? "-"
                                 : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
                         DataCell(Container(
-                            width: 80,
+                            width: 100,
                             child: Text((e.datumModifikovanja == null
                                 ? "-"
                                 : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}")))),

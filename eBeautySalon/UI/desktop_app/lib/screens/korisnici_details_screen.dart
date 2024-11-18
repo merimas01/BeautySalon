@@ -26,9 +26,7 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
 
   late SlikaProfilaProvider _slikaProfilaProvider;
   SearchResult<SlikaProfila>? _slikaProfilaResult;
-
   bool isLoading = true;
-  bool isLoadingImage = true;
 
   @override
   void initState() {
@@ -60,85 +58,128 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: "${widget.korisnik?.ime} ${widget.korisnik?.prezime}",
-      child: Column(
+      title: "Korisnici",
+        child: Center(
+          child: isLoading
+              ? Container(child: CircularProgressIndicator())
+              : _buildForm(),
+        ));
+  }
+
+  Widget _nazadNaKorisnike() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          isLoading ? Container() : _buildForm(),
-          SizedBox(height: 10,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(255, 255, 255, 255)),
-                      foregroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromARGB(255, 139, 132, 134)),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => KorisniciListScreen()));
-                    },
-                    child: Text("Nazad na korisnike")),
+          ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 255, 255, 255)),
+                foregroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 139, 132, 134)),
               ),
-            ],
-          )
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => KorisniciListScreen()));
+              },
+              child: Text("Nazad na korisnike")),
         ],
       ),
     );
   }
 
+    Widget _naslov() {
+    var naslov = this.widget.korisnik != null
+        ? "Detalji korisnika: ${widget.korisnik?.ime} ${widget.korisnik?.prezime}"
+        : "";
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 244, 201, 215), // Set background color
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+          child: Center(
+            child: RichText(
+                text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.pink,
+                    ),
+                    children: [
+                  TextSpan(
+                    text: naslov,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ])),
+          ),
+        ),
+      ),
+    );
+  }
+
+
   Widget _buildForm() {
     return FormBuilder(
         key: _formKey,
         initialValue: _initialValue,
-        child: Padding(
-          padding: const EdgeInsets.only(
-              right: 10.0, top: 10.0, left: 10.0, bottom: 5.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Column(
-                    children: [
-                      Image.memory(
-                        displayCurrentImage(),
-                        width: null,
-                        height: 250,
-                        fit: BoxFit.cover,
-                      ),
-                    ],
-                  )
-                ],
+        child: Container(
+          width: 500,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _naslov(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Image.memory(
+                              displayCurrentImage(),
+                              width: null,
+                              height: 250,
+                              fit: BoxFit.cover,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    FormBuilderTextField(
+                      decoration: InputDecoration(labelText: "Ime:"),
+                      name: "ime",
+                      enabled: false,
+                    ),
+                    FormBuilderTextField(
+                      name: "prezime",
+                      enabled: false,
+                      decoration: InputDecoration(labelText: "Prezime:"),
+                    ),
+                    FormBuilderTextField(
+                      name: "telefon",
+                      enabled: false,
+                      decoration: InputDecoration(labelText: "Telefon:"),
+                    ),
+                    FormBuilderTextField(
+                      name: "email",
+                      enabled: false,
+                      decoration: InputDecoration(labelText: "Email:"),
+                    ),
+                    FormBuilderTextField(
+                      name: "status",
+                      enabled: false,
+                      decoration: InputDecoration(labelText: "Blokiran/a?:"),
+                    ),
+                    _nazadNaKorisnike(),
+                  ],
+                ),
               ),
-              FormBuilderTextField(
-                decoration: InputDecoration(labelText: "Ime:"),
-                name: "ime",
-                enabled: false,
-              ),
-              FormBuilderTextField(
-                name: "prezime",
-                enabled: false,
-                decoration: InputDecoration(labelText: "Prezime:"),
-              ),
-              FormBuilderTextField(
-                name: "telefon",
-                enabled: false,
-                decoration: InputDecoration(labelText: "Telefon:"),
-              ),
-              FormBuilderTextField(
-                name: "email",
-                enabled: false,
-                decoration: InputDecoration(labelText: "Email:"),
-              ),
-              FormBuilderTextField(
-                name: "status",
-                enabled: false,
-                decoration: InputDecoration(labelText: "Blokiran/a?:"),
-              ),
-            ],
+            ),
           ),
         ));
   }

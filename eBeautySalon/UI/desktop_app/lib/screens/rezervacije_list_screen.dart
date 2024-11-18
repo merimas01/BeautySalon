@@ -24,6 +24,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   SearchResult<Status>? _statusResult;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingStatus = true;
+  bool isLoadingData = true;
   Status? selectedStatus;
 
   @override
@@ -32,12 +33,16 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     super.didChangeDependencies();
     _rezervacijeProvider = context.read<RezervacijeProvider>();
     _statusiProvider = context.read<StatusiProvider>();
-    initForm();
+    getData();
   }
 
-  void initForm() async {
+  void getData() async {
+    var data = await _rezervacijeProvider.get(filter: {'FTS': ''});
     var statusi = await _statusiProvider.get();
+
     setState(() {
+      result = data;
+      isLoadingData = false;
       _statusResult = statusi;
       isLoadingStatus = false;
     });
@@ -91,7 +96,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
         ),
       );
     }
-    return Container();
+    return Center(child: CircularProgressIndicator());
   }
 
   @override
@@ -101,7 +106,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       child: Column(children: [
         _builSearch(),
         _showResultCount(),
-        _buildDataListView(),
+        isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
       ]),
     );
   }

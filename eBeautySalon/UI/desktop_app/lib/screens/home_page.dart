@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                       key: chartKey,
                       child: isLoadingUsluge == false
                           ? buildBarChartUsluge()
-                          : Container(),
+                          : Container(child: CircularProgressIndicator()),
                     ),
                     SizedBox(
                       height: 10,
@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                       key: chartKey2,
                       child: isLoadingUsluznici == false
                           ? buildBarChartUsluznici()
-                          : Container(),
+                          : Container(child: CircularProgressIndicator()),
                     ),
                     SizedBox(
                       height: 10,

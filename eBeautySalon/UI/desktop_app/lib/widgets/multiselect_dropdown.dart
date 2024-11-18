@@ -25,7 +25,6 @@ class _MultiSelectState extends State<MultiSelect> {
   }
 
   void _cancel() {
-    //print("selected items: ${_selectedItems.result}");
     Navigator.pop(context);
   }
 

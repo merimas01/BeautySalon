@@ -200,6 +200,7 @@ public partial class Ib200070Context : DbContext
 
             entity.Property(e => e.RezervacijaId).HasColumnName("RezervacijaID");
             entity.Property(e => e.DatumRezervacije).HasColumnType("datetime");
+            entity.Property(e => e.IsArhiva).HasColumnName("isArhiva");
             entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
             entity.Property(e => e.StatusId).HasColumnName("StatusID");
             entity.Property(e => e.TerminId).HasColumnName("TerminID");

@@ -27,5 +27,8 @@ namespace eBeautySalon.Models
         public virtual Termini? Termin { get; set; }
 
         public virtual Usluge? Usluga { get; set; }
+
+        public bool? IsArhiva { get; set; }
+
     }
 }

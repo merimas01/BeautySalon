@@ -39,7 +39,8 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   }
 
   void getData() async {
-    var data = await _rezervacijeProvider.get(filter: {'FTS': ''});
+    var data =
+        await _rezervacijeProvider.get(filter: {'FTS': '', 'isArhiva': "ne"});
     var statusi = await _statusiProvider.get();
     var changeStatusi =
         await _statusiProvider.get(filter: {'promijeniStatus': true});
@@ -150,6 +151,46 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     return Center(child: CircularProgressIndicator());
   }
 
+  var dropdown_lista = [
+    {'opis': 'da', 'vrijednost': true},
+    {'opis': 'ne', 'vrijednost': false}
+  ];
+
+  String? selectedOpis = "ne";
+
+  Widget _searchByIsArhiva() {
+    return Container(
+      width: 150,
+      padding: EdgeInsets.all(3.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: selectedOpis,
+            // isExpanded: true,
+            hint: Text("Arhiva?"),
+            items: dropdown_lista.map((item) {
+              return DropdownMenuItem<String>(
+                value: item['opis'] as String,
+                child: Text(item['opis'] as String),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedOpis = value;
+              });
+              print(selectedOpis);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   void _changeStatus(Rezervacija e) {
     showDialog(
         context: context,
@@ -157,16 +198,18 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
               title: Text("Promijeni status rezervacije"),
               content: SingleChildScrollView(
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<Status>(
-                    hint: selectedChangeStatus == null
-                        ? Text("Izaberi status")
-                        : Text("${selectedChangeStatus?.opis}"),
+                  child: DropdownButtonFormField<Status>(
+                    hint: Text("Izaberi status"),
                     value: selectedChangeStatus,
                     onChanged: (Status? newValue) {
                       setState(() {
                         selectedChangeStatus = newValue;
                       });
                     },
+                    decoration: InputDecoration(
+                      labelText: 'Status',
+                      border: OutlineInputBorder(),
+                    ),
                     items: _changeStatusiResult?.result
                         .map<DropdownMenuItem<Status>>((Status service) {
                       return DropdownMenuItem<Status>(
@@ -192,23 +235,26 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                               e.uslugaId,
                               e.terminId,
                               e.datumRezervacije,
-                              selectedChangeStatus?.statusId);
+                              selectedChangeStatus?.statusId,
+                              e.isArhiva);
 
                           var update_status = await _rezervacijeProvider.update(
                               e.rezervacijaId!, rezervacija_update);
                           Navigator.pop(context);
                           getData();
                           _showDialogSuccess();
+                          selectedChangeStatus = null;
                         } catch (error) {
                           print(error.toString());
                           Navigator.pop(context);
                           _showDialogServerError();
+                          selectedChangeStatus = null;
                         }
                       } else {
-                        Navigator.pop(context);
+                        //Navigator.pop(context);
                         _showDialogNotSelectedStatus();
+                        selectedChangeStatus = null;
                       }
-                      selectedChangeStatus = null;
                     },
                     child: Text("Spasi")),
               ],
@@ -245,6 +291,27 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           SizedBox(
             width: 8,
           ),
+          _searchByIsArhiva(),
+          SizedBox(width: 8),
+          selectedOpis != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedOpis = null;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Poništi selekciju",
+                  ),
+                )
+              : Container(),
+          SizedBox(
+            width: 8,
+          ),
           Expanded(
             child: searchByStatus(),
           ),
@@ -272,11 +339,12 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
 
                 var data = await _rezervacijeProvider.get(filter: {
                   'FTS': _ftsController.text,
-                  'statusId': selectedStatus?.statusId
+                  'statusId': selectedStatus?.statusId,
+                  'isArhiva': selectedOpis
                 });
 
                 print(
-                    "fts: ${_ftsController.text}, statusId: ${selectedStatus?.statusId}");
+                    "fts: ${_ftsController.text}, statusId: ${selectedStatus?.statusId}, isArhiva: ${selectedOpis}");
 
                 setState(() {
                   result = data;
@@ -320,7 +388,11 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                 label: Expanded(
               child: Text(""),
             )),
-             DataColumn(
+            DataColumn(
+                label: Expanded(
+              child: Text("Arhiva?"),
+            )),
+            DataColumn(
                 label: Expanded(
               child: Text(""),
             ))
@@ -329,17 +401,17 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                   .map((Rezervacija e) =>
                       DataRow(color: _obojiRedove(e), cells: [
                         DataCell(Container(
-                            width: 200,
+                            width: 100,
                             child: Text(
                                 "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}"))),
                         DataCell(Container(
-                            width: 100,
+                            width: 130,
                             child: Text((e.datumRezervacije == null
                                 ? "-"
                                 : "${e.datumRezervacije?.day}.${e.datumRezervacije?.month}.${e.datumRezervacije?.year}")))),
                         DataCell(Text(e.termin?.opis ?? "")),
                         DataCell(Container(
-                            width: 380, child: Text(e.usluga?.naziv ?? ""))),
+                            width: 250, child: Text(e.usluga?.naziv ?? ""))),
                         DataCell(Text(e.status?.opis ?? "-")),
                         DataCell(TextButton(
                           style: TextButton.styleFrom(
@@ -350,13 +422,22 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                             _changeStatus(e);
                           },
                         )),
+                        DataCell(Container(
+                          width: 50,
+                          child: Text(e.isArhiva == false || e.isArhiva == null
+                              ? "ne"
+                              : "da"),
+                        )),
                         DataCell(TextButton(
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.red,
                           ),
-                          child: Text("Arhiviraj"),
+                          child: Text(
+                              (e.isArhiva == false || e.isArhiva == null)
+                                  ? "Arhiviraj"
+                                  : "Dearhiviraj"),
                           onPressed: () {
-                            //_showDialogArhiviraj(e);
+                            _showDialogArhiviraj(e);
                           },
                         )),
                       ]))
@@ -384,5 +465,53 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           return Colors.yellow[100];
         },
       );
+  }
+
+  void _showDialogArhiviraj(Rezervacija e) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: e.isArhiva == false || e.isArhiva == null
+                  ? Text('Potvrda o arhiviranju rezervacije')
+                  : Text('Potvrda o dearhiviranju rezervacije'),
+              content: e.isArhiva == false || e.isArhiva == null
+                  ? Text(
+                      'Jeste li sigurni da želite arhivirati izabranu rezervaciju?')
+                  : Text(
+                      "Jeste li sigurni da želite dearhivirati izabranu rezervaciju?"),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Ne'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                  },
+                ),
+                TextButton(
+                  child: Text('Da'),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                    _arhivirajDearhiviraj(e);
+                  },
+                ),
+              ],
+            ));
+  }
+
+  void _arhivirajDearhiviraj(e) async {
+    var new_value_isArhiva = e.isArhiva == true ? false : true;
+    var rezervacija_update = RezervacijaUpdate(e.korisnikId, e.uslugaId,
+        e.terminId, e.datumRezervacije, e.statusId, new_value_isArhiva);
+    var obj =
+        await _rezervacijeProvider.update(e.rezervacijaId, rezervacija_update);
+    print('status? ${obj.isArhiva}');
+
+    selectedOpis = null;
+    var data =
+        await _rezervacijeProvider.get(filter: {'FTS': _ftsController.text});
+
+    setState(() {
+      result = data;
+    });
   }
 }

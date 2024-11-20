@@ -25,5 +25,9 @@ namespace eBeautySalon.Models.Requests
         [JsonIgnore]
         public int? StatusId { get; set; }
 
+        [JsonIgnore]
+        public bool? IsArhiva { get; set; } = false;
+
+
     }
 }

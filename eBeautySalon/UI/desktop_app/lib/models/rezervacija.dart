@@ -23,6 +23,7 @@ class Rezervacija {
   Usluga? usluga;
   Termin? termin;
   Status? status;
+  bool? isArhiva;
 
   Rezervacija(
       this.rezervacijaId,
@@ -34,7 +35,8 @@ class Rezervacija {
       this.korisnik,
       this.usluga,
       this.termin,
-      this.status);
+      this.status,
+      this.isArhiva);
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.

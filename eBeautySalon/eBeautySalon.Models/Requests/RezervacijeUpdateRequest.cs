@@ -23,5 +23,8 @@ namespace eBeautySalon.Models.Requests
 
         [Required]
         public int? StatusId { get; set; }
+
+        public bool? IsArhiva { get; set; }
+
     }
 }

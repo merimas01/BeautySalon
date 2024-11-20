@@ -12,31 +12,18 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace eBeautySalon.Services
 {
-    public class StatusiService : BaseService<Models.Statusi, Database.Status, BaseSearchObject>, IStatusService
+    public class StatusiService : BaseService<Models.Statusi, Database.Status, StatusiSearchObject>, IStatusService
     {
         public StatusiService(Ib200070Context context, IMapper mapper) : base(context, mapper)
         {
         }
-
-        public async Task<PagedResult<Statusi>> GetStatuse(BaseSearchObject search)
+        public override IQueryable<Status> AddFilter(IQueryable<Status> query, StatusiSearchObject? search = null)
         {
-            var query = _context.Statuses.Where(x => x.Opis != "Nova" || x.Opis != "Otkazana").AsQueryable();
-
-            PagedResult<Statusi> result = new PagedResult<Statusi>();
-
-            result.Count = await query.CountAsync();
-
-            if (search?.Page.HasValue == true && search?.PageSize.HasValue == true)
+            if (search.promijeniStatus == true)
             {
-                query = query.Take(search.PageSize.Value).Skip(search.Page.Value * search.PageSize.Value);
+                query = query.Where(x => x.Opis == "Odbijena" || x.Opis == "Prihvacena");
             }
-            var list = await query.ToListAsync();
-
-            var tmp = _mapper.Map<List<Statusi>>(list);
-
-            result.Result = tmp;
-
-            return result;
+            return base.AddFilter(query, search);
         }
     }
 }

@@ -58,6 +58,21 @@ namespace eBeautySalon.Services
           
             return base.AddInclude(query, search);
         }
+        public override async Task<bool> AddValidationInsert(RezervacijeInsertRequest request)
+        {
+            //ne smiju se dvije iste rezervacije pojaviti (iste vrijednosti usluge, termina i datuma)
+            var lista = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije == request.DatumRezervacije).ToListAsync();
+            if (lista.Count() != 0) return false;
+            return true;
+        }
+
+        public override async Task<bool> AddValidationUpdate(int id, RezervacijeUpdateRequest request)
+        {
+            var lista = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije == request.DatumRezervacije && x.RezervacijaId != id).ToListAsync();
+            if (lista.Count() != 0) return false;
+            return true;
+        }
+
         public override async Task BeforeInsert(Rezervacija entity, RezervacijeInsertRequest insert)
         {
             var klijent = await _context.Korisniks.FirstOrDefaultAsync(x=>x.KorisnikId == entity.KorisnikId);

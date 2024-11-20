@@ -337,8 +337,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 foregroundColor: Colors.blue,
               ),
               onPressed: () {
+                print("this.widget.zaposlenik: ${this.widget.zaposlenik?.zaposlenikId}");
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => UlogeListScreen()));
+                    MaterialPageRoute(builder: (context) => UlogeListScreen(zaposlenik: this.widget.zaposlenik, korisnik: this.widget.korisnik,)));
               },
               child: Text("Upravljaj ulogama")),
         )),

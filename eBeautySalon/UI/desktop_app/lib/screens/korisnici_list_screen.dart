@@ -88,7 +88,9 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           children: [
             _buildSearch(),
             _showResultCount(),
-            isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator())
+            isLoadingData == false
+                ? _buildDataListView()
+                : Container(child: CircularProgressIndicator())
           ],
         ));
   }
@@ -137,10 +139,9 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                     });
                   },
                   child: Tooltip(
-                    child: Text(
-                      "X",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
                     ),
                     message: "Poništi selekciju",
                   ),

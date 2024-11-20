@@ -1,4 +1,3 @@
-import 'package:desktop_app/screens/rezervacije_update_status.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +21,13 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   late StatusiProvider _statusiProvider;
   SearchResult<Rezervacija>? result;
   SearchResult<Status>? _statusResult;
+  SearchResult<Status>? _changeStatusiResult;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingStatus = true;
   bool isLoadingData = true;
+  bool isLoadingChangeStatusList = true;
   Status? selectedStatus;
+  Status? selectedChangeStatus;
 
   @override
   void didChangeDependencies() {
@@ -39,12 +41,16 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   void getData() async {
     var data = await _rezervacijeProvider.get(filter: {'FTS': ''});
     var statusi = await _statusiProvider.get();
+    var changeStatusi =
+        await _statusiProvider.get(filter: {'promijeniStatus': true});
 
     setState(() {
       result = data;
       isLoadingData = false;
       _statusResult = statusi;
       isLoadingStatus = false;
+      _changeStatusiResult = changeStatusi;
+      isLoadingChangeStatusList = false;
     });
   }
 
@@ -62,6 +68,51 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
             style: TextStyle(fontWeight: FontWeight.normal),
           )
         ]));
+  }
+
+  _showDialogSuccess() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Informacija o uspjehu"),
+              content: Text("Uspješno izvršena akcija!"),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Ok"))
+              ],
+            ));
+  }
+
+  _showDialogNotSelectedStatus() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Greška"),
+              content: Text("Molimo Vas izaberite novi status."),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Shvatam"))
+              ],
+            ));
+  }
+
+  _showDialogServerError() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Greška"),
+              content: Text("Greška u podacima."),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context), child: Text("Ok"))
+              ],
+            ));
   }
 
   Widget searchByStatus() {
@@ -99,6 +150,71 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     return Center(child: CircularProgressIndicator());
   }
 
+  void _changeStatus(Rezervacija e) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Promijeni status rezervacije"),
+              content: SingleChildScrollView(
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<Status>(
+                    hint: selectedChangeStatus == null
+                        ? Text("Izaberi status")
+                        : Text("${selectedChangeStatus?.opis}"),
+                    value: selectedChangeStatus,
+                    onChanged: (Status? newValue) {
+                      setState(() {
+                        selectedChangeStatus = newValue;
+                      });
+                    },
+                    items: _changeStatusiResult?.result
+                        .map<DropdownMenuItem<Status>>((Status service) {
+                      return DropdownMenuItem<Status>(
+                        value: service,
+                        child: Text(service.opis!),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Odustani")),
+                ElevatedButton(
+                    onPressed: () async {
+                      if (selectedChangeStatus != null) {
+                        try {
+                          var rezervacija_update = RezervacijaUpdate(
+                              e.korisnikId,
+                              e.uslugaId,
+                              e.terminId,
+                              e.datumRezervacije,
+                              selectedChangeStatus?.statusId);
+
+                          var update_status = await _rezervacijeProvider.update(
+                              e.rezervacijaId!, rezervacija_update);
+                          Navigator.pop(context);
+                          getData();
+                          _showDialogSuccess();
+                        } catch (error) {
+                          print(error.toString());
+                          Navigator.pop(context);
+                          _showDialogServerError();
+                        }
+                      } else {
+                        Navigator.pop(context);
+                        _showDialogNotSelectedStatus();
+                      }
+                      selectedChangeStatus = null;
+                    },
+                    child: Text("Spasi")),
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
@@ -106,7 +222,9 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       child: Column(children: [
         _builSearch(),
         _showResultCount(),
-        isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
+        isLoadingData == false
+            ? _buildDataListView()
+            : Container(child: CircularProgressIndicator()),
       ]),
     );
   }
@@ -139,10 +257,9 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                     });
                   },
                   child: Tooltip(
-                    child: Text(
-                      "X",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
                     ),
                     message: "Poništi selekciju",
                   ),
@@ -202,10 +319,15 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
             DataColumn(
                 label: Expanded(
               child: Text(""),
+            )),
+             DataColumn(
+                label: Expanded(
+              child: Text(""),
             ))
           ],
           rows: result?.result
-                  .map((Rezervacija e) => DataRow(cells: [
+                  .map((Rezervacija e) =>
+                      DataRow(color: _obojiRedove(e), cells: [
                         DataCell(Container(
                             width: 200,
                             child: Text(
@@ -225,15 +347,42 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                           ),
                           child: Text("Promijeni status"),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => RezervacijeUpdateStatus(
-                                      rezervacija: e,
-                                    )));
+                            _changeStatus(e);
+                          },
+                        )),
+                        DataCell(TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.red,
+                          ),
+                          child: Text("Arhiviraj"),
+                          onPressed: () {
+                            //_showDialogArhiviraj(e);
                           },
                         )),
                       ]))
                   .toList() ??
               []),
     ));
+  }
+
+  _obojiRedove(Rezervacija e) {
+    if (e.status?.opis == "Prihvacena")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.green[100];
+        },
+      );
+    else if (e.status?.opis == "Odbijena")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.red[100];
+        },
+      );
+    else if (e.status?.opis == "Nova")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.yellow[100];
+        },
+      );
   }
 }

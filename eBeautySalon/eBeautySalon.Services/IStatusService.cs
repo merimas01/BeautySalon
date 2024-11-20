@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
 {
-    public interface IStatusService : IService<Models.Statusi, BaseSearchObject>
+    public interface IStatusService : IService<Models.Statusi, StatusiSearchObject>
     {
-        Task<PagedResult<Statusi>> GetStatuse(BaseSearchObject search);
     }
 }

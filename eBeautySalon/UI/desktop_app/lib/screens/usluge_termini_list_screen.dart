@@ -104,10 +104,9 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                     });
                   },
                   child: Tooltip(
-                    child: Text(
-                      "X",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
                     ),
                     message: "Poništi selekciju",
                   ),
@@ -431,6 +430,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
           actions: [
             TextButton(
               onPressed: () {
+                inputTerminController.text = "";
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: Text('Otkaži'),
@@ -444,6 +444,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 });
                 Navigator.of(context).pop(); // Close the dialog
                 _insertTermin();
+                inputTerminController.text = "";
               },
               child: Text('Spasi novi termin'),
             ),

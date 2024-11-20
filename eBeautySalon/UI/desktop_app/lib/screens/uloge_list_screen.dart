@@ -1,21 +1,27 @@
 import 'package:desktop_app/screens/uloge_details_screen.dart';
+import 'package:desktop_app/screens/zaposlenici_details_screen.dart';
 import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/korisnik.dart';
 import '../models/search_result.dart';
 import '../models/uloga.dart';
+import '../models/zaposlenik.dart';
 import '../providers/uloge_provider.dart';
 import '../widgets/master_screen.dart';
 
 class UlogeListScreen extends StatefulWidget {
-  const UlogeListScreen({super.key});
+  Zaposlenik? zaposlenik;
+  Korisnik? korisnik;
+  UlogeListScreen({super.key, this.zaposlenik, this.korisnik});
 
   @override
   State<UlogeListScreen> createState() => _UlogeListScreenState();
 }
 
 class _UlogeListScreenState extends State<UlogeListScreen> {
+  Map<String, dynamic> _initialValue = {};
   late UlogeProvider _ulogeProvider;
   SearchResult<Uloga>? result;
   TextEditingController _ftsController = new TextEditingController();
@@ -25,6 +31,14 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _initialValue = {'zaposlenikId': widget.zaposlenik?.zaposlenikId};
     _ulogeProvider = context.read<UlogeProvider>();
     getData();
   }
@@ -45,7 +59,9 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
         child: Column(children: [
           _builSearch(),
           _showResultCount(),
-          isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
+          isLoadingData == false
+              ? _buildDataListView()
+              : Container(child: CircularProgressIndicator()),
         ]));
   }
 
@@ -63,9 +79,12 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ZaposleniciListScreen()));
+                    builder: (context) => ZaposleniciDetailsScreen(
+                          zaposlenik: widget.zaposlenik,
+                          korisnik: widget.korisnik,
+                        )));
               },
-              child: Text("Nazad na zaposlenike")),
+              child: Text("Nazad na zaposlenika")),
           SizedBox(
             width: 8,
           ),
@@ -102,6 +121,8 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => UlogeDetailsScreen(
                           uloga: null,
+                          zaposlenik: this.widget.zaposlenik,
+                          korisnik: this.widget.korisnik,
                         )));
               },
               child: Text("Dodaj ulogu")),
@@ -146,6 +167,8 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => UlogeDetailsScreen(
                                       uloga: e,
+                                      zaposlenik: this.widget.zaposlenik,
+                                      korisnik: this.widget.korisnik,
                                     )));
                           },
                         )),

@@ -36,14 +36,14 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     getData();
   }
 
- void getData() async {
+  void getData() async {
     var data = await _uslugeProvider.get(filter: {'FTS': ''});
-     var kategorije = await _kategorijeProvider.get();
+    var kategorije = await _kategorijeProvider.get();
 
     setState(() {
       result = data;
       isLoadingData = false;
-      _kategorijeResult=kategorije;      
+      _kategorijeResult = kategorije;
       isLoadingKategorije = false;
     });
   }
@@ -55,7 +55,9 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
         child: Column(children: [
           _builSearch(),
           _showResultCount(),
-          isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
+          isLoadingData == false
+              ? _buildDataListView()
+              : Container(child: CircularProgressIndicator()),
         ]),
       ),
       title_widget: Text("Usluge"),
@@ -106,10 +108,9 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                     });
                   },
                   child: Tooltip(
-                    child: Text(
-                      "X",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
                     ),
                     message: "Poništi selekciju",
                   ),

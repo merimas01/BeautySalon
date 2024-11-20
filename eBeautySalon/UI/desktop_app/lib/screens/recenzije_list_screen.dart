@@ -165,8 +165,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                       color: Colors.pink,
                       child: const TabBar(
                         labelColor: Colors.white, // Color for selected tab
-                        unselectedLabelColor:
-                            Color.fromARGB(255, 0, 0, 0), // Color for unselected tabs
+                        unselectedLabelColor: Color.fromARGB(
+                            255, 0, 0, 0), // Color for unselected tabs
                         indicatorColor: Colors.white,
                         tabs: [
                           Tab(
@@ -232,10 +232,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                     });
                   },
                   child: Tooltip(
-                    child: Text(
-                      "X",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
                     ),
                     message: "Poništi selekciju",
                   ),
@@ -421,10 +420,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                     });
                   },
                   child: Tooltip(
-                    child: Text(
-                      "X",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
                     ),
                     message: "Poništi selekciju",
                   ),

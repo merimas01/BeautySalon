@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
+import '../models/korisnik.dart';
 import '../models/search_result.dart';
+import '../models/zaposlenik.dart';
 import '../providers/uloge_provider.dart';
 import '../widgets/master_screen.dart';
 
 class UlogeDetailsScreen extends StatefulWidget {
   Uloga? uloga;
-  UlogeDetailsScreen({super.key, this.uloga});
+  Zaposlenik? zaposlenik;
+  Korisnik? korisnik;
+  UlogeDetailsScreen({super.key, this.uloga, this.zaposlenik, this.korisnik});
 
   @override
   State<UlogeDetailsScreen> createState() => _UlogeDetailsScreenState();
@@ -73,8 +77,11 @@ class _UlogeDetailsScreenState extends State<UlogeDetailsScreen> {
                     Color.fromARGB(255, 139, 132, 134)),
               ),
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => UlogeListScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UlogeListScreen(
+                          zaposlenik: this.widget.zaposlenik,
+                          korisnik: this.widget.korisnik,
+                        )));
               },
               child: Text("Nazad na uloge")),
           SizedBox(width: 10.0),
@@ -103,7 +110,12 @@ class _UlogeDetailsScreenState extends State<UlogeDetailsScreen> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  UlogeListScreen()));
+                                                  UlogeListScreen(
+                                                    zaposlenik:
+                                                        this.widget.zaposlenik,
+                                                    korisnik:
+                                                        this.widget.korisnik,
+                                                  )));
                                     },
                                     child: Text("Nazad na uloge"))
                               ],

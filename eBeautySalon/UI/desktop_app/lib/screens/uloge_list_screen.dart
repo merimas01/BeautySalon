@@ -1,6 +1,5 @@
 import 'package:desktop_app/screens/uloge_details_screen.dart';
 import 'package:desktop_app/screens/zaposlenici_details_screen.dart';
-import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,11 +20,11 @@ class UlogeListScreen extends StatefulWidget {
 }
 
 class _UlogeListScreenState extends State<UlogeListScreen> {
-  Map<String, dynamic> _initialValue = {};
   late UlogeProvider _ulogeProvider;
   SearchResult<Uloga>? result;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
+  String? search = "";
 
   @override
   void didChangeDependencies() {
@@ -38,7 +37,6 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
     // TODO: implement initState
     super.initState();
 
-    _initialValue = {'zaposlenikId': widget.zaposlenik?.zaposlenikId};
     _ulogeProvider = context.read<UlogeProvider>();
     getData();
   }
@@ -46,6 +44,14 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
   void getData() async {
     var data = await _ulogeProvider.get(filter: {'FTS': ''});
 
+    // Add a listener to get the value whenever the text changes
+    _ftsController.addListener(() {
+      String currentText = _ftsController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
     setState(() {
       result = data;
       isLoadingData = false;
@@ -99,6 +105,24 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
           SizedBox(
             width: 8,
           ),
+          search != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController.text = '';
+                      search = _ftsController.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
+          SizedBox(width: 8),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Dugme");

@@ -21,6 +21,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   SearchResult<Korisnik>? result;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
+  String? search="";
 
   @override
   void didChangeDependencies() {
@@ -33,6 +34,15 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   void getData() async {
     var data = await _korisniciProvider
         .get(filter: {'FTS': '', 'isBlokiran': selectedOpis});
+
+    // Add a listener to get the value whenever the text changes
+    _ftsController.addListener(() {
+      String currentText = _ftsController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
 
     setState(() {
       result = data;
@@ -124,6 +134,24 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
               controller: _ftsController,
             ),
           ),
+          SizedBox(width: 8,),
+          search != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController.text = '';
+                      search = _ftsController.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
           SizedBox(
             width: 20,
           ),

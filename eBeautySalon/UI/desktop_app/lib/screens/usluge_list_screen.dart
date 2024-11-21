@@ -25,6 +25,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
   Kategorija? selectedKategorija;
   bool isLoadingKategorije = true;
   bool isLoadingData = true;
+  String? search = "";
 
   @override
   void didChangeDependencies() {
@@ -37,8 +38,20 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
   }
 
   void getData() async {
-    var data = await _uslugeProvider.get(filter: {'FTS': '',  'isSlikaIncluded': true,});
+    var data = await _uslugeProvider.get(filter: {
+      'FTS': '',
+      'isSlikaIncluded': true,
+    });
     var kategorije = await _kategorijeProvider.get();
+
+    // Add a listener to get the value whenever the text changes
+    _ftsController.addListener(() {
+      String currentText = _ftsController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
 
     setState(() {
       result = data;
@@ -88,13 +101,33 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Bilo šta",
+                labelText: "usluga/opis/cijena",
               ),
               controller: _ftsController,
             ),
           ),
           SizedBox(
-            width: 10,
+            width: 8,
+          ),
+          search != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController.text = '';
+                      search = _ftsController.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
+          SizedBox(
+            width: 8,
           ),
           Expanded(
             child: searchByKategorije(),

@@ -20,6 +20,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
   SearchResult<Novost>? result;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
+  String? search="";
 
   @override
   void didChangeDependencies() {
@@ -31,6 +32,15 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
 
   void getData() async {
     var data = await _novostiProvider.get(filter: {'FTS': ''});
+
+    // Add a listener to get the value whenever the text changes
+    _ftsController.addListener(() {
+      String currentText = _ftsController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
 
     setState(() {
       result = data;
@@ -70,6 +80,23 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
           SizedBox(
             width: 8,
           ),
+          search != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController.text = '';
+                      search = _ftsController.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");

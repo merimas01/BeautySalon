@@ -36,6 +36,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
   bool isLoadingData = true;
   Usluga? selectedUsluga;
   Zaposlenik? selectedUsluznik;
+  String? search1="";
+  String? search2="";
 
   @override
   void didChangeDependencies() {
@@ -55,6 +57,26 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
         await _recenzijeUslugeProvider.get(filter: {'FTS': ''});
     var recenzijeUsluznika =
         await _recenzijeUsluznikaProvider.get(filter: {'FTS': ''});
+
+        // Add a listener to get the value whenever the text changes
+    _ftsController1.addListener(() {
+      String currentText = _ftsController1.text; // Access the current text
+      setState(() {
+        search1 = currentText;
+      });
+      print('Current Text: $currentText');
+    });
+
+    // Add a listener to get the value whenever the text changes
+    _ftsController2.addListener(() {
+      String currentText = _ftsController2.text; // Access the current text
+      setState(() {
+        search2 = currentText;
+      });
+      print('Current Text: $currentText');
+    });
+
+
     setState(() {
       _recenzijaUslugeResult = recenzijeUsluge;
       _recenzijaUsluznikaResult = recenzijeUsluznika;
@@ -212,11 +234,28 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "",
+                labelText: "korisnik/usluga/ocjena/komentar",
               ),
               controller: _ftsController1,
             ),
           ),
+          search1 != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController1.text = '';
+                      search1 = _ftsController1.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
           SizedBox(
             width: 8,
           ),
@@ -400,11 +439,28 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "",
+                labelText: "korisnik/uslužnik/ocjena/komentar",
               ),
               controller: _ftsController2,
             ),
           ),
+          search2 != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController2.text = '';
+                      search2 = _ftsController2.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
           SizedBox(
             width: 8,
           ),

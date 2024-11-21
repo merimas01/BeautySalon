@@ -21,6 +21,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
   bool isLoadingData = true;
   SearchResult<Zaposlenik>? result;
   TextEditingController _ftsController = new TextEditingController();
+  String? search = "";
 
   @override
   void didChangeDependencies() {
@@ -32,6 +33,15 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
 
   void getData() async {
     var data = await _zaposleniciProvider.get(filter: {'FTS': ''});
+
+    // Add a listener to get the value whenever the text changes
+    _ftsController.addListener(() {
+      String currentText = _ftsController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
 
     setState(() {
       result = data;
@@ -68,6 +78,26 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
               controller: _ftsController,
             ),
           ),
+          SizedBox(
+            width: 8,
+          ),
+          search != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController.text = '';
+                      search = _ftsController.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
           SizedBox(
             width: 8,
           ),

@@ -18,6 +18,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
   SearchResult<Kategorija>? result;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
+  String? search="";
 
   @override
   void didChangeDependencies() {
@@ -29,6 +30,15 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
 
   void getData() async {
     var data = await _kategorijeProvider.get();
+
+    // Add a listener to get the value whenever the text changes
+    _ftsController.addListener(() {
+      String currentText = _ftsController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
 
     setState(() {
       result = data;
@@ -42,7 +52,9 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
       child: Column(children: [
         _builSearch(),
         _showResultCount(),
-        isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
+        isLoadingData == false
+            ? _buildDataListView()
+            : Container(child: CircularProgressIndicator()),
       ]),
       title: "Kategorije",
     );
@@ -64,6 +76,24 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           SizedBox(
             width: 8,
           ),
+          search != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController.text = '';
+                      search = _ftsController.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
+              SizedBox(width: 8,),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Dugme");

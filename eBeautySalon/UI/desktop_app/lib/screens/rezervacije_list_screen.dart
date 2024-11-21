@@ -28,6 +28,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   bool isLoadingChangeStatusList = true;
   Status? selectedStatus;
   Status? selectedChangeStatus;
+  String? search = "";
 
   @override
   void didChangeDependencies() {
@@ -44,6 +45,15 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     var statusi = await _statusiProvider.get();
     var changeStatusi =
         await _statusiProvider.get(filter: {'promijeniStatus': true});
+
+    // Add a listener to get the value whenever the text changes
+    _ftsController.addListener(() {
+      String currentText = _ftsController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
 
     setState(() {
       result = data;
@@ -291,6 +301,24 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           SizedBox(
             width: 8,
           ),
+          search != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController.text = '';
+                      search = _ftsController.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
+          SizedBox(width: 8),
           _searchByIsArhiva(),
           SizedBox(width: 8),
           selectedOpis != null

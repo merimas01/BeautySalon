@@ -890,6 +890,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.1"
+  window_manager:
+    dependency: "direct main"
+    description:
+      name: window_manager
+      sha256: "55d4cfb42ed0b02ee8ac1607da9286c1fbac99db43e24272904d8a65c2a596a1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.9"
   xdg_directories:
     dependency: transitive
     description:

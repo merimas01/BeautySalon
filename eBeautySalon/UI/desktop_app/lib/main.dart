@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:desktop_app/providers/kategorije_provider.dart';
 import 'package:desktop_app/providers/korisnici_uloge_provider.dart';
 import 'package:desktop_app/providers/korisnik_provider.dart';
@@ -16,12 +18,21 @@ import 'package:desktop_app/providers/usluge_termini_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_provider.dart';
 import 'package:desktop_app/providers/zaposlenici_usluge_provider.dart';
 import 'package:desktop_app/screens/home_page.dart';
-import 'package:desktop_app/screens/zaposlenici_details_screen.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+  // Must add this line.
+  await windowManager.ensureInitialized();
+
+  if (Platform.isWindows) {
+    WindowManager.instance.setMinimumSize(const Size(1350, 400));
+    WindowManager.instance.setMaximumSize(const Size(2048, 1080));
+  }
+
   runApp(MultiProvider(
     providers: [
       //dependency injection

@@ -37,7 +37,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
   }
 
   void getData() async {
-    var data = await _uslugeProvider.get(filter: {'FTS': ''});
+    var data = await _uslugeProvider.get(filter: {'FTS': '',  'isSlikaIncluded': true,});
     var kategorije = await _kategorijeProvider.get();
 
     setState(() {
@@ -268,7 +268,8 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     //treba da se osvjezi lista
     var data = await _uslugeProvider.get(filter: {
       'FTS': _ftsController.text,
-      'kategorijaId': selectedKategorija?.kategorijaId.toString()
+      'kategorijaId': selectedKategorija?.kategorijaId.toString(),
+      'isSlikaIncluded': true,
     });
 
     print(

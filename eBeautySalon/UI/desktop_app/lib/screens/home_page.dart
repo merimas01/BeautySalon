@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:desktop_app/main.dart';
 import 'package:desktop_app/screens/recenzije_list_screen.dart';
+import 'package:desktop_app/screens/usluge_details_screen.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +12,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../models/usluga.dart';
 import '../providers/recenzija_usluznika_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
+import '../providers/usluge_provider.dart';
+import '../widgets/hoverable_image.dart';
 import '../widgets/master_screen.dart';
 
 import 'package:pdf/widgets.dart' as pw;
@@ -32,8 +37,11 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey chartKey2 = GlobalKey();
   late RecenzijaUslugeProvider _recenzijaUslugeProvider;
   late RecenzijaUsluznikaProvider _recenzijaUsluznikaProvider;
+  late UslugeProvider _uslugeProvider;
+  List<Usluga>? slikeUsluga;
   bool isLoadingUsluge = true;
   bool isLoadingUsluznici = true;
+  bool isLoadingSlike = true;
   List<dynamic> listUsluge = [];
   List<dynamic> listUsluznici = [];
   int listUslugeCount = 0;
@@ -44,6 +52,9 @@ class _HomePageState extends State<HomePage> {
   File? _pdfFileUsluznici;
   int pdfUsluge = 0;
   int pdfUsluznici = 0;
+  late AnimationController _animationController;
+  late Animation<double> _fadeInAnimation;
+  bool _isHovered = false;
 
   @override
   void initState() {
@@ -52,6 +63,7 @@ class _HomePageState extends State<HomePage> {
 
     _recenzijaUslugeProvider = context.read<RecenzijaUslugeProvider>();
     _recenzijaUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
+    _uslugeProvider = context.read<UslugeProvider>();
 
     initForm();
   }
@@ -59,6 +71,7 @@ class _HomePageState extends State<HomePage> {
   void initForm() async {
     listUsluge = await _recenzijaUslugeProvider.GetProsjecnaOcjena();
     listUsluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
+    var usluge = await _uslugeProvider.get(filter: {'isSlikaIncluded': true});
 
     for (var item in listUsluge) {
       print("${item}");
@@ -66,6 +79,10 @@ class _HomePageState extends State<HomePage> {
 
     for (var item in listUsluznici) {
       print("${item}");
+    }
+
+    for (var item in usluge.result) {
+      print(item.slikaUsluge != null ? "ima sliku" : "nema sliku");
     }
 
     setState(() {
@@ -82,6 +99,11 @@ class _HomePageState extends State<HomePage> {
       listUsluznikCount = listUsluznici.length;
       isLoadingUsluznici = false;
     });
+
+    setState(() {
+      slikeUsluga = usluge.result;
+      isLoadingSlike = false;
+    });
   }
 
   @override
@@ -96,6 +118,13 @@ class _HomePageState extends State<HomePage> {
               children: [buttonOdjava()],
             ),
             welcomeMessageText(),
+          
+            SizedBox(
+              height: 10,
+            ),
+            textZaUsluge(),
+            SizedBox(height: 10),
+            _slidingImages(),
             SizedBox(
               height: 30,
             ),
@@ -260,7 +289,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget welcomeMessageText() {
     return Center(
-      child: RichText(
+
+      child:
+       RichText(
         text: TextSpan(
           style: TextStyle(
             fontSize: 20,
@@ -279,13 +310,40 @@ class _HomePageState extends State<HomePage> {
                 fontSize: 23,
               ),
             ),
-            TextSpan(
-              text: '! Želimo Vam ugodno korištenje aplikacije!',
-              style: TextStyle(fontWeight: FontWeight.normal),
+             TextSpan(
+             text: "🖐️", // Waving hand emoji
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+              ),
             ),
+            // TextSpan(
+            //   text: '! Želimo Vam ugodno korištenje aplikacije!',
+            //   style: TextStyle(fontWeight: FontWeight.normal),
+            // ),
           ],
         ),
         textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget textZaUsluge() {
+    return Center(
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black,
+          ),
+          children: [
+            TextSpan(
+              text: '\nPogledajte usluge koje salon nudi klijentima:',
+              style: TextStyle(fontWeight: FontWeight.w300),
+            ),
+          ],
+        ),
+        textAlign: TextAlign.justify,
       ),
     );
   }
@@ -971,4 +1029,94 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
+
+  final PageController _pageController = PageController();
+
+  int _currentPage = 0;
+
+  void _goToNextPage() {
+    if (slikeUsluga != null) {
+      if (_currentPage < slikeUsluga!.length - 1) {
+        _currentPage++;
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+  }
+
+  void _goToPreviousPage() {
+    if (slikeUsluga != null) {
+      if (_currentPage > 0) {
+        _currentPage--;
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+  }
+
+  Widget _slidingImages() {
+    if (slikeUsluga != null) {
+      return Column(
+        children: [
+          SizedBox(
+            height: 400,
+            width: double.infinity,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: slikeUsluga?.length ?? 0,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                final slika = slikeUsluga?[index].slikaUsluge?.slika;
+
+                return HoverableImage(
+                  usluga: slikeUsluga![index],
+                  imageBytes: slika != null ? base64Decode(slika) : null,
+                  onTap: () {
+                    print("${slikeUsluga![index].uslugaId}");
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => UslugeDetaljiScreen(
+                              usluga: slikeUsluga![index],
+                            )));
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   SnackBar(content: Text('Clicked on Image ${index + 1}')),
+                    // );
+                  },
+                );
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: _currentPage > 0 ? _goToPreviousPage : null,
+                child: Tooltip(
+                    child: Icon(Icons.arrow_left), message: "Prethodna"),
+              ),
+              Text('Usluga ${_currentPage + 1} od ${slikeUsluga!.length}'),
+              ElevatedButton(
+                onPressed: _currentPage < slikeUsluga!.length - 1
+                    ? _goToNextPage
+                    : null,
+                child: Tooltip(
+                    child: Icon(Icons.arrow_right), message: "Sljedeća"),
+              ),
+            ],
+          ),
+        ],
+      );
+    } else
+      return Container(child: CircularProgressIndicator());
+  }
+
 }

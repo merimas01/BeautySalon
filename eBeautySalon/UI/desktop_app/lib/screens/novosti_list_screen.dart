@@ -46,7 +46,9 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
         children: [
           _buildSearch(),
           _showResultCount(),
-          isLoadingData == false ? _buildDataListView() : Container(child: CircularProgressIndicator()),
+          isLoadingData == false
+              ? _buildDataListView()
+              : Container(child: CircularProgressIndicator()),
         ],
       ),
     );
@@ -121,6 +123,10 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
             )),
             DataColumn(
                 label: Expanded(
+              child: Text("Autor"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text(""),
             )),
             DataColumn(
@@ -141,7 +147,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                               )
                             : Text("")),
                         DataCell(Container(
-                          width: 400,
+                          width: 260,
                           child: Text(e.sadrzaj ?? ""),
                         )),
                         DataCell(Container(
@@ -150,6 +156,10 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                                     "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")
                                 : Text(
                                     "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}"))),
+                        DataCell(Container(
+                          child:
+                              Text("${e.korisnik?.ime} ${e.korisnik?.prezime}"),
+                        )),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(

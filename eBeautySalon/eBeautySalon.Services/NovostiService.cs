@@ -32,7 +32,16 @@ namespace eBeautySalon.Services
             entity.KorisnikId = _context.Korisniks.Where(x => x.IsAdmin == true).Select(x => x.KorisnikId).First();
             return base.BeforeUpate(entity, update);
         }
-
+        public override async Task BeforeDelete(Novost entity)
+        {
+            var slikaNovostId = entity.SlikaNovostId;
+            var slikaNovost = await _context.SlikaNovosts.Where(x => x.SlikaNovostId == slikaNovostId).FirstAsync();
+           
+            if (slikaNovost != null && slikaNovostId != Constants.DEFAULT_SlikaUslugeId)
+            {
+                _context.Remove(slikaNovost); //deleta se ovaj objekat jer se nece koristiti vise
+            }    
+        }
         public override IQueryable<Novost> AddFilter(IQueryable<Novost> query, NovostiSearchObject? search = null)
         {
             if (!string.IsNullOrWhiteSpace(search?.FTS))
@@ -62,17 +71,6 @@ namespace eBeautySalon.Services
                 query = query.Include(c => c.Korisnik);
             }
             return base.AddInclude(query, search);
-        }
-
-        public override Task BeforeDelete(Novost entity)
-        {
-            var slikaNovostId = entity.SlikaNovostId;
-            var slikaNovost = _context.SlikaNovosts.Where(x => x.SlikaNovostId == slikaNovostId).First();
-            if (slikaNovost != null && slikaNovostId != Constants.DEFAULT_SlikaNovostId)
-            {
-                _context.Remove(slikaNovost); 
-            }
-            return base.BeforeDelete(entity);
         }
 
         public override async Task<bool> AddValidationInsert(NovostiInsertRequest request)

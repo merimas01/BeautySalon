@@ -37,7 +37,7 @@ class _HoverableImageState extends State<HoverableImage> {
                       widget.imageBytes!,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      height: 400,
+                      height: double.infinity,
                     ),
                   )
                 : const Center(

@@ -53,7 +53,8 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
       'telefon': widget.korisnik?.telefon,
       'email': widget.korisnik?.email,
       'status': widget.korisnik?.status,
-      'slikaProfilaId': widget.korisnik?.slikaProfilaId,
+      'slikaProfilaId': widget.korisnik?.slikaProfilaId.toString() ??
+          DEFAULT_SlikaProfilaId.toString(),
     };
 
     _korisnikProvider = context.read<KorisnikProvider>();
@@ -461,16 +462,27 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
 
   Uint8List displayCurrentImage() {
     if (widget.korisnik != null) {
-      Uint8List imageBytes = base64Decode(widget.korisnik!.slikaProfila!.slika);
-      setState(() {
-        _imaSliku = true;
-      });
-      if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaProfilaId) {
+      if (widget.korisnik?.slikaProfila != null) {
+        Uint8List imageBytes =
+            base64Decode(widget.korisnik!.slikaProfila!.slika);
+        setState(() {
+          _imaSliku = true;
+        });
+
+        if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaUslugeId) {
+          setState(() {
+            _imaSliku = false;
+          });
+        }
+        return imageBytes;
+      } else {
+        Uint8List imageBytes =
+            base64Decode(_slikaProfilaResult!.result[0].slika);
         setState(() {
           _imaSliku = false;
         });
+        return imageBytes;
       }
-      return imageBytes;
     } else {
       Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
       setState(() {
@@ -494,7 +506,8 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
 
   Future doUpdate(request_korisnik, request_slika) async {
     if (_base64image != null &&
-        widget.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId) {
+        (widget.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId ||
+            widget.korisnik?.slikaProfilaId == null)) {
       var obj = await _slikaProfilaProvider.insert(request_slika);
       if (obj != null) {
         var slikaId = obj.slikaProfilaId;
@@ -505,10 +518,14 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
       await _slikaProfilaProvider.update(
           widget.korisnik!.slikaProfilaId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      var del =
-          await _slikaProfilaProvider.delete(widget.korisnik!.slikaProfilaId!);
-      print("delete slikaProfilaId: $del");
-      request_korisnik['slikaProfilaId'] = DEFAULT_SlikaProfilaId;
+      try {
+        var del = await _slikaProfilaProvider
+            .delete(widget.korisnik!.slikaProfilaId!);
+        print("delete slikaProfilaId: $del");
+        request_korisnik['slikaProfilaId'] = DEFAULT_SlikaProfilaId;
+      } catch (err) {
+        print("error delete");
+      }
     }
     print("update request: $request_korisnik");
 

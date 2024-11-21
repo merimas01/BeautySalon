@@ -210,18 +210,18 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                   )),
                   DataColumn(
                       label: Expanded(
-                    child: Text("Prikaži termin?"),
+                    child: Text("Prikaži termin korisniku?"),
                   ))
                 ],
                 rows: _uslugaTerminResult?.result
                         .map((UslugaTermin e) => DataRow(cells: [
                               DataCell(Text(e.termin?.opis ?? "")),
-                              DataCell(Container(
+                              DataCell(Center(
                                 child: Switch(
                                   value: e.isPrikazan == null
                                       ? true
                                       : e.isPrikazan!,
-                                  activeColor: Colors.green,
+                                  activeColor: Color.fromARGB(255, 1, 2, 1),
                                   onChanged: (bool value) {
                                     setState(() {
                                       e.isPrikazan = value;

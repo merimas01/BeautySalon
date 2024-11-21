@@ -144,8 +144,14 @@ class _ProfilPageState extends State<ProfilPage> {
 
   Uint8List displayCurrentImage() {
     if (korisnik != null) {
-      Uint8List imageBytes = base64Decode(korisnik!.slikaProfila!.slika);
-      return imageBytes;
+      if (korisnik?.slikaProfila != null) {
+        Uint8List imageBytes = base64Decode(korisnik!.slikaProfila!.slika);
+        return imageBytes;
+      } else {
+        Uint8List imageBytes =
+            base64Decode(_slikaProfilaResult!.result[0].slika);
+        return imageBytes;
+      }
     } else {
       Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
       return imageBytes;

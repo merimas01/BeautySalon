@@ -51,7 +51,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
     _initialValue = {
       'naslov': widget.novost?.naslov,
       'sadrzaj': widget.novost?.sadrzaj,
-      'slikaNovostId': widget.novost?.slikaNovostId.toString(),
+      'slikaNovostId': widget.novost?.slikaNovostId.toString() ?? DEFAULT_SlikaNovostId.toString(),
     };
     _slikaNovostProvider = context.read<SlikaNovostProvider>();
     _novostiProvider = context.read<NovostiProvider>();
@@ -200,7 +200,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
 
   Widget _buttonOdaberiSliku() {
     return FormBuilderField(
-      name: 'slikaProfilaId',
+      name: 'slikaNovostId',
       builder: ((field) {
         return Container(
           width: 100,
@@ -323,16 +323,26 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
 
   Uint8List displayCurrentImage() {
     if (widget.novost != null) {
-      Uint8List imageBytes = base64Decode(widget.novost!.slikaNovost!.slika);
-      setState(() {
-        _imaSliku = true;
-      });
-      if (widget.novost!.slikaNovostId == DEFAULT_SlikaNovostId) {
+      if (widget.novost?.slikaNovost != null) {
+        Uint8List imageBytes = base64Decode(widget.novost!.slikaNovost!.slika);
+        setState(() {
+          _imaSliku = true;
+        });
+
+        if (widget.novost!.slikaNovostId == DEFAULT_SlikaUslugeId) {
+          setState(() {
+            _imaSliku = false;
+          });
+        }
+        return imageBytes;
+      } else {
+        Uint8List imageBytes =
+            base64Decode(_slikaNovostResult!.result[0].slika);
         setState(() {
           _imaSliku = false;
         });
+        return imageBytes;
       }
-      return imageBytes;
     } else {
       Uint8List imageBytes = base64Decode(_slikaNovostResult!.result[0].slika);
       setState(() {
@@ -480,7 +490,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
 
   Future doUpdate(request_novost, request_slika) async {
     if (_base64image != null &&
-        widget.novost?.slikaNovostId == DEFAULT_SlikaNovostId) {
+        (widget.novost?.slikaNovostId == DEFAULT_SlikaNovostId || widget.novost?.slikaNovostId == null)) {
       var obj = await _slikaNovostProvider.insert(request_slika);
       if (obj != null) {
         var slikaId = obj.slikaNovostId;
@@ -491,10 +501,15 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       await _slikaNovostProvider.update(
           widget.novost!.slikaNovostId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
+      try{
       var del =
           await _slikaNovostProvider.delete(widget.novost!.slikaNovostId!);
       print("delete slikaNovostId: $del");
       request_novost['slikaNovostId'] = DEFAULT_SlikaUslugeId;
+      }
+      catch(err){
+        print("delete error");
+      }
     }
     print("update request: $request_novost");
 

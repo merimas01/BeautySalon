@@ -61,7 +61,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       'opis': widget.usluga?.opis,
       'cijena': widget.usluga?.cijena!.toString(),
       'kategorijaId': widget.usluga?.kategorijaId.toString(),
-      'slikaUslugeId': widget.usluga?.slikaUslugeId.toString(),
+      'slikaUslugeId': widget.usluga?.slikaUslugeId.toString() ??
+          "${DEFAULT_SlikaUslugeId.toString()}",
     };
     _kategorijeProvider = context.read<KategorijeProvider>();
     _slikaUslugeProvider = context.read<SlikaUslugeProvider>();
@@ -308,7 +309,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
 
   Widget _buttonOdaberiSliku() {
     return FormBuilderField(
-      name: 'slikaProfilaId',
+      name: 'slikaUslugeId',
       builder: ((field) {
         return Container(
           width: 100,
@@ -431,16 +432,26 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
 
   Uint8List displayCurrentImage() {
     if (widget.usluga != null) {
-      Uint8List imageBytes = base64Decode(widget.usluga!.slikaUsluge!.slika);
-      setState(() {
-        _imaSliku = true;
-      });
-      if (widget.usluga!.slikaUslugeId == DEFAULT_SlikaUslugeId) {
+      if (widget.usluga?.slikaUsluge != null) {
+        Uint8List imageBytes = base64Decode(widget.usluga!.slikaUsluge!.slika);
+        setState(() {
+          _imaSliku = true;
+        });
+
+        if (widget.usluga!.slikaUslugeId == DEFAULT_SlikaUslugeId) {
+          setState(() {
+            _imaSliku = false;
+          });
+        }
+        return imageBytes;
+      } else {
+        Uint8List imageBytes =
+            base64Decode(_slikaUslugeResult!.result[0].slika);
         setState(() {
           _imaSliku = false;
         });
+        return imageBytes;
       }
-      return imageBytes;
     } else {
       Uint8List imageBytes = base64Decode(_slikaUslugeResult!.result[0].slika);
       setState(() {
@@ -536,7 +547,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
 
   Future doUpdate(request_usluga, request_slika) async {
     if (_base64image != null &&
-        widget.usluga?.slikaUslugeId == DEFAULT_SlikaUslugeId) {
+        (widget.usluga?.slikaUslugeId == DEFAULT_SlikaUslugeId ||
+            widget.usluga?.slikaUslugeId == null)) {
       var obj = await _slikaUslugeProvider.insert(request_slika);
       if (obj != null) {
         var slikaId = obj.slikaUslugeId;
@@ -547,10 +559,15 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       await _slikaUslugeProvider.update(
           widget.usluga!.slikaUslugeId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
+      try{
       var del =
           await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
       print("delete slikaUslugeId: $del");
       request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
+      }
+      catch(err){
+        print("error delete");
+      }      
     }
     print("update request: $request_usluga");
 

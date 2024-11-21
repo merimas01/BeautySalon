@@ -7,6 +7,7 @@ import '../models/search_result.dart';
 import '../models/zaposlenik.dart';
 import '../models/zaposlenik_usluga.dart';
 import '../providers/zaposlenici_provider.dart';
+import '../utils/util.dart';
 
 class ZaposleniciListScreen extends StatefulWidget {
   const ZaposleniciListScreen({super.key});
@@ -45,7 +46,9 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
         child: Column(children: [
           _builSearch(),
           _showResultCount(),
-          isLoadingData == false ? _buildDataListView(): Container(child: CircularProgressIndicator()),
+          isLoadingData == false
+              ? _buildDataListView()
+              : Container(child: CircularProgressIndicator()),
         ]),
       ),
       title_widget: Text("Zaposlenici"),
@@ -110,6 +113,10 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
             )),
             DataColumn(
                 label: Expanded(
+              child: Text("Slika"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Zadužen za"),
             )),
             DataColumn(
@@ -139,6 +146,14 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                             width: 100,
                             child: Text(
                                 "${e.korisnik?.ime} ${e.korisnik?.prezime}"))),
+                        DataCell(e.korisnik?.slikaProfila?.slika != null
+                            ? Container(
+                                width: 100,
+                                height: 100,
+                                child: ImageFromBase64String(
+                                    e.korisnik!.slikaProfila!.slika),
+                              )
+                            : Text("")),
                         DataCell(Container(
                             width: 300,
                             child: _zaduzenZa(e.zaposlenikUslugas,

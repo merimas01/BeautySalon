@@ -90,7 +90,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       'telefon': widget.korisnik?.telefon,
       'korisnickoIme': widget.korisnik?.korisnickoIme,
       'status': widget.korisnik?.status,
-      'slikaProfilaId': widget.korisnik?.slikaProfilaId.toString(),
+      'slikaProfilaId':
+          widget.korisnik?.slikaProfilaId.toString() ?? DEFAULT_SlikaProfilaId,
       'ulogaId': widget.korisnik?.korisnikUlogas?[0].ulogaId.toString(),
     };
 
@@ -337,9 +338,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 foregroundColor: Colors.blue,
               ),
               onPressed: () {
-                print("this.widget.zaposlenik: ${this.widget.zaposlenik?.zaposlenikId}");
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => UlogeListScreen(zaposlenik: this.widget.zaposlenik, korisnik: this.widget.korisnik,)));
+                print(
+                    "this.widget.zaposlenik: ${this.widget.zaposlenik?.zaposlenikId}");
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UlogeListScreen(
+                          zaposlenik: this.widget.zaposlenik,
+                          korisnik: this.widget.korisnik,
+                        )));
               },
               child: Text("Upravljaj ulogama")),
         )),
@@ -362,7 +367,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   children: [
                     _naslov(),
                     _odaberiUlogu(),
-                    _inputImePrezime(),
+                    _korisnickoIme(),
+                    _inputIme(),
+                    _inputPrezime(),
                     _inputTelefonEmail(),
                     _inputDatume(),
                     _inputSifra(),
@@ -630,19 +637,28 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   }
 
   Uint8List displayCurrentImage() {
-    if (widget.zaposlenik != null) {
-      Uint8List imageBytes =
-          base64Decode(widget.zaposlenik!.korisnik!.slikaProfila!.slika);
-      setState(() {
-        _imaSliku = true;
-      });
-      if (widget.zaposlenik!.korisnik!.slikaProfilaId ==
-          DEFAULT_SlikaProfilaId) {
+    if (widget.korisnik != null) {
+      if (widget.korisnik?.slikaProfila != null) {
+        Uint8List imageBytes =
+            base64Decode(widget.korisnik!.slikaProfila!.slika);
+        setState(() {
+          _imaSliku = true;
+        });
+
+        if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaUslugeId) {
+          setState(() {
+            _imaSliku = false;
+          });
+        }
+        return imageBytes;
+      } else {
+        Uint8List imageBytes =
+            base64Decode(_slikaProfilaResult!.result[0].slika);
         setState(() {
           _imaSliku = false;
         });
+        return imageBytes;
       }
-      return imageBytes;
     } else {
       Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
       setState(() {
@@ -789,7 +805,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         obj['email'], obj['telefon'], true, widget.korisnik!.slikaProfilaId);
 
     if (_base64image != null &&
-        widget.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId) {
+        (widget.korisnik?.slikaProfilaId == DEFAULT_SlikaProfilaId ||
+            widget.korisnik?.slikaProfilaId == null)) {
       var obj = await _slikaProfilaProvider.insert(slika_request);
       if (obj != null) {
         var slikaId = obj.slikaProfilaId;
@@ -801,9 +818,13 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           widget.korisnik!.slikaProfilaId!, slika_request);
     } else if (_ponistiSliku == true && _base64image == null) {
       if (widget.korisnik!.slikaProfilaId != DEFAULT_SlikaProfilaId) {
-        var del = await _slikaProfilaProvider
-            .delete(widget.korisnik!.slikaProfilaId!);
-        print("delete slikaUslugeId: $del");
+        try {
+          var del = await _slikaProfilaProvider
+              .delete(widget.korisnik!.slikaProfilaId!);
+          print("delete slikaUslugeId: $del");
+        } catch (err) {
+          print("error delete");
+        }
       }
       korisnik_update.slikaProfilaId = DEFAULT_SlikaProfilaId;
     }
@@ -923,68 +944,58 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     return true;
   }
 
-  Widget _inputImePrezime() {
-    return Row(
-      children: [
-        Expanded(
-            child: FormBuilderTextField(
-          decoration: InputDecoration(labelText: "Korisničko ime:"),
-          name: "korisnickoIme",
-          enabled: widget.korisnik == null,
-          validator: (value) {
-            if (value == null || value.isEmpty || value.trim().isEmpty) {
-              return 'Molimo Vas unesite korisničko ime.';
-            }
-            if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$').hasMatch(value)) {
-              return 'Korisničko ime treba počinjati sa slovom i smije sadržavati \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
-            }
-            return null;
-          },
-        )),
-        SizedBox(
-          width: 10,
-        ),
-        Expanded(
-            child: FormBuilderTextField(
-          decoration: InputDecoration(labelText: "Ime:"),
-          name: "ime",
-          validator: (value) {
-            if (value == null || value.isEmpty || value.trim().isEmpty) {
-              return 'Molimo Vas unesite ime';
-            }
-            if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
-                .hasMatch(value)) {
-              return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
-            }
-            if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
-              return 'Unesite ispravno ime.';
-            }
-            return null;
-          },
-        )),
-        SizedBox(
-          width: 10,
-        ),
-        Expanded(
-          child: FormBuilderTextField(
-            name: "prezime",
-            decoration: InputDecoration(labelText: "Prezime:"),
-            validator: (value) {
-              if (value == null || value.isEmpty || value.trim().isEmpty) {
-                return 'Molimo Vas unesite prezime';
-              }
-              if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
-                  .hasMatch(value)) {
-                return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
-              }
-              if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
-                return 'Unesite ispravno prezime.';
-              }
-              return null;
-            },
-          ),
-        ),
-      ],
+  Widget _korisnickoIme() {
+    return FormBuilderTextField(
+      decoration: InputDecoration(labelText: "Korisničko ime:"),
+      name: "korisnickoIme",
+      enabled: widget.korisnik == null,
+      validator: (value) {
+        if (value == null || value.isEmpty || value.trim().isEmpty) {
+          return 'Molimo Vas unesite korisničko ime.';
+        }
+        if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$').hasMatch(value)) {
+          return 'Korisničko ime treba počinjati sa slovom i smije sadržavati slova bez afrikata, brojeve i sljedeće znakove: ._-';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _inputIme() {
+    return FormBuilderTextField(
+      decoration: InputDecoration(labelText: "Ime:"),
+      name: "ime",
+      validator: (value) {
+        if (value == null || value.isEmpty || value.trim().isEmpty) {
+          return 'Molimo Vas unesite ime';
+        }
+        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+').hasMatch(value)) {
+          return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+        }
+        if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+          return 'Unesite ispravno ime.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _inputPrezime() {
+    return FormBuilderTextField(
+      name: "prezime",
+      decoration: InputDecoration(labelText: "Prezime:"),
+      validator: (value) {
+        if (value == null || value.isEmpty || value.trim().isEmpty) {
+          return 'Molimo Vas unesite prezime';
+        }
+        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+').hasMatch(value)) {
+          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+        }
+        if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+          return 'Unesite ispravno prezime.';
+        }
+        return null;
+      },
     );
   }
 

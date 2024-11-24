@@ -48,12 +48,15 @@ class _HomePageState extends State<HomePage> {
   int listUsluznikCount = 0;
   List<String> nazivUslugeList = [];
   List<String> nazivUsluznikaList = [];
+  List<String> sifraUslugeList = [];
+  List<String> sifraUsluznikaList = [];
   File? _pdfFileUsluge;
   File? _pdfFileUsluznici;
   int pdfUsluge = 0;
   int pdfUsluznici = 0;
   late AnimationController _animationController;
   late Animation<double> _fadeInAnimation;
+  var listUslugeNumbers = [];
   bool _isHovered = false;
 
   @override
@@ -69,7 +72,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initForm() async {
-    listUsluge = await _recenzijaUslugeProvider.GetProsjecnaOcjena();
+    listUsluge = await _recenzijaUslugeProvider
+        .GetProsjecnaOcjena(); //dodati jos i sifru u ovu listu
     listUsluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
     var usluge = await _uslugeProvider.get(filter: {'isSlikaIncluded': true});
 
@@ -86,8 +90,11 @@ class _HomePageState extends State<HomePage> {
     }
 
     setState(() {
+      //sifreUslugeList
       nazivUslugeList =
           listUsluge.map((usluga) => usluga['nazivUsluge'] as String).toList();
+      sifraUslugeList =
+          listUsluge.map((usluga) => usluga['sifraUsluge'] as String).toList();
       listUslugeCount = listUsluge.length;
       isLoadingUsluge = false;
     });
@@ -95,6 +102,9 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       nazivUsluznikaList = listUsluznici
           .map((usluznik) => usluznik['nazivUsluznik'] as String)
+          .toList();
+      sifraUsluznikaList = listUsluznici
+          .map((usluznik) => usluznik['sifraUsluznik'] as String)
           .toList();
       listUsluznikCount = listUsluznici.length;
       isLoadingUsluznici = false;
@@ -118,7 +128,6 @@ class _HomePageState extends State<HomePage> {
               children: [buttonOdjava()],
             ),
             welcomeMessageText(),
-          
             SizedBox(
               height: 10,
             ),
@@ -134,35 +143,17 @@ class _HomePageState extends State<HomePage> {
             ),
             iznadBarChart(),
             SizedBox(
-              height: 30,
+              height: 20,
             ),
             buttonRecenzije(),
             SizedBox(
-              height: 50,
+              height: 60,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Column(
               children: [
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: "Prosječne ocjene usluga",
-                            style: TextStyle(fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.justify,
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
                     RepaintBoundary(
                       key: chartKey,
                       child: isLoadingUsluge == false
@@ -170,42 +161,87 @@ class _HomePageState extends State<HomePage> {
                           : Container(child: CircularProgressIndicator()),
                     ),
                     SizedBox(
-                      height: 10,
+                      width: 10,
                     ),
-                    nazivUslugeList.length != 0
-                        ? Row(
+                    sifraUslugeList.length != 0
+                        ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: "Prosječne ocjene usluga",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.justify,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                  "Za više detalja preuzmite PDF dokument ispod."),
+                              SizedBox(height: 20),
                               buttonPrintajPDFUsluge(),
                             ],
                           )
-                        : Container(),
+                        : Container(child: CircularProgressIndicator()),
                   ],
                 ),
                 SizedBox(
-                  width: 10,
+                  height: 30,
                 ),
-                Column(
+                SizedBox(
+                  child: Container(color: Colors.pink),
+                  height: 1,
+                  width: 300,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: "Prosječne ocjene uslužnika",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.justify,
-                    ),
+                    sifraUsluznikaList.length != 0
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: "Prosječne ocjene uslužnika",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.justify,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                  "Za više detalja preuzmite PDF dokument ispod."),
+                              SizedBox(height: 20),
+                              buttonPrintajPDFUsluznici(),
+                            ],
+                          )
+                        : Container(child: CircularProgressIndicator()),
                     SizedBox(
-                      height: 30,
+                      width: 10,
                     ),
                     RepaintBoundary(
                       key: chartKey2,
@@ -213,17 +249,6 @@ class _HomePageState extends State<HomePage> {
                           ? buildBarChartUsluznici()
                           : Container(child: CircularProgressIndicator()),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    nazivUsluznikaList.length != 0
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              buttonPrintajPDFUsluznici(),
-                            ],
-                          )
-                        : Container(),
                   ],
                 ),
               ],
@@ -289,9 +314,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget welcomeMessageText() {
     return Center(
-
-      child:
-       RichText(
+      child: RichText(
         text: TextSpan(
           style: TextStyle(
             fontSize: 20,
@@ -310,8 +333,8 @@ class _HomePageState extends State<HomePage> {
                 fontSize: 23,
               ),
             ),
-             TextSpan(
-             text: "🖐️", // Waving hand emoji
+            TextSpan(
+              text: "🖐️", // Waving hand emoji
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
@@ -338,7 +361,8 @@ class _HomePageState extends State<HomePage> {
           ),
           children: [
             TextSpan(
-              text: '\nPogledajte usluge koje salon nudi klijentima:',
+              text:
+                  '\nObzirom da je primarni fokus ovog salona - LJEPOTA i njega iste, pogledajte sve beauty usluge koje naš salon nudi klijentima:',
               style: TextStyle(fontWeight: FontWeight.w300),
             ),
           ],
@@ -360,13 +384,17 @@ class _HomePageState extends State<HomePage> {
             ),
             children: [
               TextSpan(
-                text:
-                    '\nNa narednim slikama, prikazani su dijagami (bar chart) sa prosječnim ocjenama usluga/uslužnika (prikazane od najbolje ocijenjenih ka najlošije ocijenjenim).',
-                style: TextStyle(fontWeight: FontWeight.w300),
+                text: '\nNa narednim slikama, prikazani su štapićasti dijagami sa prosječnim ocjenama usluga/uslužnika' +
+                    '(prikazane od najbolje ocijenjenih ka najlošije ocijenjenim).\nNa svakom štapiću piše naziv usluge/uslužnika i njegova prosječna ocjena, ' +
+                    'ukoliko pređete kursorom preko njega. Detaljnije informacije o svakom dijagramu se nalaze u pdf dokumentima koje možete odmah preuzeti. ' +
+                    'Pojedinačne recenzije od svakog korisnika se mogu vidjeti pritiskom na dugme ispod.',
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                ),
               ),
             ],
           ),
-          textAlign: TextAlign.justify,
+          textAlign: TextAlign.center,
         ),
       ),
     );
@@ -415,9 +443,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildBarChartUsluge() {
-    return nazivUslugeList.length != 0
+    return sifraUslugeList.length != 0
         ? SizedBox(
-            width: 400,
+            width: 500,
             height: 300,
             child: BarChart(
               BarChartData(
@@ -435,6 +463,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 barGroups: generateData(listUsluge),
+                minY: 1,
+                maxY: 5,
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
@@ -450,11 +480,12 @@ class _HomePageState extends State<HomePage> {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        final labels = nazivUslugeList;
+                        final labels =
+                            sifraUslugeList; //dohvatiti šifru ovde - sifreUslugeList
 
                         return Text(
-                          labels[index],
-                          style: TextStyle(fontSize: 10),
+                          labels.isNotEmpty ? labels[index] : "", //"${index}"
+                          style: TextStyle(fontSize: 12),
                           softWrap:
                               true, // Allows text to wrap to the next line
                           overflow:
@@ -474,9 +505,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildBarChartUsluznici() {
-    return nazivUsluznikaList.length != 0
+    return sifraUsluznikaList.length != 0
         ? SizedBox(
-            width: 400,
+            width: 500,
             height: 300,
             child: BarChart(
               BarChartData(
@@ -494,6 +525,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 barGroups: generateData(listUsluznici),
+                minY: 1,
+                maxY: 5,
                 borderData: FlBorderData(show: false),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
@@ -509,10 +542,10 @@ class _HomePageState extends State<HomePage> {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        final labels = nazivUsluznikaList;
+                        final labels = sifraUsluznikaList;
 
                         return Text(
-                          labels.isNotEmpty ? labels[index] : "empty",
+                          labels.isNotEmpty ? labels[index] : "",
                           style: TextStyle(fontSize: 10),
                           softWrap:
                               true, // Allows text to wrap to the next line
@@ -589,7 +622,7 @@ class _HomePageState extends State<HomePage> {
                 "Izvještaj o recenzijama usluga",
                 style: pw.TextStyle(
                   font: ttf,
-                  fontSize: 30,
+                  fontSize: 20,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
@@ -607,11 +640,84 @@ class _HomePageState extends State<HomePage> {
               ),
               pw.SizedBox(height: 20),
               pw.Text(
-                "Usluge",
+                "Nazivi usluga",
                 style: pw.TextStyle(
-                    fontSize: 18, fontWeight: pw.FontWeight.bold, font: ttf),
+                    fontSize: 15, fontWeight: pw.FontWeight.bold, font: ttf),
               ),
               pw.SizedBox(height: 20),
+              pw.Text(
+                "U sljedećoj tabeli prikazane su sve ocijenjivane usluge i njihove šifre.",
+                textAlign: pw.TextAlign.justify,
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.normal,
+                  font: ttf,
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  pw.TableRow(
+                    children: [
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text(
+                          "Šifra usluge",
+                          style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 12,
+                              font: ttf),
+                        ),
+                      ),
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text(
+                          "Usluga",
+                          style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 12,
+                              font: ttf),
+                        ),
+                      ),
+                    ],
+                  ),
+                  for (var item in listUsluge)
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text("${item['sifraUsluge']}",
+                              style: pw.TextStyle(font: ttf)),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(item['nazivUsluge'].toString(),
+                              style: pw.TextStyle(font: ttf)),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                "Detalji recenzija",
+                style: pw.TextStyle(
+                    fontSize: 15, fontWeight: pw.FontWeight.bold, font: ttf),
+              ),
+              pw.SizedBox(height: 12),
               pw.Text(
                 "U sljedećoj tabeli prikazane su sve ocijenjivane usluge, sa svim ocijenama koje imaju. Prikazana je i prosječna ocjena za svaku od njih.",
                 textAlign: pw.TextAlign.justify,
@@ -630,10 +736,10 @@ class _HomePageState extends State<HomePage> {
                       pw.Padding(
                         padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
-                          "Naziv usluge",
+                          "Šifra usluge",
                           style: pw.TextStyle(
                               fontWeight: pw.FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 12,
                               font: ttf),
                         ),
                       ),
@@ -643,7 +749,7 @@ class _HomePageState extends State<HomePage> {
                           "Ocjene",
                           style: pw.TextStyle(
                               fontWeight: pw.FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 12,
                               font: ttf),
                         ),
                       ),
@@ -653,7 +759,7 @@ class _HomePageState extends State<HomePage> {
                           "Prosječna ocjena",
                           style: pw.TextStyle(
                             fontWeight: pw.FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 12,
                             font: ttf,
                           ),
                         ),
@@ -665,7 +771,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(item['nazivUsluge'],
+                          child: pw.Text("${item['sifraUsluge']}",
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
@@ -688,7 +794,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    // dodaj novu stranicu
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -697,32 +802,36 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text(
-                "Dijagram (Bar chart)",
+                "Štapićasti dijagram",
                 style: pw.TextStyle(
-                    fontSize: 18, fontWeight: pw.FontWeight.bold, font: ttf),
+                    fontSize: 15, fontWeight: pw.FontWeight.bold, font: ttf),
               ),
               pw.SizedBox(height: 20),
 
               pw.Text(
-                "Na dijagramu su prikazane sve usluge koje su ocjenjivane. Uslužnici koje nisu prikazani na dijagramu, nisu nijednom recenzirani.\nNa osnovu dijagrama se primjećuje koje usluge imaju najveću prosječnu ocjenu, kao i one koje imaju najnižu.",
+                "Na dijagramu su prikazane sve usluge koje su ocjenjivane. Na x-osi su predstavljene šifre usluga (koje su također predstavljene u prvoj tabeli). Na y-osi na desnoj strani su prikazane prosječne ocjene usluga koje se kreću od 1-5. \nUsluge koje nisu prikazane na dijagramu, nisu nijednom recenzirane.\nNa osnovu dijagrama se primjećuje koje usluge imaju najveću prosječnu ocjenu, kao i one koje imaju najnižu, te stoga se može zaključiti koje usluge se klijentima najviše sviđaju, a koje najmanje.",
                 textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
                   font: ttf,
-                  fontSize: 15,
+                  fontSize: 12,
                   fontWeight: pw.FontWeight.normal,
                 ),
               ),
 
               pw.SizedBox(height: 50),
-              pw.SizedBox(
-                height: 20,
+
+              pw.Container(
+                height: 200,
+                child: pw.Center(
+                  child: pw.Image(pw.MemoryImage(chartImage)),
+                ),
               ),
               // Adding the chart image
-              pw.Image(
-                pw.MemoryImage(chartImage),
-                width: 400, // Customize as needed
-                height: 300,
-              )
+              // pw.Image(
+              //   pw.MemoryImage(chartImage),
+              //   width: 400, // Customize as needed
+              //   height: 500,
+              // )
             ],
           );
         },
@@ -796,7 +905,7 @@ class _HomePageState extends State<HomePage> {
                 "Izvještaj o recenzijama uslužnika",
                 style: pw.TextStyle(
                   font: ttf,
-                  fontSize: 30,
+                  fontSize: 20,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
@@ -814,16 +923,16 @@ class _HomePageState extends State<HomePage> {
               ),
               pw.SizedBox(height: 20),
               pw.Text(
-                "Uslužnici",
+                "Imena uslužnika",
                 style: pw.TextStyle(
-                    fontSize: 18, fontWeight: pw.FontWeight.bold, font: ttf),
+                    fontSize: 15, fontWeight: pw.FontWeight.bold, font: ttf),
               ),
               pw.SizedBox(height: 20),
               pw.Text(
-                "U sljedećoj tabeli prikazane su svi ocijenjivani uslužnici, sa svim ocijenama koje imaju. Prikazana je i prosječna ocjena za svakog od njih.",
+                "U sljedećoj tabeli prikazani su svi ocijenjivani uslužnici i njihove šifre.",
                 textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
-                  fontSize: 15,
+                  fontSize: 12,
                   fontWeight: pw.FontWeight.normal,
                   font: ttf,
                 ),
@@ -837,10 +946,83 @@ class _HomePageState extends State<HomePage> {
                       pw.Padding(
                         padding: const pw.EdgeInsets.all(8.0),
                         child: pw.Text(
-                          "Uslužnik",
+                          "Šifra uslužnika",
                           style: pw.TextStyle(
                               fontWeight: pw.FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 12,
+                              font: ttf),
+                        ),
+                      ),
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text(
+                          "Ime i prezime uslužnika",
+                          style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 12,
+                              font: ttf),
+                        ),
+                      ),
+                    ],
+                  ),
+                  for (var item in listUsluznici)
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text("${item['sifraUsluznik']}",
+                              style: pw.TextStyle(font: ttf)),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(item['nazivUsluznik'].toString(),
+                              style: pw.TextStyle(font: ttf)),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                "Detalji recenzija",
+                style: pw.TextStyle(
+                    fontSize: 15, fontWeight: pw.FontWeight.bold, font: ttf),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Text(
+                "U sljedećoj tabeli prikazane su svi ocijenjivani uslužnici, sa svim ocjenama koje imaju. Prikazana je i prosječna ocjena za svakog od njih.",
+                textAlign: pw.TextAlign.justify,
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.normal,
+                  font: ttf,
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  pw.TableRow(
+                    children: [
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8.0),
+                        child: pw.Text(
+                          "Šifra uslužnika",
+                          style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 12,
                               font: ttf),
                         ),
                       ),
@@ -850,7 +1032,7 @@ class _HomePageState extends State<HomePage> {
                           "Ocjene",
                           style: pw.TextStyle(
                               fontWeight: pw.FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 12,
                               font: ttf),
                         ),
                       ),
@@ -860,7 +1042,7 @@ class _HomePageState extends State<HomePage> {
                           "Prosječna ocjena",
                           style: pw.TextStyle(
                             fontWeight: pw.FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 12,
                             font: ttf,
                           ),
                         ),
@@ -872,7 +1054,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8.0),
-                          child: pw.Text(item['nazivUsluznik'],
+                          child: pw.Text(item['sifraUsluznik'],
                               style: pw.TextStyle(font: ttf)),
                         ),
                         pw.Padding(
@@ -906,16 +1088,16 @@ class _HomePageState extends State<HomePage> {
               pw.Text(
                 "Dijagram (Bar chart)",
                 style: pw.TextStyle(
-                    fontSize: 18, fontWeight: pw.FontWeight.bold, font: ttf),
+                    fontSize: 15, fontWeight: pw.FontWeight.bold, font: ttf),
               ),
               pw.SizedBox(height: 20),
 
               pw.Text(
-                "Na dijagramu su prikazani svi uslužnici koji su ocjenjivani. Usluge koje nisu prikazane na dijagramu, nisu nijednom recenzirane.\nNa osnovu dijagrama se primjećuje koje usluge imaju najveću prosječnu ocjenu, kao i one koje imaju najnižu.",
+                "Na dijagramu su prikazani svi uslužnici koji su ocjenjivani. Na x-osi su predstavljene šifre uslužnika (koje su također predstavljene u prvoj tabeli). Na y-osi na desnoj strani su prikazane prosječne ocjene uslužnika koje se kreću od 1-5. \nUslužnici koje nisu prikazani na dijagramu, nisu nijednom recenzirani.\nNa osnovu dijagrama se primjećuje koji uslužnici imaju najveću prosječnu ocjenu, kao i one koje imaju najnižu, te stoga se može zaključiti koje uslužnici se klijentima najviše sviđaju, a koji najmanje.",
                 textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
                   font: ttf,
-                  fontSize: 15,
+                  fontSize: 12,
                   fontWeight: pw.FontWeight.normal,
                 ),
               ),
@@ -986,11 +1168,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Uint8List> captureChartImageUsluge() async {
-    RenderRepaintBoundary boundary =
-        chartKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    var image = await boundary.toImage(pixelRatio: 3.0);
-    ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
+    try {
+      RenderRepaintBoundary boundary =
+          chartKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      var image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
+      return byteData!.buffer.asUint8List();
+    } catch (e) {
+      throw Exception("Error capturing chart: $e");
+    }
   }
 
   Future<Uint8List> captureChartImageUsluznici() async {
@@ -1119,4 +1305,14 @@ class _HomePageState extends State<HomePage> {
       return Container(child: CircularProgressIndicator());
   }
 
+  void showLabelsRecenzijeUsluge() {
+    ListView.builder(
+        itemCount: nazivUslugeList.length,
+        itemBuilder: (context, index) {
+          print("${nazivUslugeList[index]}");
+        });
+    // var lista = nazivUslugeList.asMap();
+
+    //return Text(nazivUslugeList[index]);
+  }
 }

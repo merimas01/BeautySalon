@@ -95,6 +95,7 @@ namespace eBeautySalon.Services
             foreach (var index in usluznikIdDistinct)
             {
                 string usluznik = "";
+                string sifra = "";
                 double suma = 0.0;
                 double prosjek = 0.0;
                 int brojac = 0;
@@ -105,12 +106,13 @@ namespace eBeautySalon.Services
                     {
                         ocjene.Add(ru.Ocjena);
                         usluznik = ru.Usluznik.Korisnik.Ime + " " + ru.Usluznik.Korisnik.Prezime;
+                        sifra = ru.Usluznik.Korisnik.Sifra;
                         suma += ru.Ocjena;
                         brojac++;
                     }
                 }
                 prosjek = suma / brojac;
-                var obj = new { usluznikId = index, nazivUsluznik = usluznik, prosjecnaOcjena = prosjek, sveOcjene = ocjene };
+                var obj = new { usluznikId = index, nazivUsluznik = usluznik, sifraUsluznik = sifra, prosjecnaOcjena = prosjek, sveOcjene = ocjene };
                 prosjecneOcjene_usluznik.Add(obj);
             }
 

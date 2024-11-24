@@ -86,6 +86,7 @@ namespace eBeautySalon.Services
             foreach (var index in uslugaIdDistinct)
             {
                 string usluga = "";
+                string sifra = "";
                 double suma = 0.0;
                 double prosjek = 0.0;
                 int brojac = 0;
@@ -96,12 +97,13 @@ namespace eBeautySalon.Services
                     {
                         ocjene.Add(ru.Ocjena);
                         usluga = ru.Usluga.Naziv;
+                        sifra = ru.Usluga.Sifra;
                         suma += ru.Ocjena;
                         brojac++;
                     }                 
                 }
                 prosjek = suma / brojac;
-                var obj = new { uslugaId = index, nazivUsluge = usluga, prosjecnaOcjena = prosjek, sveOcjene = ocjene };
+                var obj = new { uslugaId = index, nazivUsluge = usluga, sifraUsluge = sifra, prosjecnaOcjena = prosjek, sveOcjene = ocjene };
                 prosjecneOcjene_usluge.Add(obj);
             }
           

@@ -18,7 +18,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
   SearchResult<Kategorija>? result;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
-  String? search="";
+  String? search = "";
 
   @override
   void didChangeDependencies() {
@@ -93,7 +93,9 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
                   ),
                 )
               : Container(),
-              SizedBox(width: 8,),
+          SizedBox(
+            width: 8,
+          ),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Dugme");
@@ -112,6 +114,8 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
             width: 8,
           ),
           ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => KategorijeDetailsScreen(
@@ -156,20 +160,26 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           ],
           rows: result?.result
                   .map((Kategorija e) => DataRow(cells: [
+                        DataCell(Text(e.naziv ?? "")
+                            ),
                         DataCell(
-                            Container(width: 100, child: Text(e.naziv ?? ""))),
-                        DataCell(
-                            Container(width: 460, child: Text(e.opis ?? ""))),
+                          Text(e.opis ?? "")
+                            ),
                         DataCell(Container(
-                            width: 100,
-                            child: Text((e.datumKreiranja == null
-                                ? "-"
-                                : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
+                            width: 130,
+                            child: Text(
+                              (e.datumKreiranja == null
+                                  ? "-"
+                                  : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}"),
+                              textAlign: TextAlign.center,
+                            ))),
                         DataCell(Container(
-                            width: 100,
-                            child: Text((e.datumModifikovanja == null
-                                ? "-"
-                                : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}")))),
+                            width: 130,
+                            child: Text(
+                                (e.datumModifikovanja == null
+                                    ? "-"
+                                    : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}"),
+                                textAlign: TextAlign.center))),
                         DataCell(TextButton(
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.green,
@@ -205,18 +215,25 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              title: Text('Potvrda o brisanju zapisa',
+                  textAlign: TextAlign.center),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
                   child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _obrisiZapis(e);

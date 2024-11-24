@@ -12,7 +12,7 @@ namespace eBeautySalon.Models.Requests
     {
         [Required(ErrorMessage = "Ocjena je obavezna: 1-5.")]
         [Range(1, 5)]
-        public int? Opis { get; set; }
+        public int? Ocjena { get; set; }
 
         public string? Komentar { get; set; }
 

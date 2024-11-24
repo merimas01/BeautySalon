@@ -221,7 +221,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                                   value: e.isPrikazan == null
                                       ? true
                                       : e.isPrikazan!,
-                                  activeColor: Color.fromARGB(255, 1, 2, 1),
+                                  activeColor: Color.fromARGB(255, 73, 150, 73),
                                   onChanged: (bool value) {
                                     setState(() {
                                       e.isPrikazan = value;
@@ -280,7 +280,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               builder: (BuildContext context) => AlertDialog(
                     title: Text("Greška"),
                     content: Text(
-                        "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (izabrani termin možda već postoji za datu uslugu)"),
+                        "Molimo pokušajte ponovo. Izabrani termin možda već postoji za datu uslugu."),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(context),
@@ -300,8 +300,9 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
 
   void _insertTermin() async {
     if (selectedUsluga != null) {
+      print("selectedTerminOpis: ${selectedTerminOpis}");
       if (kliknuoDodajDrugiTermin == true) {
-        if (selectedTerminOpis != null) {
+        if (selectedTerminOpis != null && selectedTerminOpis != "") {
           try {
             var obj_termin = TerminInsertUpdate(selectedTerminOpis);
             var terminInsert = await _terminiProvider.insert(obj_termin);
@@ -336,7 +337,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 builder: (BuildContext context) => AlertDialog(
                       title: Text("Greška"),
                       content: Text(
-                          "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti i termin treba biti u formatu ##:##"),
+                          "Neispravni podaci. Molimo pokušajte ponovo. Termin treba biti u formatu ##:## (06:00-22:59) i on se ne smije ponavljati."),
                       actions: [
                         TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -344,6 +345,8 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                       ],
                     ));
           }
+        } else {
+          _showDialogNotInsertedTermin();
         }
       }
       //osvjezi listu
@@ -362,50 +365,65 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Izaberite novi termin za odabranu uslugu'),
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return DropdownButton<String>(
-                hint: Text("Izaberite termin"),
+          title: Text(
+            'Izaberite novi termin za odabranu uslugu',
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButtonFormField<String>(
+                hint: Text(
+                  "Izaberite termin",
+                  textAlign: TextAlign.center,
+                ),
                 value: selectedTermin,
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedTermin = newValue;
                   });
                 },
+                decoration: InputDecoration(
+                  labelText: 'Termin',
+                  border: OutlineInputBorder(),
+                ),
                 items: _terminiResult?.result.map((Termin item) {
                   return DropdownMenuItem<String>(
                     value: item.terminId.toString(),
                     child: Text(item.opis ?? ""),
                   );
                 }).toList(),
-              );
-            },
+              ),
+            ),
           ),
           actions: [
             TextButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.grey),
               onPressed: () {
+                selectedTermin = null;
                 kliknuoDodajDrugiTermin = false;
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text('Otkaži'),
             ),
             TextButton(
               onPressed: () {
-                // Handle selection
                 kliknuoDodajDrugiTermin = true;
-                Navigator.of(context).pop(); // Close the dialog
+                //Navigator.of(context).pop();
                 _showInputTerminDialog(context);
               },
               child: Text('Dodaj drugi termin?'),
             ),
             ElevatedButton(
               onPressed: () {
-                // Handle selection
                 kliknuoDodajDrugiTermin = false;
                 print('Selected value: $selectedTermin');
-                Navigator.of(context).pop(); // Close the dialog
-                _insertUslugaTermin();
+                //Navigator.of(context).pop();
+                if (selectedTermin != null) {
+                  _insertUslugaTermin();
+                } else {
+                  _showDialogNotSelectedTermin();
+                }
               },
               child: Text('Spasi'),
             ),
@@ -420,7 +438,10 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Unesite novi termin'),
+          title: Text(
+            'Unesite novi termin',
+            textAlign: TextAlign.center,
+          ),
           content: TextField(
             controller: inputTerminController,
             decoration: InputDecoration(
@@ -429,9 +450,11 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
           ),
           actions: [
             TextButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.grey),
               onPressed: () {
                 inputTerminController.text = "";
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pop(context); // Close the dialog
               },
               child: Text('Otkaži'),
             ),
@@ -442,8 +465,10 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 setState(() {
                   selectedTerminOpis = inputTerminController.text;
                 });
-                Navigator.of(context).pop(); // Close the dialog
+                //Navigator.of(context).pop(); // Close the dialog
+
                 _insertTermin();
+
                 inputTerminController.text = "";
               },
               child: Text('Spasi novi termin'),
@@ -452,5 +477,37 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
         );
       },
     );
+  }
+
+  void _showDialogNotSelectedTermin() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Greška"),
+              content: Text("Molimo Vas izaberite novi termin."),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Shvatam"))
+              ],
+            ));
+  }
+
+  void _showDialogNotInsertedTermin() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Greška"),
+              content: Text("Molimo Vas unesite novi termin."),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Shvatam"))
+              ],
+            ));
   }
 }

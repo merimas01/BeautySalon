@@ -3,6 +3,7 @@ using Azure.Core;
 using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
+using eBeautySalon.Models.Utils;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -27,6 +28,12 @@ namespace eBeautySalon.Services
             korisnik.LozinkaHash = GenerateHash(korisnik.LozinkaSalt, request.Password);   
         }
 
+        public override async Task<bool> AddValidationDelete(int id)
+        {
+            //ne moze se deletati korisnik
+            return false;
+        }
+
         public override async Task<bool> AddValidationInsert(KorisniciInsertRequest insert)
         {
             var korisnici_telefoni = await _context.Korisniks.Select(x => x.Telefon.Replace("-", " ")).ToListAsync();
@@ -44,7 +51,7 @@ namespace eBeautySalon.Services
         {
             var korisnici_telefoni = await _context.Korisniks.Where(x=>x.KorisnikId != id).Select(x => x.Telefon.Replace("-", " ")).ToListAsync();
             var korisnici_emailovi = await _context.Korisniks.Where(x => x.KorisnikId != id).Select(x => x.Email.ToLower()).ToListAsync();
-
+            
             if ((request.Telefon!=null && korisnici_telefoni.Contains(request.Telefon))
                 || ( request.Email!=null && korisnici_emailovi.Contains(request.Email.ToLower())))
                 return false;

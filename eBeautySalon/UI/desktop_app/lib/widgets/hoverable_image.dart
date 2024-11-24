@@ -55,6 +55,10 @@ class _HoverableImageState extends State<HoverableImage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Text that appears on hover
+
+                    // Container(height: 400, child: Image.memory(
+                    //   widget.imageBytes!,
+                    // ),color: Colors.blue,),
                     Text(
                       "Usluga: ${widget.usluga?.naziv}",
                       style: TextStyle(color: Colors.white, fontSize: 20),
@@ -78,9 +82,9 @@ class _HoverableImageState extends State<HoverableImage> {
   /// Brightness filter for hover
   ColorFilter _darkerFilter() {
     return ColorFilter.matrix(<double>[
-      0.8, 0, 0, 0, 20, // Red (slightly less pink)
-      0, 0.7, 0, 0, -10, // Green (muted for grey)
-      0, 0, 0.8, 0, 30, // Blue (less enhanced for a softer pink)
+      0.8, 0, 0, 0, 10, // Red (slightly less pink)
+      0, 0.7, 0, 0, -20, // Green (muted for grey)
+      0, 0, 0.8, 0, 10, // Blue (less enhanced for a softer pink)
       0, 0, 0, 1, 0, // Alpha
     ]);
   }

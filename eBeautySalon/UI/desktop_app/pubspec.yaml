@@ -92,27 +92,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-        
-    - family: ShadeBlue
-      fonts:
-        - asset: assets/fonts/ShadeBlue-2OozX.ttf
-          weight: 700
-    - family: ArianaVioleta
-      fonts:
-        - asset: assets/fonts/ArianaVioleta-dz2K.ttf
-      #  style: italic
-          weight: 700
-    - family: BelieveIt
-      fonts:
-        - asset: assets/fonts/BelieveIt-DvLE.ttf
-          weight: 700
     - family: BeckyTahlia
       fonts:
         - asset: assets/fonts/BeckyTahlia-MP6r.ttf
-          weight: 700
-    - family: ToThePointRegular
-      fonts:
-        - asset: assets/fonts/ToThePointRegular-n9y4.ttf
           weight: 700
     - family : DejaVuSans
       fonts:

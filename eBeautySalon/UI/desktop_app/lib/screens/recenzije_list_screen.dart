@@ -36,8 +36,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
   bool isLoadingData = true;
   Usluga? selectedUsluga;
   Zaposlenik? selectedUsluznik;
-  String? search1="";
-  String? search2="";
+  String? search1 = "";
+  String? search2 = "";
 
   @override
   void didChangeDependencies() {
@@ -58,7 +58,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     var recenzijeUsluznika =
         await _recenzijeUsluznikaProvider.get(filter: {'FTS': ''});
 
-        // Add a listener to get the value whenever the text changes
+    // Add a listener to get the value whenever the text changes
     _ftsController1.addListener(() {
       String currentText = _ftsController1.text; // Access the current text
       setState(() {
@@ -75,7 +75,6 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
       });
       print('Current Text: $currentText');
     });
-
 
     setState(() {
       _recenzijaUslugeResult = recenzijeUsluge;
@@ -300,6 +299,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
             width: 8,
           ),
           ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => HomePage()));
@@ -349,30 +350,22 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUslugeResult?.result
                   .map((RecenzijaUsluge e) => DataRow(cells: [
-                        DataCell(Container(
-                          width: 150,
-                          child:
-                              Text("${e.korisnik?.ime} ${e.korisnik?.prezime}"),
+                        DataCell(Text(
+                          "${e.korisnik?.ime} ${e.korisnik?.prezime}",
                         )),
+                        DataCell(Text(e.usluga?.naziv ?? "")),
                         DataCell(Container(
-                            width: 150, child: Text(e.usluga?.naziv ?? ""))),
-                        DataCell(Container(
-                            width: 80,
+                            width: 150,
                             child: Text((e.datumKreiranja == null
                                 ? "-"
                                 : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
                         DataCell(Container(
-                            width: 80,
+                            width: 150,
                             child: Text((e.datumModificiranja == null
                                 ? "-"
                                 : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
                         DataCell(Text(e.ocjena.toString())),
-                        DataCell(Tooltip(
-                            message: "${e.komentar ?? ""}",
-                            child: Container(
-                              width: 200,
-                              child: Text(e.komentar ?? ""),
-                            ))),
+                        DataCell(Text("${e.komentar ?? ""}")),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(
@@ -394,10 +387,17 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              title: Text(
+                'Potvrda o brisanju zapisa',
+                textAlign: TextAlign.center,
+              ),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
               actions: <Widget>[
                 TextButton(
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   child: Text('Ne'),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
@@ -405,7 +405,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                 ),
                 TextButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _obrisiRecenzijaUsluge(e);
@@ -505,6 +507,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
             width: 8,
           ),
           ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => HomePage()));
@@ -552,32 +556,23 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUsluznikaResult?.result
                   .map((RecenzijaUsluznika e) => DataRow(cells: [
-                        DataCell(Container(
-                          width: 150,
-                          child:
-                              Text("${e.korisnik?.ime} ${e.korisnik?.prezime}"),
+                        DataCell(Text(
+                          "${e.korisnik?.ime} ${e.korisnik?.prezime}",
                         )),
+                        DataCell(Text(
+                            "${e.usluznik?.korisnik?.ime} ${e.usluznik?.korisnik?.prezime}")),
                         DataCell(Container(
                             width: 150,
-                            child: Text(
-                                "${e.usluznik?.korisnik?.ime} ${e.usluznik?.korisnik?.prezime}"))),
-                        DataCell(Container(
-                            width: 80,
                             child: Text((e.datumKreiranja == null
                                 ? "-"
                                 : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
                         DataCell(Container(
-                            width: 80,
+                            width: 150,
                             child: Text((e.datumModificiranja == null
                                 ? "-"
                                 : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
                         DataCell(Text(e.ocjena.toString())),
-                        DataCell(Tooltip(
-                            message: "${e.komentar ?? ""}",
-                            child: Container(
-                              width: 200,
-                              child: Text(e.komentar ?? ""),
-                            ))),
+                        DataCell(Text("${e.komentar ?? ""}")),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(
@@ -599,18 +594,29 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              title: Text(
+                'Potvrda o brisanju zapisa',
+                textAlign: TextAlign.center,
+              ),
+              content: Text(
+                'Jeste li sigurni da želite izbrisati ovaj zapis?',
+                textAlign: TextAlign.center,
+              ),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   child: Text('Ne'),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
-                TextButton(
+                ElevatedButton(
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _obrisiRecenzijaUsluznika(e);

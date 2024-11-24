@@ -231,11 +231,16 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                 ),
               ),
               actions: <Widget>[
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("Odustani")),
+                ElevatedButton(
+                  child: Text('Odustani'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
+                  onPressed: () {
+                    selectedChangeStatus=null;
+                    Navigator.of(context).pop(); //zatvori dijalog
+                  },
+                ),
                 ElevatedButton(
                     onPressed: () async {
                       if (selectedChangeStatus != null) {
@@ -428,18 +433,15 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           rows: result?.result
                   .map((Rezervacija e) =>
                       DataRow(color: _obojiRedove(e), cells: [
-                        DataCell(Container(
-                            width: 100,
-                            child: Text(
-                                "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}"))),
+                        DataCell(Text(
+                            "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}")),
                         DataCell(Container(
                             width: 130,
                             child: Text((e.datumRezervacije == null
                                 ? "-"
                                 : "${e.datumRezervacije?.day}.${e.datumRezervacije?.month}.${e.datumRezervacije?.year}")))),
                         DataCell(Text(e.termin?.opis ?? "")),
-                        DataCell(Container(
-                            width: 250, child: Text(e.usluga?.naziv ?? ""))),
+                        DataCell(Text(e.usluga?.naziv ?? "")),
                         DataCell(Text(e.status?.opis ?? "-")),
                         DataCell(TextButton(
                           style: TextButton.styleFrom(
@@ -500,15 +502,28 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: e.isArhiva == false || e.isArhiva == null
-                  ? Text('Potvrda o arhiviranju rezervacije')
-                  : Text('Potvrda o dearhiviranju rezervacije'),
+                  ? Text(
+                      'Potvrda o arhiviranju rezervacije',
+                      textAlign: TextAlign.center,
+                    )
+                  : Text(
+                      'Potvrda o dearhiviranju rezervacije',
+                      textAlign: TextAlign.center,
+                    ),
               content: e.isArhiva == false || e.isArhiva == null
                   ? Text(
-                      'Jeste li sigurni da želite arhivirati izabranu rezervaciju?')
+                      'Jeste li sigurni da želite arhivirati izabranu rezervaciju?',
+                      textAlign: TextAlign.center,
+                    )
                   : Text(
-                      "Jeste li sigurni da želite dearhivirati izabranu rezervaciju?"),
+                      "Jeste li sigurni da želite dearhivirati izabranu rezervaciju?",
+                      textAlign: TextAlign.center,
+                    ),
               actions: <Widget>[
                 TextButton(
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   child: Text('Ne'),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
@@ -516,7 +531,9 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                 ),
                 TextButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _arhivirajDearhiviraj(e);

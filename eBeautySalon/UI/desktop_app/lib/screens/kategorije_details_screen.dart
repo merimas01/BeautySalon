@@ -118,7 +118,7 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                         builder: (BuildContext context) => AlertDialog(
                               title: Text("Neispravni podaci"),
                               content:
-                                  Text("Ispravite greške i ponovite unos."),
+                                  Text("Ispravite greške i popunite obavezna polja."),
                               actions: <Widget>[
                                 TextButton(
                                     onPressed: () {

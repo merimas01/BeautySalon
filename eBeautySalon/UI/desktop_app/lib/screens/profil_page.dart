@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:desktop_app/screens/profil_page_details_screen.dart';
 import 'package:desktop_app/utils/util.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
@@ -12,10 +10,8 @@ import 'package:provider/provider.dart';
 import '../models/korisnik.dart';
 import '../models/search_result.dart';
 import '../models/slika_profila.dart';
-import '../models/slika_profila_insert_update.dart';
 import '../providers/korisnik_provider.dart';
 import '../providers/slika_profila_provider.dart';
-import '../utils/constants.dart';
 import '../widgets/master_screen.dart';
 
 class ProfilPage extends StatefulWidget {
@@ -75,7 +71,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     korisnik: korisnik,
                   )));
         },
-        child: Text("Uredi"));
+        child: Text("Uredi profil"));
   }
 
   Widget _buildForm() {

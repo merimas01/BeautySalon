@@ -119,6 +119,8 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
             width: 8,
           ),
           ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ZaposleniciDetailsScreen(
@@ -172,32 +174,28 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           ],
           rows: result?.result
                   .map((Zaposlenik e) => DataRow(cells: [
-                        DataCell(Container(
-                            width: 100,
-                            child: Text(
-                                "${e.korisnik?.ime} ${e.korisnik?.prezime}"))),
+                        DataCell(
+                            Text("${e.korisnik?.ime} ${e.korisnik?.prezime}")),
                         DataCell(e.korisnik?.slikaProfila?.slika != null
                             ? Container(
-                                width: 100,
-                                height: 100,
+                                width: 50,
                                 child: ImageFromBase64String(
                                     e.korisnik!.slikaProfila!.slika),
                               )
                             : Text("")),
-                        DataCell(Container(
-                            width: 300,
-                            child: _zaduzenZa(e.zaposlenikUslugas,
-                                e.korisnik?.korisnikUlogas))),
-                        DataCell(Container(
-                            width: 100,
-                            child: Text(
-                                joinUlogaNaziv(e.korisnik?.korisnikUlogas)))),
+                        DataCell(_zaduzenZa(
+                            e.zaposlenikUslugas, e.korisnik?.korisnikUlogas)),
+                        DataCell(
+                            Text(joinUlogaNaziv(e.korisnik?.korisnikUlogas))),
                         DataCell(Text(e.korisnik?.email ?? "")),
                         DataCell(Container(
-                            width: 100,
-                            child: Text((e.datumZaposlenja == null
-                                ? "-"
-                                : "${e.datumZaposlenja?.day}.${e.datumZaposlenja?.month}.${e.datumZaposlenja?.year}")))),
+                            width: 120,
+                            child: Text(
+                              (e.datumZaposlenja == null
+                                  ? "-"
+                                  : "${e.datumZaposlenja?.day}.${e.datumZaposlenja?.month}.${e.datumZaposlenja?.year}"),
+                              textAlign: TextAlign.center,
+                            ))),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(
@@ -238,20 +236,27 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              title: Text('Potvrda o brisanju zapisa',
+                  textAlign: TextAlign.center),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
                   child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(); //zatvori dijalog
                     _obrisiZapis(e);
                   },
                 ),

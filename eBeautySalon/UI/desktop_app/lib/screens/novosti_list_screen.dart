@@ -20,7 +20,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
   SearchResult<Novost>? result;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
-  String? search="";
+  String? search = "";
 
   @override
   void didChangeDependencies() {
@@ -97,6 +97,9 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                   ),
                 )
               : Container(),
+          SizedBox(
+            width: 8,
+          ),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
@@ -115,6 +118,8 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
             width: 8,
           ),
           ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => NovostiDetailsScreen(
@@ -163,8 +168,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
           ],
           rows: result?.result
                   .map((Novost e) => DataRow(cells: [
-                        DataCell(
-                            Container(width: 200, child: Text(e.naslov ?? ""))),
+                        DataCell(Text(e.naslov ?? "")),
                         DataCell(e.slikaNovost?.slika != null
                             ? Container(
                                 width: 100,
@@ -173,16 +177,16 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                                     ImageFromBase64String(e.slikaNovost!.slika),
                               )
                             : Text("")),
+                        DataCell(Text(e.sadrzaj ?? "")),
                         DataCell(Container(
-                          width: 260,
-                          child: Text(e.sadrzaj ?? ""),
-                        )),
-                        DataCell(Container(
+                            width: 130,
                             child: e.datumModificiranja == null
                                 ? Text(
                                     "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")
                                 : Text(
-                                    "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}"))),
+                                    "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}",
+                                    textAlign: TextAlign.center,
+                                  ))),
                         DataCell(Container(
                           child:
                               Text("${e.korisnik?.ime} ${e.korisnik?.prezime}"),
@@ -225,18 +229,25 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              title: Text('Potvrda o brisanju zapisa',
+                  textAlign: TextAlign.center),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
                   child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _obrisiZapis(e);

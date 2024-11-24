@@ -208,7 +208,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
-                            content: Text("Ispravite greške i ponovite unos."),
+                            content: Text("Ispravite greške i popunite obavezna polja."),
                             actions: <Widget>[
                               TextButton(
                                   onPressed: () {
@@ -335,7 +335,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               "Po potrebi dodaj novu ulogu, uredi ili izbriši već postojeću.",
           child: TextButton(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.blue,
+                foregroundColor: Colors.pink,
               ),
               onPressed: () {
                 print(
@@ -950,11 +950,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       name: "korisnickoIme",
       enabled: widget.korisnik == null,
       validator: (value) {
-        if (value == null || value.isEmpty || value.trim().isEmpty) {
-          return 'Molimo Vas unesite korisničko ime.';
+        if (value == null || value.isEmpty) {
+          return 'Molimo Vas unesite korisničko ime (minimalno 3 karaktera)';
         }
-        if (!RegExp(r'^[a-zA-Z]+[a-zA-Z\d-_.]+$').hasMatch(value)) {
-          return 'Korisničko ime treba počinjati sa slovom i smije sadržavati slova bez afrikata, brojeve i sljedeće znakove: ._-';
+        if (!RegExp(r'^[a-zA-Z]{1,}[a-zA-Z\d-_.]{2,}$').hasMatch(value)) {
+          return 'Korisničko ime treba imati najmanje 3 karaktera,\ntreba počinjati sa slovom i smije sadržavati: \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
         }
         return null;
       },

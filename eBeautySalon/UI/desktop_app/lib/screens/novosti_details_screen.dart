@@ -420,7 +420,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
-                            content: Text("Ispravite greške i ponovite unos."),
+                            content: Text("Ispravite greške i popunite obavezna polja"),
                             actions: <Widget>[
                               TextButton(
                                   onPressed: () {

@@ -141,6 +141,8 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
             width: 8,
           ),
           ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => UlogeDetailsScreen(
@@ -217,18 +219,25 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              title: Text('Potvrda o brisanju zapisa',
+                  textAlign: TextAlign.center),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
                   child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _obrisiZapis(e);

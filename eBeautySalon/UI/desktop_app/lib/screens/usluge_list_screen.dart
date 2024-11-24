@@ -173,6 +173,8 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
             width: 8,
           ),
           ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => UslugeDetaljiScreen(
@@ -221,8 +223,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           ],
           rows: result?.result
                   .map((Usluga e) => DataRow(cells: [
-                        DataCell(
-                            Container(width: 200, child: Text(e.naziv ?? ""))),
+                        DataCell(Text(e.naziv ?? "")),
                         DataCell(Text(e.kategorija!.naziv ?? "")),
                         DataCell(Text((formatNumber(e.cijena)))),
                         DataCell(Text(e.opis ?? "")),
@@ -272,18 +273,25 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text('Potvrda o brisanju zapisa'),
-              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?'),
+              title: Text('Potvrda o brisanju zapisa',
+                  textAlign: TextAlign.center),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
                   child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _obrisiZapis(e);

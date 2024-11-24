@@ -126,7 +126,7 @@ class _UlogeDetailsScreenState extends State<UlogeDetailsScreen> {
                         builder: (BuildContext context) => AlertDialog(
                               title: Text("Neispravni podaci"),
                               content:
-                                  Text("Ispravite greške i ponovite unos."),
+                                  Text("Ispravite greške i popunite obavezna polja."),
                               actions: <Widget>[
                                 TextButton(
                                     onPressed: () {

@@ -27,8 +27,10 @@ namespace eBeautySalon.Services
                 query = query.Where(x => 
                 x.Korisnik!=null && (x.Korisnik.Ime.ToLower().Contains(search.FTS.ToLower()) 
                 || x.Korisnik.Prezime.ToLower().Contains(search.FTS.ToLower())
-                || x.Termin.Opis.StartsWith(search.FTS)
-                || x.Usluga.Naziv.StartsWith(search.FTS)));
+                || x.Termin.Opis.Contains(search.FTS)
+                || x.Usluga.Naziv.Contains(search.FTS))
+                || (x.Sifra != null && x.Sifra.Contains(search.FTS))
+                );
             }
             if (search.StatusId != null)
             {

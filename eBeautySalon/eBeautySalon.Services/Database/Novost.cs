@@ -19,6 +19,8 @@ public partial class Novost
 
     public int? SlikaNovostId { get; set; }
 
+    public string? Sifra { get; set; }
+
     public virtual Korisnik? Korisnik { get; set; }
 
     public virtual SlikaNovost? SlikaNovost { get; set; }

@@ -22,7 +22,10 @@ namespace eBeautySalon.Services
         {
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
-                query = query.Where(x => x.Naziv.Contains(search.FTS) || (x.Opis != null && x.Opis.Contains(search.FTS)));
+                query = query.Where(x => x.Naziv.Contains(search.FTS) 
+                || (x.Opis != null && x.Opis.Contains(search.FTS) 
+                || (x.Sifra!=null && x.Sifra.Contains(search.FTS))
+                ));
             }
             if (!string.IsNullOrWhiteSpace(search?.Naziv))
             {

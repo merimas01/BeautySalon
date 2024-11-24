@@ -19,11 +19,14 @@ namespace eBeautySalon.Models
 
         public int? KategorijaId { get; set; }
 
+        public string? Sifra { get; set; }
+
         public DateTime? DatumKreiranja { get; set; }
 
         public DateTime? DatumModifikovanja { get; set; }
 
         public virtual Kategorije? Kategorija { get; set; }
+        
 
         //public virtual ICollection<Komentar> Komentars { get; set; } = new List<Komentar>();
 

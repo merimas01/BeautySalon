@@ -9,8 +9,9 @@ class Uloga{
   int? ulogaId;
   String? naziv;
   String? opis;
+  String? sifra;
 
-  Uloga(this.ulogaId, this.naziv, this.opis);
+  Uloga(this.ulogaId, this.naziv, this.opis, this.sifra);
 
   
   /// A necessary factory constructor for creating a new User instance

@@ -94,7 +94,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
 
   Widget _naslov() {
     var naslov = this.widget.usluga != null
-        ? "Uredi uslugu: ${this.widget.usluga?.naziv}"
+        ? "Uredi uslugu: ${this.widget.usluga?.sifra}"
         : "Dodaj novu uslugu";
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),

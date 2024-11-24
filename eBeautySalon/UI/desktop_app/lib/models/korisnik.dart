@@ -19,6 +19,7 @@ class Korisnik {
   bool? status;
   int? slikaProfilaId;
   bool? isAdmin;
+  String? sifra;
   DateTime? datumKreiranja;
   DateTime? datumModifikovanja;
   List<KorisnikUloga>? korisnikUlogas;
@@ -34,6 +35,7 @@ class Korisnik {
       this.status,
       this.slikaProfilaId,
       this.isAdmin,
+      this.sifra,
       this.datumKreiranja,
       this.datumModifikovanja,
       this.korisnikUlogas,

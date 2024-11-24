@@ -101,7 +101,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "usluga/opis/cijena",
+                labelText: "šifra/usluga/opis/cijena",
               ),
               controller: _ftsController,
             ),
@@ -194,6 +194,10 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Šifra"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Usluga"),
             )),
             DataColumn(
@@ -223,6 +227,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           ],
           rows: result?.result
                   .map((Usluga e) => DataRow(cells: [
+                        DataCell(Text(e.sifra ?? "")),
                         DataCell(Text(e.naziv ?? "")),
                         DataCell(Text(e.kategorija!.naziv ?? "")),
                         DataCell(Text((formatNumber(e.cijena)))),

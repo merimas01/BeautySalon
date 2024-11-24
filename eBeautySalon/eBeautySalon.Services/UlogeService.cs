@@ -24,7 +24,8 @@ namespace eBeautySalon.Services
             query = query.Where(x => x.Naziv != "Administrator");
             if (!string.IsNullOrWhiteSpace(search.FTS))
             {
-                query = query.Where(x => x.Naziv.StartsWith(search.FTS) || x.Opis.StartsWith(search.FTS));
+                query = query.Where(x => x.Naziv.StartsWith(search.FTS) || x.Opis.StartsWith(search.FTS)
+                || (x.Sifra != null && x.Sifra.Contains(search.FTS)));
             }
             return base.AddFilter(query, search);
         }

@@ -9,8 +9,9 @@ part 'status.g.dart';
 class Status{
   int? statusId;
   String? opis;
+  String? sifra;
 
-  Status(this.statusId, this.opis);
+  Status(this.statusId, this.opis, this.sifra);
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.

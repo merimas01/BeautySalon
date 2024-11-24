@@ -111,7 +111,8 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => (x.Ime != null && x.Ime.ToLower().Contains(search.FTS.ToLower())) 
                 || (x.Prezime != null && x.Prezime.ToLower().Contains(search.FTS.ToLower())
-                || (x.KorisnickoIme != null && x.KorisnickoIme.ToLower().Contains(search.FTS.ToLower()))));
+                || (x.KorisnickoIme != null && x.KorisnickoIme.ToLower().Contains(search.FTS.ToLower()))
+                || (x.Sifra != null && x.Sifra.Contains(search.FTS))));
             }
             if(search.isAdmin==false && search.isZaposlenik == false)
             {

@@ -17,7 +17,6 @@ import '../models/search_result.dart';
 import '../models/slika_profila.dart';
 import '../models/slika_profila_insert_update.dart';
 import '../models/uloga.dart';
-import '../models/uloga_insert_update.dart';
 import '../models/usluga.dart';
 import '../models/zaposlenik.dart';
 import '../models/zaposlenik_insert_update.dart';
@@ -407,7 +406,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
 
   Widget _naslov() {
     var naslov = this.widget.korisnik != null
-        ? "Uredi zaposlenika: ${widget.korisnik?.ime} ${widget.korisnik?.prezime}"
+        ? "Uredi zaposlenika: ${widget.korisnik?.sifra}"
         : "Registruj novog zaposlenika";
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),

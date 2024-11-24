@@ -91,7 +91,7 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
 
     Widget _naslov() {
     var naslov = this.widget.korisnik != null
-        ? "Detalji korisnika: ${widget.korisnik?.ime} ${widget.korisnik?.prezime}"
+        ? "Detalji korisnika: ${widget.korisnik?.sifra}"
         : "";
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),

@@ -68,7 +68,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Naziv ili opis",
+                labelText: "šifra/naziv/opis",
               ),
               controller: _ftsController,
             ),
@@ -135,6 +135,10 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Šifra"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Kategorija"),
             )),
             DataColumn(
@@ -160,11 +164,9 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           ],
           rows: result?.result
                   .map((Kategorija e) => DataRow(cells: [
-                        DataCell(Text(e.naziv ?? "")
-                            ),
-                        DataCell(
-                          Text(e.opis ?? "")
-                            ),
+                        DataCell(Text(e.sifra ?? "")),
+                        DataCell(Text(e.naziv ?? "")),
+                        DataCell(Text(e.opis ?? "")),
                         DataCell(Container(
                             width: 130,
                             child: Text(

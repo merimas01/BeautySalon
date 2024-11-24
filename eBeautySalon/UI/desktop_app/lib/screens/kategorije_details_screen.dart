@@ -151,7 +151,7 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
 
   Widget _naslov() {
     var naslov = this.widget.kategorija != null
-        ? "Uredi kategoriju: ${this.widget.kategorija?.naziv}"
+        ? "Uredi kategoriju: ${this.widget.kategorija?.sifra}"
         : "Dodaj novu kategoriju";
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),

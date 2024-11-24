@@ -21,7 +21,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   SearchResult<Korisnik>? result;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
-  String? search="";
+  String? search = "";
 
   @override
   void didChangeDependencies() {
@@ -129,12 +129,14 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Ime/Prezime/Korisnicko ime",
+                labelText: "šifra/ime/prezime/korisničko ime",
               ),
               controller: _ftsController,
             ),
           ),
-          SizedBox(width: 8,),
+          SizedBox(
+            width: 8,
+          ),
           search != ""
               ? TextButton(
                   onPressed: () {
@@ -208,6 +210,10 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Šifra"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Korisnik"),
             )),
             DataColumn(
@@ -241,6 +247,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           ],
           rows: result?.result
                   .map((Korisnik e) => DataRow(cells: [
+                        DataCell(Text(e.sifra ?? "")),
                         DataCell(Text("${e.ime} ${e.prezime}")),
                         DataCell(Text(e.korisnickoIme ?? "")),
                         DataCell(Text(e.telefon ?? "")),

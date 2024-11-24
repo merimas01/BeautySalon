@@ -52,7 +52,8 @@ namespace eBeautySalon.Services
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
                 query = query.Where(x => (x.Naslov != null && x.Naslov.ToLower().Contains(search.FTS.ToLower()))
-                || (x.Sadrzaj != null && x.Sadrzaj.ToLower().Contains(search.FTS.ToLower())));
+                || (x.Sadrzaj != null && x.Sadrzaj.ToLower().Contains(search.FTS.ToLower()))
+                || (x.Sifra != null && x.Sifra.Contains(search.FTS)));
             }
             if (!string.IsNullOrWhiteSpace(search?.Naslov))
             {

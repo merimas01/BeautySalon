@@ -13,6 +13,7 @@ namespace eBeautySalon.Models
         public string Naziv { get; set; } = null!;
 
         public string? Opis { get; set; }
+        public string? Sifra { get; set; }
 
     }
 }

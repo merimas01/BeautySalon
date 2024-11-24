@@ -12,10 +12,18 @@ part 'usluga.g.dart';
 
 @JsonSerializable()
 class Usluga {
-
-  Usluga(this.uslugaId, this.naziv, this.opis, this.cijena, 
-  this.slikaUslugeId, this.kategorijaId, this.datumKreiranja, this.datumModifikovanja,
-  this.slikaUsluge, this.kategorija);
+  Usluga(
+      this.uslugaId,
+      this.naziv,
+      this.opis,
+      this.cijena,
+      this.slikaUslugeId,
+      this.kategorijaId,
+      this.sifra,
+      this.datumKreiranja,
+      this.datumModifikovanja,
+      this.slikaUsluge,
+      this.kategorija);
 
   int? uslugaId;
   String? naziv;
@@ -23,6 +31,7 @@ class Usluga {
   double? cijena;
   int? slikaUslugeId;
   int? kategorijaId;
+  String? sifra;
   DateTime? datumKreiranja;
   DateTime? datumModifikovanja;
   SlikaUsluge? slikaUsluge;

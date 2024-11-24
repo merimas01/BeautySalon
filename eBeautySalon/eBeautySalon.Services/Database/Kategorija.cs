@@ -15,5 +15,7 @@ public partial class Kategorija
 
     public DateTime? DatumModifikovanja { get; set; }
 
+    public string? Sifra { get; set; }
+
     public virtual ICollection<Usluga> Uslugas { get; set; } = new List<Usluga>();
 }

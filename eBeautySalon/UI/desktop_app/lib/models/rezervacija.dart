@@ -18,6 +18,7 @@ class Rezervacija {
   int? uslugaId;
   int? terminId;
   int? statusId;
+  String? sifra;
   DateTime? datumRezervacije;
   Korisnik? korisnik;
   Usluga? usluga;
@@ -31,6 +32,7 @@ class Rezervacija {
       this.uslugaId,
       this.terminId,
       this.statusId,
+      this.sifra,
       this.datumRezervacije,
       this.korisnik,
       this.usluga,

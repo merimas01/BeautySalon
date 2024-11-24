@@ -11,6 +11,7 @@ namespace eBeautySalon.Models
         public int StatusId { get; set; }
 
         public string? Opis { get; set; }
+        public string? Sifra { get; set; }
 
         //public virtual ICollection<Rezervacije> Rezervacijas { get; set; } = new List<Rezervacije>();
     }

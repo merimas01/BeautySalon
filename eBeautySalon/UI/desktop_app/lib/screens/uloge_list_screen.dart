@@ -97,7 +97,7 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "",
+                labelText: "šifra/uloga/opis",
               ),
               controller: _ftsController,
             ),
@@ -164,6 +164,10 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Šifra"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Uloga"),
             )),
             DataColumn(
@@ -181,6 +185,7 @@ class _UlogeListScreenState extends State<UlogeListScreen> {
           ],
           rows: result?.result
                   .map((Uloga e) => DataRow(cells: [
+                        DataCell(Text(e.sifra ?? "")),
                         DataCell(Text(e.naziv ?? "")),
                         DataCell(Text(e.opis ?? "")),
                         DataCell(TextButton(

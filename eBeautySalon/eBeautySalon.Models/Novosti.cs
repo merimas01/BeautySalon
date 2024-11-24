@@ -17,6 +17,7 @@ namespace eBeautySalon.Models
         public DateTime? DatumKreiranja { get; set; }
 
         public DateTime? DatumModificiranja { get; set; }
+        public string? Sifra { get; set; }
 
         public int? KorisnikId { get; set; }
 

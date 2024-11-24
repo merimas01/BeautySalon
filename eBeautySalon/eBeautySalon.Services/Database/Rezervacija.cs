@@ -19,6 +19,8 @@ public partial class Rezervacija
 
     public bool? IsArhiva { get; set; }
 
+    public string? Sifra { get; set; }
+
     public virtual Korisnik? Korisnik { get; set; }
 
     public virtual Status? Status { get; set; }

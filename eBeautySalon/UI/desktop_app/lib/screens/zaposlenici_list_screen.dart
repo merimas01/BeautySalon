@@ -73,7 +73,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "ime/prezime",
+                labelText: "šifra/ime/prezime/korisničko ime",
               ),
               controller: _ftsController,
             ),
@@ -141,6 +141,10 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Šifra"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Zaposlenik"),
             )),
             DataColumn(
@@ -174,6 +178,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           ],
           rows: result?.result
                   .map((Zaposlenik e) => DataRow(cells: [
+                        DataCell(Text(e.korisnik?.sifra ?? "")),
                         DataCell(
                             Text("${e.korisnik?.ime} ${e.korisnik?.prezime}")),
                         DataCell(e.korisnik?.slikaProfila?.slika != null

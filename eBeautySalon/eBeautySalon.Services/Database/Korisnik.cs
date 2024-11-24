@@ -31,6 +31,8 @@ public partial class Korisnik
 
     public DateTime? DatumModifikovanja { get; set; }
 
+    public string? Sifra { get; set; }
+
     public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
 
     public virtual ICollection<Novost> Novosts { get; set; } = new List<Novost>();

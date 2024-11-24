@@ -81,7 +81,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
 
   Widget _naslov() {
     var naslov = this.widget.novost?.naslov != null
-        ? "Uredi novost: ${this.widget.novost?.naslov}"
+        ? "Uredi novost: ${this.widget.novost?.sifra}"
         : "Dodaj novost";
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),

@@ -205,7 +205,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text("Promijeni status rezervacije"),
+              title: Text("Promijeni status rezervacije: ${e.sifra}"),
               content: SingleChildScrollView(
                 child: DropdownButtonHideUnderline(
                   child: DropdownButtonFormField<Status>(
@@ -237,7 +237,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.grey),
                   onPressed: () {
-                    selectedChangeStatus=null;
+                    selectedChangeStatus = null;
                     Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
@@ -298,7 +298,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "korisnik/usluga/termin",
+                labelText: "šifra/korisnik/usluga/termin",
               ),
               controller: _ftsController,
             ),
@@ -399,6 +399,10 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Šifra"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Korisnik"),
             )),
             DataColumn(
@@ -433,6 +437,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           rows: result?.result
                   .map((Rezervacija e) =>
                       DataRow(color: _obojiRedove(e), cells: [
+                        DataCell(Text(e.sifra ?? "")),
                         DataCell(Text(
                             "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}")),
                         DataCell(Container(

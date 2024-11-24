@@ -11,13 +11,14 @@ part 'kategorija.g.dart';
 class Kategorija {
   
   Kategorija(this.kategorijaId, this.naziv, this.opis, this.datumKreiranja,
-      this.datumModifikovanja);
+      this.datumModifikovanja, this.sifra);
 
   int? kategorijaId;
   String? naziv;
   String? opis;
   DateTime? datumKreiranja;
   DateTime? datumModifikovanja;
+  String? sifra;
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.

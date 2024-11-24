@@ -25,6 +25,7 @@ namespace eBeautySalon.Models
         public int? SlikaProfilaId { get; set; }
 
         public bool? IsAdmin { get; set; }
+        public string? Sifra { get; set; }
 
         public DateTime? DatumKreiranja { get; set; }
 

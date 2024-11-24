@@ -16,6 +16,7 @@ Korisnik _$KorisnikFromJson(Map<String, dynamic> json) => Korisnik(
       json['status'] as bool?,
       json['slikaProfilaId'] as int?,
       json['isAdmin'] as bool?,
+      json['sifra'] as String?,
       json['datumKreiranja'] == null
           ? null
           : DateTime.parse(json['datumKreiranja'] as String),
@@ -40,6 +41,7 @@ Map<String, dynamic> _$KorisnikToJson(Korisnik instance) => <String, dynamic>{
       'status': instance.status,
       'slikaProfilaId': instance.slikaProfilaId,
       'isAdmin': instance.isAdmin,
+      'sifra': instance.sifra,
       'datumKreiranja': instance.datumKreiranja?.toIso8601String(),
       'datumModifikovanja': instance.datumModifikovanja?.toIso8601String(),
       'korisnikUlogas': instance.korisnikUlogas,

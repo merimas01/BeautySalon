@@ -11,5 +11,6 @@ namespace eBeautySalon.Models
         public int TerminId { get; set; }
 
         public string Opis { get; set; } = null!;
+        public string? Sifra { get; set; }
     }
 }

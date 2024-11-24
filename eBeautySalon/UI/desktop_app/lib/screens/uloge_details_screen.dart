@@ -159,7 +159,7 @@ class _UlogeDetailsScreenState extends State<UlogeDetailsScreen> {
 
   Widget _naslov() {
     var naslov = this.widget.uloga != null
-        ? "Uredi ulogu: ${widget.uloga?.naziv}"
+        ? "Uredi ulogu: ${widget.uloga?.sifra}"
         : "Dodaj novu ulogu";
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),

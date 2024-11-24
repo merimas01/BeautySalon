@@ -10,6 +10,7 @@ Novost _$NovostFromJson(Map<String, dynamic> json) => Novost(
       json['novostId'] as int?,
       json['naslov'] as String?,
       json['sadrzaj'] as String?,
+      json['sifra'] as String?,
       json['datumKreiranja'] == null
           ? null
           : DateTime.parse(json['datumKreiranja'] as String),
@@ -30,6 +31,7 @@ Map<String, dynamic> _$NovostToJson(Novost instance) => <String, dynamic>{
       'novostId': instance.novostId,
       'naslov': instance.naslov,
       'sadrzaj': instance.sadrzaj,
+      'sifra': instance.sifra,
       'datumKreiranja': instance.datumKreiranja?.toIso8601String(),
       'datumModificiranja': instance.datumModificiranja?.toIso8601String(),
       'korisnikId': instance.korisnikId,

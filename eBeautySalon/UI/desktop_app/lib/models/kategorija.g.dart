@@ -16,6 +16,7 @@ Kategorija _$KategorijaFromJson(Map<String, dynamic> json) => Kategorija(
       json['datumModifikovanja'] == null
           ? null
           : DateTime.parse(json['datumModifikovanja'] as String),
+      json['sifra'] as String?,
     );
 
 Map<String, dynamic> _$KategorijaToJson(Kategorija instance) =>
@@ -25,4 +26,5 @@ Map<String, dynamic> _$KategorijaToJson(Kategorija instance) =>
       'opis': instance.opis,
       'datumKreiranja': instance.datumKreiranja?.toIso8601String(),
       'datumModifikovanja': instance.datumModifikovanja?.toIso8601String(),
+      'sifra': instance.sifra,
     };

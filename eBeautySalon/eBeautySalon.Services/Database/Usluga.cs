@@ -21,6 +21,8 @@ public partial class Usluga
 
     public DateTime? DatumModifikovanja { get; set; }
 
+    public string? Sifra { get; set; }
+
     public virtual Kategorija? Kategorija { get; set; }
 
     public virtual ICollection<RecenzijaUsluge> RecenzijaUsluges { get; set; } = new List<RecenzijaUsluge>();

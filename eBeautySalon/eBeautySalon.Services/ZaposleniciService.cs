@@ -25,6 +25,8 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => (x.Korisnik.Ime != null && x.Korisnik.Ime.Contains(search.FTS))
                 || (x.Korisnik.Prezime != null && x.Korisnik.Prezime.Contains(search.FTS)
+                || (x.Korisnik.KorisnickoIme != null && x.Korisnik.KorisnickoIme.Contains(search.FTS))
+                || (x.Korisnik.Sifra != null && x.Korisnik.Sifra.Contains(search.FTS))
                 || (x.Korisnik.KorisnikUlogas !=null && x.Korisnik.KorisnikUlogas.Select(y=>y.Uloga.Naziv).Contains(search.FTS))
                 || (x.ZaposlenikUslugas != null && x.ZaposlenikUslugas.Select(z => z.Usluga.Naziv).Contains(search.FTS))
                ));

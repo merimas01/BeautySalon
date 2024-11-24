@@ -13,6 +13,7 @@ class Novost {
   int? novostId;
   String? naslov;
   String? sadrzaj;
+  String? sifra;
   DateTime? datumKreiranja;
   DateTime? datumModificiranja;
   int? korisnikId;
@@ -24,6 +25,7 @@ class Novost {
       this.novostId,
       this.naslov,
       this.sadrzaj,
+      this.sifra,
       this.datumKreiranja,
       this.datumModificiranja,
       this.korisnikId,

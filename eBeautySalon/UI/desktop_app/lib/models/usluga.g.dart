@@ -13,6 +13,7 @@ Usluga _$UslugaFromJson(Map<String, dynamic> json) => Usluga(
       (json['cijena'] as num?)?.toDouble(),
       json['slikaUslugeId'] as int?,
       json['kategorijaId'] as int?,
+      json['sifra'] as String?,
       json['datumKreiranja'] == null
           ? null
           : DateTime.parse(json['datumKreiranja'] as String),
@@ -34,6 +35,7 @@ Map<String, dynamic> _$UslugaToJson(Usluga instance) => <String, dynamic>{
       'cijena': instance.cijena,
       'slikaUslugeId': instance.slikaUslugeId,
       'kategorijaId': instance.kategorijaId,
+      'sifra': instance.sifra,
       'datumKreiranja': instance.datumKreiranja?.toIso8601String(),
       'datumModifikovanja': instance.datumModifikovanja?.toIso8601String(),
       'slikaUsluge': instance.slikaUsluge,

@@ -72,7 +72,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "Bilo šta",
+                labelText: "šifra/naslov/sadržaj",
               ),
               controller: _ftsController,
             ),
@@ -139,6 +139,10 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Šifra"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Naslov"),
             )),
             DataColumn(
@@ -168,6 +172,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
           ],
           rows: result?.result
                   .map((Novost e) => DataRow(cells: [
+                        DataCell(Text(e.sifra ?? "")),
                         DataCell(Text(e.naslov ?? "")),
                         DataCell(e.slikaNovost?.slika != null
                             ? Container(

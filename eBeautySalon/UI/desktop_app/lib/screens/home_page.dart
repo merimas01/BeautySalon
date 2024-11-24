@@ -12,7 +12,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../models/novost.dart';
+import '../models/search_result.dart';
 import '../models/usluga.dart';
+import '../providers/novosti_provider.dart';
 import '../providers/recenzija_usluznika_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
 import '../providers/usluge_provider.dart';
@@ -24,6 +27,8 @@ import 'package:pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:open_file/open_file.dart';
+
+import 'novosti_details_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,6 +43,8 @@ class _HomePageState extends State<HomePage> {
   late RecenzijaUslugeProvider _recenzijaUslugeProvider;
   late RecenzijaUsluznikaProvider _recenzijaUsluznikaProvider;
   late UslugeProvider _uslugeProvider;
+  late NovostiProvider _novostiProvider;
+  SearchResult<Novost>? _resultNovosti;
   List<Usluga>? slikeUsluga;
   bool isLoadingUsluge = true;
   bool isLoadingUsluznici = true;
@@ -67,6 +74,7 @@ class _HomePageState extends State<HomePage> {
     _recenzijaUslugeProvider = context.read<RecenzijaUslugeProvider>();
     _recenzijaUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
+    _novostiProvider = context.read<NovostiProvider>();
 
     initForm();
   }
@@ -76,18 +84,20 @@ class _HomePageState extends State<HomePage> {
         .GetProsjecnaOcjena(); //dodati jos i sifru u ovu listu
     listUsluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
     var usluge = await _uslugeProvider.get(filter: {'isSlikaIncluded': true});
+    var novosti = await _novostiProvider.GetLastThreeNovosti();
+    print("NOVOSTI: ${novosti.result[0].naslov}");
 
-    for (var item in listUsluge) {
-      print("${item}");
-    }
+    // for (var item in listUsluge) {
+    //   print("${item}");
+    // }
 
-    for (var item in listUsluznici) {
-      print("${item}");
-    }
+    // for (var item in listUsluznici) {
+    //   print("${item}");
+    // }
 
-    for (var item in usluge.result) {
-      print(item.slikaUsluge != null ? "ima sliku" : "nema sliku");
-    }
+    // for (var item in usluge.result) {
+    //   print(item.slikaUsluge != null ? "ima sliku" : "nema sliku");
+    // }
 
     setState(() {
       //sifreUslugeList
@@ -113,6 +123,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       slikeUsluga = usluge.result;
       isLoadingSlike = false;
+    });
+
+    setState(() {
+      _resultNovosti = novosti;
     });
   }
 
@@ -141,6 +155,25 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 30,
             ),
+            RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                ),
+                children: [
+                  TextSpan(
+                    text: "Pogledajte posljednje objavljene novosti",
+                    style: TextStyle(fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.justify,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            _createGrids(),
             iznadBarChart(),
             SizedBox(
               height: 20,
@@ -1246,6 +1279,142 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Widget _createGrids() {
+    return _resultNovosti != null
+        ? SizedBox(
+            height: 350,
+            width: 1000,
+            child: Container(
+              child: GridView.builder(
+                padding: EdgeInsets.all(16),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      _resultNovosti!.result.length, // grids horizontally
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 10,
+                ),
+                itemCount: _resultNovosti!.result.length, // grids in total
+                itemBuilder: (context, index) {
+                  final novost = _resultNovosti!.result[index];
+                  final novostSlika =
+                      _resultNovosti!.result[index].slikaNovost?.slika;
+                  return Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 2.0,
+                            color: Color.fromARGB(255, 221, 98, 159)),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: _hoverImage(novostSlika, novost, index),
+                  );
+                },
+              ),
+            ),
+          )
+        : Container();
+  }
+
+  int _hoveredIndex = -1;
+
+  Widget _hoverImage(imageBytes, novost, index) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hoveredIndex = index),
+      onExit: (_) => setState(() => _hoveredIndex = -1),
+      child: GestureDetector(
+        onTap: () {
+          print("on tap");
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Image widget
+            imageBytes != null
+                ? ColorFiltered(
+                    colorFilter: _hoveredIndex == index
+                        ? _normalFilter()
+                        : _darkerFilter(),
+                    child: Image.memory(
+                      base64Decode(imageBytes!),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  )
+                : const Center(
+                    child: Text(
+                      "Nema slike",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+
+            // Show text and button only when hovered
+            if (_hoveredIndex == index)
+              Positioned(
+                bottom: 20,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Text that appears on hover
+
+                    // Container(
+                    //   // width:100,
+                    //   decoration: BoxDecoration(
+                    //       border: Border.all(width: 2.0, color: Colors.pink),
+                    //       color: Colors.pink,
+                    //       shape: BoxShape.rectangle,
+                    //       borderRadius:
+                    //           BorderRadius.all(Radius.circular(10.0))),
+                    //   //color:Colors.pink,
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(8.0),
+                    //     child: Text(
+                    //       "Naslov: ${novost?.naslov}",
+                    //       textAlign: TextAlign.center,
+                    //       style: TextStyle(color: Colors.white, fontSize: 20),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(height: 10),
+                    // Button that appears on hover
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NovostiDetailsScreen(
+                                  novost: novost,
+                                )));
+                      },
+                      child:
+                          Tooltip(message: "Detalji", child: Icon(Icons.info)),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Brightness filter for hover
+  ColorFilter _darkerFilter() {
+    return ColorFilter.matrix(<double>[
+      0.8, 0, 0, 0, 10, // Red (slightly less pink)
+      0, 0.7, 0, 0, -20, // Green (muted for grey)
+      0, 0, 0.8, 0, 10, // Blue (less enhanced for a softer pink)
+      0, 0, 0, 1, 0, // Alpha
+    ]);
+  }
+
+  /// Normal filter (no brightness change)
+  ColorFilter _normalFilter() {
+    return ColorFilter.matrix(<double>[
+      1, 0, 0, 0, 0, // Red
+      0, 1, 0, 0, 0, // Green
+      0, 0, 1, 0, 0, // Blue
+      0, 0, 0, 1, 0, // Alpha
+    ]);
+  }
+
   Widget _slidingImages() {
     if (slikeUsluga != null) {
       return Column(
@@ -1263,7 +1432,8 @@ class _HomePageState extends State<HomePage> {
               },
               itemBuilder: (context, index) {
                 final slika = slikeUsluga?[index].slikaUsluge?.slika;
-
+                // return _hoverImage(slika != null ? base64Decode(slika) : null,
+                //     slikeUsluga![index]);
                 return HoverableImage(
                   usluga: slikeUsluga![index],
                   imageBytes: slika != null ? base64Decode(slika) : null,
@@ -1273,9 +1443,6 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => UslugeDetaljiScreen(
                               usluga: slikeUsluga![index],
                             )));
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   SnackBar(content: Text('Clicked on Image ${index + 1}')),
-                    // );
                   },
                 );
               },
@@ -1289,7 +1456,7 @@ class _HomePageState extends State<HomePage> {
                 child: Tooltip(
                     child: Icon(Icons.arrow_left), message: "Prethodna"),
               ),
-              Text('Usluga ${_currentPage + 1} od ${slikeUsluga!.length}'),
+              Text('${_currentPage + 1}/${slikeUsluga!.length}'),
               ElevatedButton(
                 onPressed: _currentPage < slikeUsluga!.length - 1
                     ? _goToNextPage
@@ -1303,16 +1470,5 @@ class _HomePageState extends State<HomePage> {
       );
     } else
       return Container(child: CircularProgressIndicator());
-  }
-
-  void showLabelsRecenzijeUsluge() {
-    ListView.builder(
-        itemCount: nazivUslugeList.length,
-        itemBuilder: (context, index) {
-          print("${nazivUslugeList[index]}");
-        });
-    // var lista = nazivUslugeList.asMap();
-
-    //return Text(nazivUslugeList[index]);
   }
 }

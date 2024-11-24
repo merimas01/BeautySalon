@@ -11,5 +11,6 @@ namespace eBeautySalon.Services
 {
     public interface INovostiService : ICRUDService<Novosti, NovostiSearchObject, NovostiInsertRequest, NovostiUpdateRequest>
     {
+        public Task<PagedResult<Novosti>> GetLastThreeNovosti();
     }
 }

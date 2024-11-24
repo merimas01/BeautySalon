@@ -90,5 +90,36 @@ namespace eBeautySalon.Services
             var novost_naslovi = await _context.Novosts.Where(x=>x.NovostId != id).Select(x => x.Naslov.ToLower()).ToListAsync();
             if (novost_naslovi.Contains(request.Naslov.ToLower())) return false; else return true;
         }
+
+        public async Task<PagedResult<Novosti>> GetLastThreeNovosti()
+        {
+            //obzirom da se datumi ne mogu modifikovati, najmladji datumi su oni koji su posljednji dodani
+            var number = 0;
+            var listaCount = _context.Novosts.ToList().Count();
+            var pagedResult = new PagedResult<Novosti>();
+            var temp = new List<Database.Novost>();
+
+            if (listaCount >= 3)
+            {
+                number = 3;
+                var novosti = _context.Novosts.Include(x => x.SlikaNovost).OrderByDescending(x => x.DatumKreiranja).Take(number);
+                temp = novosti.ToList();
+            }
+            else if (listaCount <= 2)
+            {
+                number = 2;
+                var novosti = _context.Novosts.Include(x => x.SlikaNovost).OrderByDescending(x => x.DatumKreiranja).Take(number);
+                temp = novosti.ToList();
+            }
+            else if(listaCount == 1)
+            {
+                number = 1;
+                var novosti = _context.Novosts.Include(x => x.SlikaNovost).OrderByDescending(x => x.DatumKreiranja).Take(number);
+                temp = novosti.ToList();
+            }     
+            pagedResult.Result = _mapper.Map<List<Novosti>>(temp);
+            pagedResult.Count = number;
+            return pagedResult;
+        }
     }
 }

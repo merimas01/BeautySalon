@@ -65,16 +65,16 @@ class _HoverableImageState extends State<HoverableImage> {
                     ),
                     SizedBox(height: 10),
                     // Button that appears on hover
-                    ElevatedButton(
+                    TextButton(
                       onPressed: widget.onTap,
-                      child: Text("Detalji"),
+                      child:
+                          Tooltip(message: "Detalji", child: Icon(Icons.info)),
                     ),
                   ],
                 ),
               ),
           ],
         ),
-      
       ),
     );
   }

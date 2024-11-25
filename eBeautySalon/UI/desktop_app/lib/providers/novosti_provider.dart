@@ -32,7 +32,6 @@ class NovostiProvider extends BaseProvider<Novost> {
       for (var item in data['result']) {
         result.result.add(fromJson(item));
       }
-
       return result;
     } else {
       throw new Exception("Unknow error");

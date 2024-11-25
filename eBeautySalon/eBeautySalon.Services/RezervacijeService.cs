@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eBeautySalon.Services
@@ -120,6 +121,27 @@ namespace eBeautySalon.Services
             entity.StatusId = await _context.Statuses.Where(x => x.Opis != null && x.Opis == "Nova").Select(x=>x.StatusId).FirstOrDefaultAsync();
            
             await base.BeforeInsert(entity, insert);
+        }
+
+        public async Task<PagedResult<Rezervacije>> GetRezervacijeByKorisnikId(int korisnikId, string? FTS)
+        {
+            var pagedResult = new PagedResult<Models.Rezervacije>();
+            var temp = new List<Database.Rezervacija>();
+            var rezervacije = _context.Rezervacijas.Include(x => x.Usluga).Include(x=>x.Termin).Where(x => x.KorisnikId == korisnikId);
+
+            if (!string.IsNullOrEmpty(FTS))
+            {
+                rezervacije = rezervacije.Where(x =>
+                x.Korisnik != null && (
+                x.Termin.Opis.Contains(FTS)
+                || x.Usluga.Naziv.Contains(FTS))
+                );
+            }
+
+            temp = await rezervacije.ToListAsync();
+            pagedResult.Result = _mapper.Map<List<Models.Rezervacije>>(temp);
+            pagedResult.Count = temp.Count();
+            return pagedResult;
         }
     }
 }

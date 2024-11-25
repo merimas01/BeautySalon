@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Models.Utils;
@@ -11,6 +12,7 @@ using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace eBeautySalon.Services
 {
@@ -20,7 +22,7 @@ namespace eBeautySalon.Services
         {
         }
 
-        public override IQueryable<RecenzijaUsluznika> AddFilter(IQueryable<RecenzijaUsluznika> query, RecenzijaUsluznikaSearchObject? search = null)
+        public override IQueryable<Database.RecenzijaUsluznika> AddFilter(IQueryable<Database.RecenzijaUsluznika> query, RecenzijaUsluznikaSearchObject? search = null)
         {
             if (!string.IsNullOrEmpty(search.FTS))
             {
@@ -37,7 +39,7 @@ namespace eBeautySalon.Services
             }
             return base.AddFilter(query, search);
         }
-        public override IQueryable<RecenzijaUsluznika> AddInclude(IQueryable<RecenzijaUsluznika> query, RecenzijaUsluznikaSearchObject? search = null)
+        public override IQueryable<Database.RecenzijaUsluznika> AddInclude(IQueryable<Database.RecenzijaUsluznika> query, RecenzijaUsluznikaSearchObject? search = null)
         {
             if (search?.isKorisnikIncluded == true)
             {
@@ -117,6 +119,27 @@ namespace eBeautySalon.Services
             }
 
             return prosjecneOcjene_usluznik;
+        }
+
+        public async Task<Models.PagedResult<Models.RecenzijaUsluznika>> GetRecenzijeUsluznikaByKorisnikId(int korisnikId, string? FTS)
+        {
+            var pagedResult = new PagedResult<Models.RecenzijaUsluznika>();
+            var temp = new List<Database.RecenzijaUsluznika>();
+            var recenzijeUsluznika = _context.RecenzijaUsluznikas.Include(x => x.Usluznik.Korisnik).Where(x => x.KorisnikId == korisnikId);
+
+            if (!string.IsNullOrEmpty(FTS))
+            {
+                recenzijeUsluznika = recenzijeUsluznika.Where(x =>
+                x.Usluznik.Korisnik.Ime.Contains(FTS)
+                || x.Usluznik.Korisnik.Prezime.Contains(FTS)          
+                || x.Ocjena.ToString().StartsWith(FTS)
+                || x.Komentar.StartsWith(FTS));
+            }
+
+            temp = await recenzijeUsluznika.ToListAsync();
+            pagedResult.Result = _mapper.Map<List<Models.RecenzijaUsluznika>>(temp);
+            pagedResult.Count = temp.Count();
+            return pagedResult;
         }
     }
 }

@@ -364,9 +364,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                               )
                             : Text("")),
                         DataCell(Text(
-                          "${e.korisnik?.ime} ${e.korisnik?.prezime}",
+                          "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}",
                         )),
-                        DataCell(Text(e.usluga?.naziv ?? "")),
+                        DataCell(Text(
+                            "${e.usluga?.naziv ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumKreiranja == null
@@ -582,10 +583,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                               )
                             : Text("")),
                         DataCell(Text(
-                          "${e.korisnik?.ime} ${e.korisnik?.prezime}",
+                          " ${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}",
                         )),
                         DataCell(Text(
-                            "${e.usluznik?.korisnik?.ime} ${e.usluznik?.korisnik?.prezime}")),
+                            "${e.usluznik?.korisnik?.ime ?? ""} ${e.usluznik?.korisnik?.prezime ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumKreiranja == null

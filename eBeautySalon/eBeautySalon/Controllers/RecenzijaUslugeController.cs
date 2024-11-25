@@ -21,5 +21,11 @@ namespace eBeautySalon.Controllers
         {
             return await _service.GetProsjecneOcjeneUsluga();
         }
+
+        [HttpGet("recenzijeUsluga/{korisnikId}")]
+        public async Task<PagedResult<Models.RecenzijaUsluge>> GetRecenzijeUslugeByKorisnikId(int korisnikId, [FromQuery] string? FTS)
+        {
+            return await _service.GetRecenzijeUslugeByKorisnikId(korisnikId, FTS);
+        }
     }
 }

@@ -11,6 +11,7 @@ import '../models/search_result.dart';
 import '../models/slika_profila.dart';
 import '../providers/slika_profila_provider.dart';
 import '../widgets/master_screen.dart';
+import 'korisnici_aktivnost_screen.dart';
 
 class KorisniciDetailsScreen extends StatefulWidget {
   Korisnik? korisnik;
@@ -58,7 +59,7 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: "Korisnici",
+        title: "Korisnici",
         child: Center(
           child: isLoading
               ? Container(child: CircularProgressIndicator())
@@ -89,7 +90,25 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
     );
   }
 
-    Widget _naslov() {
+  Widget _aktivnostKorisnika() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        KorisniciAktivnostScreen(korisnik: widget.korisnik)));
+              },
+              child: Text("Aktivnost korisnika")),
+        ],
+      ),
+    );
+  }
+
+  Widget _naslov() {
     var naslov = this.widget.korisnik != null
         ? "Detalji korisnika: ${widget.korisnik?.sifra}"
         : "";
@@ -121,13 +140,12 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
     );
   }
 
-
   Widget _buildForm() {
     return FormBuilder(
         key: _formKey,
         initialValue: _initialValue,
         child: Container(
-          width: 500,
+          width: 600,
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -175,7 +193,13 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
                       enabled: false,
                       decoration: InputDecoration(labelText: "Blokiran/a?:"),
                     ),
-                    _nazadNaKorisnike(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _nazadNaKorisnike(),
+                        _aktivnostKorisnika(),
+                      ],
+                    ),
                   ],
                 ),
               ),

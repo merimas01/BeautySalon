@@ -15,5 +15,11 @@ namespace eBeautySalon.Controllers
         {
             _service = service;
         }
+
+        [HttpGet("rezervacije/{korisnikId}")]
+        public async Task<PagedResult<Rezervacije>> GetRezervacijeByKorisnikId(int korisnikId, string? FTS)
+        {
+            return await _service.GetRezervacijeByKorisnikId(korisnikId, FTS);
+        }
     }
 }

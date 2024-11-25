@@ -29,7 +29,6 @@ class _HoverableImageState extends State<HoverableImage> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Image widget
             widget.imageBytes != null
                 ? ColorFiltered(
                     colorFilter: _isHovered ? _normalFilter() : _darkerFilter(),
@@ -56,19 +55,34 @@ class _HoverableImageState extends State<HoverableImage> {
                   children: [
                     // Text that appears on hover
 
-                    // Container(height: 400, child: Image.memory(
-                    //   widget.imageBytes!,
-                    // ),color: Colors.blue,),
-                    Text(
-                      "Usluga: ${widget.usluga?.naziv}",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    Container(
+                      width: 400,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 2.0, color: Colors.white),
+                          color: Colors.white.withOpacity(0.8),
+                          shape: BoxShape.rectangle,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Usluga: ${widget.usluga?.naziv}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black),
+                          softWrap: true,
+                          maxLines: 2, // Limits the text to 2 lines
+                          overflow: TextOverflow
+                              .ellipsis, // Adds "..." if the text exceeds max lines
+                        ),
+                      ),
                     ),
+
                     SizedBox(height: 10),
-                    // Button that appears on hover
                     TextButton(
                       onPressed: widget.onTap,
-                      child:
-                          Tooltip(message: "Detalji", child: Icon(Icons.info)),
+                      child: Tooltip(
+                          message: "Detalji",
+                          child: Icon(Icons.info, color: Colors.white)),
                     ),
                   ],
                 ),

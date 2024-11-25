@@ -103,19 +103,19 @@ namespace eBeautySalon.Services
             {
                 number = 3;
                 var novosti = _context.Novosts.Include(x => x.SlikaNovost).OrderByDescending(x => x.DatumKreiranja).Take(number);
-                temp = novosti.ToList();
+                temp = await novosti.ToListAsync();
             }
             else if (listaCount <= 2)
             {
                 number = 2;
                 var novosti = _context.Novosts.Include(x => x.SlikaNovost).OrderByDescending(x => x.DatumKreiranja).Take(number);
-                temp = novosti.ToList();
+                temp = await novosti.ToListAsync();
             }
             else if(listaCount == 1)
             {
                 number = 1;
                 var novosti = _context.Novosts.Include(x => x.SlikaNovost).OrderByDescending(x => x.DatumKreiranja).Take(number);
-                temp = novosti.ToList();
+                temp = await novosti.ToListAsync();
             }     
             pagedResult.Result = _mapper.Map<List<Novosti>>(temp);
             pagedResult.Count = number;

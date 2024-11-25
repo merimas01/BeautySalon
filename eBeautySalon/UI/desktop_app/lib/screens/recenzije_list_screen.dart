@@ -11,6 +11,7 @@ import '../providers/recenzija_usluznika_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
 import '../providers/usluge_provider.dart';
 import '../providers/zaposlenici_provider.dart';
+import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class RecenzijeListScreen extends StatefulWidget {
@@ -321,6 +322,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Slika korisnika"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Korisnik"),
             )),
             DataColumn(
@@ -350,6 +355,14 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUslugeResult?.result
                   .map((RecenzijaUsluge e) => DataRow(cells: [
+                        DataCell(e.korisnik?.slikaProfila?.slika != null
+                            ? Container(
+                                width: 100,
+                                height: 100,
+                                child: ImageFromBase64String(
+                                    e.korisnik!.slikaProfila!.slika),
+                              )
+                            : Text("")),
                         DataCell(Text(
                           "${e.korisnik?.ime} ${e.korisnik?.prezime}",
                         )),
@@ -527,6 +540,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Slika korisnika"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Korisnik"),
             )),
             DataColumn(
@@ -556,6 +573,14 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUsluznikaResult?.result
                   .map((RecenzijaUsluznika e) => DataRow(cells: [
+                        DataCell(e.korisnik?.slikaProfila?.slika != null
+                            ? Container(
+                                width: 100,
+                                height: 100,
+                                child: ImageFromBase64String(
+                                    e.korisnik!.slikaProfila!.slika),
+                              )
+                            : Text("")),
                         DataCell(Text(
                           "${e.korisnik?.ime} ${e.korisnik?.prezime}",
                         )),

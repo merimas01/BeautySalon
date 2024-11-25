@@ -1,4 +1,3 @@
-import 'package:desktop_app/main.dart';
 import 'package:desktop_app/screens/kategorije_list_screen.dart';
 import 'package:desktop_app/screens/korisnici_list_screen.dart';
 import 'package:desktop_app/screens/novosti_list_screen.dart';
@@ -113,7 +112,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 8, 
                 children: [
-                  Icon(Icons.timer, color: Colors.black),
+                  Icon(Icons.calendar_month, color: Colors.black),
                   Text(
                     'Termini',
                     style: TextStyle(fontSize: 15),

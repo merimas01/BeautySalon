@@ -3,8 +3,13 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:desktop_app/main.dart';
+import 'package:desktop_app/screens/profil_page.dart';
 import 'package:desktop_app/screens/recenzije_list_screen.dart';
+import 'package:desktop_app/screens/rezervacije_list_screen.dart';
 import 'package:desktop_app/screens/usluge_details_screen.dart';
+import 'package:desktop_app/screens/usluge_list_screen.dart';
+import 'package:desktop_app/screens/usluge_termini_list_screen.dart';
+import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:desktop_app/utils/util.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +33,10 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:open_file/open_file.dart';
 
+import 'kategorije_list_screen.dart';
+import 'korisnici_list_screen.dart';
 import 'novosti_details_screen.dart';
+import 'novosti_list_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -85,7 +93,7 @@ class _HomePageState extends State<HomePage> {
     listUsluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
     var usluge = await _uslugeProvider.get(filter: {'isSlikaIncluded': true});
     var novosti = await _novostiProvider.GetLastThreeNovosti();
-    print("NOVOSTI: ${novosti.result[0].naslov}");
+    //print("NOVOSTI: ${novosti.result[0].naslov}");
 
     // for (var item in listUsluge) {
     //   print("${item}");
@@ -143,33 +151,27 @@ class _HomePageState extends State<HomePage> {
             ),
             welcomeMessageText(),
             SizedBox(
-              height: 10,
+              height: 50,
+            ),
+            SizedBox(
+                height: 1,
+                child: Container(
+                  color: Colors.pink,
+                )),
+            SizedBox(
+              height: 50,
+            ),
+            _ikonice(),
+            SizedBox(
+              height: 30,
             ),
             textZaUsluge(),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             _slidingImages(),
             SizedBox(
-              height: 30,
+              height: 40,
             ),
-            uvodniText(),
-            SizedBox(
-              height: 30,
-            ),
-            RichText(
-              text: TextSpan(
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.black,
-                ),
-                children: [
-                  TextSpan(
-                    text: "Pogledajte posljednje objavljene novosti",
-                    style: TextStyle(fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.justify,
-            ),
+            _textZaNovosti(),
             SizedBox(
               height: 20,
             ),
@@ -208,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: "Prosječne ocjene usluga",
+                                      text: "Prosječne ocjene usluga 💄",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400),
                                     ),
@@ -254,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: "Prosječne ocjene uslužnika",
+                                      text: "Prosječne ocjene uslužnika 👧",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w400,
                                       ),
@@ -367,10 +369,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             TextSpan(
-              text: "🖐️", // Waving hand emoji
+              text:
+                  "🖐️ Istražite servise koje aplikacija nudi i uživajte u korištenju istih!", // Waving hand emoji
               style: TextStyle(
                 fontSize: 20,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             // TextSpan(
@@ -384,23 +387,62 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget textZaUsluge() {
-    return Center(
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.black,
-          ),
-          children: [
-            TextSpan(
-              text:
-                  '\nObzirom da je primarni fokus ovog salona - LJEPOTA i njega iste, pogledajte sve beauty usluge koje naš salon nudi klijentima:',
-              style: TextStyle(fontWeight: FontWeight.w300),
+  Widget _textZaNovosti() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: 1200,
+        child: Center(
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+              ),
+              children: [
+                TextSpan(
+                  text: 'Kreiranjem novosti, ne samo da kreiramo dobar marketing i promoviramo naš salon, nego i obaviještavamo klijente ' +
+                      '- o novim pogodnostima, novim uslugama, o mogućnostima zaposlenja, '
+                          'pišemo članke o ljepoti... Na osnovu čega se stvara veza između klijenata i samog salona. U svrhu da ' +
+                      'tu vezu održimo, ne smijemo stati kreirati. ' +
+                      "U nastavku su prikazane posljednje tri novosti. 🔍",
+                  style: TextStyle(fontWeight: FontWeight.w300),
+                ),
+              ],
             ),
-          ],
+            textAlign: TextAlign.center,
+          ),
         ),
-        textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  Widget textZaUsluge() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: 1200,
+        child: Center(
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+              ),
+              children: [
+                TextSpan(
+                  text: '\nLjepota je karakteristika svakoga od nas. Kreirati salon koji će se baviti održavanjem, ' +
+                      'uljepšavanjem i njegovanjem iste, je jedan od većih satisfakcija koje čovjek može imati. ' +
+                      'Njegovanjem vanjske ljepote u ovom salonu se naši klijenti odmaraju, relaksiraju i opuštaju, ' +
+                      'čime njeguju svoj psihički duh. Zavirite u sve usluge koji je naš salon pripremio svim klijentima ' +
+                      'koji žele pružiti sebi nekoliko minuta ljubavi i uživanja. 🌷',
+                  style: TextStyle(fontWeight: FontWeight.w300),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     );
   }
@@ -409,66 +451,27 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0, left: 8.0),
       child: Center(
-        child: RichText(
-          text: TextSpan(
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-            ),
-            children: [
-              TextSpan(
-                text: '\nNa narednim slikama, prikazani su štapićasti dijagami sa prosječnim ocjenama usluga/uslužnika' +
-                    '(prikazane od najbolje ocijenjenih ka najlošije ocijenjenim).\nNa svakom štapiću piše naziv usluge/uslužnika i njegova prosječna ocjena, ' +
-                    'ukoliko pređete kursorom preko njega. Detaljnije informacije o svakom dijagramu se nalaze u pdf dokumentima koje možete odmah preuzeti. ' +
-                    'Pojedinačne recenzije od svakog korisnika se mogu vidjeti pritiskom na dugme ispod.',
-                style: TextStyle(
-                  fontWeight: FontWeight.w300,
-                ),
+        child: Container(
+          width: 1200,
+          child: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
               ),
-            ],
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Widget uvodniText() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-      child: Center(
-        child: AnimatedContainer(
-          duration: Duration(seconds: 10), // Animation duration
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Color.fromARGB(255, 241, 163, 202),
-            borderRadius: BorderRadius.circular(15),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(0, 4), // Shadow position
-              ),
-            ],
-          ),
-          child: AnimatedDefaultTextStyle(
-            duration: Duration(seconds: 10),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  blurRadius: 3.0,
-                  color: Colors.black54,
-                  offset: Offset(2.0, 2.0),
+              children: [
+                TextSpan(
+                  text: '\nRecenzije daju uvid u poslovanje našeg salona, stoga su jako bitne. Na narednim slikama, prikazani su štapićasti dijagami sa prosječnim ocjenama usluga/uslužnika.' +
+                      ' Ukoliko pređete kursorom preko štapića, vidjet ćete naziv usluge/uslužnika i njihove prosječne ocjene. ' +
+                      ' Detaljnije informacije o svakom dijagramu se nalaze u pdf dokumentima koje možete odmah preuzeti. ' +
+                      'Pojedinačne recenzije od svakog korisnika se mogu vidjeti pritiskom na dugme ispod.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
               ],
             ),
-            child: Text(
-              'Ova aplikacija je namjenjena administratoru i zaposlenicima. Služi za upravljanje funkcionalnostima salona, za uvid u zadovoljstvo kupaca sa uslugama i uslužnicima, za praćenje aktivnosti korisnika, kao i za kreiranje marketinga.',
-              textAlign: TextAlign.center,
-            ),
+            textAlign: TextAlign.center,
           ),
         ),
       ),
@@ -1326,7 +1329,6 @@ class _HomePageState extends State<HomePage> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Image widget
             imageBytes != null
                 ? ColorFiltered(
                     colorFilter: _hoveredIndex == index
@@ -1355,27 +1357,26 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Text that appears on hover
-
-                    // Container(
-                    //   // width:100,
-                    //   decoration: BoxDecoration(
-                    //       border: Border.all(width: 2.0, color: Colors.pink),
-                    //       color: Colors.pink,
-                    //       shape: BoxShape.rectangle,
-                    //       borderRadius:
-                    //           BorderRadius.all(Radius.circular(10.0))),
-                    //   //color:Colors.pink,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(8.0),
-                    //     child: Text(
-                    //       "Naslov: ${novost?.naslov}",
-                    //       textAlign: TextAlign.center,
-                    //       style: TextStyle(color: Colors.white, fontSize: 20),
-                    //     ),
-                    //   ),
-                    // ),
-                    // SizedBox(height: 10),
-                    // Button that appears on hover
+                    Container(
+                      width: 150,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 2.0, color: Colors.white),
+                          color: Colors.white.withOpacity(0.8),
+                          shape: BoxShape.rectangle,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "${novost.naslov}", textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black),
+                          softWrap: true,
+                          maxLines: 2, // Limits the text to 2 lines
+                          overflow: TextOverflow
+                              .ellipsis, // Adds "..." if the text exceeds max lines
+                        ),
+                      ),
+                    ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -1383,8 +1384,9 @@ class _HomePageState extends State<HomePage> {
                                   novost: novost,
                                 )));
                       },
-                      child:
-                          Tooltip(message: "Detalji", child: Icon(Icons.info)),
+                      child: Tooltip(
+                          message: "Detalji",
+                          child: Icon(Icons.info, color: Colors.white)),
                     ),
                   ],
                 ),
@@ -1420,7 +1422,7 @@ class _HomePageState extends State<HomePage> {
       return Column(
         children: [
           SizedBox(
-            height: 450,
+            height: 400,
             width: double.infinity,
             child: PageView.builder(
               controller: _pageController,
@@ -1470,5 +1472,164 @@ class _HomePageState extends State<HomePage> {
       );
     } else
       return Container(child: CircularProgressIndicator());
+  }
+
+  Widget _ikonice() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const KategorijeListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje kategorijama",
+                  child: Icon(Icons.category, color: Colors.white))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const UslugeListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje uslugama",
+                  child: Icon(
+                    Icons.face_retouching_natural,
+                    color: Colors.white,
+                  ))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const RezervacijeListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje rezervacijama",
+                  child: Icon(Icons.notes_outlined, color: Colors.white))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const UslugeTerminiListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje terminima",
+                  child: Icon(
+                    Icons.calendar_month,
+                    color: Colors.white,
+                  ))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const RecenzijeListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje recenzijama",
+                  child: Icon(Icons.star, color: Colors.white))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const KorisniciListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje korisnicima",
+                  child: Icon(Icons.people, color: Colors.white))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ZaposleniciListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje zaposlenicima",
+                  child: Icon(Icons.work, color: Colors.white))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NovostiListScreen()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje novostima",
+                  child: Icon(Icons.screen_search_desktop_rounded,
+                      color: Colors.white))),
+        ),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.pink,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.pink)),
+          child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ProfilPage()));
+              },
+              child: Tooltip(
+                  message: "Upravljanje profilom",
+                  child: Icon(Icons.person, color: Colors.white))),
+        ),
+      ],
+    );
   }
 }

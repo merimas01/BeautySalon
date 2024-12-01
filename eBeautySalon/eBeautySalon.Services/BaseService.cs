@@ -27,10 +27,10 @@ namespace eBeautySalon.Services
             var query = _context.Set<TDb>().AsQueryable();
 
             PagedResult<T> result = new PagedResult<T>();
-           
-            query = AddFilter(query, search);
 
             query = AddInclude(query, search);
+
+            query = AddFilter(query, search);
 
             result.Count = await query.CountAsync();
 

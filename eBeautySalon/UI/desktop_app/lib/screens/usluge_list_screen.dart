@@ -129,9 +129,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           SizedBox(
             width: 8,
           ),
-          Expanded(
-            child: searchByKategorije(),
-          ),
+          searchByKategorije(),
           SizedBox(width: 8),
           selectedKategorija != null
               ? TextButton(
@@ -330,7 +328,8 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     print("search by kategorije");
     if (isLoadingKategorije == false) {
       return Container(
-        padding: EdgeInsets.all(3.0),
+        width: 300,
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -339,8 +338,9 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
         child: Center(
           child: DropdownButtonHideUnderline(
             child: DropdownButton<Kategorija>(
-              hint: Text("Izaberi kategoriju"),
+              hint: Text("Pretraži po kategoriji"),
               value: selectedKategorija,
+              isExpanded: true,
               onChanged: (Kategorija? newValue) {
                 setState(() {
                   selectedKategorija = newValue;
@@ -350,7 +350,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                   .map<DropdownMenuItem<Kategorija>>((Kategorija service) {
                 return DropdownMenuItem<Kategorija>(
                   value: service,
-                  child: Text(service.naziv!),
+                  child: Text(service.naziv!,  overflow: TextOverflow.ellipsis,),
                 );
               }).toList(),
             ),

@@ -105,7 +105,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     print("search by usluga");
     if (isLoadingUsluge == false) {
       return Container(
-        padding: EdgeInsets.all(3.0),
+        width: 400,
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -114,8 +115,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
         child: Center(
           child: DropdownButtonHideUnderline(
             child: DropdownButton<Usluga>(
-              hint: Text("Izaberi uslugu"),
+              hint: Text("Pretraži po usluzi"),
               value: selectedUsluga,
+              isExpanded: true,
               onChanged: (Usluga? newValue) {
                 setState(() {
                   selectedUsluga = newValue;
@@ -126,7 +128,10 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                   .map<DropdownMenuItem<Usluga>>((Usluga service) {
                 return DropdownMenuItem<Usluga>(
                   value: service,
-                  child: Text(service.naziv!),
+                  child: Text(
+                    service.naziv!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               }).toList(),
             ),
@@ -141,7 +146,8 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     print("search by usluznik");
     if (isLoadingUsluznici == false) {
       return Container(
-        padding: EdgeInsets.all(3.0),
+        width: 400,
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -150,8 +156,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
         child: Center(
           child: DropdownButtonHideUnderline(
             child: DropdownButton<Zaposlenik>(
-              hint: Text("Izaberi uslužnika"),
+              hint: Text("Pretraži po uslužniku"),
               value: selectedUsluznik,
+              isExpanded: true,
               onChanged: (Zaposlenik? newValue) {
                 setState(() {
                   selectedUsluznik = newValue;
@@ -163,7 +170,9 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                 return DropdownMenuItem<Zaposlenik>(
                   value: service,
                   child: Text(
-                      "${service.korisnik!.ime!} ${service.korisnik!.prezime!}"),
+                    "${service.korisnik!.ime!} ${service.korisnik!.prezime!}",
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               }).toList(),
             ),
@@ -234,7 +243,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "korisnik/usluga/ocjena/komentar",
+                labelText: "korisnik/ocjena/komentar",
               ),
               controller: _ftsController1,
             ),
@@ -259,9 +268,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           SizedBox(
             width: 8,
           ),
-          Expanded(
-            child: searchByUsluga(),
-          ),
+          searchByUsluga(),
           SizedBox(width: 8),
           selectedUsluga != null
               ? TextButton(
@@ -366,18 +373,17 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                         DataCell(Text(
                           "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}",
                         )),
-                        DataCell(Text(
-                            "${e.usluga?.naziv ?? ""}")),
+                        DataCell(Text("${e.usluga?.naziv ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumKreiranja == null
                                 ? "-"
-                                : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
+                                : formatDate(e.datumKreiranja!))))),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumModificiranja == null
                                 ? "-"
-                                : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
+                                : formatDate(e.datumModificiranja!))))),
                         DataCell(Text(e.ocjena.toString())),
                         DataCell(Text("${e.komentar ?? ""}")),
                         DataCell(
@@ -455,7 +461,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "korisnik/uslužnik/ocjena/komentar",
+                labelText: "korisnik/ocjena/komentar",
               ),
               controller: _ftsController2,
             ),
@@ -480,9 +486,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           SizedBox(
             width: 8,
           ),
-          Expanded(
-            child: searchByUsluznik(),
-          ),
+          searchByUsluznik(),
           SizedBox(width: 8),
           selectedUsluznik != null
               ? TextButton(
@@ -591,12 +595,12 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                             width: 150,
                             child: Text((e.datumKreiranja == null
                                 ? "-"
-                                : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
+                                : formatDate(e.datumKreiranja!))))),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumModificiranja == null
                                 ? "-"
-                                : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
+                                : formatDate(e.datumModificiranja!))))),
                         DataCell(Text(e.ocjena.toString())),
                         DataCell(Text("${e.komentar ?? ""}")),
                         DataCell(

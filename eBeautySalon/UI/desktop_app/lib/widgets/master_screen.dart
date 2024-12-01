@@ -32,16 +32,36 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
           Container(
               child: widget.title_widget ??
                   (widget.title != null ? Text(widget.title!) : Text(""))),
-          Image.asset(
-            "assets/images/slika4.png",
-            width: 55,
-            height: 55,
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+              child: Image.asset(
+                "assets/images/slika4.png",
+                width: 55,
+                height: 55,
+              ),
+            ),
           ),
-          Text(
-            "Salon ljepote 'Precious'",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.white),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+              child: Text(
+                "Salon ljepote 'Precious'",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: 'BeckyTahlia',
+                    fontSize: 26,
+                    color: Colors.white),
+              ),
+            ),
           ),
         ]),
       ),
@@ -59,7 +79,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.category, color: Colors.black),
                   Text(
@@ -76,7 +96,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.face_retouching_natural, color: Colors.black),
                   Text(
@@ -93,7 +113,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.notes_outlined, color: Colors.black),
                   Text(
@@ -110,7 +130,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.calendar_month, color: Colors.black),
                   Text(
@@ -127,7 +147,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.star, color: Colors.black),
                   Text(
@@ -144,7 +164,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.people, color: Colors.black),
                   Text(
@@ -161,7 +181,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.work, color: Colors.black),
                   Text(
@@ -178,9 +198,10 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
-                  Icon(Icons.screen_search_desktop_rounded, color: Colors.black),
+                  Icon(Icons.screen_search_desktop_rounded,
+                      color: Colors.black),
                   Text(
                     'Novosti',
                     style: TextStyle(fontSize: 15),
@@ -195,7 +216,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             ListTile(
               title: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8, 
+                spacing: 8,
                 children: [
                   Icon(Icons.person, color: Colors.black),
                   Text(

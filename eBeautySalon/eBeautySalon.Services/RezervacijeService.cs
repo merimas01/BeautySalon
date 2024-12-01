@@ -44,7 +44,7 @@ namespace eBeautySalon.Services
             if (search.isArhiva == "ne")
             {
                 query = query.Where(x => x.IsArhiva == false || x.IsArhiva==null);
-            }
+            }   
             return base.AddFilter(query, search);
         }
 
@@ -73,18 +73,23 @@ namespace eBeautySalon.Services
         {
             //ne smiju se dvije iste rezervacije pojaviti (iste vrijednosti usluge, termina i datuma)
             //samo korisnici mogu napraviti rezervaciju
-            var lista = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije == request.DatumRezervacije).ToListAsync();
+            //ne smije isti korisnik rezrvisati dvije usluge na isti datum
+            var lista_sveIsto = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije.Date.CompareTo( request.DatumRezervacije.Date)==0).ToListAsync();
+            var lista_istiKorisnik = await _context.Rezervacijas.Where(x => x.KorisnikId == request.KorisnikId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date)==0).ToListAsync();
             var korisnici = await _context.Korisniks.FindAsync(request.KorisnikId);
-            if (lista.Count() != 0) return false;
+            if (lista_sveIsto.Count() != 0) return false;
+            if (lista_istiKorisnik.Count() != 0) return false;
             if (korisnici.KorisnikUlogas.Count() != 0) return false;
             return true;
         }
 
         public override async Task<bool> AddValidationUpdate(int id, RezervacijeUpdateRequest request)
         {
-            var lista = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije == request.DatumRezervacije && x.RezervacijaId != id).ToListAsync();
+            var lista_sveIsto = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date) == 0 && x.RezervacijaId != id).ToListAsync();
+            var lista_istiKorisnik = await _context.Rezervacijas.Where(x => x.KorisnikId == request.KorisnikId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date) == 0 && x.RezervacijaId != id).ToListAsync();
             var korisnici = await _context.Korisniks.FindAsync(request.KorisnikId);
-            if (lista.Count() != 0) return false;
+            if (lista_sveIsto.Count() != 0) return false;
+            if (lista_istiKorisnik.Count() != 0) return false;
             if (korisnici.KorisnikUlogas.Count() != 0) return false;
             return true;
         }
@@ -127,14 +132,15 @@ namespace eBeautySalon.Services
         {
             var pagedResult = new PagedResult<Models.Rezervacije>();
             var temp = new List<Database.Rezervacija>();
-            var rezervacije = _context.Rezervacijas.Include(x => x.Usluga).Include(x=>x.Termin).Where(x => x.KorisnikId == korisnikId);
+            var rezervacije = _context.Rezervacijas.Include(x => x.Usluga).Include(x=>x.Termin).Include(x=>x.Status).Where(x => x.KorisnikId == korisnikId);
 
             if (!string.IsNullOrEmpty(FTS))
             {
                 rezervacije = rezervacije.Where(x =>
-                x.Korisnik != null && (
+                (
                 x.Termin.Opis.Contains(FTS)
-                || x.Usluga.Naziv.Contains(FTS))
+                || x.Usluga.Naziv.Contains(FTS)
+                || x.Status.Opis.Contains(FTS))
                 );
             }
 

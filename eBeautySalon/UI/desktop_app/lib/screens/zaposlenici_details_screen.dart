@@ -92,6 +92,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       'slikaProfilaId':
           widget.korisnik?.slikaProfilaId.toString() ?? DEFAULT_SlikaProfilaId,
       'ulogaId': widget.korisnik?.korisnikUlogas?[0].ulogaId.toString(),
+      'password':'',
+      'passwordPotvrda':'',
     };
 
     _postojeceUsluge =
@@ -777,10 +779,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       ponistiSliku();
       _selectedItems.result = [];
       uloga = null;
-      _formKey.currentState!.reset();
       setState(() {
         _selectedDate = null;
-        _dateController.clear();
+        _dateController.clear(); 
+        _dateController.text= "";
+        _passwordController.clear();
       });
     } catch (e) {
       print("error: ${e.toString()}");
@@ -1085,8 +1088,18 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   return 'Niste unijeli datum';
                 }
                 return null;
-              }),
-        )
+              },
+              
+              ),
+              
+        ),
+        // ElevatedButton(
+        //         onPressed: () {
+        //           // Reset the form to clear all fields
+        //           _formKey.currentState?.reset();
+        //         },
+        //         child: Text("Reset Date"),
+        //       ),
       ],
     );
   }

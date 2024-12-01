@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/korisnik_uloga.dart';
 import '../models/search_result.dart';
+import '../models/uloga.dart';
+import '../models/usluga.dart';
 import '../models/zaposlenik.dart';
 import '../models/zaposlenik_usluga.dart';
+import '../providers/uloge_provider.dart';
+import '../providers/usluge_provider.dart';
 import '../providers/zaposlenici_provider.dart';
 import '../utils/util.dart';
 
@@ -18,17 +22,29 @@ class ZaposleniciListScreen extends StatefulWidget {
 
 class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
   late ZaposleniciProvider _zaposleniciProvider;
+  late UslugeProvider _uslugeProvider;
+  late UlogeProvider _ulogeProvider;
   bool isLoadingData = true;
   SearchResult<Zaposlenik>? result;
+  SearchResult<Usluga>? _uslugeResult;
+  SearchResult<Uloga>? _ulogeResult;
   TextEditingController _ftsController = new TextEditingController();
   String? search = "";
+  Usluga? selectedUsluga;
+  Uloga? selectedUloga;
+  bool isLoadingUsluge = true;
+  bool isLoadingUloge = true;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _zaposleniciProvider = context.read<ZaposleniciProvider>();
+    _uslugeProvider = context.read<UslugeProvider>();
+    _ulogeProvider = context.read<UlogeProvider>();
     getData();
+    getUsluge();
+    getUloge();
   }
 
   void getData() async {
@@ -49,6 +65,22 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
     });
   }
 
+  getUsluge() async {
+    var usluge = await _uslugeProvider.get();
+    setState(() {
+      _uslugeResult = usluge;
+      isLoadingUsluge = false;
+    });
+  }
+
+  getUloge() async {
+    var uloge = await _ulogeProvider.get();
+    setState(() {
+      _ulogeResult = uloge;
+      isLoadingUloge = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
@@ -63,6 +95,88 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
       ),
       title_widget: Text("Zaposlenici"),
     );
+  }
+
+  Widget searchByUsluga() {
+    print("search by usluga");
+    if (isLoadingUsluge == false) {
+      return Container(
+        width: 350,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Usluga>(
+              hint: Text("Pretraži po usluzi"),
+              value: selectedUsluga,
+              isExpanded: true,
+              onChanged: (Usluga? newValue) {
+                setState(() {
+                  selectedUsluga = newValue;
+                  print(selectedUsluga?.naziv);
+                });
+              },
+              items: _uslugeResult?.result
+                  .map<DropdownMenuItem<Usluga>>((Usluga service) {
+                return DropdownMenuItem<Usluga>(
+                  value: service,
+                  child: Text(
+                    service.naziv!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    }
+    return Center(child: CircularProgressIndicator());
+  }
+
+  Widget searchByUloga() {
+    print("search by uloga");
+    if (isLoadingUloge == false) {
+      return Container(
+        width: 200,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Uloga>(
+              hint: Text("Pretraži po ulozi"),
+              value: selectedUloga,
+              isExpanded: true,
+              onChanged: (Uloga? newValue) {
+                setState(() {
+                  selectedUloga = newValue;
+                  print(selectedUloga?.naziv);
+                });
+              },
+              items: _ulogeResult?.result
+                  .map<DropdownMenuItem<Uloga>>((Uloga service) {
+                return DropdownMenuItem<Uloga>(
+                  value: service,
+                  child: Text(
+                    service.naziv!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    }
+    return Center(child: CircularProgressIndicator());
   }
 
   Widget _builSearch() {
@@ -101,12 +215,53 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           SizedBox(
             width: 8,
           ),
+          searchByUsluga(),
+          SizedBox(width: 8),
+          selectedUsluga != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedUsluga = null;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Poništi selekciju",
+                  ),
+                )
+              : Container(),
+          SizedBox(width: 8),
+          searchByUloga(),
+          SizedBox(width: 8),
+          selectedUloga != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedUloga = null;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Poništi selekciju",
+                  ),
+                )
+              : Container(),
+          SizedBox(width: 10),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
-                var data = await _zaposleniciProvider
-                    .get(filter: {'FTS': _ftsController.text});
+                var data = await _zaposleniciProvider.get(filter: {
+                  'FTS': _ftsController.text,
+                  'uslugaId': selectedUsluga?.uslugaId,
+                  'ulogaId': selectedUloga?.ulogaId,
+                });
 
                 print("fts: ${_ftsController.text}");
 
@@ -198,7 +353,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                             child: Text(
                               (e.datumZaposlenja == null
                                   ? "-"
-                                  : "${e.datumZaposlenja?.day}.${e.datumZaposlenja?.month}.${e.datumZaposlenja?.year}"),
+                                  : formatDate(e.datumZaposlenja!)),
                               textAlign: TextAlign.center,
                             ))),
                         DataCell(

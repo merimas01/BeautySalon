@@ -186,10 +186,9 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                         DataCell(Container(
                             width: 130,
                             child: e.datumModificiranja == null
-                                ? Text(
-                                    "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")
+                                ? Text(formatDate(e.datumKreiranja!))
                                 : Text(
-                                    "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}",
+                                    formatDate(e.datumModificiranja!),
                                     textAlign: TextAlign.center,
                                   ))),
                         DataCell(Container(

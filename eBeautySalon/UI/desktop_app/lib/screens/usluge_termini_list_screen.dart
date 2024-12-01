@@ -116,6 +116,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
             width: 10,
           ),
           Container(
+            width: 400,
             padding: EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -126,10 +127,14 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               child: DropdownButton<String>(
                 value: selectedUsluga,
                 hint: Text('Izaberite uslugu'),
+                isExpanded: true,
                 items: _uslugaResult?.result.map((Usluga item) {
                   return DropdownMenuItem<String>(
                     value: item.uslugaId.toString(),
-                    child: Text(item.naziv ?? ""),
+                    child: Text(
+                      item.naziv ?? "",
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {

@@ -8,11 +8,11 @@ class Authorization {
   static String? password;
 }
 
-Image ImageFromBase64String(String base64Image){
+Image ImageFromBase64String(String base64Image) {
   return Image.memory(base64Decode(base64Image));
 }
 
-class LoggedUser{
+class LoggedUser {
   static int? id;
   static String? korisnickoIme;
   static String? ime;
@@ -20,11 +20,14 @@ class LoggedUser{
   static String? slika;
 }
 
-
-String formatNumber(dynamic){
+String formatNumber(dynamic) {
   var f = NumberFormat('###.##');
-  if(dynamic==null){
+  if (dynamic == null) {
     return "";
   }
   return f.format(dynamic);
+}
+
+String formatDate(DateTime _selectedDate) {
+  return DateFormat('dd.MM.yyyy').format(_selectedDate);
 }

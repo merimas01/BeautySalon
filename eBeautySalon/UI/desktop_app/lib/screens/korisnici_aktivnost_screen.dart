@@ -10,6 +10,7 @@ import '../models/search_result.dart';
 import '../providers/recenzija_usluznika_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
 import '../providers/rezarvacije_provider.dart';
+import '../utils/util.dart';
 import 'korisnici_details_screen.dart';
 
 class KorisniciAktivnostScreen extends StatefulWidget {
@@ -89,7 +90,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
 
     // Add a listener to get the value whenever the text changes
     _ftsController3.addListener(() {
-      String currentText = _ftsController2.text; // Access the current text
+      String currentText = _ftsController3.text; // Access the current text
       setState(() {
         search3 = currentText;
       });
@@ -148,7 +149,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                             icon: Icon(Icons.people)),
                         Tab(
                             text: "Njegove rezervacije",
-                            icon: Icon(Icons.people)),
+                            icon: Icon(Icons.notes_outlined)),
                       ],
                     )),
                 Expanded(
@@ -300,7 +301,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "usluga/termin",
+                labelText: "usluga/termin/status",
               ),
               controller: _ftsController3,
             ),
@@ -379,12 +380,12 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                             width: 150,
                             child: Text((e.datumKreiranja == null
                                 ? "-"
-                                : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
+                                : formatDate(e.datumKreiranja!))))),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumModificiranja == null
                                 ? "-"
-                                : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
+                                :formatDate(e.datumModificiranja!))))),
                         DataCell(Text(e.ocjena.toString())),
                         DataCell(Text("${e.komentar ?? ""}")),
                       ]))
@@ -427,12 +428,12 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                             width: 150,
                             child: Text((e.datumKreiranja == null
                                 ? "-"
-                                : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}")))),
+                                : formatDate(e.datumKreiranja!))))),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumModificiranja == null
                                 ? "-"
-                                : "${e.datumModificiranja?.day}.${e.datumModificiranja?.month}.${e.datumModificiranja?.year}")))),
+                                : formatDate(e.datumModificiranja!))))),
                         DataCell(Text(e.ocjena.toString())),
                         DataCell(Text("${e.komentar ?? ""}")),
                       ]))
@@ -458,9 +459,14 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                 label: Expanded(
               child: Text("Datum kreiranja"),
             )),
+            DataColumn(
+                label: Expanded(
+              child: Text("Status"),
+            )),
           ],
           rows: _rezervacijeResult?.result
-                  .map((Rezervacija e) => DataRow(cells: [
+                  .map((Rezervacija e) =>
+                      DataRow(color: _obojiRedove(e), cells: [
                         DataCell(Text(
                             "${e.usluga?.sifra ?? ""} - ${e.usluga?.naziv ?? ""}")),
                         DataCell(Text(
@@ -469,7 +475,8 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                             width: 150,
                             child: Text((e.datumRezervacije == null
                                 ? "-"
-                                : "${e.datumRezervacije?.day}.${e.datumRezervacije?.month}.${e.datumRezervacije?.year}")))),
+                                : formatDate(e.datumRezervacije!))))),
+                        DataCell(Text("${e.status?.opis}")),
                       ]))
                   .toList() ??
               []),
@@ -522,5 +529,26 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
             style: TextStyle(fontWeight: FontWeight.normal),
           )
         ]));
+  }
+
+  _obojiRedove(Rezervacija e) {
+    if (e.status?.opis == "Prihvacena")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.green[100];
+        },
+      );
+    else if (e.status?.opis == "Odbijena")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.red[100];
+        },
+      );
+    else if (e.status?.opis == "Nova")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.yellow[100];
+        },
+      );
   }
 }

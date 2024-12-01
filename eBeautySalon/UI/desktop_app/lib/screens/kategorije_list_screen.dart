@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/kategorija.dart';
 import '../models/search_result.dart';
 import '../providers/kategorije_provider.dart';
+import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class KategorijeListScreen extends StatefulWidget {
@@ -172,7 +173,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
                             child: Text(
                               (e.datumKreiranja == null
                                   ? "-"
-                                  : "${e.datumKreiranja?.day}.${e.datumKreiranja?.month}.${e.datumKreiranja?.year}"),
+                                  : formatDate(e.datumKreiranja!)),
                               textAlign: TextAlign.center,
                             ))),
                         DataCell(Container(
@@ -180,7 +181,7 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
                             child: Text(
                                 (e.datumModifikovanja == null
                                     ? "-"
-                                    : "${e.datumModifikovanja?.day}.${e.datumModifikovanja?.month}.${e.datumModifikovanja?.year}"),
+                                    : formatDate(e.datumModifikovanja!)),
                                 textAlign: TextAlign.center))),
                         DataCell(TextButton(
                           style: TextButton.styleFrom(

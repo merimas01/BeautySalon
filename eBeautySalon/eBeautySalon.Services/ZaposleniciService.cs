@@ -6,6 +6,7 @@ using eBeautySalon.Models.Utils;
 using eBeautySalon.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,15 +24,26 @@ namespace eBeautySalon.Services
         {
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
-                query = query.Where(x => (x.Korisnik.Ime != null && x.Korisnik.Ime.Contains(search.FTS))
+                query = query.
+                    Where(x => (x.Korisnik.Ime != null && x.Korisnik.Ime.Contains(search.FTS))
                 || (x.Korisnik.Prezime != null && x.Korisnik.Prezime.Contains(search.FTS)
                 || (x.Korisnik.KorisnickoIme != null && x.Korisnik.KorisnickoIme.Contains(search.FTS))
                 || (x.Korisnik.Sifra != null && x.Korisnik.Sifra.Contains(search.FTS))
-                || (x.Korisnik.KorisnikUlogas !=null && x.Korisnik.KorisnikUlogas.Select(y=>y.Uloga.Naziv).Contains(search.FTS))
-                || (x.ZaposlenikUslugas != null && x.ZaposlenikUslugas.Select(z => z.Usluga.Naziv).Contains(search.FTS))
-               ));
+               // || (x.Korisnik.KorisnikUlogas != null && x.Korisnik.KorisnikUlogas.Select(y=>y.Uloga.Naziv).Contains(search.FTS))
+               // || (x.ZaposlenikUslugas != null && x.ZaposlenikUslugas.Select(z => z.Usluga.Naziv).Contains(search.FTS))
+               ));            
             }
-            if(search.isUsluznik == true)
+            if (search.UslugaId != null)
+            {
+                query = query.
+                    Where(x => x.ZaposlenikUslugas.Where(y => y.UslugaId == search.UslugaId).Count()!=0);
+            }
+            if (search.UlogaId != null)
+            {
+                query = query.
+                    Where(x => x.Korisnik.KorisnikUlogas.Where(y=>y.UlogaId == search.UlogaId).Count()!=0);
+            }
+            if (search.isUsluznik == true)
             {
                 query = query.Where(x => x.ZaposlenikUslugas.Count() != 0).Include(x=>x.Korisnik.SlikaProfila);
             }

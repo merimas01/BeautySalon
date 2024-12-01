@@ -8,6 +8,7 @@ import '../models/search_result.dart';
 import '../models/status.dart';
 import '../providers/rezarvacije_provider.dart';
 import '../providers/status_provider.dart';
+import '../utils/util.dart';
 
 class RezervacijeListScreen extends StatefulWidget {
   const RezervacijeListScreen({super.key});
@@ -130,7 +131,8 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     print("search by status");
     if (isLoadingStatus == false) {
       return Container(
-        padding: EdgeInsets.all(3.0),
+        width: 300,
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -139,8 +141,9 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
         child: Center(
           child: DropdownButtonHideUnderline(
             child: DropdownButton<Status>(
-              hint: Text("Izaberi status"),
+              hint: Text("Pretraži po statusu"),
               value: selectedStatus,
+              isExpanded: true,
               onChanged: (Status? newValue) {
                 setState(() {
                   selectedStatus = newValue;
@@ -150,7 +153,10 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                   .map<DropdownMenuItem<Status>>((Status service) {
                 return DropdownMenuItem<Status>(
                   value: service,
-                  child: Text(service.opis!),
+                  child: Text(
+                    service.opis!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               }).toList(),
             ),
@@ -171,7 +177,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   Widget _searchByIsArhiva() {
     return Container(
       width: 150,
-      padding: EdgeInsets.all(3.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -345,9 +351,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           SizedBox(
             width: 8,
           ),
-          Expanded(
-            child: searchByStatus(),
-          ),
+          searchByStatus(),
           SizedBox(width: 8),
           selectedStatus != null
               ? TextButton(
@@ -366,6 +370,35 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                 )
               : Container(),
           SizedBox(width: 10),
+
+          // ElevatedButton(
+          //   style: TextButton.styleFrom(
+          //       foregroundColor: Colors.pink, backgroundColor: Colors.white),
+          //   onPressed: () => _selectDate(context),
+          //   child: Text(_selectedDate == null
+          //       ? 'Izaberi datum'
+          //       : formatDate(_selectedDate!)),
+          // ),
+          // SizedBox(
+          //   width: 8,
+          // ),
+          // _selectedDate != null
+          //     ? TextButton(
+          //         onPressed: () {
+          //           setState(() {
+          //             _selectedDate = null;
+          //           });
+          //         },
+          //         child: Tooltip(
+          //           child: Icon(
+          //             Icons.close,
+          //             color: Colors.red,
+          //           ),
+          //           message: "Poništi datum",
+          //         ),
+          //       )
+          //     : Container(),
+          // SizedBox(width: 10),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Traži");
@@ -444,7 +477,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                             width: 130,
                             child: Text((e.datumRezervacije == null
                                 ? "-"
-                                : "${e.datumRezervacije?.day}.${e.datumRezervacije?.month}.${e.datumRezervacije?.year}")))),
+                                : formatDate(e.datumRezervacije!))))),
                         DataCell(Text(e.termin?.opis ?? "")),
                         DataCell(Text(e.usluga?.naziv ?? "")),
                         DataCell(Text(e.status?.opis ?? "-")),
@@ -552,16 +585,36 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     var new_value_isArhiva = e.isArhiva == true ? false : true;
     var rezervacija_update = RezervacijaUpdate(e.korisnikId, e.uslugaId,
         e.terminId, e.datumRezervacije, e.statusId, new_value_isArhiva);
-    var obj =
-        await _rezervacijeProvider.update(e.rezervacijaId, rezervacija_update);
-    print('status? ${obj.isArhiva}');
+    try {
+      var obj = await _rezervacijeProvider.update(
+          e.rezervacijaId, rezervacija_update);
+      print('arhiva? ${obj.isArhiva}');
+    } catch (err) {
+      print(err.toString());
+    }
 
-    selectedOpis = null;
-    var data =
-        await _rezervacijeProvider.get(filter: {'FTS': _ftsController.text});
+    var data = await _rezervacijeProvider
+        .get(filter: {'FTS': _ftsController.text, 'isArhiva': selectedOpis});
 
     setState(() {
       result = data;
     });
+  }
+
+  DateTime? _selectedDate;
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000), // Minimum selectable date
+      lastDate: DateTime(2100), // Maximum selectable date
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    }
   }
 }

@@ -60,7 +60,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   Widget _showDropdownDialog() {
     return Container(
       width: 150,
-      padding: EdgeInsets.all(3.0),
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),

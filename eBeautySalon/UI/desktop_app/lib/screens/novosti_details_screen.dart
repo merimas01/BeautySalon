@@ -166,9 +166,9 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                                   value.trim().isEmpty) {
                                 return 'Molimo Vas unesite sadrzaj';
                               }
-                              if (RegExp(r'[@#$^ˇ`˙´~°<>+=*]+')
+                              if (RegExp(r'[#$^ˇ`˙´~°<>+=*]+')
                                   .hasMatch(value)) {
-                                return 'Specijalni znakovi su nedozvoljeni (@#<>+=*~°^ˇ`˙´).';
+                                return 'Specijalni znakovi su nedozvoljeni (#<>+=*~°^ˇ`˙´).';
                               }
                               if (value
                                   .replaceAll(RegExp(r'[^a-zA-Z]'), "")

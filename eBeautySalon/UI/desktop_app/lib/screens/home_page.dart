@@ -1313,7 +1313,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           )
-        : Container();
+        : Container(child: CircularProgressIndicator());
   }
 
   int _hoveredIndex = -1;
@@ -1422,7 +1422,7 @@ class _HomePageState extends State<HomePage> {
       return Column(
         children: [
           SizedBox(
-            height: 400,
+            height: 450,
             width: double.infinity,
             child: PageView.builder(
               controller: _pageController,

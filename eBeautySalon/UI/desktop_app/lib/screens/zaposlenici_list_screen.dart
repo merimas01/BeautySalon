@@ -430,8 +430,11 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data =
-        await _zaposleniciProvider.get(filter: {'FTS': _ftsController.text});
+    var data = await _zaposleniciProvider.get(filter: {
+      'FTS': _ftsController.text,
+      'uslugaId': selectedUsluga?.uslugaId,
+      'ulogaId': selectedUloga?.ulogaId,
+    });
 
     setState(() {
       result = data;

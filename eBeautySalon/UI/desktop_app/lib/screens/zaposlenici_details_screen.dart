@@ -30,6 +30,7 @@ import '../providers/usluge_provider.dart';
 import '../providers/zaposlenici_provider.dart';
 import '../providers/zaposlenici_usluge_provider.dart';
 import '../utils/constants.dart';
+import '../utils/util.dart';
 import '../widgets/multiselect_dropdown.dart';
 
 class ZaposleniciDetailsScreen extends StatefulWidget {
@@ -49,8 +50,8 @@ class ZaposleniciDetailsScreen extends StatefulWidget {
 class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   TextEditingController _passwordController = new TextEditingController();
-  final _dateController = TextEditingController();
-  DateTime? _selectedDate;
+  DateTime? _selectedDateRodjenja;
+  DateTime? _selectedDateZaposlenja;
   String? _hoveredItemText;
   Map<String, dynamic> _initialValue = {};
   late KorisnikProvider _korisnikProvider;
@@ -92,9 +93,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       'slikaProfilaId':
           widget.korisnik?.slikaProfilaId.toString() ?? DEFAULT_SlikaProfilaId,
       'ulogaId': widget.korisnik?.korisnikUlogas?[0].ulogaId.toString(),
-      'password':'',
-      'passwordPotvrda':'',
+      'password': '',
+      'passwordPotvrda': '',
     };
+
+    setState(() {
+      _selectedDateRodjenja = _initialValue['datumRodjenja'];
+      _selectedDateZaposlenja = _initialValue['datumZaposlenja'];
+    });
 
     _postojeceUsluge =
         widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
@@ -198,7 +204,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     obj['ulogaId'] != null ? int.parse(obj['ulogaId']) : null;
                 var slika_request = SlikaProfilaInsertUpdate(_base64image);
 
-                if (val == true && ulogaID != null && validationError == "") {
+                if (val == true &&
+                    ulogaID != null &&
+                    validationError == "" &&
+                    _selectedDateRodjenja != null &&
+                    _selectedDateZaposlenja != null) {
                   if (widget.zaposlenik == null) {
                     doInsert(obj, slika_request, ulogaID);
                   } else if (widget.zaposlenik != null) {
@@ -209,7 +219,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
-                            content: Text("Ispravite greške i popunite obavezna polja."),
+                            content: Text(
+                                "Ispravite greške i popunite obavezna polja."),
                             actions: <Widget>[
                               TextButton(
                                   onPressed: () {
@@ -372,7 +383,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     _inputIme(),
                     _inputPrezime(),
                     _inputTelefonEmail(),
-                    _inputDatume(),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _inputDatumRodjenja(),
+                        _inputDatumZaposlenja(),
+                      ],
+                    ),
+                    SizedBox(height: 20),
                     _inputSifra(),
                     SizedBox(
                       height: 20,
@@ -737,7 +756,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         var kid = kor_post.korisnikId;
 
         var zaposlenik_request = ZaposlenikInsertUpdate(
-            obj['datumRodjenja'], obj['datumZaposlenja'], kid);
+            _selectedDateRodjenja, _selectedDateZaposlenja, kid);
         var zap_post = await _zaposleniciProvider.insert(zaposlenik_request);
         print("insert zaposlenik request request: ${zaposlenik_request}");
 
@@ -780,9 +799,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       _selectedItems.result = [];
       uloga = null;
       setState(() {
-        _selectedDate = null;
-        _dateController.clear(); 
-        _dateController.text= "";
+        _selectedDateRodjenja = null;
+        _selectedDateZaposlenja = null;
         _passwordController.clear();
       });
     } catch (e) {
@@ -840,8 +858,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         print("kor_put: ${kor_put.slikaProfilaId}");
       }
 
-      var zaposlenik_request = ZaposlenikInsertUpdate(obj['datumRodjenja'],
-          obj['datumZaposlenja'], widget.zaposlenik!.korisnikId);
+      var zaposlenik_request = ZaposlenikInsertUpdate(_selectedDateRodjenja,
+          _selectedDateRodjenja, widget.zaposlenik!.korisnikId);
       var zap_put = await _zaposleniciProvider.update(
           widget.zaposlenik!.zaposlenikId!, zaposlenik_request);
       print(
@@ -1045,63 +1063,88 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     );
   }
 
-  Widget _inputDatume() {
+  Widget _inputDatumRodjenja() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: FormBuilderDateTimePicker(
-            name: 'datumRodjenja',
-            inputType: InputType.date,
-            decoration: InputDecoration(
-              labelText: 'Datum rođenja',
-            ),
-            firstDate: DateTime(1900),
-            lastDate: DateTime(2030),
-            validator: (value) {
-              if (value == null) {
-                return 'Niste unijeli datum.';
-              }
-              if (value != null && value != _selectedDate) {
-                setState(() {
-                  _selectedDate = value;
-                  _dateController.text = "${value.toLocal()}".split(' ')[0];
-                });
-              }
-              return null;
-            },
-          ),
-        ),
+        _selectedDateRodjenja == null
+            ? Text(
+                'Nije izabran datum',
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              )
+            : Text(
+                formatDate(_selectedDateRodjenja!),
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
         SizedBox(
-          width: 10,
+          width: 8,
         ),
-        Expanded(
-          child: FormBuilderDateTimePicker(
-              name: 'datumZaposlenja',
-              inputType: InputType.date,
-              decoration: InputDecoration(
-                labelText: 'Datum zaposlenja',
-              ),
-              firstDate: DateTime(2010),
-              lastDate: DateTime.now(),
-              validator: (value) {
-                if (value == null) {
-                  return 'Niste unijeli datum';
-                }
-                return null;
-              },
-              
-              ),
-              
+        ElevatedButton(
+          style: TextButton.styleFrom(
+              foregroundColor: Colors.pink, backgroundColor: Colors.white),
+          onPressed: () => _selectDateRodjenja(context),
+          child: Text("Izaberi datum rođenja"),
         ),
-        // ElevatedButton(
-        //         onPressed: () {
-        //           // Reset the form to clear all fields
-        //           _formKey.currentState?.reset();
-        //         },
-        //         child: Text("Reset Date"),
-        //       ),
       ],
     );
+  }
+
+  Widget _inputDatumZaposlenja() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _selectedDateZaposlenja == null
+            ? Text(
+                'Nije izabran datum',
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              )
+            : Text(formatDate(_selectedDateZaposlenja!),
+                style: TextStyle(color: Colors.black, fontSize: 16)),
+        SizedBox(
+          width: 8,
+        ),
+        ElevatedButton(
+          style: TextButton.styleFrom(
+              foregroundColor: Colors.pink, backgroundColor: Colors.white),
+          onPressed: () => _selectDateZaposlenja(context),
+          child: Text("Izaberi datum zaposlenja"),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _selectDateRodjenja(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _initialValue['datumRodjenja'] == null
+          ? DateTime(2005)
+          : _initialValue['datumRodjenja'], //initValue
+      firstDate: DateTime(1980), // Minimum selectable date
+      lastDate: DateTime(2005), // Maximum selectable date
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDateRodjenja) {
+      setState(() {
+        _selectedDateRodjenja = pickedDate;
+      });
+    }
+  }
+
+  Future<void> _selectDateZaposlenja(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _initialValue['datumZaposlenja'] == null
+          ? DateTime.now()
+          : _initialValue['datumZaposlenja'], //initValue
+      firstDate: DateTime(2020), // Minimum selectable date
+      lastDate: DateTime.now(), // Maximum selectable date
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDateZaposlenja) {
+      setState(() {
+        _selectedDateZaposlenja = pickedDate;
+      });
+    }
   }
 
   Widget _inputSifra() {

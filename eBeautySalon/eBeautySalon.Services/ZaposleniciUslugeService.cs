@@ -21,20 +21,19 @@ namespace eBeautySalon.Services
         {
         }
 
-        public override Task BeforeInsert(ZaposlenikUsluga entity, ZaposleniciUslugeInsertRequest insert)
-        {
-            
-            return base.BeforeInsert(entity, insert);
-        }
-
         public override async Task<bool> AddValidationInsert(ZaposleniciUslugeInsertRequest request)
         {
+            //ne moze se dodati ista usluga opet
             var _postojece_usluge = await _context.ZaposlenikUslugas.Where(x => x.ZaposlenikId == request.ZaposlenikId).Select(x => x.UslugaId).ToListAsync();
-            var _zaposlenik = await _context.Zaposleniks.Where(x => x.ZaposlenikId == request.ZaposlenikId).FirstOrDefaultAsync();
-            var _zaposlenik_uloge = await _context.KorisnikUlogas.Where(x => x.KorisnikId == _zaposlenik.KorisnikId).Select(x=>x.UlogaId).ToListAsync();
+            if (_postojece_usluge.Contains(request.UslugaId)) return false;
 
+            var _zaposlenik = await _context.Zaposleniks.Where(x => x.ZaposlenikId == request.ZaposlenikId).FirstOrDefaultAsync();
+            var _zaposlenik_uloge = await _context.KorisnikUlogas.Where(x => x.KorisnikId == _zaposlenik.KorisnikId).Select(x=>x.UlogaId).ToListAsync();        
+
+            //zaposlenik mora biti usluznik
             if (_zaposlenik_uloge.Contains(Constants.DEFAULT_Uloga_Usluznik))
             {
+                //ne mogu se dodati vise od 3 usluge
                 if (_postojece_usluge.Count() < 3) 
                     return true; else return false;
             }

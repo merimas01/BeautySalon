@@ -16,6 +16,7 @@ import '../models/slika_novost.dart';
 import '../providers/novosti_provider.dart';
 import '../providers/slika_novost_provider.dart';
 import '../utils/constants.dart';
+import '../utils/util.dart';
 
 class NovostiDetailsScreen extends StatefulWidget {
   Novost? novost;
@@ -36,6 +37,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
   bool isLoadingImage = true;
   bool _imaSliku = false;
   bool _ponistiSliku = false;
+  bool authorised = false;
 
   @override
   void didChangeDependencies() {
@@ -51,7 +53,8 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
     _initialValue = {
       'naslov': widget.novost?.naslov,
       'sadrzaj': widget.novost?.sadrzaj,
-      'slikaNovostId': widget.novost?.slikaNovostId.toString() ?? DEFAULT_SlikaNovostId.toString(),
+      'slikaNovostId': widget.novost?.slikaNovostId.toString() ??
+          DEFAULT_SlikaNovostId.toString(),
     };
     _slikaNovostProvider = context.read<SlikaNovostProvider>();
     _novostiProvider = context.read<NovostiProvider>();
@@ -66,6 +69,62 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
     setState(() {
       isLoading = false;
     });
+
+    setState(() {
+      if (LoggedUser.uloga == "Administrator") {
+        authorised = true;
+      } else {
+        authorised = false;
+      }
+
+      print("authorised: $authorised");
+    });
+  }
+
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -73,9 +132,11 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
     return MasterScreenWidget(
         title: "Novosti",
         child: Center(
-          child: isLoading
-              ? Container(child: CircularProgressIndicator())
-              : _buildForm(),
+          child: isLoading == false
+              ? authorised == true
+                  ? _buildForm()
+                  : buildAuthorisation()
+              : Center(child: CircularProgressIndicator()),
         ));
   }
 
@@ -420,7 +481,8 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
-                            content: Text("Ispravite greške i popunite obavezna polja"),
+                            content: Text(
+                                "Ispravite greške i popunite obavezna polja"),
                             actions: <Widget>[
                               TextButton(
                                   onPressed: () {
@@ -490,7 +552,8 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
 
   Future doUpdate(request_novost, request_slika) async {
     if (_base64image != null &&
-        (widget.novost?.slikaNovostId == DEFAULT_SlikaNovostId || widget.novost?.slikaNovostId == null)) {
+        (widget.novost?.slikaNovostId == DEFAULT_SlikaNovostId ||
+            widget.novost?.slikaNovostId == null)) {
       var obj = await _slikaNovostProvider.insert(request_slika);
       if (obj != null) {
         var slikaId = obj.slikaNovostId;
@@ -501,13 +564,12 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       await _slikaNovostProvider.update(
           widget.novost!.slikaNovostId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      try{
-      var del =
-          await _slikaNovostProvider.delete(widget.novost!.slikaNovostId!);
-      print("delete slikaNovostId: $del");
-      request_novost['slikaNovostId'] = DEFAULT_SlikaUslugeId;
-      }
-      catch(err){
+      try {
+        var del =
+            await _slikaNovostProvider.delete(widget.novost!.slikaNovostId!);
+        print("delete slikaNovostId: $del");
+        request_novost['slikaNovostId'] = DEFAULT_SlikaUslugeId;
+      } catch (err) {
         print("delete error");
       }
     }

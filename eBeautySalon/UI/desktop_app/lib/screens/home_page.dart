@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
   late Animation<double> _fadeInAnimation;
   var listUslugeNumbers = [];
   bool _isHovered = false;
+  bool authorised = false;
 
   @override
   void initState() {
@@ -88,27 +89,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initForm() async {
-    listUsluge = await _recenzijaUslugeProvider
-        .GetProsjecnaOcjena(); //dodati jos i sifru u ovu listu
+    listUsluge = await _recenzijaUslugeProvider.GetProsjecnaOcjena();
     listUsluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
     var usluge = await _uslugeProvider.get(filter: {'isSlikaIncluded': true});
     var novosti = await _novostiProvider.GetLastThreeNovosti();
-    //print("NOVOSTI: ${novosti.result[0].naslov}");
-
-    // for (var item in listUsluge) {
-    //   print("${item}");
-    // }
-
-    // for (var item in listUsluznici) {
-    //   print("${item}");
-    // }
-
-    // for (var item in usluge.result) {
-    //   print(item.slikaUsluge != null ? "ima sliku" : "nema sliku");
-    // }
 
     setState(() {
-      //sifreUslugeList
       nazivUslugeList =
           listUsluge.map((usluga) => usluga['nazivUsluge'] as String).toList();
       sifraUslugeList =
@@ -135,6 +121,16 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       _resultNovosti = novosti;
+    });
+
+    setState(() {
+      if (LoggedUser.uloga == "Administrator") {
+        authorised = true;
+      } else {
+        authorised = false;
+      }
+
+      print("authorised: $authorised");
     });
   }
 
@@ -176,118 +172,126 @@ class _HomePageState extends State<HomePage> {
               height: 20,
             ),
             _createGrids(),
-            iznadBarChart(),
-            SizedBox(
-              height: 20,
-            ),
-            buttonRecenzije(),
+            authorised == true ? iznadBarChart() : Container(),
+            authorised == true
+                ? SizedBox(
+                    height: 20,
+                  )
+                : Container(),
+            authorised == true ? buttonRecenzije() : Container(),
             SizedBox(
               height: 60,
             ),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    RepaintBoundary(
-                      key: chartKey,
-                      child: isLoadingUsluge == false
-                          ? buildBarChartUsluge()
-                          : Container(child: CircularProgressIndicator()),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    sifraUslugeList.length != 0
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+            isLoadingUsluge == false && isLoadingUsluznici == false
+                ? authorised == true
+                    ? Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: "Prosječne ocjene usluga 💄",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                                textAlign: TextAlign.justify,
+                              RepaintBoundary(
+                                key: chartKey,
+                                child: buildBarChartUsluge(),
                               ),
                               SizedBox(
-                                height: 20,
+                                width: 10,
                               ),
-                              Text(
-                                  "Za više detalja preuzmite PDF dokument ispod."),
-                              SizedBox(height: 20),
-                              buttonPrintajPDFUsluge(),
+                              sifraUslugeList.length != 0
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "Prosječne ocjene usluga 💄",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                            ],
+                                          ),
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                            "Za više detalja preuzmite PDF dokument ispod."),
+                                        SizedBox(height: 20),
+                                        buttonPrintajPDFUsluge(),
+                                      ],
+                                    )
+                                  : Container(
+                                      child: CircularProgressIndicator()),
                             ],
-                          )
-                        : Container(child: CircularProgressIndicator()),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  child: Container(color: Colors.pink),
-                  height: 1,
-                  width: 300,
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    sifraUsluznikaList.length != 0
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          SizedBox(
+                            child: Container(color: Colors.pink),
+                            height: 1,
+                            width: 300,
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: "Prosječne ocjene uslužnika 👧",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                textAlign: TextAlign.justify,
-                              ),
+                              sifraUsluznikaList.length != 0
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "Prosječne ocjene uslužnika 👧",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                            "Za više detalja preuzmite PDF dokument ispod."),
+                                        SizedBox(height: 20),
+                                        buttonPrintajPDFUsluznici(),
+                                      ],
+                                    )
+                                  : Container(
+                                      child: CircularProgressIndicator()),
                               SizedBox(
-                                height: 20,
+                                width: 10,
                               ),
-                              Text(
-                                  "Za više detalja preuzmite PDF dokument ispod."),
-                              SizedBox(height: 20),
-                              buttonPrintajPDFUsluznici(),
+                              RepaintBoundary(
+                                  key: chartKey2,
+                                  child: buildBarChartUsluznici()),
                             ],
-                          )
-                        : Container(child: CircularProgressIndicator()),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    RepaintBoundary(
-                      key: chartKey2,
-                      child: isLoadingUsluznici == false
-                          ? buildBarChartUsluznici()
-                          : Container(child: CircularProgressIndicator()),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                          ),
+                        ],
+                      )
+                    : Container()
+                : Center(child: CircularProgressIndicator()),
             SizedBox(
               height: 50,
             ),
@@ -330,6 +334,8 @@ class _HomePageState extends State<HomePage> {
         child: TextButton(
           onPressed: () {
             //clear data
+            LoggedUser.clearData();
+
             Authorization.username = "";
             Authorization.password = "";
 
@@ -346,6 +352,18 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       );
+
+  // Widget discoverServicesText() {
+  //   return Center(
+  //       child: RichText(
+  //     text: TextSpan(
+  //         style: TextStyle(
+  //             fontSize: 18, color: Colors.black, fontWeight: FontWeight.w300),
+  //         children: [
+  //           TextSpan(text: "Istražite servise koje aplikacija nudi!")
+  //         ]),
+  //   ));
+  // }
 
   Widget welcomeMessageText() {
     return Center(
@@ -369,17 +387,12 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             TextSpan(
-              text:
-                  "🖐️ Istražite servise koje aplikacija nudi i uživajte u korištenju istih!", // Waving hand emoji
+              text: " 🖐️",
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.black,
               ),
             ),
-            // TextSpan(
-            //   text: '! Želimo Vam ugodno korištenje aplikacije!',
-            //   style: TextStyle(fontWeight: FontWeight.normal),
-            // ),
           ],
         ),
         textAlign: TextAlign.center,

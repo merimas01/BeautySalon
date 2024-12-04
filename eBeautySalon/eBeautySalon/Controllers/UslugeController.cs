@@ -2,6 +2,7 @@ using eBeautySalon.Models;
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eBeautySalon.Controllers
@@ -12,6 +13,24 @@ namespace eBeautySalon.Controllers
     {
         public UslugeController(ILogger<BaseCRUDController<Usluge, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest>> logger, IUslugeService service) :base(logger,service)
         {
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public override Task<Usluge> Insert([FromBody] UslugeInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public override Task<Usluge> Update(int id, [FromBody] UslugeUpdateRequest update)
+        {
+            return base.Update(id, update);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public override Task<bool> Delete(int id)
+        {
+            return base.Delete(id);
         }
     }
 }

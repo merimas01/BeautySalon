@@ -30,6 +30,13 @@ namespace eBeautySalon.Controllers
             return base.Update(id, update);
         }
 
+        [Authorize(Roles = "Administrator")]
+        public override Task<bool> Delete(int id)
+        {
+            return base.Delete(id);
+        }
+
+        [Authorize]
         [HttpGet("lastNews")]
         public Task<PagedResult<Novosti>> GetLastThreeNovosti()
         {

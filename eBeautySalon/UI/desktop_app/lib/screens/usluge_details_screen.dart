@@ -18,6 +18,7 @@ import '../models/search_result.dart';
 import '../models/usluga.dart';
 import '../providers/kategorije_provider.dart';
 import '../providers/slika_usluge_provider.dart';
+import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class UslugeDetaljiScreen extends StatefulWidget {
@@ -41,6 +42,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
   bool isLoadingImage = true;
   bool _imaSliku = false;
   bool _ponistiSliku = false;
+  bool authorised = false;
 
   @override //ova metoda se pokrece nakon init state-a
   void didChangeDependencies() {
@@ -78,6 +80,62 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     setState(() {
       isLoading = false;
     });
+
+    setState(() {
+      if (LoggedUser.uloga == "Administrator") {
+        authorised = true;
+      } else {
+        authorised = false;
+      }
+
+      print("authorised: $authorised");
+    });
+  }
+
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -85,9 +143,11 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     return MasterScreenWidget(
       title: "Usluge",
       child: Center(
-        child: isLoading
-            ? Container(child: CircularProgressIndicator())
-            : _buildForm(),
+        child: isLoading == false
+            ? authorised == true
+                ? _buildForm()
+                : buildAuthorisation()
+            : Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -162,7 +222,8 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Neispravni podaci"),
-                            content: Text("Ispravite greške i popunite obavezna polja."),
+                            content: Text(
+                                "Ispravite greške i popunite obavezna polja."),
                             actions: <Widget>[
                               TextButton(
                                   onPressed: () {
@@ -559,15 +620,14 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       await _slikaUslugeProvider.update(
           widget.usluga!.slikaUslugeId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      try{
-      var del =
-          await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
-      print("delete slikaUslugeId: $del");
-      request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
-      }
-      catch(err){
+      try {
+        var del =
+            await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
+        print("delete slikaUslugeId: $del");
+        request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
+      } catch (err) {
         print("error delete");
-      }      
+      }
     }
     print("update request: $request_usluga");
 

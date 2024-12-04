@@ -2,6 +2,7 @@
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eBeautySalon.Controllers
@@ -16,12 +17,32 @@ namespace eBeautySalon.Controllers
             _service = service;
         }
 
+        [Authorize]
+        public override Task<RecenzijaUsluge> Insert([FromBody] RecenzijaUslugeInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+
+        [Authorize]
+        public override Task<RecenzijaUsluge> Update(int id, [FromBody] RecenzijaUslugeUpdateRequest update)
+        {
+            return base.Update(id, update);
+        }
+
+        [Authorize]
+        public override Task<bool> Delete(int id)
+        {
+            return base.Delete(id);
+        }
+
+        [Authorize]
         [HttpGet("prosjecnaOcjena")]
         public async Task<List<dynamic>> GetProsjecnaOcjena()
         {
             return await _service.GetProsjecneOcjeneUsluga();
         }
 
+        [Authorize]
         [HttpGet("recenzijeUsluga/{korisnikId}")]
         public async Task<PagedResult<Models.RecenzijaUsluge>> GetRecenzijeUslugeByKorisnikId(int korisnikId, [FromQuery] string? FTS)
         {

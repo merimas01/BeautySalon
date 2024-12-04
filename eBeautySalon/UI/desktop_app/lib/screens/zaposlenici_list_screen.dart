@@ -34,6 +34,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
   Uloga? selectedUloga;
   bool isLoadingUsluge = true;
   bool isLoadingUloge = true;
+  bool authorised = false;
 
   @override
   void didChangeDependencies() {
@@ -63,6 +64,16 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
       result = data;
       isLoadingData = false;
     });
+
+    setState(() {
+      if (LoggedUser.uloga != "Administrator") {
+        authorised = false;
+      } else {
+        authorised = true;
+      }
+
+      print("authorised: $authorised");
+    });
   }
 
   getUsluge() async {
@@ -85,15 +96,63 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       child: Container(
-        child: Column(children: [
-          _builSearch(),
-          _showResultCount(),
-          isLoadingData == false
-              ? _buildDataListView()
-              : Container(child: CircularProgressIndicator()),
-        ]),
+        child: isLoadingData == false
+            ? authorised == true
+                ? Column(children: [
+                    _builSearch(),
+                    _showResultCount(),
+                    _buildDataListView()
+                  ])
+                : buildAuthorisation()
+            : Center(child: CircularProgressIndicator()),
       ),
       title_widget: Text("Zaposlenici"),
+    );
+  }
+
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

@@ -26,6 +26,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
   bool isLoadingKategorije = true;
   bool isLoadingData = true;
   String? search = "";
+  bool? authorised = false;
 
   @override
   void didChangeDependencies() {
@@ -59,19 +60,79 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
       _kategorijeResult = kategorije;
       isLoadingKategorije = false;
     });
+
+    setState(() {
+      if (LoggedUser.uloga == "Administrator") {
+        authorised = true;
+      } else {
+        authorised = false;
+      }
+
+      print("authorised: $authorised");
+    });
+  }
+
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       child: Container(
-        child: Column(children: [
-          _builSearch(),
-          _showResultCount(),
-          isLoadingData == false
-              ? _buildDataListView()
-              : Container(child: CircularProgressIndicator()),
-        ]),
+        child: isLoadingData == false
+            ? authorised == true
+                ? Column(children: [
+                    _builSearch(),
+                    _showResultCount(),
+                    _buildDataListView(),
+                  ])
+                : buildAuthorisation()
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
       title_widget: Text("Usluge"),
     );
@@ -350,7 +411,10 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                   .map<DropdownMenuItem<Kategorija>>((Kategorija service) {
                 return DropdownMenuItem<Kategorija>(
                   value: service,
-                  child: Text(service.naziv!,  overflow: TextOverflow.ellipsis,),
+                  child: Text(
+                    service.naziv!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               }).toList(),
             ),

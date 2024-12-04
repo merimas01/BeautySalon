@@ -22,6 +22,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
   String? search = "";
+  bool authorised = false;
 
   @override
   void didChangeDependencies() {
@@ -48,6 +49,62 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
       result = data;
       isLoadingData = false;
     });
+
+    setState(() {
+      if (LoggedUser.uloga == "Administrator") {
+        authorised = true;
+      } else {
+        authorised = false;
+      }
+
+      print("authorised: $authorised");
+    });
+  }
+
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   var dropdown_lista = [
@@ -94,15 +151,17 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   Widget build(BuildContext context) {
     return MasterScreenWidget(
         title: "Korisnici",
-        child: Column(
-          children: [
-            _buildSearch(),
-            _showResultCount(),
-            isLoadingData == false
-                ? _buildDataListView()
-                : Container(child: CircularProgressIndicator())
-          ],
-        ));
+        child: isLoadingData == false
+            ? authorised == true
+                ? Column(
+                    children: [
+                      _buildSearch(),
+                      _showResultCount(),
+                      _buildDataListView()
+                    ],
+                  )
+                : buildAuthorisation()
+            : Center(child: CircularProgressIndicator()));
   }
 
   Widget _showResultCount() {

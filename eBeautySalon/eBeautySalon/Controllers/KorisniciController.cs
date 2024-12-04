@@ -18,10 +18,22 @@ namespace eBeautySalon.Controllers
            _korisniciService = service;
         }
 
-        [Authorize(Roles = "Administrator")] //samo admin moze insertati korisnika
+        [Authorize] 
         public override Task<Korisnici> Insert(KorisniciInsertRequest insert)
         {
             return base.Insert(insert);
+        }
+
+        [Authorize]
+        public override Task<Korisnici> Update(int id, [FromBody] KorisniciUpdateRequest update)
+        {
+            return base.Update(id, update);
+        }
+
+        [Authorize]
+        public override Task<bool> Delete(int id)
+        {
+            return base.Delete(id);
         }
     }
 }

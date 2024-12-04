@@ -11,6 +11,7 @@ import '../models/usluga_termin_update.dart';
 import '../providers/termini_provider.dart';
 import '../providers/usluge_provider.dart';
 import '../providers/usluge_termini_provider.dart';
+import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class UslugeTerminiListScreen extends StatefulWidget {
@@ -37,6 +38,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
   bool? kliknuoDodajDrugiTermin = false;
   UslugaTermin? uslugaTermin;
   bool isLoadingUsluge = true;
+  bool authorised = false;
 
   @override
   void didChangeDependencies() {
@@ -57,6 +59,63 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
     setState(() {
       isLoadingUsluge = false;
     });
+
+    setState(() {
+      if (LoggedUser.uloga == "Administrator" ||
+          LoggedUser.uloga == "Uslužnik") {
+        authorised = true;
+      } else {
+        authorised = false;
+      }
+
+      print("authorised: $authorised");
+    });
+  }
+
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -64,16 +123,18 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
     return MasterScreenWidget(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(children: [
-          _builSearch(),
-          _showResultCount(),
-          SizedBox(
-            height: 10,
-          ),
-          isLoadingUsluge == false
-              ? _buildDataListView()
-              : Center(child: CircularProgressIndicator()),
-        ]),
+        child: isLoadingUsluge == false
+            ? authorised == true
+                ? Column(children: [
+                    _builSearch(),
+                    _showResultCount(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _buildDataListView()
+                  ])
+                : buildAuthorisation()
+            : Center(child: CircularProgressIndicator()),
       ),
       title: "Termini",
     );

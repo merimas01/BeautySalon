@@ -2,6 +2,7 @@
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eBeautySalon.Controllers
@@ -16,6 +17,25 @@ namespace eBeautySalon.Controllers
             _service = service;
         }
 
+        [Authorize]
+        public override Task<Rezervacije> Insert([FromBody] RezervacijeInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+
+        [Authorize] 
+        public override Task<Rezervacije> Update(int id, [FromBody] RezervacijeUpdateRequest update)
+        {
+            return base.Update(id, update);
+        }
+
+        [Authorize]
+        public override Task<bool> Delete(int id)
+        {
+            return base.Delete(id);
+        }
+
+        [Authorize]
         [HttpGet("rezervacije/{korisnikId}")]
         public async Task<PagedResult<Rezervacije>> GetRezervacijeByKorisnikId(int korisnikId, string? FTS)
         {

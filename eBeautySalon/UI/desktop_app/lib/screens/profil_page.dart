@@ -27,10 +27,10 @@ class _ProfilPageState extends State<ProfilPage> {
   SearchResult<Korisnik>? result;
   final _formKey = GlobalKey<FormBuilderState>();
   SearchResult<SlikaProfila>? _slikaProfilaResult;
-
   bool isLoading = true;
   bool isEnabled = false;
   Korisnik? korisnik;
+  bool authorised = false;
 
   @override
   void initState() {
@@ -43,13 +43,68 @@ class _ProfilPageState extends State<ProfilPage> {
   Future initForm() async {
     if (LoggedUser.id != null) {
       var data = await _korisniciProvider.getById(LoggedUser.id!);
+      _slikaProfilaResult = await _slikaProfilaProvider.get();
       setState(() {
         korisnik = data;
         isLoading = false;
       });
 
-      _slikaProfilaResult = await _slikaProfilaProvider.get();
+      setState(() {
+        if (LoggedUser.uloga == "") {
+          authorised = false;
+        } else {
+          authorised = true;
+        }
+
+        print("authorised: $authorised");
+      });
     }
+  }
+
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -57,10 +112,11 @@ class _ProfilPageState extends State<ProfilPage> {
     return MasterScreenWidget(
         title: "Profil",
         child: Center(
-          child: isLoading
-              ? Container(child: CircularProgressIndicator())
-              : _buildForm(),
-        ));
+            child: isLoading == false
+                ? authorised == true
+                    ? _buildForm()
+                    : buildAuthorisation()
+                : Center(child: CircularProgressIndicator())));
   }
 
   Widget _editButton() {

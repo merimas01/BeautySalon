@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:desktop_app/screens/profil_page.dart';
+import 'package:desktop_app/utils/util.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -403,8 +404,8 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
                               title: Text("Neispravni podaci"),
-                              content:
-                                  Text("Ispravite greške i popunite obavezna polja"),
+                              content: Text(
+                                  "Ispravite greške i popunite obavezna polja"),
                               actions: <Widget>[
                                 TextButton(
                                     onPressed: () {
@@ -534,6 +535,10 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
           widget.korisnik!.korisnikId!, request_korisnik);
       if (req != null) {
         print("req: ${req.slikaProfilaId}");
+
+        LoggedUser.ime = request_korisnik['ime'];
+        LoggedUser.prezime = request_korisnik['prezime'];
+
         showDialog(
             context: context,
             builder: (BuildContext context) => AlertDialog(

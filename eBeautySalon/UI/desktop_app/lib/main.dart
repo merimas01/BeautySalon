@@ -118,7 +118,11 @@ class LoginPage extends StatelessWidget {
                       ),
                       Text(
                         "Prijavite se putem sljedeće forme:",
-                        style: TextStyle(fontWeight: FontWeight.bold, color:Colors.pink, fontFamily: 'DejaVuSans',),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                          fontFamily: 'DejaVuSans',
+                        ),
                       ),
                       SizedBox(
                         height: 12,
@@ -127,7 +131,7 @@ class LoginPage extends StatelessWidget {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Molimo Vas unesite korisničko ime (minimalno 3 karaktera)';
-                            }                           
+                            }
                             if (!RegExp(r'^[a-zA-Z]{1,}[a-zA-Z\d-_.]{2,}$')
                                 .hasMatch(value)) {
                               return 'Korisničko ime treba imati najmanje 3 karaktera,\ntreba počinjati sa slovom i smije sadržavati: \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
@@ -230,6 +234,11 @@ class LoginPage extends StatelessWidget {
                                 LoggedUser.slika = korisnik.slikaProfila?.slika;
                                 LoggedUser.ime = korisnik.ime;
                                 LoggedUser.prezime = korisnik.prezime;
+                                LoggedUser.uloga =
+                                    korisnik.korisnikUlogas?.length != 0
+                                        ? korisnik
+                                            .korisnikUlogas![0].uloga!.naziv
+                                        : "";
 
                                 print(
                                     "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
@@ -244,7 +253,7 @@ class LoginPage extends StatelessWidget {
                                       AlertDialog(
                                         title: Text("Greška"),
                                         content: Text(
-                                            "Neispravni podaci. Molimo pokušajte ponovo."), 
+                                            "Neispravni podaci. Molimo pokušajte ponovo."),
                                         actions: [
                                           TextButton(
                                               onPressed: () =>

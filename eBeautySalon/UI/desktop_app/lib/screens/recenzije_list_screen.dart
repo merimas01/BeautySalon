@@ -39,6 +39,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
   Zaposlenik? selectedUsluznik;
   String? search1 = "";
   String? search2 = "";
+  bool authorised = false;
 
   @override
   void didChangeDependencies() {
@@ -51,6 +52,16 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     getData();
     getUsluge();
     getUsluznici();
+
+    setState(() {
+      if (LoggedUser.uloga == "Administrator") {
+        authorised = true;
+      } else {
+        authorised = false;
+      }
+
+      print("authorised: $authorised");
+    });
   }
 
   void getData() async {
@@ -183,55 +194,102 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     return Center(child: CircularProgressIndicator());
   }
 
+  Widget buildAuthorisation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            width: 800,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("🔐",
+                          style: TextStyle(
+                            fontSize: 40.0,
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Nažalost ne možete pristupiti ovoj stranici.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
       title: "Recenzije",
-      child: Container(
-          child: DefaultTabController(
-              length: 2,
-              child: Column(
-                children: [
-                  Container(
-                      color: Colors.pink,
-                      child: const TabBar(
-                        labelColor: Colors.white, // Color for selected tab
-                        unselectedLabelColor: Color.fromARGB(
-                            255, 0, 0, 0), // Color for unselected tabs
-                        indicatorColor: Colors.white,
-                        tabs: [
-                          Tab(
-                              text: "Recenzije usluga",
-                              icon: Icon(Icons.reviews)),
-                          Tab(
-                              text: "Recenzije uslužnika",
-                              icon: Icon(Icons.people)),
+      child: isLoadingData == false
+          ? authorised == true
+              ? Container(
+                  child: DefaultTabController(
+                      length: 2,
+                      child: Column(
+                        children: [
+                          Container(
+                              color: Colors.pink,
+                              child: const TabBar(
+                                labelColor:
+                                    Colors.white, // Color for selected tab
+                                unselectedLabelColor: Color.fromARGB(
+                                    255, 0, 0, 0), // Color for unselected tabs
+                                indicatorColor: Colors.white,
+                                tabs: [
+                                  Tab(
+                                      text: "Recenzije usluga",
+                                      icon: Icon(Icons.reviews)),
+                                  Tab(
+                                      text: "Recenzije uslužnika",
+                                      icon: Icon(Icons.people)),
+                                ],
+                              )),
+                          Expanded(
+                            child: TabBarView(
+                              children: [
+                                Column(
+                                  children: [
+                                    _getRecenzijeUsluge(),
+                                    _showResultUslugeCount(),
+                                    _buildRecenzijeUslugaListView()
+                                  ],
+                                ),
+                                Column(children: [
+                                  _getRecenzijeUsluznika(),
+                                  _showResultUsluzniciCount(),
+                                  _buildRecenzijeUsluznikaListView()
+                                ])
+                              ],
+                            ),
+                          ),
                         ],
-                      )),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        Column(
-                          children: [
-                            _getRecenzijeUsluge(),
-                            _showResultUslugeCount(),
-                            isLoadingData == false
-                                ? _buildRecenzijeUslugaListView()
-                                : Container(child: CircularProgressIndicator()),
-                          ],
-                        ),
-                        Column(children: [
-                          _getRecenzijeUsluznika(),
-                          _showResultUsluzniciCount(),
-                          isLoadingData == false
-                              ? _buildRecenzijeUsluznikaListView()
-                              : Container(child: CircularProgressIndicator()),
-                        ])
-                      ],
-                    ),
-                  ),
-                ],
-              ))),
+                      )))
+              : buildAuthorisation()
+          : Center(child: CircularProgressIndicator()),
     );
   }
 

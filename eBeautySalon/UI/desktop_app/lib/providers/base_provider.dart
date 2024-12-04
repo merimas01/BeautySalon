@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 import '../models/search_result.dart';
-import '../models/usluga.dart';
 import '../utils/util.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {

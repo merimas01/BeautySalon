@@ -18,6 +18,21 @@ class LoggedUser {
   static String? ime;
   static String? prezime;
   static String? slika;
+  static String? uloga;
+
+  static void clearData() {
+    id = 0;
+    korisnickoIme:
+    "";
+    ime:
+    "";
+    prezime:
+    "";
+    slika:
+    "";
+    uloga:
+    "";
+  }
 }
 
 String formatNumber(dynamic) {

@@ -10,6 +10,7 @@ namespace eBeautySalon.Models.SearchObjects
     {
         public string? FTS { get; set; }
         public int ? UsluznikId { get; set; }
+        public int? KorisnikId { get; set; }
         public bool? isKorisnikIncluded { get; set; }
         public bool? isZaposlenikIncluded { get; set; }
     }

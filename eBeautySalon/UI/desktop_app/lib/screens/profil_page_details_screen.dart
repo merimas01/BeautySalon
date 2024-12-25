@@ -421,7 +421,7 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Greška"),
                             content: Text(
-                                "Neispravni podaci. Molimo pokušajte ponovo. ${e.toString()}"),
+                                "Neispravni podaci. Molimo pokušajte ponovo."),
                             actions: [
                               TextButton(
                                   onPressed: () => Navigator.pop(context),
@@ -561,7 +561,7 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji)"),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji). Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

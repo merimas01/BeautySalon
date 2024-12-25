@@ -243,8 +243,25 @@ class LoginPage extends StatelessWidget {
                                 print(
                                     "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
 
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const HomePage()));
+                                if (LoggedUser.uloga == "")
+                                  showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                        title: Text("Greška"),
+                                        content: Text(
+                                            "Nedozvoljena prijava. Molimo pokušajte ponovo."),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text("Ok"))
+                                        ],
+                                      ));
+                                else {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const HomePage()));
+                                }
                               }
                             } on Exception catch (e) {
                               showDialog(

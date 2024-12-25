@@ -32,32 +32,4 @@ class RecenzijaUslugeProvider extends BaseProvider<RecenzijaUsluge> {
       throw new Exception("Unknow error");
     }
   }
-
-  Future<SearchResult<RecenzijaUsluge>> GetRecenzijeUslugeByKorisnikId(
-    korisnikId, filter
-  ) async {
-    var url = "${BaseProvider.baseUrl}RecenzijaUsluge/recenzijeUsluga/$korisnikId?FTS=$filter";
-
-    print("url: $url");
-
-    var uri = Uri.parse(url);
-    var headers = createHeaders();
-    var response = await http.get(uri, headers: headers);
-
-    if (isValidResponse(response)) {
-      var data = jsonDecode(response.body);
-      //return data;
-      var result = SearchResult<RecenzijaUsluge>();
-      result.count = data['count'];
-
-      for (var item in data['result']) {
-        result.result.add(fromJson(item));
-      }
-
-      print("RESULT: ${result.result}");
-      return result;
-    } else {
-      throw new Exception("Unknow error");
-    }
-  }
 }

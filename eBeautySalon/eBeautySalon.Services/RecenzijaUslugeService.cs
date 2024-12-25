@@ -26,11 +26,16 @@ namespace eBeautySalon.Services
                 query = query.Where(x=> x.Korisnik.Ime.Contains(search.FTS)
                 || x.Korisnik.Prezime.Contains(search.FTS)
                 || x.Ocjena.ToString().StartsWith(search.FTS)
-                || x.Komentar.StartsWith(search.FTS));
+                || x.Komentar.StartsWith(search.FTS) 
+                || x.Usluga.Sifra.Contains(search.FTS));
             }
             if(search.UslugaId != null)
             {
                 query = query.Where(x => x.UslugaId == search.UslugaId);
+            }
+            if (search.KorisnikId != null)
+            {
+                query = query.Where(x => x.KorisnikId == search.KorisnikId);
             }
             return base.AddFilter(query, search);
         }
@@ -108,25 +113,6 @@ namespace eBeautySalon.Services
             }
           
             return prosjecneOcjene_usluge;
-        }
-
-        public async Task<PagedResult<Models.RecenzijaUsluge>> GetRecenzijeUslugeByKorisnikId(int korisnikId, string? FTS)
-        {
-            var pagedResult = new PagedResult<Models.RecenzijaUsluge>();
-            var temp = new List<Database.RecenzijaUsluge>();
-            var recenzijeUsluge = _context.RecenzijaUsluges.Include(x => x.Usluga).Where(x => x.KorisnikId == korisnikId);         
-
-            if (!string.IsNullOrEmpty(FTS))
-            {
-                recenzijeUsluge = recenzijeUsluge.Where(x => x.Usluga.Naziv.Contains(FTS)
-                || x.Ocjena.ToString().StartsWith(FTS)
-                || x.Komentar.StartsWith(FTS));
-            }
-
-            temp = await recenzijeUsluge.ToListAsync();
-            pagedResult.Result = _mapper.Map<List<Models.RecenzijaUsluge>>(temp);
-            pagedResult.Count = temp.Count();
-            return pagedResult;
         }
     }
 }

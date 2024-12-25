@@ -30,7 +30,8 @@ namespace eBeautySalon.Services
                 || x.Korisnik.Prezime.ToLower().Contains(search.FTS.ToLower())
                 || x.Termin.Opis.Contains(search.FTS)
                 || x.Usluga.Naziv.Contains(search.FTS))
-                || (x.Sifra != null && x.Sifra.Contains(search.FTS))
+                || x.Usluga.Sifra.Contains(search.FTS)
+                || x.Sifra.Contains(search.FTS)
                 );
             }
             if (search.StatusId != null)
@@ -44,7 +45,11 @@ namespace eBeautySalon.Services
             if (search.isArhiva == "ne")
             {
                 query = query.Where(x => x.IsArhiva == false || x.IsArhiva==null);
-            }   
+            }
+            if (search.KorisnikId != null)
+            {
+                query = query.Where(x => x.KorisnikId == search.KorisnikId);
+            }
             return base.AddFilter(query, search);
         }
 
@@ -128,26 +133,6 @@ namespace eBeautySalon.Services
             await base.BeforeInsert(entity, insert);
         }
 
-        public async Task<PagedResult<Rezervacije>> GetRezervacijeByKorisnikId(int korisnikId, string? FTS)
-        {
-            var pagedResult = new PagedResult<Models.Rezervacije>();
-            var temp = new List<Database.Rezervacija>();
-            var rezervacije = _context.Rezervacijas.Include(x => x.Usluga).Include(x=>x.Termin).Include(x=>x.Status).Where(x => x.KorisnikId == korisnikId);
-
-            if (!string.IsNullOrEmpty(FTS))
-            {
-                rezervacije = rezervacije.Where(x =>
-                (
-                x.Termin.Opis.Contains(FTS)
-                || x.Usluga.Naziv.Contains(FTS)
-                || x.Status.Opis.Contains(FTS))
-                );
-            }
-
-            temp = await rezervacije.ToListAsync();
-            pagedResult.Result = _mapper.Map<List<Models.Rezervacije>>(temp);
-            pagedResult.Count = temp.Count();
-            return pagedResult;
-        }
+       
     }
 }

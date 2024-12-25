@@ -11,6 +11,5 @@ namespace eBeautySalon.Services
 {
     public interface IRezervacijeService : ICRUDService<Rezervacije, RezervacijeSearchObject, RezervacijeInsertRequest, RezervacijeUpdateRequest>
     {
-        public Task<PagedResult<Models.Rezervacije>> GetRezervacijeByKorisnikId(int korisnikId, string? FTS);
     }
 }

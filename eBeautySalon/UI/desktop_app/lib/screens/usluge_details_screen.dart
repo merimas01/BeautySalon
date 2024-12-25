@@ -596,7 +596,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji)"),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji). Molimo pokušajte ponovo. "),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -656,7 +656,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji)"),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji).  Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

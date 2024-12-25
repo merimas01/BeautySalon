@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:desktop_app/models/korisnik_insert.dart';
 import 'package:desktop_app/models/korisnik_update.dart';
-import 'package:desktop_app/screens/uloge_list_screen.dart';
 import 'package:desktop_app/screens/zaposlenici_list_screen.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:file_picker/file_picker.dart';
@@ -340,26 +339,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
             },
           ),
         ),
-        SizedBox(width: 10),
-        Expanded(
-            child: Tooltip(
-          message:
-              "Po potrebi dodaj novu ulogu, uredi ili izbriši već postojeću.",
-          child: TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.pink,
-              ),
-              onPressed: () {
-                print(
-                    "this.widget.zaposlenik: ${this.widget.zaposlenik?.zaposlenikId}");
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => UlogeListScreen(
-                          zaposlenik: this.widget.zaposlenik,
-                          korisnik: this.widget.korisnik,
-                        )));
-              },
-              child: Text("Upravljaj ulogama")),
-        )),
       ],
     );
   }
@@ -575,12 +554,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                           height: 180,
                           fit: BoxFit.cover,
                         )
-                      : Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
+                      : displayNoImage(),
                   SizedBox(
                     height: 3,
                   ),
@@ -640,20 +614,19 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                         ),
                       )
                     : Container(
-                        child: Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
+                        child: displayNoImage()
                       ),
       ],
     );
   }
 
-  Uint8List displayNoImage() {
-    Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
-    return imageBytes;
+  displayNoImage() {
+    return Image.asset(
+      "assets/images/noImage.jpg",
+      height: 180,
+      width: null,
+      fit: BoxFit.cover,
+    );
   }
 
   Uint8List displayCurrentImage() {
@@ -810,7 +783,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (korisničko ime, email ili telefon možda već postoji)"),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (korisničko ime, email ili telefon možda već postoji). Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -940,7 +913,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (email ili telefon možda već postoji)"),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (email ili telefon možda već postoji). Molimo pokušajte ponovo. "),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

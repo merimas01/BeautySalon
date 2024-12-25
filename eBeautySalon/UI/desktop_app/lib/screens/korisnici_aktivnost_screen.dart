@@ -59,16 +59,18 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
   }
 
   void getData() async {
-    var recenzijeUsluge =
-        await _recenzijeUslugeProvider.GetRecenzijeUslugeByKorisnikId(
-            widget.korisnik!.korisnikId, _ftsController1.text);
-    var recenzijeUsluznika =
-        await _recenzijeUsluznikaProvider.GetRecenzijeUsluznikaByKorisnikId(
-            widget.korisnik!.korisnikId, _ftsController2.text);
-    var rezervacije = await _rezervacijeProvider.GetRezervacijeByKorisnikId(
-        widget.korisnik!.korisnikId, _ftsController3.text);
-
-    print("rec ul.: ${recenzijeUsluge.result[0].korisnikId}");
+    var recenzijeUsluge = await _recenzijeUslugeProvider.get(filter: {
+      'FTS': _ftsController1.text,
+      'korisnikId': widget.korisnik!.korisnikId
+    });
+    var recenzijeUsluznika = await _recenzijeUsluznikaProvider.get(filter: {
+      'FTS': _ftsController2.text,
+      'korisnikId': widget.korisnik!.korisnikId
+    });
+    var rezervacije = await _rezervacijeProvider.get(filter: {
+      'FTS': _ftsController3.text,
+      'korisnikId': widget.korisnik!.korisnikId
+    });
 
     // Add a listener to get the value whenever the text changes
     _ftsController1.addListener(() {
@@ -195,7 +197,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "usluga/ocjena/komentar",
+                labelText: "šifra usluge/usluga/ocjena/komentar",
               ),
               controller: _ftsController1,
             ),
@@ -222,10 +224,10 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
               onPressed: () async {
                 print("pritisnuto dugme trazi rec. usluge");
 
-                var data = await _recenzijeUslugeProvider
-                    .GetRecenzijeUslugeByKorisnikId(
-                        widget.korisnik!.korisnikId!, _ftsController1.text);
-
+                var data = await _recenzijeUslugeProvider.get(filter: {
+                  'FTS': _ftsController1.text,
+                  'korisnikId': widget.korisnik!.korisnikId
+                });
                 setState(() {
                   _recenzijaUslugeResult = data;
                 });
@@ -248,7 +250,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "uslužnik/ocjena/komentar",
+                labelText: "šifra uslužnika/uslužnik/ocjena/komentar",
               ),
               controller: _ftsController2,
             ),
@@ -275,9 +277,10 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
               onPressed: () async {
                 print("pritisnuto dugme trazi rec. usluznika");
 
-                var data = await _recenzijeUsluznikaProvider
-                    .GetRecenzijeUsluznikaByKorisnikId(
-                        widget.korisnik!.korisnikId!, _ftsController2.text);
+                var data = await _recenzijeUsluznikaProvider.get(filter: {
+                  'FTS': _ftsController2.text,
+                  'korisnikId': widget.korisnik!.korisnikId
+                });
 
                 setState(() {
                   _recenzijaUsluznikaResult = data;
@@ -301,7 +304,8 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "usluga/termin/status",
+                labelText:
+                    "šifra rezervacije/šifra usluge/usluga/termin/status",
               ),
               controller: _ftsController3,
             ),
@@ -328,9 +332,10 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
               onPressed: () async {
                 print("pritisnuto dugme trazi rezervacije");
 
-                var data =
-                    await _rezervacijeProvider.GetRezervacijeByKorisnikId(
-                        widget.korisnik!.korisnikId!, _ftsController3.text);
+                var data = await _rezervacijeProvider.get(filter: {
+                  'FTS': _ftsController3.text,
+                  'korisnikId': widget.korisnik!.korisnikId
+                });
 
                 setState(() {
                   _rezervacijeResult = data;
@@ -385,7 +390,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                             width: 150,
                             child: Text((e.datumModificiranja == null
                                 ? "-"
-                                :formatDate(e.datumModificiranja!))))),
+                                : formatDate(e.datumModificiranja!))))),
                         DataCell(Text(e.ocjena.toString())),
                         DataCell(Text("${e.komentar ?? ""}")),
                       ]))
@@ -449,6 +454,10 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           columns: [
             DataColumn(
                 label: Expanded(
+              child: Text("Rezervacija"),
+            )),
+            DataColumn(
+                label: Expanded(
               child: Text("Usluga"),
             )),
             DataColumn(
@@ -467,10 +476,11 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           rows: _rezervacijeResult?.result
                   .map((Rezervacija e) =>
                       DataRow(color: _obojiRedove(e), cells: [
+                        DataCell(Text("${e.sifra}")),
                         DataCell(Text(
                             "${e.usluga?.sifra ?? ""} - ${e.usluga?.naziv ?? ""}")),
                         DataCell(Text(
-                            "${e.termin?.sifra ?? ""} - ${e.termin?.opis ?? ""}")),
+                            "${e.termin?.opis ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumRezervacije == null

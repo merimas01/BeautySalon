@@ -134,7 +134,7 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Greška"),
                             content: Text(
-                                "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba biti imati unikatne vrijednosti (naziv kategorije možda već postoji)"),
+                                "Neispravni podaci. Svaki zapis treba biti imati unikatne vrijednosti (naziv kategorije možda već postoji). Molimo pokušajte ponovo."),
                             actions: [
                               TextButton(
                                   onPressed: () => Navigator.pop(context),

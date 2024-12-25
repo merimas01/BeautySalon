@@ -34,12 +34,5 @@ namespace eBeautySalon.Controllers
         {
             return base.Delete(id);
         }
-
-        [Authorize]
-        [HttpGet("rezervacije/{korisnikId}")]
-        public async Task<PagedResult<Rezervacije>> GetRezervacijeByKorisnikId(int korisnikId, string? FTS)
-        {
-            return await _service.GetRezervacijeByKorisnikId(korisnikId, FTS);
-        }
     }
 }

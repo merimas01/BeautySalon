@@ -540,7 +540,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji)"),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji). Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -602,7 +602,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji)"),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji). Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

@@ -66,6 +66,9 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       'slikaUslugeId': widget.usluga?.slikaUslugeId.toString() ??
           "${DEFAULT_SlikaUslugeId.toString()}",
     };
+
+    imaSliku();
+
     _kategorijeProvider = context.read<KategorijeProvider>();
     _slikaUslugeProvider = context.read<SlikaUslugeProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
@@ -404,18 +407,15 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
             ? Column(
                 children: [
                   _ponistiSliku != true
-                      ? Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
+                      ? isNullSlika() == false
+                          ? Image.memory(
+                              displayCurrentImage(),
+                              width: null,
+                              height: 180,
+                              fit: BoxFit.cover,
+                            )
+                          : displayNoImage()
+                      : displayNoImage(),
                   SizedBox(
                     height: 8,
                   ),
@@ -466,60 +466,61 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                     ],
                   )
                 : _ponistiSliku != true
-                    ? Container(
-                        child: Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Container(
-                        child: Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                    ? isNullSlika() == false
+                        ? Image.memory(
+                            displayCurrentImage(),
+                            width: null,
+                            height: 180,
+                            fit: BoxFit.cover,
+                          )
+                        : displayNoImage()
+                    : displayNoImage(),
       ],
     );
   }
 
-  Uint8List displayNoImage() {
-    Uint8List imageBytes = base64Decode(_slikaUslugeResult!.result[0].slika);
-    return imageBytes;
+  Image displayNoImage() {
+    return Image.asset(
+      "assets/images/noImage.jpg",
+      height: 180,
+      width: null,
+      fit: BoxFit.cover,
+    );
   }
 
-  Uint8List displayCurrentImage() {
-    if (widget.usluga != null) {
-      if (widget.usluga?.slikaUsluge != null) {
-        Uint8List imageBytes = base64Decode(widget.usluga!.slikaUsluge!.slika);
+  isNullSlika() {
+    if (widget.usluga != null &&
+        widget.usluga?.slikaUsluge != null &&
+        widget.usluga?.slikaUsluge?.slika != null &&
+        widget.usluga?.slikaUsluge?.slika != "") {
+      return false;
+    } else
+      return true;
+  }
+
+  void imaSliku() {
+    if (isNullSlika() == false) {
+      if (widget.usluga!.slikaUslugeId != DEFAULT_SlikaUslugeId) {
         setState(() {
           _imaSliku = true;
         });
+      }
 
-        if (widget.usluga!.slikaUslugeId == DEFAULT_SlikaUslugeId) {
-          setState(() {
-            _imaSliku = false;
-          });
-        }
-        return imageBytes;
-      } else {
-        Uint8List imageBytes =
-            base64Decode(_slikaUslugeResult!.result[0].slika);
+      if (widget.usluga!.slikaUslugeId == DEFAULT_SlikaUslugeId) {
         setState(() {
           _imaSliku = false;
         });
-        return imageBytes;
       }
     } else {
-      Uint8List imageBytes = base64Decode(_slikaUslugeResult!.result[0].slika);
       setState(() {
         _imaSliku = false;
       });
-      return imageBytes;
     }
+  }
+
+  Uint8List displayCurrentImage() {
+    Uint8List imageBytes = base64Decode(widget.usluga!.slikaUsluge!.slika);
+    return imageBytes;
   }
 
   Future ponistiSliku() async {

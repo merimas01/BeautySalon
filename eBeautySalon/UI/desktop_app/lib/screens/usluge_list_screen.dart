@@ -291,14 +291,22 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                         DataCell(Text(e.kategorija!.naziv ?? "")),
                         DataCell(Text((formatNumber(e.cijena)))),
                         DataCell(Text(e.opis ?? "")),
-                        DataCell(e.slikaUsluge?.slika != null
+                        DataCell(e.slikaUsluge?.slika != null &&
+                                e.slikaUsluge?.slika != ""
                             ? Container(
                                 width: 100,
                                 height: 100,
                                 child:
                                     ImageFromBase64String(e.slikaUsluge!.slika),
                               )
-                            : Text("")),
+                            : Container(
+                                child: Image.asset(
+                                  "assets/images/noImage.jpg",
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                              )),
                         DataCell(
                           TextButton(
                             style: TextButton.styleFrom(

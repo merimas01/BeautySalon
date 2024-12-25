@@ -144,12 +144,22 @@ class _ProfilPageState extends State<ProfilPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 250,
-                          fit: BoxFit.cover,
-                        ),
+                        korisnik != null &&
+                                korisnik?.slikaProfila != null &&
+                                korisnik?.slikaProfila?.slika != null &&
+                                korisnik?.slikaProfila?.slika != ""
+                            ? Image.memory(
+                                displayCurrentImage(),
+                                width: null,
+                                height: 250,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                "assets/images/noImage.jpg",
+                                height: 250,
+                                width: null,
+                                fit: BoxFit.cover,
+                              )
                       ],
                     ),
                     FormBuilderTextField(
@@ -195,18 +205,7 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Uint8List displayCurrentImage() {
-    if (korisnik != null) {
-      if (korisnik?.slikaProfila != null) {
-        Uint8List imageBytes = base64Decode(korisnik!.slikaProfila!.slika);
-        return imageBytes;
-      } else {
-        Uint8List imageBytes =
-            base64Decode(_slikaProfilaResult!.result[0].slika);
-        return imageBytes;
-      }
-    } else {
-      Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
-      return imageBytes;
-    }
+    Uint8List imageBytes = base64Decode(korisnik!.slikaProfila!.slika);
+    return imageBytes;
   }
 }

@@ -24,9 +24,6 @@ class KorisniciDetailsScreen extends StatefulWidget {
 class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
-
-  late SlikaProfilaProvider _slikaProfilaProvider;
-  SearchResult<SlikaProfila>? _slikaProfilaResult;
   bool isLoading = true;
 
   @override
@@ -44,13 +41,6 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
       'slikaProfilaId': widget.korisnik?.slikaProfilaId,
     };
 
-    _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
-
-    initForm();
-  }
-
-  Future initForm() async {
-    _slikaProfilaResult = await _slikaProfilaProvider.get();
     setState(() {
       isLoading = false;
     });
@@ -153,21 +143,21 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
                 child: Column(
                   children: [
                     _naslov(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            Image.memory(
+                    widget.korisnik != null &&
+                            widget.korisnik?.slikaProfila != null &&
+                            widget.korisnik?.slikaProfila?.slika != null &&
+                            widget.korisnik?.slikaProfila?.slika != ""
+                        ? Center(
+                            child: Image.memory(
                               displayCurrentImage(),
                               width: null,
                               height: 250,
                               fit: BoxFit.cover,
                             ),
-                          ],
-                        )
-                      ],
-                    ),
+                          )
+                        : Center(
+                            child: displayNoImage(),
+                          ),
                     FormBuilderTextField(
                       decoration: InputDecoration(labelText: "Ime:"),
                       name: "ime",
@@ -208,13 +198,17 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
         ));
   }
 
+  Image displayNoImage() {
+    return Image.asset(
+                            "assets/images/noImage.jpg",
+                            height: 250,
+                            width: null,
+                            fit: BoxFit.cover,
+                          );
+  }
+
   Uint8List displayCurrentImage() {
-    if (widget.korisnik != null) {
-      Uint8List imageBytes = base64Decode(widget.korisnik!.slikaProfila!.slika);
-      return imageBytes;
-    } else {
-      Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
-      return imageBytes;
-    }
+    Uint8List imageBytes = base64Decode(widget.korisnik!.slikaProfila!.slika);
+    return imageBytes;
   }
 }

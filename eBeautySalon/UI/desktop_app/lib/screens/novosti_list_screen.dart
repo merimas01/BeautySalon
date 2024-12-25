@@ -233,14 +233,21 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                   .map((Novost e) => DataRow(cells: [
                         DataCell(Text(e.sifra ?? "")),
                         DataCell(Text(e.naslov ?? "")),
-                        DataCell(e.slikaNovost?.slika != null
+                        DataCell(e.slikaNovost?.slika != null &&
+                                e.slikaNovost?.slika != ""
                             ? Container(
                                 width: 100,
                                 height: 100,
                                 child:
                                     ImageFromBase64String(e.slikaNovost!.slika),
                               )
-                            : Text("")),
+                            : Container(
+                                child: Image.asset(
+                                "assets/images/noImage.jpg",
+                                height: 250,
+                                width: null,
+                                fit: BoxFit.cover,
+                              ))),
                         DataCell(Text(e.sadrzaj ?? "")),
                         DataCell(Container(
                             width: 130,

@@ -58,6 +58,8 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
           DEFAULT_SlikaProfilaId.toString(),
     };
 
+    imaSliku();
+
     _korisnikProvider = context.read<KorisnikProvider>();
     _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
 
@@ -269,18 +271,15 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
             ? Column(
                 children: [
                   _ponistiSliku != true
-                      ? Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
+                      ? isNullSlika() == false
+                          ? Image.memory(
+                              displayCurrentImage(),
+                              width: null,
+                              height: 180,
+                              fit: BoxFit.cover,
+                            )
+                          : displayNoImage()
+                      : displayNoImage(),
                   SizedBox(
                     height: 8,
                   ),
@@ -331,23 +330,25 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                     ],
                   )
                 : _ponistiSliku != true
-                    ? Container(
-                        child: Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Container(
-                        child: Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                    ? isNullSlika() == false
+                        ? Image.memory(
+                            displayCurrentImage(),
+                            width: null,
+                            height: 180,
+                            fit: BoxFit.cover,
+                          )
+                        :displayNoImage()
+                    : displayNoImage()
       ],
+    );
+  }
+
+  Image displayNoImage() {
+    return Image.asset(
+      "assets/images/noImage.jpg",
+      height: 180,
+      width: null,
+      fit: BoxFit.cover,
     );
   }
 
@@ -456,41 +457,39 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
     });
   }
 
-  Uint8List displayNoImage() {
-    Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
-    return imageBytes;
+  isNullSlika() {
+    if (widget.korisnik != null &&
+        widget.korisnik?.slikaProfila != null &&
+        widget.korisnik?.slikaProfila?.slika != null &&
+        widget.korisnik?.slikaProfila?.slika != "") {
+      return false;
+    } else
+      return true;
   }
 
-  Uint8List displayCurrentImage() {
-    if (widget.korisnik != null) {
-      if (widget.korisnik?.slikaProfila != null) {
-        Uint8List imageBytes =
-            base64Decode(widget.korisnik!.slikaProfila!.slika);
+  void imaSliku() {
+    if (isNullSlika() == false) {
+      if (widget.korisnik!.slikaProfilaId != DEFAULT_SlikaProfilaId) {
         setState(() {
           _imaSliku = true;
         });
+      }
 
-        if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaUslugeId) {
-          setState(() {
-            _imaSliku = false;
-          });
-        }
-        return imageBytes;
-      } else {
-        Uint8List imageBytes =
-            base64Decode(_slikaProfilaResult!.result[0].slika);
+      if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaProfilaId) {
         setState(() {
           _imaSliku = false;
         });
-        return imageBytes;
       }
     } else {
-      Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
       setState(() {
         _imaSliku = false;
       });
-      return imageBytes;
     }
+  }
+
+  Uint8List displayCurrentImage() {
+    Uint8List imageBytes = base64Decode(widget.korisnik!.slikaProfila!.slika);
+    return imageBytes;
   }
 
   Future ponistiSliku() async {

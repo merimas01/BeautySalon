@@ -395,13 +395,16 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                         DataCell(Text(e.korisnik?.sifra ?? "")),
                         DataCell(
                             Text("${e.korisnik?.ime} ${e.korisnik?.prezime}")),
-                        DataCell(e.korisnik?.slikaProfila?.slika != null
+                        DataCell(e.korisnik?.slikaProfila?.slika != null &&
+                                e.korisnik?.slikaProfila?.slika != ""
                             ? Container(
                                 width: 50,
                                 child: ImageFromBase64String(
                                     e.korisnik!.slikaProfila!.slika),
                               )
-                            : Text("")),
+                            : Image.asset(
+                                "assets/images/noImage.jpg",
+                              )),
                         DataCell(_zaduzenZa(
                             e.zaposlenikUslugas, e.korisnik?.korisnikUlogas)),
                         DataCell(

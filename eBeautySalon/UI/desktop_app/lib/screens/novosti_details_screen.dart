@@ -56,6 +56,9 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       'slikaNovostId': widget.novost?.slikaNovostId.toString() ??
           DEFAULT_SlikaNovostId.toString(),
     };
+
+    imaSliku();
+
     _slikaNovostProvider = context.read<SlikaNovostProvider>();
     _novostiProvider = context.read<NovostiProvider>();
 
@@ -295,18 +298,15 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
             ? Column(
                 children: [
                   _ponistiSliku != true
-                      ? Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
+                      ? isNullSlika() == false
+                          ? Image.memory(
+                              displayCurrentImage(),
+                              width: null,
+                              height: 180,
+                              fit: BoxFit.cover,
+                            )
+                          : displayNoImage()
+                      : displayNoImage(),
                   SizedBox(
                     height: 8,
                   ),
@@ -357,60 +357,61 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                     ],
                   )
                 : _ponistiSliku != true
-                    ? Container(
-                        child: Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Container(
-                        child: Image.memory(
-                          displayNoImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                    ? isNullSlika() == false
+                        ? Image.memory(
+                            displayCurrentImage(),
+                            width: null,
+                            height: 180,
+                            fit: BoxFit.cover,
+                          )
+                        : displayNoImage()
+                    : displayNoImage()
       ],
     );
   }
 
-  Uint8List displayNoImage() {
-    Uint8List imageBytes = base64Decode(_slikaNovostResult!.result[0].slika);
-    return imageBytes;
+  Image displayNoImage() {
+    return Image.asset(
+      "assets/images/noImage.jpg",
+      height: 180,
+      width: null,
+      fit: BoxFit.cover,
+    );
   }
 
-  Uint8List displayCurrentImage() {
-    if (widget.novost != null) {
-      if (widget.novost?.slikaNovost != null) {
-        Uint8List imageBytes = base64Decode(widget.novost!.slikaNovost!.slika);
+  isNullSlika() {
+    if (widget.novost != null &&
+        widget.novost?.slikaNovost != null &&
+        widget.novost?.slikaNovost?.slika != null &&
+        widget.novost?.slikaNovost?.slika != "") {
+      return false;
+    } else
+      return true;
+  }
+
+  void imaSliku() {
+    if (isNullSlika() == false) {
+      if (widget.novost!.slikaNovostId != DEFAULT_SlikaNovostId) {
         setState(() {
           _imaSliku = true;
         });
+      }
 
-        if (widget.novost!.slikaNovostId == DEFAULT_SlikaUslugeId) {
-          setState(() {
-            _imaSliku = false;
-          });
-        }
-        return imageBytes;
-      } else {
-        Uint8List imageBytes =
-            base64Decode(_slikaNovostResult!.result[0].slika);
+      if (widget.novost!.slikaNovostId == DEFAULT_SlikaNovostId) {
         setState(() {
           _imaSliku = false;
         });
-        return imageBytes;
       }
     } else {
-      Uint8List imageBytes = base64Decode(_slikaNovostResult!.result[0].slika);
       setState(() {
         _imaSliku = false;
       });
-      return imageBytes;
     }
+  }
+
+  Uint8List displayCurrentImage() {
+    Uint8List imageBytes = base64Decode(widget.novost!.slikaNovost!.slika);
+    return imageBytes;
   }
 
   Future ponistiSliku() async {
@@ -568,7 +569,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
         var del =
             await _slikaNovostProvider.delete(widget.novost!.slikaNovostId!);
         print("delete slikaNovostId: $del");
-        request_novost['slikaNovostId'] = DEFAULT_SlikaUslugeId;
+        request_novost['slikaNovostId'] = DEFAULT_SlikaNovostId;
       } catch (err) {
         print("delete error");
       }

@@ -548,12 +548,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
             ? Column(
                 children: [
                   _ponistiSliku != true
-                      ? Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        )
+                      ? isNullSlika() == false
+                          ? Image.memory(
+                              displayCurrentImage(),
+                              width: null,
+                              height: 180,
+                              fit: BoxFit.cover,
+                            )
+                          : displayNoImage()
                       : displayNoImage(),
                   SizedBox(
                     height: 3,
@@ -605,17 +607,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     ],
                   )
                 : _ponistiSliku != true
-                    ? Container(
-                        child: Image.memory(
-                          displayCurrentImage(),
-                          width: null,
-                          height: 180,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Container(
-                        child: displayNoImage()
-                      ),
+                    ?isNullSlika() == false
+                        ? Image.memory(
+                            displayCurrentImage(),
+                            width: null,
+                            height: 180,
+                            fit: BoxFit.cover,
+                          )
+                        : displayNoImage()
+                    : displayNoImage(),
       ],
     );
   }
@@ -629,36 +629,39 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
     );
   }
 
-  Uint8List displayCurrentImage() {
-    if (widget.korisnik != null) {
-      if (widget.korisnik?.slikaProfila != null) {
-        Uint8List imageBytes =
-            base64Decode(widget.korisnik!.slikaProfila!.slika);
+  isNullSlika() {
+    if (widget.korisnik != null &&
+        widget.korisnik?.slikaProfila != null &&
+        widget.korisnik?.slikaProfila?.slika != null &&
+        widget.korisnik?.slikaProfila?.slika != "") {
+      return false;
+    } else
+      return true;
+  }
+
+  void imaSliku() {
+    if (isNullSlika() == false) {
+      if (widget.korisnik!.slikaProfilaId != DEFAULT_SlikaProfilaId) {
         setState(() {
           _imaSliku = true;
         });
+      }
 
-        if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaUslugeId) {
-          setState(() {
-            _imaSliku = false;
-          });
-        }
-        return imageBytes;
-      } else {
-        Uint8List imageBytes =
-            base64Decode(_slikaProfilaResult!.result[0].slika);
+      if (widget.korisnik!.slikaProfilaId == DEFAULT_SlikaProfilaId) {
         setState(() {
           _imaSliku = false;
         });
-        return imageBytes;
       }
     } else {
-      Uint8List imageBytes = base64Decode(_slikaProfilaResult!.result[0].slika);
       setState(() {
         _imaSliku = false;
       });
-      return imageBytes;
     }
+  }
+
+  Uint8List displayCurrentImage() {
+    Uint8List imageBytes = base64Decode(widget.korisnik!.slikaProfila!.slika);
+    return imageBytes;
   }
 
   Future ponistiSliku() async {

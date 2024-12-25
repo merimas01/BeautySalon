@@ -311,14 +311,23 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                         DataCell(Text(e.korisnickoIme ?? "")),
                         DataCell(Text(e.telefon ?? "")),
                         DataCell(Text(e.email ?? "")),
-                        DataCell(e.slikaProfila?.slika != null
-                            ? Container(
-                                width: 100,
-                                height: 100,
-                                child: ImageFromBase64String(
-                                    e.slikaProfila!.slika),
-                              )
-                            : Text("")),
+                        DataCell(
+                          e.slikaProfila?.slika != null &&
+                                  e.slikaProfila?.slika != ""
+                              ? Container(
+                                  width: 100,
+                                  height: 100,
+                                  child: ImageFromBase64String(
+                                      e.slikaProfila!.slika),
+                                )
+                              : Container(
+                                  child: Image.asset(
+                                  "assets/images/noImage.jpg",
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.cover,
+                                )),
+                        ),
                         DataCell(Text("${e.status == true ? "Ne" : "Da"}")),
                         DataCell(
                           TextButton(

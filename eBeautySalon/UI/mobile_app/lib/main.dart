@@ -1,9 +1,16 @@
+import 'package:mobile_app/providers/kategorije_provider.dart';
 import 'package:mobile_app/providers/korisnik_provider.dart';
 import 'package:mobile_app/providers/novost_provider.dart';
+import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
+import 'package:mobile_app/providers/recenzije_usluznika_provider.dart';
+import 'package:mobile_app/providers/rezervacije_provider.dart';
 import 'package:mobile_app/providers/slika_profila_provider.dart';
+import 'package:mobile_app/providers/usluge_provider.dart';
 import 'package:mobile_app/screens/home_page.dart';
+import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/screens/registracija_page.dart';
+import 'package:mobile_app/screens/rezervacije_page.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,25 +19,25 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       //dependency injection
-      // ChangeNotifierProvider(create: (_) => UslugeProvider()),
-      // ChangeNotifierProvider(create: (_) => KategorijeProvider()),
+      ChangeNotifierProvider(create: (_) => UslugeProvider()),
+      ChangeNotifierProvider(create: (_) => KategorijeProvider()),
       // ChangeNotifierProvider(create: (_) => SlikaUslugeProvider()),
       ChangeNotifierProvider(create: (_) => SlikaProfilaProvider()),
       ChangeNotifierProvider(create: (_) => KorisnikProvider()),
       // ChangeNotifierProvider(create: (_) => ZaposleniciUslugeProvider()),
       // ChangeNotifierProvider(create: (_) => ZaposleniciProvider()),
-       ChangeNotifierProvider(create: (_) => NovostiProvider()),
-      // ChangeNotifierProvider(create: (_) => RecenzijaUslugeProvider()),
-      // ChangeNotifierProvider(create: (_) => RecenzijaUsluznikaProvider()),
+      ChangeNotifierProvider(create: (_) => NovostiProvider()),
+      ChangeNotifierProvider(create: (_) => RecenzijaUslugeProvider()),
+      ChangeNotifierProvider(create: (_) => RecenzijaUsluznikaProvider()),
       // ChangeNotifierProvider(create: (_) => SlikaNovostProvider()),
       // ChangeNotifierProvider(create: (_) => KorisniciUlogeProvider()),
       // ChangeNotifierProvider(create: (_) => UlogeProvider()),
-      // ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
+      ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
       // ChangeNotifierProvider(create: (_) => StatusiProvider()),
       // ChangeNotifierProvider(create: (_) => TerminProvider()),
       // ChangeNotifierProvider(create: (_) => UslugeTerminiProvider()),
     ],
-    child: const MyMaterialApp(),
+    child: MyMaterialApp(),
   ));
 }
 
@@ -41,8 +48,36 @@ class MyMaterialApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Neki naslov',
-      theme: ThemeData(primarySwatch: Colors.pink),
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+        textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+                primary: Colors.pink,
+                textStyle: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  // fontStyle: FontStyle.italic
+                ))),
+      ),
       home: LoginPage(),
+      onGenerateRoute: (settings) {
+        if (settings.name == HomePage.routeName) {
+          return MaterialPageRoute(builder: ((context) => HomePage()));
+        } else if (settings.name == PretragaPage.routeName) {
+          return MaterialPageRoute(builder: ((context) => PretragaPage()));
+        } else if (settings.name == RezervacijePage.routeName) {
+          return MaterialPageRoute(builder: ((context) => RezervacijePage()));
+        } else if (settings.name == ProfilPage.routeName) {
+          return MaterialPageRoute(builder: ((context) => ProfilPage()));
+        }
+
+        var uri = Uri.parse(settings.name!);
+        // if (uri.pathSegments.length == 2 &&
+        //     "/${uri.pathSegments.first}" == NovostDetailsScreen.routeName) {
+        //   var id = uri.pathSegments[1];
+        //   return MaterialPageRoute(builder: (context) => NovostDetailsScreen(id: id));
+        // }
+      },
     );
   }
 }
@@ -62,6 +97,7 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text("Prijava"),
+          backgroundColor: Colors.pink,
         ),
         body: Center(
             child: Form(
@@ -221,8 +257,10 @@ class LoginPage extends StatelessWidget {
                                 if (LoggedUser.uloga != "")
                                   throw new Exception("Nedozvoljena prijava");
                                 else {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => const HomePage()));
+                                  Navigator.pushNamed(
+                                      context, HomePage.routeName);
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (context) => const HomePage()));
                                 }
                               }
                             } on Exception catch (e) {

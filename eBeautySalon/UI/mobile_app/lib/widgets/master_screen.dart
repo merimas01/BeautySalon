@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/screens/home_page.dart';
 import 'package:mobile_app/screens/pretraga_page.dart';
+import 'package:mobile_app/screens/profil_page.dart';
+import 'package:mobile_app/screens/rezervacije_page.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
@@ -14,51 +16,58 @@ class MasterScreenWidget extends StatefulWidget {
 }
 
 class _MasterScreenWidgetState extends State<MasterScreenWidget> {
-  int _currentIndex = 0;
+  int currentIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
-      _currentIndex = index;
+      currentIndex = index;
     });
-    if (_currentIndex == 0) {
+    if (currentIndex == 0) {
       Navigator.pushNamed(context, HomePage.routeName);
-    } else if (_currentIndex == 1) {
+    } else if (currentIndex == 1) {
       Navigator.pushNamed(context, PretragaPage.routeName);
-    }
+    } else if (currentIndex == 2)
+      Navigator.pushNamed(context, RezervacijePage.routeName);
+    else if (currentIndex == 3)
+      Navigator.pushNamed(context, ProfilPage.routeName);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-            child: widget.title_widget ??
-                (widget.title != null ? Text(widget.title!) : Text(""))),
-      ),
+          backgroundColor: Colors.pink,
+          title: widget.title_widget ??
+              (widget.title != null ? Text(widget.title!) : Text(""))),
       body: SafeArea(
         child: widget.child!,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
-        items: const [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
+            backgroundColor: Colors.pink,
             icon: Icon(Icons.home),
-            label: 'Početna stranica',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Pretraga',
+            backgroundColor: Colors.pink,
+            icon: Icon(Icons.search_sharp),
+            label: 'Pretraga usluga',
           ),
           BottomNavigationBarItem(
+            backgroundColor: Colors.pink,
             icon: Icon(Icons.calendar_month),
             label: 'Rezervacije',
           ),
           BottomNavigationBarItem(
+            backgroundColor: Colors.pink,
             icon: Icon(Icons.person),
             label: 'Profil',
           ),
         ],
+        selectedItemColor: Colors.amber[800],
+        currentIndex: currentIndex,
+        onTap: _onItemTapped,
       ),
     );
   }

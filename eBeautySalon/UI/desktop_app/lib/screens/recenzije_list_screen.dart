@@ -420,14 +420,21 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUslugeResult?.result
                   .map((RecenzijaUsluge e) => DataRow(cells: [
-                        DataCell(e.korisnik?.slikaProfila?.slika != null
+                        DataCell(e.korisnik?.slikaProfila?.slika != null &&
+                                e.korisnik?.slikaProfila?.slika != ""
                             ? Container(
                                 width: 100,
                                 height: 100,
                                 child: ImageFromBase64String(
                                     e.korisnik!.slikaProfila!.slika),
                               )
-                            : Text("")),
+                            : Container(
+                                child: Image.asset(
+                                "assets/images/noImage.jpg",
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.cover,
+                              ))),
                         DataCell(Text(
                           "${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}",
                         )),
@@ -636,14 +643,21 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           ],
           rows: _recenzijaUsluznikaResult?.result
                   .map((RecenzijaUsluznika e) => DataRow(cells: [
-                        DataCell(e.korisnik?.slikaProfila?.slika != null
+                        DataCell(e.korisnik?.slikaProfila?.slika != null &&
+                                e.korisnik?.slikaProfila?.slika != ""
                             ? Container(
                                 width: 100,
                                 height: 100,
                                 child: ImageFromBase64String(
                                     e.korisnik!.slikaProfila!.slika),
                               )
-                            : Text("")),
+                            : Container(
+                                child: Image.asset(
+                                "assets/images/noImage.jpg",
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.cover,
+                              ))),
                         DataCell(Text(
                           " ${e.korisnik?.ime ?? ""} ${e.korisnik?.prezime ?? ""}",
                         )),

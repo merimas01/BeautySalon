@@ -6,7 +6,7 @@ import 'base_provider.dart';
 import 'package:http/http.dart' as http;
 
 class NovostiProvider extends BaseProvider<Novost> {
-  NovostiProvider() : super("Novosti", "isSlikaIncluded=true");
+  NovostiProvider() : super("Novosti", "isSlikaIncluded=true&isKorisnikIncluded=true");
 
   @override
   Novost fromJson(data) {

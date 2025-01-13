@@ -245,8 +245,7 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                                 child: Image.asset(
                                 "assets/images/noImage.jpg",
                                 height: 250,
-                                width: null,
-                                fit: BoxFit.cover,
+                                width: 100,
                               ))),
                         DataCell(Text(e.sadrzaj ?? "")),
                         DataCell(Container(

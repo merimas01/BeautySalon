@@ -403,6 +403,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                                     e.korisnik!.slikaProfila!.slika),
                               )
                             : Image.asset(
+                                width: 50,
                                 "assets/images/noImage.jpg",
                               )),
                         DataCell(_zaduzenZa(

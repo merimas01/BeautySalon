@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/main.dart';
 import 'package:mobile_app/screens/novost_details.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
@@ -43,94 +44,121 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: "Početna stranica",
-      child: isLoading == false
-          ? Container(
-              width: 800,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SingleChildScrollView(
-                      child: Column(
-                    children: [
-                      Image.asset(
-                        "assets/images/slika4.png",
-                        height: 170,
-                        width: 170,
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        "Dobrodošli ${LoggedUser.ime}!",
-                        style: const TextStyle(
-                            fontFamily: 'BeckyTahlia',
-                            fontSize: 26,
-                            color: Colors.pinkAccent),
-                      ),
-                      Expanded(
+        title: "Početna stranica",
+        child: Container(
+          // height: 800,
+          width: 800,
+          child: SingleChildScrollView(
+            child: Column(children: [
+              Container(
+                height: 30,
+                child: Text(
+                  "Dobrodosli ${LoggedUser.ime}!",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontFamily: 'BeckyTahlia',
+                      fontSize: 26,
+                      color: Colors.pinkAccent),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                child: Text("Pogledajte novosti naseg salona."),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              isLoading == false
+                  ? Container(
+                      width: 800,
+                      height: 600,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: GridView(
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 1, // Number of columns
-                            crossAxisSpacing: 8.0,
-                            mainAxisSpacing: 8.0,
+                            crossAxisCount:
+                                1, // Number of items in a row (1 in this case)
+                            childAspectRatio:
+                                3 / 1, // Adjust the width-to-height ratio here
+                            mainAxisSpacing:
+                                8, // Spacing between items vertically
                           ),
                           scrollDirection: Axis.vertical,
-                          children: data?.result.length != 0
-                              ? data!.result
-                                  .map((novost) => _buildNovostWidget(novost))
-                                  .toList()
-                              : [],
+                          children: _buildNovostList(),
                         ),
                       ),
-                    ],
-                  )),
-                ),
-              ),
-            )
-          : Text("nema podataka"),
-    );
+                    )
+                  : Text("Ucitavanje...")
+            ]),
+          ),
+        ));
   }
 
-  Widget _buildNovostWidget(Novost novost) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => NovostDetailsScreen(
-                        novost: novost,
-                      )));
-            },
-          ),
-          Row(
-            children: [
-              novost.slikaNovost != null && novost.slikaNovost!.slika != ""
-                  ? Container(
-                      height: 100,
-                      width: 100,
-                      child: ImageFromBase64String(novost.slikaNovost!.slika),
-                    )
-                  : Container(
-                      child: Image.asset(
-                        "assets/images/noImage.jpg",
-                        height: 180,
-                        width: null,
-                        fit: BoxFit.cover,
-                      ),
+  _buildNovostList() {
+    if (data?.result.length == 0) {
+      return [Text("Ucitavanje...")];
+    }
+
+    List<Widget> list = data!.result
+        .map((x) => Container(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.black,
+                      width: 1.0,
                     ),
-              Text(novost.naslov ?? "")
-            ],
-          ),
-          SizedBox(
-            child: Container(color: Colors.black),
-            height: 1,
-          )
-        ],
-      ),
-    );
+                  ),
+                ),
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => NovostDetailsScreen(
+                                      novost: x,
+                                    )));
+                          },
+                          child: x.slikaNovost != null &&
+                                  x.slikaNovost?.slika != null
+                              ? Container(
+                                  height: 150,
+                                  width: 150,
+                                  child: ImageFromBase64String(
+                                      x.slikaNovost!.slika),
+                                )
+                              : Container(
+                                  child: Image.asset(
+                                    "assets/images/noImage.jpg",
+                                  ),
+                                  height: 150,
+                                  width: 150,
+                                ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${(x.naslov ?? "").split(' ').take(3).join(' ')}...",
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ))
+        .cast<Widget>()
+        .toList();
+
+    return list;
   }
 }

@@ -39,12 +39,20 @@ class _HoverableImageState extends State<HoverableImage> {
                       height: double.infinity,
                     ),
                   )
-                : const Center(
-                    child: Text(
-                      "Nema slike",
-                      style: TextStyle(color: Colors.grey),
+                : Container(
+                    child: const Center(
+                      child: Text(
+                        "Nema slike",
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ),
+            // const Center(
+            //     child: Text(
+            //       "Nema slike",
+            //       style: TextStyle(color: Colors.grey),
+            //     ),
+            //   ),
 
             // Show text and button only when hovered
             if (_isHovered)

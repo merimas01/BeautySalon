@@ -61,7 +61,7 @@ namespace eBeautySalon.Services
             }
             if (search?.isUslugaIncluded == true)
             {
-                query = query.Include(x => x.Usluga);
+                query = query.Include(x => x.Usluga.Kategorija);
             }
             if (search?.isTerminIncluded == true)
             {

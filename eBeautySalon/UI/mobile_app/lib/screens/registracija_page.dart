@@ -138,41 +138,41 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                           ));
                 }
               },
-              child: Text("Spasi")),
+              child: Text("Završi registraciju")),
         ],
       ),
     );
   }
 
-  Widget _naslov() {
-    var naslov = "Registruj se";
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 244, 201, 215), // Set background color
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-          child: Center(
-            child: RichText(
-                text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.pink,
-                    ),
-                    children: [
-                  TextSpan(
-                    text: naslov,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ])),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _naslov() {
+  //   var naslov = "Registruj se";
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 10.0),
+  //     child: Container(
+  //       decoration: BoxDecoration(
+  //         color: Color.fromARGB(255, 244, 201, 215), // Set background color
+  //         borderRadius: BorderRadius.circular(5),
+  //       ),
+  //       child: Padding(
+  //         padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+  //         child: Center(
+  //           child: RichText(
+  //               text: TextSpan(
+  //                   style: TextStyle(
+  //                     fontSize: 16,
+  //                     color: Colors.pink,
+  //                   ),
+  //                   children: [
+  //                 TextSpan(
+  //                   text: naslov,
+  //                   style: TextStyle(fontWeight: FontWeight.bold),
+  //                 ),
+  //               ])),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buttonOdaberiSliku() {
     return FormBuilderField(
@@ -234,7 +234,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                   )
                 ],
               )
-            : _ponistiSliku != true
+            : _image != null && _ponistiSliku != true
                 ? Container(
                     child: Image.file(
                       _image!,
@@ -422,6 +422,15 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
           },
         )),
       ],
+    );
+  }
+
+Widget _naslov() {
+    return Text(
+      "Registrujte se na nasu aplikaciju putem sljedece forme!",
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
     );
   }
 

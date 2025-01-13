@@ -1320,7 +1320,12 @@ class _HomePageState extends State<HomePage> {
                             width: 2.0,
                             color: Color.fromARGB(255, 221, 98, 159)),
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                    child: _hoverImage(novostSlika, novost, index),
+                    child: _hoverImage(
+                        novostSlika != "" && novostSlika != null
+                            ? novostSlika
+                            : null,
+                        novost,
+                        index),
                   );
                 },
               ),
@@ -1451,7 +1456,8 @@ class _HomePageState extends State<HomePage> {
                 //     slikeUsluga![index]);
                 return HoverableImage(
                   usluga: slikeUsluga![index],
-                  imageBytes: slika != null ? base64Decode(slika) : null,
+                  imageBytes:
+                      slika != null && slika != "" ? base64Decode(slika) : null,
                   onTap: () {
                     print("${slikeUsluga![index].uslugaId}");
                     Navigator.of(context).push(MaterialPageRoute(

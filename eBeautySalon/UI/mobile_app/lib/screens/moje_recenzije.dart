@@ -14,6 +14,8 @@ import '../models/search_result.dart';
 import '../providers/recenzije_usluga_provider.dart';
 import '../providers/recenzije_usluznika_provider.dart';
 import '../utils/util.dart';
+import 'edit_recenzija_usluge.dart';
+import 'edit_recenzija_usluznika.dart';
 
 class MojeRecenzije extends StatefulWidget {
   Korisnik? korisnik;
@@ -214,6 +216,28 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   ),
                   Text(x?.usluga.naziv ?? ""),
                   Text("Ocjena: ${x.ocjena}"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditRecenzijaUsluge(
+                                      recenzijaUsluge: x,
+                                    )));
+                          },
+                          child: Icon(Icons.edit_square)),
+                      TextButton(
+                        onPressed: () {
+                          _deleteConfirmationDialog(x, true);
+                        },
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ))
@@ -256,8 +280,31 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             width: 150,
                           ),
                   ),
-                  Text("${x?.usluznik.korisnik.ime} ${x?.usluznik.korisnik.prezime}"),
+                  Text(
+                      "${x?.usluznik.korisnik.ime} ${x?.usluznik.korisnik.prezime}"),
                   Text("Ocjena: ${x.ocjena}"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditRecenzijaUsluznika(
+                                      recenzijaUsluznika: x,
+                                    )));
+                          },
+                          child: Icon(Icons.edit_square)),
+                      TextButton(
+                        onPressed: () {
+                          _deleteConfirmationDialog(x, false);
+                        },
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ))
@@ -277,10 +324,10 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
             height: 550,
             child: GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  //childAspectRatio: 3 / 2,
+                  crossAxisCount: 1,
+                  childAspectRatio: 4 / 3,
                   // crossAxisSpacing: 8,
-                  mainAxisSpacing: 8),
+                  mainAxisSpacing: 10),
               scrollDirection: Axis.vertical,
               children: _buildUslugaList(_recenzijaUslugeResult!.result),
             ),
@@ -300,8 +347,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
             height: 550,
             child: GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  //childAspectRatio: 3 / 2,
+                  crossAxisCount: 1,
+                  childAspectRatio: 3 / 2,
                   // crossAxisSpacing: 8,
                   mainAxisSpacing: 8),
               scrollDirection: Axis.vertical,
@@ -319,5 +366,69 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
       title: "Moje recenzije",
       child: _tabBars(),
     );
+  }
+
+  void _deleteConfirmationDialog(e, isUsluge) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text('Potvrda o brisanju zapisa',
+                  textAlign: TextAlign.center),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
+              actions: <Widget>[
+                ElevatedButton(
+                  child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
+                  onPressed: () {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('Da'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                    isUsluge == true
+                        ? _obrisiZapisRecenzijaUsluge(e)
+                        : _obrisiZapisRecenzijaUsluznika(e);
+                  },
+                ),
+              ],
+            ));
+  }
+
+  void _obrisiZapisRecenzijaUsluge(e) async {
+    var deleted = await _recenzijeUslugeProvider.delete(e.recenzijaUslugeId!);
+    print('deleted? ${deleted}');
+
+    //treba da se osvjezi lista
+    var data = await _recenzijeUslugeProvider.get(filter: {
+      'FTS': _ftsController1.text,
+      'korisnikId': widget.korisnik!.korisnikId
+    });
+
+    setState(() {
+      _recenzijaUslugeResult = data;
+    });
+  }
+
+  void _obrisiZapisRecenzijaUsluznika(e) async {
+    var deleted = await _recenzijeUsluznikaProvider.delete(e.recenzijaUsluznikaId!);
+    print('deleted? ${deleted}');
+
+    //treba da se osvjezi lista
+    var data = await _recenzijeUsluznikaProvider.get(filter: {
+      'FTS': _ftsController1.text,
+      'korisnikId': widget.korisnik!.korisnikId
+    });
+
+    setState(() {
+      _recenzijaUsluznikaResult = data;
+    });
   }
 }

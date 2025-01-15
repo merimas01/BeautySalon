@@ -8,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace eBeautySalon.Services
 {
@@ -47,7 +49,7 @@ namespace eBeautySalon.Services
             }
             if (search?.isUslugeIncluded == true)
             {
-                query = query.Include(x => x.Usluga);
+                query = query.Include(x => x.Usluga.Kategorija);
             }
             return base.AddInclude(query, search);
         }
@@ -56,6 +58,9 @@ namespace eBeautySalon.Services
             //ne smiju zaposlenici recenzirati
             //ne smiju postojati dvije recenzije sa istim korisnikom i uslugom
             //usluga i korisnik trebaju biti validni
+            //komentar moze sadrzavati samo do 15 rijeci
+
+            var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
 
             var korisnik_zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => x.KorisnikId == request.KorisnikId);
             var recenzija_usluge = await _context.RecenzijaUsluges.Where(x => x.KorisnikId == request.KorisnikId && x.UslugaId == request.UslugaId).FirstOrDefaultAsync();
@@ -64,13 +69,16 @@ namespace eBeautySalon.Services
 
             if (korisnik_zaposlenik != null) return false;
             if (recenzija_usluge != null) return false;
-            else if(!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
+            if (brojRijeciKomentar > 15) return false;
+            else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
+
             return true;
 
         }
 
         public override async Task<bool> AddValidationUpdate(int id, RecenzijaUslugeUpdateRequest request)
         {
+            var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
             var korisnik_zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => x.KorisnikId == request.KorisnikId);
             var recenzija_usluge = await _context.RecenzijaUsluges.Where(x => (x.KorisnikId == request.KorisnikId && x.UslugaId == request.UslugaId) && x.RecenzijaUslugeId != id).FirstOrDefaultAsync();
             var usluge = await _context.Uslugas.Select(x => x.UslugaId).ToListAsync();
@@ -78,6 +86,7 @@ namespace eBeautySalon.Services
 
             if (korisnik_zaposlenik != null) return false;
             if (recenzija_usluge != null) return false;
+            if (brojRijeciKomentar > 15) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
             return true;
         }

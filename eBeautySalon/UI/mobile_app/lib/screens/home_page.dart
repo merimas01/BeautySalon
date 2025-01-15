@@ -49,50 +49,53 @@ class _HomePageState extends State<HomePage> {
           // height: 800,
           width: 800,
           child: SingleChildScrollView(
-            child: Column(children: [
-              Container(
-                height: 30,
-                child: Text(
-                  "Dobrodosli ${LoggedUser.ime}!",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontFamily: 'BeckyTahlia',
-                      fontSize: 26,
-                      color: Colors.pinkAccent),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(children: [
+                Container(
+                  height: 30,
+                  child: Text(
+                    "Dobrodosli ${LoggedUser.ime}!",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: 'BeckyTahlia',
+                        fontSize: 26,
+                        color: Colors.pinkAccent),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                child: Text("Pogledajte novosti naseg salona."),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              isLoading == false
-                  ? Container(
-                      width: 800,
-                      height: 600,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GridView(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount:
-                                1, // Number of items in a row (1 in this case)
-                            childAspectRatio:
-                                3 / 1, // Adjust the width-to-height ratio here
-                            mainAxisSpacing:
-                                8, // Spacing between items vertically
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  child: Text("Pogledajte novosti naseg salona."),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                isLoading == false
+                    ? Container(
+                        width: 800,
+                        height: 600,
+                       // child: Padding(
+                         // padding: const EdgeInsets.all(8.0),
+                          child: GridView(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount:
+                                  1, // Number of items in a row (1 in this case)
+                              childAspectRatio:
+                                  3 / 1, // Adjust the width-to-height ratio here
+                              mainAxisSpacing:
+                                  8, // Spacing between items vertically
+                            ),
+                            scrollDirection: Axis.vertical,
+                            children: _buildNovostList(),
                           ),
-                          scrollDirection: Axis.vertical,
-                          children: _buildNovostList(),
-                        ),
-                      ),
-                    )
-                  : Text("Ucitavanje...")
-            ]),
+                       // ),
+                      )
+                    : Text("Ucitavanje...")
+              ]),
+            ),
           ),
         ));
   }

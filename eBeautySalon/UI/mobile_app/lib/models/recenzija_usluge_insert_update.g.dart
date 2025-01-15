@@ -9,7 +9,7 @@ part of 'recenzija_usluge_insert_update.dart';
 RecenzijaUslugeInsertUpdate _$RecenzijaUslugeInsertUpdateFromJson(
         Map<String, dynamic> json) =>
     RecenzijaUslugeInsertUpdate(
-      (json['ocjena'] as num?)?.toDouble(),
+      json['ocjena'] as int?,
       json['komentar'] as String?,
       json['korisnikId'] as int?,
       json['uslugaId'] as int?,

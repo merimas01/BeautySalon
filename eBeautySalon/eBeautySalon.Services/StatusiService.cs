@@ -21,7 +21,7 @@ namespace eBeautySalon.Services
         {
             if (search.promijeniStatus == true)
             {
-                query = query.Where(x => x.Opis == "Odbijena" || x.Opis == "Prihvacena");
+                query = query.Where(x => x.Opis == "Odbijena" || x.Opis == "Prihvaćena");
             }
             return base.AddFilter(query, search);
         }

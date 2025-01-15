@@ -338,7 +338,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                               _blockConfirmationDialog(e);
                             },
                             child: Text(
-                                ' ${e.status == true ? "Blokiraj" : "Odblokiraj"}'),
+                                '${e.status == true ? "Blokiraj" : "Odblokiraj"}'),
                           ),
                         ),
                         DataCell(TextButton(

@@ -93,7 +93,7 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
               onPressed: () {
                 //Kad se klikne na ovaj x, setuje se status na otkazana.
                 //Ovo dugme se pojavljuje samo ako je narudzba Nova.
-                //otvara se dijalog prozor
+                //otvara se dijalog prozor - da li zelite da otkazete narudzbu
               },
               child: Text(
                 "Otkazi narudzbu",

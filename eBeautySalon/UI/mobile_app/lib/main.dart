@@ -6,6 +6,7 @@ import 'package:mobile_app/providers/recenzije_usluznika_provider.dart';
 import 'package:mobile_app/providers/rezervacije_provider.dart';
 import 'package:mobile_app/providers/slika_profila_provider.dart';
 import 'package:mobile_app/providers/usluge_provider.dart';
+import 'package:mobile_app/providers/zaposlenici_provider.dart';
 import 'package:mobile_app/screens/home_page.dart';
 import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/profil_page.dart';
@@ -25,7 +26,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => SlikaProfilaProvider()),
       ChangeNotifierProvider(create: (_) => KorisnikProvider()),
       // ChangeNotifierProvider(create: (_) => ZaposleniciUslugeProvider()),
-      // ChangeNotifierProvider(create: (_) => ZaposleniciProvider()),
+      ChangeNotifierProvider(create: (_) => ZaposleniciProvider()),
       ChangeNotifierProvider(create: (_) => NovostiProvider()),
       ChangeNotifierProvider(create: (_) => RecenzijaUslugeProvider()),
       ChangeNotifierProvider(create: (_) => RecenzijaUsluznikaProvider()),

@@ -11,7 +11,7 @@ part 'recenzija_usluznika_insert_update.g.dart';
 
 @JsonSerializable()
 class RecenzijaUsluznikaInsertUpdate {
-  double? ocjena;
+  int? ocjena;
   String? komentar;
   int? korisnikId;
   int? usluznikId;

@@ -89,32 +89,60 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     );
   }
 
-  _showFilterDialog(){
+  _showFilterDialog() {
     return showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Example Dialog"),
-                  content: Container(
-                    height: 300,
-                    child: SingleChildScrollView(
-                      child: Column(children: [
-                        _searchByIsArhiva(),
-                      ]),
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the dialog
-                        //GETATI PONOVO REZERVACIJE ALI SA FILTEROM
-                      },
-                      child: const Text("Trazi"),
-                    ),
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Example Dialog"),
+          content: Container(
+            height: 300,
+            child: SingleChildScrollView(
+              child: Column(children: [
+                Row(
+                  children: [
+                    _searchByIsArhiva(),
+                    SizedBox(width: 8),
+                    selectedOpis != null
+                        ? TextButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedOpis = null;
+                              });
+                            },
+                            child: Tooltip(
+                              child: Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                              ),
+                              message: "Poništi selekciju",
+                            ),
+                          )
+                        : Container(),
                   ],
-                );
+                ),
+              ]),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                var data = await _rezervacijeProvider.get(filter: {
+                  //'statusId': selectedStatus?.statusId,
+                  'isArhiva': selectedOpis
+                });
+
+                setState(() {
+                  _rezervacijeResult = data;
+                });
               },
-            );
+              child: const Icon(Icons.search),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildSearch() {
@@ -123,6 +151,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
       child: Row(
         children: [
           _searchByIsArhiva(),
+
           SizedBox(width: 8),
           selectedOpis != null
               ? TextButton(
@@ -140,11 +169,9 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                   ),
                 )
               : Container(),
-          SizedBox(
-            width: 8,
-          ),
-         // searchByStatus(),
-         // SizedBox(width: 8),
+
+          // searchByStatus(),
+          // SizedBox(width: 8),
           // selectedStatus != null
           //     ? TextButton(
           //         onPressed: () {
@@ -196,7 +223,6 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                 print("pritisnuto dugme Traži");
 
                 var data = await _rezervacijeProvider.get(filter: {
-                  
                   //'statusId': selectedStatus?.statusId,
                   'isArhiva': selectedOpis
                 });
@@ -311,15 +337,18 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
         title: "Moje rezervacije",
         child: isLoadingData == false
             ? SingleChildScrollView(
-              child: Column(children: [
-                //_buildSearch(),
-                TextButton(onPressed: (){
-                  _showFilterDialog();
-                }, child: Icon(Icons.sort)),
-                _buildRezervacijeListView()
-              ],),
-            )
-            
+                child: Column(
+                  children: [
+                    //_buildSearch(),
+                    TextButton(
+                        onPressed: () {
+                          _showFilterDialog();
+                        },
+                        child: Icon(Icons.sort)),
+                    _buildRezervacijeListView()
+                  ],
+                ),
+              )
             : Center(
                 child: CircularProgressIndicator(),
               ));

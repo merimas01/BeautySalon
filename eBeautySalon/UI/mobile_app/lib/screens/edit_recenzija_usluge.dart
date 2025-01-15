@@ -19,11 +19,11 @@ class EditRecenzijaUsluge extends StatefulWidget {
 }
 
 class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
-  final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   late RecenzijaUslugeProvider _recenzijaUslugeProvider;
   TextEditingController _ocjenaController = TextEditingController();
   TextEditingController _commentController = TextEditingController();
+  int _rating = 0;
 
   @override
   void initState() {
@@ -39,6 +39,7 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
     setState(() {
       _ocjenaController.text = widget.recenzijaUsluge?.ocjena?.toString() ?? "";
       _commentController.text = widget.recenzijaUsluge?.komentar ?? "";
+      _rating = double.parse(_initialValue['ocjena']).toInt();
     });
   }
 
@@ -50,128 +51,102 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
-                // Text(
-                //   "${widget.recenzijaUsluge?.usluga?.naziv ?? ""}",
-                //   textAlign: TextAlign.center,
-                //   style: const TextStyle(
-                //       fontFamily: 'BeckyTahlia',
-                //       fontSize: 26,
-                //       color: Colors.pinkAccent),
-                // ),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                // widget.recenzijaUsluge?.usluga?.slikaUsluge != null &&
-                //         widget.recenzijaUsluge?.usluga?.slikaUsluge?.slika !=
-                //             null &&
-                //         widget.recenzijaUsluge?.usluga?.slikaUsluge?.slika != ""
-                //     ? Container(
-                //         height: 200,
-                //         width: 200,
-                //         child: ImageFromBase64String(
-                //             widget.recenzijaUsluge!.usluga!.slikaUsluge!.slika),
-                //       )
-                //     : Container(
-                //         child: Image.asset(
-                //           "assets/images/noImage.jpg",
-                //         ),
-                //         height: 200,
-                //         width: 200,
-                //       ),
-                // TextFormField(
-                //   decoration: InputDecoration(labelText: "Kategorija:"),
-                //   initialValue:
-                //       "${widget.recenzijaUsluge?.usluga?.kategorija?.naziv}",
-                //   enabled: false,
-                // ),
-                // TextFormField(
-                //   decoration: InputDecoration(labelText: "Datum kreiranja:"),
-                //   initialValue:
-                //       "${formatDate(widget.recenzijaUsluge!.datumKreiranja!)}",
-                //   enabled: false,
-                // ),
-                // widget.recenzijaUsluge?.datumModificiranja != null
-                //     ? TextFormField(
-                //         decoration:
-                //             InputDecoration(labelText: "Datum modificiranja:"),
-                //         initialValue:
-                //             "${formatDate(widget.recenzijaUsluge!.datumModificiranja!)}",
-                //         enabled: false,
-                //       )
-                //     : Container(),
-                // TextFormField(
-                //   decoration: InputDecoration(labelText: "Ocjena:"),
-                //   initialValue: "${widget.recenzijaUsluge?.ocjena}",
-                //   enabled: true,
-                //   //  controller: _ocjenaController,
-                // ),
-                // TextFormField(
-                //   decoration: InputDecoration(labelText: "Komentar:"),
-                //   initialValue: "${widget.recenzijaUsluge?.komentar}",
-                //   enabled: true,
-                //   //controller: _commentController,
-                // ),
-                // SizedBox(
-                //   height: 10,
-                // ),
-                
-               
-              ],
-            ),
-          ),
-        ));
-  }
-
-  _form() {
-    return FormBuilder(
-        key: _formKey,
-        initialValue: _initialValue,
-        child: Container(
-          width: 800,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  FormBuilderTextField(
-                    name: "ocjena",
-                    decoration: InputDecoration(labelText: "Ocjena:"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Molimo Vas unesite ocjenu';
+                Text(
+                  "${widget.recenzijaUsluge?.usluga?.naziv ?? ""}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontFamily: 'BeckyTahlia',
+                      fontSize: 26,
+                      color: Colors.pinkAccent),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                widget.recenzijaUsluge?.usluga?.slikaUsluge != null &&
+                        widget.recenzijaUsluge?.usluga?.slikaUsluge?.slika !=
+                            null &&
+                        widget.recenzijaUsluge?.usluga?.slikaUsluge?.slika != ""
+                    ? Container(
+                        height: 200,
+                        width: 200,
+                        child: ImageFromBase64String(
+                            widget.recenzijaUsluge!.usluga!.slikaUsluge!.slika),
+                      )
+                    : Container(
+                        child: Image.asset(
+                          "assets/images/noImage.jpg",
+                        ),
+                        height: 200,
+                        width: 200,
+                      ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: "Kategorija:"),
+                  initialValue:
+                      "${widget.recenzijaUsluge?.usluga?.kategorija?.naziv}",
+                  enabled: false,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: "Datum kreiranja:"),
+                  initialValue:
+                      "${formatDate(widget.recenzijaUsluge!.datumKreiranja!)}",
+                  enabled: false,
+                ),
+                widget.recenzijaUsluge?.datumModificiranja != null
+                    ? TextFormField(
+                        decoration:
+                            InputDecoration(labelText: "Datum modificiranja:"),
+                        initialValue:
+                            "${formatDate(widget.recenzijaUsluge!.datumModificiranja!)}",
+                        enabled: false,
+                      )
+                    : Container(),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(5, (index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _rating = index + 1; // Update rating on tap
+                          print("rating: $_rating");
+                        });
+                      },
+                      child: Icon(
+                        Icons.star,
+                        color: index < _rating ? Colors.amber : Colors.grey,
+                        size: 40,
+                      ),
+                    );
+                  }),
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: "Komentar:"),
+                  enabled: true,
+                  controller: _commentController,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        var request = RecenzijaUslugeInsertUpdate(
+                            _rating,
+                            _commentController.text,
+                            LoggedUser.id,
+                            widget.recenzijaUsluge?.uslugaId);
+                        var obj = await _recenzijaUslugeProvider.update(
+                            widget.recenzijaUsluge!.recenzijaUslugeId!,
+                            request);
+                        if (obj != null) {
+                          showSuccessMessage();
+                        }
+                      } catch (err) {
+                        print(err.toString());
+                        _showValidationError();
                       }
-                      if (!RegExp(r'(1|2|3|4|5)$').hasMatch(value)) {
-                        return 'Unesite 1, 2, 3, 4 ili 5';
-                      }
-                      return null;
                     },
-                  ),
-                  FormBuilderTextField(
-                    name: "komentar",
-                    decoration: InputDecoration(labelText: "Komentar:"),
-                  ),
-                   ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              var request = RecenzijaUslugeInsertUpdate(
-                                  int.parse(_ocjenaController.text),
-                                  _commentController.text,
-                                  LoggedUser.id,
-                                  widget.recenzijaUsluge?.usluga?.uslugaId);
-                              var obj = await _recenzijaUslugeProvider.update(
-                                  widget.recenzijaUsluge!.recenzijaUslugeId!,
-                                  request);
-                              if (obj != null) {
-                                showSuccessMessage();
-                              }
-                            } catch (err) {
-                              print(err.toString());
-                              _showValidationError();
-                            }
-                          },
-                          child: Text("Spasi promjene"))
-                ],
-              ),
+                    child: Text("Spasi promjene"))
+              ],
             ),
           ),
         ));
@@ -212,6 +187,6 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(child: _form());
+    return MasterScreenWidget(title: "Modifikacija recenzije usluge", child: _showDetails());
   }
 }

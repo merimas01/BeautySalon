@@ -62,6 +62,7 @@ namespace eBeautySalon.Services
             // zaposlenik mora biti usluznik
             // ne smije se dodati vec postojeca recenzija (isti usluznik i korisnik)
             // mora postojati validan usluznikId i korisnikId
+            var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
 
             var korisnik_zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => x.KorisnikId == request.KorisnikId);         
             var korisnikId = _context.Zaposleniks.Where(x => x.ZaposlenikId == request.UsluznikId).Select(x => x.KorisnikId).FirstOrDefault();
@@ -73,6 +74,7 @@ namespace eBeautySalon.Services
             if (korisnik_zaposlenik != null) return false; //korisnik u requestu je zaposlenik (zaposlenik ne smije recenzirati)
             else if (korisnik_uloga_usluznik == null) return false; // zaposlenik nije usluznik
             else if (recenzija_usluznika != null) return false; //postoji vec isti objekat
+            else if (brojRijeciKomentar > 15) return false; //ako je broj rijeci veci od 15
             else if (!usluznici.Contains(request.UsluznikId) || !korisnici.Contains(request.KorisnikId)) return false; //nije validan usluznik ili korisnik
             return true; 
         }
@@ -84,10 +86,13 @@ namespace eBeautySalon.Services
             var recenzija_usluznika = await _context.RecenzijaUsluznikas.FirstOrDefaultAsync(x => (x.UsluznikId == request.UsluznikId && x.KorisnikId == request.KorisnikId) && x.RecenzijaUsluznikaId != id);
             var usluznici = await _context.Zaposleniks.Where(x => x.ZaposlenikUslugas.Count() != 0).Select(x => x.ZaposlenikId).ToListAsync();
             var korisnici = await _context.Korisniks.Where(x => x.KorisnikUlogas.Count() == 0).Select(x => x.KorisnikId).ToListAsync();
+            var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
+
 
             if (korisnik_zaposlenik != null) return false; //korisnik u requestu je zaposlenik (zaposlenik ne smije recenzirati)
             else if (korisnik_uloga_usluznik == null) return false; // zaposlenik nije usluznik
             else if (recenzija_usluznika != null) return false; //postoji vec isti objekat
+            else if (brojRijeciKomentar > 15) return false; 
             else if (!usluznici.Contains(request.UsluznikId) || !korisnici.Contains(request.KorisnikId)) return false; //nije validan usluznik ili korisnik
             return true;
         }

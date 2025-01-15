@@ -68,8 +68,8 @@ namespace eBeautySalon.Services
             var korisnici = await _context.Korisniks.Where(x => x.KorisnikUlogas.Count() == 0).Select(x => x.KorisnikId).ToListAsync();
 
             if (korisnik_zaposlenik != null) return false;
-            if (recenzija_usluge != null) return false;
-            if (brojRijeciKomentar > 15) return false;
+            else if (recenzija_usluge != null) return false;
+            else if (brojRijeciKomentar > 15) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
 
             return true;
@@ -85,8 +85,8 @@ namespace eBeautySalon.Services
             var korisnici = await _context.Korisniks.Where(x => x.KorisnikUlogas.Count() == 0).Select(x => x.KorisnikId).ToListAsync();
 
             if (korisnik_zaposlenik != null) return false;
-            if (recenzija_usluge != null) return false;
-            if (brojRijeciKomentar > 15) return false;
+            else if (recenzija_usluge != null) return false;
+            else if (brojRijeciKomentar > 15) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
             return true;
         }

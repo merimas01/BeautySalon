@@ -37,6 +37,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   bool isLoadingData = true;
   String? search1 = "";
   String? search2 = "";
+  int _ratingUsluga = 0;
+  int _ratingUsluznik = 0;
 
   @override
   void didChangeDependencies() {
@@ -201,8 +203,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             x.usluga.slikaUsluge?.slika != null &&
                             x.usluga.slikaUsluge?.slika != ""
                         ? Container(
-                            height: 150,
-                            width: 150,
+                            height: 170,
+                            width: 170,
                             child: ImageFromBase64String(
                                 x.usluga.slikaUsluge!.slika),
                           )
@@ -210,12 +212,24 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             child: Image.asset(
                               "assets/images/noImage.jpg",
                             ),
-                            height: 150,
-                            width: 150,
+                            height: 170,
+                            width: 170,
                           ),
                   ),
                   Text(x?.usluga.naziv ?? ""),
-                  Text("Ocjena: ${x.ocjena}"),
+                  //Text("Ocjena: ${x.ocjena}"),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(5, (index) {
+                      return GestureDetector(
+                        child: Icon(
+                          Icons.star,
+                          color: index < x.ocjena ? Colors.amber : Colors.grey,
+                          size: 20,
+                        ),
+                      );
+                    }),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -267,8 +281,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             x.usluznik.korisnik.slikaProfila?.slika != null &&
                             x.usluznik.korisnik.slikaProfila?.slika != ""
                         ? Container(
-                            height: 150,
-                            width: 150,
+                            height: 170,
+                            width: 170,
                             child: ImageFromBase64String(
                                 x.usluznik.korisnik.slikaProfila!.slika),
                           )
@@ -276,13 +290,25 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             child: Image.asset(
                               "assets/images/noImage.jpg",
                             ),
-                            height: 150,
-                            width: 150,
+                            height: 170,
+                            width: 170,
                           ),
                   ),
                   Text(
                       "${x?.usluznik.korisnik.ime} ${x?.usluznik.korisnik.prezime}"),
-                  Text("Ocjena: ${x.ocjena}"),
+                  //Text("Ocjena: ${x.ocjena}"),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(5, (index) {
+                      return GestureDetector(
+                        child: Icon(
+                          Icons.star,
+                          color: index < x.ocjena ? Colors.amber : Colors.grey,
+                          size: 20,
+                        ),
+                      );
+                    }),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -418,7 +444,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   }
 
   void _obrisiZapisRecenzijaUsluznika(e) async {
-    var deleted = await _recenzijeUsluznikaProvider.delete(e.recenzijaUsluznikaId!);
+    var deleted =
+        await _recenzijeUsluznikaProvider.delete(e.recenzijaUsluznikaId!);
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista

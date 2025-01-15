@@ -6,6 +6,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_app/models/zaposlenik.dart';
+import 'package:mobile_app/screens/sve_recenzije_usluge.dart';
+import 'package:mobile_app/screens/sve_recenzije_usluznika.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 
 import '../models/usluga.dart';
@@ -14,7 +16,10 @@ import '../utils/util.dart';
 
 class UsluznikDetails extends StatefulWidget {
   Zaposlenik? usluznik;
-  UsluznikDetails({super.key, this.usluznik});
+  String? prosjecnaOcjena;
+  String? totalReviws;
+  UsluznikDetails(
+      {super.key, this.usluznik, this.prosjecnaOcjena, this.totalReviws});
 
   @override
   State<UsluznikDetails> createState() => _UsluznikDetailsState();
@@ -27,8 +32,6 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
   bool isLoading = true;
 
 //biografija - NOVI ATRIBUT
-//prosjecna ocjena usluznika
-//dugme koje vodi na stranicu svih recenzija za tog usluznika
 
   @override
   void initState() {
@@ -108,6 +111,14 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
     );
   }
 
+  _ProsjecnaOcjena() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: "Prosjecna ocjena:"),
+      initialValue: "${widget.prosjecnaOcjena}",
+      enabled: false,
+    );
+  }
+
   _Slika() {
     return widget.usluznik?.korisnik != null &&
             (widget.usluznik?.korisnik?.slikaProfila != null &&
@@ -115,7 +126,7 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
             widget.usluznik?.korisnik?.slikaProfila?.slika != ""
         ? Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle, 
+              shape: BoxShape.circle,
             ),
             clipBehavior: Clip.antiAlias,
             child: Image.memory(
@@ -127,7 +138,7 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
           )
         : Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle, 
+              shape: BoxShape.circle,
             ),
             clipBehavior: Clip.antiAlias,
             child: Image.asset(
@@ -158,6 +169,37 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
       enabled: false,
       maxLines: null,
       keyboardType: TextInputType.multiline,
+    );
+  }
+
+  displayAverageGrade(x) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        // Determine the star type
+        if (index < x.floor()) {
+          // Full star
+          return Icon(
+            Icons.star,
+            color: Colors.amber,
+            size: 20,
+          );
+        } else if (index < x) {
+          // Half star
+          return Icon(
+            Icons.star_half,
+            color: Colors.amber,
+            size: 20,
+          );
+        } else {
+          // Empty star
+          return Icon(
+            Icons.star_border,
+            color: Colors.grey,
+            size: 20,
+          );
+        }
+      }),
     );
   }
 
@@ -198,6 +240,36 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
                           SizedBox(
                             height: 10,
                           ),
+                          Row(
+                            children: [
+                              displayAverageGrade(
+                                  double.parse(widget.prosjecnaOcjena ?? "0")),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text("${widget.prosjecnaOcjena ?? "0"}"),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text("(${widget.totalReviws.toString()})"),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          widget.totalReviws != "0"
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SveRecenzijeUsluznika(
+                                                  zaposlenik: widget.usluznik,
+                                                )));
+                                  },
+                                  child: Text(
+                                      "Pogledajte sve recenzije za usluznika"))
+                              : Container()
                         ],
                       ),
                     ),

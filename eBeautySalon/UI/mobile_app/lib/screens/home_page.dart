@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(children: [
+                SizedBox(height: 10,),
                 Container(
                   height: 30,
                   child: Text(
@@ -76,22 +77,22 @@ class _HomePageState extends State<HomePage> {
                     ? Container(
                         width: 800,
                         height: 600,
-                       // child: Padding(
-                         // padding: const EdgeInsets.all(8.0),
-                          child: GridView(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount:
-                                  1, // Number of items in a row (1 in this case)
-                              childAspectRatio:
-                                  3 / 1, // Adjust the width-to-height ratio here
-                              mainAxisSpacing:
-                                  8, // Spacing between items vertically
-                            ),
-                            scrollDirection: Axis.vertical,
-                            children: _buildNovostList(),
+                        // child: Padding(
+                        // padding: const EdgeInsets.all(8.0),
+                        child: GridView(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount:
+                                1, // Number of items in a row (1 in this case)
+                            childAspectRatio:
+                                3 / 1, // Adjust the width-to-height ratio here
+                            mainAxisSpacing:
+                                8, // Spacing between items vertically
                           ),
-                       // ),
+                          scrollDirection: Axis.vertical,
+                          children: _buildNovostList(),
+                        ),
+                        // ),
                       )
                     : Text("Ucitavanje...")
               ]),
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Container(
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(5.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -140,16 +141,24 @@ class _HomePageState extends State<HomePage> {
                               : Container(
                                   child: Image.asset(
                                     "assets/images/noImage.jpg",
+                                    width: 150,
+                                    height: 150,
                                   ),
                                   height: 150,
                                   width: 150,
                                 ),
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Row(
                           children: [
                             Text(
                               "${(x.naslov ?? "").split(' ').take(3).join(' ')}...",
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.info,
+                              color: Colors.blueGrey,
                             ),
                           ],
                         ),

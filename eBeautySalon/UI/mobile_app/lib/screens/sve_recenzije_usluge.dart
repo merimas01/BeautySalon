@@ -5,7 +5,6 @@ import 'package:mobile_app/models/recenzija_usluge.dart';
 import 'package:mobile_app/models/recenzija_usluge_insert_update.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
 import 'package:mobile_app/screens/edit_recenzija_usluge.dart';
-import 'package:mobile_app/screens/moje_recenzije.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +51,22 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
     });
   }
 
+  Widget _showResultCount() {
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+          TextSpan(
+            text:
+                'Ukupan broj recenzija: ${_recenzijaUslugeResult?.count == null ? 0 : _recenzijaUslugeResult?.count}',
+            style: TextStyle(fontWeight: FontWeight.normal),
+          )
+        ]));
+  }
+
   Widget _naslov() {
     return Text(
       "Recenzije usluge: ${widget.usluga?.naziv}",
@@ -74,6 +89,10 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                   SizedBox(
                     height: 10,
                   ),
+                  _showResultCount(),
+                  SizedBox(
+                    height: 10,
+                  ),
                   imaRecenziju == false
                       ? ElevatedButton(
                           onPressed: () {
@@ -92,7 +111,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                   SizedBox(
                     height: 10,
                   ),
-                  _buildRezervacijeListView()
+                  _buildListView()
                 ],
               ),
             )
@@ -102,7 +121,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
     ));
   }
 
-  _buildRezervacijeListView() {
+  _buildListView() {
     return Container(
       width: 800,
       child: SingleChildScrollView(
@@ -128,7 +147,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
 
   List<Widget> _buildList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [Text("Nema nijedna recenzija za ovu uslugu.")];
     }
 
     List<Widget> list = data
@@ -173,18 +192,33 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                               SizedBox(
                                 width: 5,
                               ),
-                              Text("${x.ocjena}"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.comment),
-                              SizedBox(
-                                width: 5,
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: List.generate(5, (index) {
+                                  return GestureDetector(
+                                    child: Icon(
+                                      Icons.star,
+                                      color: index < x.ocjena
+                                          ? Colors.amber
+                                          : Colors.grey,
+                                      size: 20,
+                                    ),
+                                  );
+                                }),
                               ),
-                              Text("${x.komentar}"),
                             ],
                           ),
+                          x.komentar != null &&  x.komentar.trim().isNotEmpty
+                              ? Row(
+                                  children: [
+                                    Icon(Icons.comment),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text("${x.komentar}"),
+                                  ],
+                                )
+                              : SizedBox.shrink(),
                           x.datumModificiranja == null
                               ? Row(
                                   children: [
@@ -195,19 +229,16 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                                     Text("${formatDate(x.datumKreiranja)}"),
                                   ],
                                 )
-                              : Container(),
-                          x.datumModificiranja != null
-                              ? Row(
+                              : Row(
                                   children: [
                                     Icon(Icons.date_range),
                                     SizedBox(
                                       width: 5,
                                     ),
                                     Text(
-                                        "${formatDate(x.datumModificiranja)} (uredjeno)"),
+                                        "${formatDate(x.datumModificiranja)} (modifikovano)"),
                                   ],
-                                )
-                              : Container(),
+                                ),
                         ],
                       ),
                       x.korisnikId == LoggedUser.id
@@ -398,6 +429,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
 
     setState(() {
       _recenzijaUslugeResult = data;
+      imaRecenziju = false;
     });
   }
 }

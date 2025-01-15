@@ -36,6 +36,7 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          automaticallyImplyLeading: false, //removes back button
           backgroundColor: Colors.pink,
           title: widget.title_widget ??
               (widget.title != null ? Text(widget.title!) : Text(""))),

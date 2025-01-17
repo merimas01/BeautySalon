@@ -128,12 +128,12 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
             ))));
   }
 
-  void _giveLike(){
+  void _giveLike() {
     //poziv u bazu, loggedUser id u novostLikeKomment tabeli
   }
-
-  //obrisi, edituj komentar (svoj). napraviti drugaciji broder za svoje komentare
   //promijeni emoji ako korisnik lajka ili komentarise
+  //obrisi, edituj komentar (svoj). (Moje recenzije za novosti - svidjanja i komentari)
+  //uraditi isto kao za recenzije: usluga details-sve recenzije-delete, stranica edit. profil - lajkovi,komentari - delete, stranica edit
 
   Widget _createComment() {
     return Column(

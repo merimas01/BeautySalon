@@ -5,6 +5,8 @@ import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/models/zaposlenik.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
 import 'package:mobile_app/providers/zaposlenici_provider.dart';
+import 'package:mobile_app/screens/moje_recenzije.dart';
+import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/sve_recenzije_usluge.dart';
 import 'package:mobile_app/screens/sve_recenzije_usluznika.dart';
 import 'package:mobile_app/screens/usluznik_details.dart';
@@ -65,7 +67,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: "",
+      title: "Detalji usluge",
       child: _showDetails(),
     );
   }
@@ -77,7 +79,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
             // child: Card(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15.0),
                 child: Column(children: [
                   Text(
                     "${widget.usluga?.naziv ?? ""}",
@@ -212,7 +214,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
               )),
               DataColumn(
                   label: Expanded(
-                child: Text("Recenzije"),
+                child: Text("Detalji"),
               )),
             ],
             rows: _findUsluznikeForUsluga().map<DataRow>((item) {
@@ -237,7 +239,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                                     .length
                                     .toString())));
                       },
-                      child: Icon(Icons.comment),
+                      child: Icon(Icons.info),
                     ),
                   ),
                 ],

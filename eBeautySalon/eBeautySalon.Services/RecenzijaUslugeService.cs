@@ -39,6 +39,10 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.KorisnikId == search.KorisnikId);
             }
+            if(search.KategorijaId != null)
+            {
+                query = query.Where(x => x.Usluga.KategorijaId == search.KategorijaId);
+            }
             return base.AddFilter(query, search);
         }
         public override IQueryable<Database.RecenzijaUsluge> AddInclude(IQueryable<Database.RecenzijaUsluge> query, RecenzijaUslugeSearchObject? search = null)

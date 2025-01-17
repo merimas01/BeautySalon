@@ -5,13 +5,13 @@ namespace eBeautySalon.Services.Database;
 
 public partial class UslugaTermin
 {
+    public int UslugaTerminId { get; set; }
+
     public int UslugaId { get; set; }
 
     public int TerminId { get; set; }
 
     public DateTime DatumIzmjene { get; set; }
-
-    public int UslugaTerminId { get; set; }
 
     public bool? IsPrikazan { get; set; }
 

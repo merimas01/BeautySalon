@@ -34,6 +34,8 @@ namespace eBeautySalon.Models
         //public virtual ICollection<Komentar> Komentars { get; set; } = new List<Komentar>();
 
         public virtual ICollection<KorisniciUloge> KorisnikUlogas { get; set; } = new List<KorisniciUloge>();
+        //public virtual ICollection<Models.NovostLikeComment> NovostLikeComments { get; set; } = new List<Models.NovostLikeComment>();
+
 
         //public virtual ICollection<Novost> Novosts { get; set; } = new List<Novost>();
 

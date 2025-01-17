@@ -26,5 +26,7 @@ namespace eBeautySalon.Models.Requests
 
         public bool? IsArhiva { get; set; }
 
+        public bool? isArhivaKorisnik { get; set; }
+
     }
 }

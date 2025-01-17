@@ -22,6 +22,8 @@ namespace eBeautySalon.Models
 
         public virtual Korisnici? Korisnik { get; set; }
 
+        public string? Biografija { get; set; }
+
         public virtual ICollection<ZaposleniciUsluge> ZaposlenikUslugas { get; set; } = new List<ZaposleniciUsluge>();
     }
 }

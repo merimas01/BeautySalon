@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace eBeautySalon.Models.Requests
 {
-    public class ZaposleniciUpdateRequest
+
+    public partial class NovostLikeCommentUpdateRequest
     {
-        [Required]
-        public DateTime DatumRodjenja { get; set; }
-
-        [Required]
-        public DateTime DatumZaposlenja { get; set; }
-
-        [Required]
-        public string? Biografija { get; set; }
-
         [Required]
         public int? KorisnikId { get; set; }
 
+        [Required]
+        public int? NovostId { get; set; }
+
+        public bool? IsLike { get; set; }
+
+        public string? Komentar { get; set; }
+
         [JsonIgnore]
         public DateTime? DatumModifikovanja { get; set; } = DateTime.Now;
+
     }
 }

@@ -73,6 +73,10 @@ namespace eBeautySalon.Services
             CreateMap<UslugeTerminiInsertRequest, Database.UslugaTermin>();
             CreateMap<UslugeTerminiUpdateRequest, Database.UslugaTermin>();
 
+            CreateMap<Database.NovostLikeComment, Models.NovostLikeComment>();
+            CreateMap<NovostLikeCommentInsertRequest, Database.NovostLikeComment>();
+            CreateMap<NovostLikeCommentUpdateRequest, Database.NovostLikeComment>();
+
             CreateMap<Database.Status, Models.Statusi>();
         }
     }

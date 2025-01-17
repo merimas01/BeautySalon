@@ -33,6 +33,8 @@ builder.Services.AddTransient<IKorisniciUlogeService, KorisniciUlogeService>();
 builder.Services.AddTransient<IUlogeService, UlogeService>();
 builder.Services.AddTransient<IStatusService, StatusiService>();
 builder.Services.AddTransient<IUslugeTerminiService, UslugeTerminiService>();
+builder.Services.AddTransient<INovostLikeCommentService, NovostLikeCommentService>();
+
 
 builder.Services.AddControllers(x =>
 {
@@ -315,7 +317,8 @@ using (var scope = app.Services.CreateScope())
                 DatumRodjenja = DateTime.Now,
                 DatumZaposlenja = DateTime.Now,
                 KorisnikId = 2, 
-                DatumKreiranja = DateTime.Now 
+                DatumKreiranja = DateTime.Now,
+                Biografija = "Iskusan u svom poslu. Jako kreativan. Zavrsio umjetnicku skolu."
             }, //usluznik
 
             new Zaposlenik
@@ -323,7 +326,8 @@ using (var scope = app.Services.CreateScope())
                 DatumRodjenja = DateTime.Now,
                 DatumZaposlenja = DateTime.Now,
                 KorisnikId = 3, 
-                DatumKreiranja = DateTime.Now
+                DatumKreiranja = DateTime.Now,
+                Biografija = "Izvrstan radnik, organizovana do srzi, posvecena maksimalno i uziva u tome sto radi."
             } //rezervacioner
             );
 
@@ -347,7 +351,8 @@ using (var scope = app.Services.CreateScope())
             new Status { Sifra = "S000001", Opis = "Nova" },
             new Status { Sifra = "S000002", Opis = "Otkazana" },
             new Status { Sifra = "S000003", Opis = "Prihvaćena" },
-            new Status { Sifra = "S000004", Opis = "Odbijena" }
+            new Status { Sifra = "S000004", Opis = "Odbijena" },
+            new Status { Sifra = "S000005", Opis = "Završena" }
             );
 
         dataContext.SaveChanges();
@@ -363,7 +368,7 @@ using (var scope = app.Services.CreateScope())
         dataContext.UslugaTermins.AddRange(
             new UslugaTermin { UslugaId = 1, TerminId = 1, DatumIzmjene=DateTime.Now, IsPrikazan=true },
             new UslugaTermin { UslugaId = 1, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
-            new UslugaTermin {UslugaId = 1, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 1, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 2, TerminId = 1, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 2, TerminId = 2 , DatumIzmjene = DateTime.Now, IsPrikazan = true }
             );
@@ -371,11 +376,18 @@ using (var scope = app.Services.CreateScope())
         dataContext.SaveChanges();
 
         dataContext.Rezervacijas.AddRange(
-            new Rezervacija { Sifra = "R000001", KorisnikId = 4, StatusId = 1, IsArhiva = false, TerminId = 1, UslugaId = 2, DatumRezervacije=DateTime.Now },
-            new Rezervacija { Sifra = "R000002", KorisnikId = 4, StatusId = 1, IsArhiva = false, TerminId = 2, UslugaId = 1, DatumRezervacije = DateTime.Now },
-            new Rezervacija { Sifra = "R000003", KorisnikId = 5, StatusId = 4, IsArhiva = true, TerminId = 3, UslugaId = 1, DatumRezervacije = DateTime.Now }
+            new Rezervacija { Sifra = "R000001", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 1, UslugaId = 2, DatumRezervacije = DateTime.Now },
+            new Rezervacija { Sifra = "R000002", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 2, UslugaId = 1, DatumRezervacije = DateTime.Now },
+            new Rezervacija { Sifra = "R000003", KorisnikId = 5, StatusId = 4, IsArhiva = true, IsArhivaKorisnik = false, TerminId = 3, UslugaId = 1, DatumRezervacije = DateTime.Now }
             );
 
+        dataContext.SaveChanges();
+
+
+        dataContext.NovostLikeComments.AddRange(
+            new eBeautySalon.Services.Database.NovostLikeComment { KorisnikId = 4, NovostId = 1, IsLike = true, Komentar = "odlican post!", DatumKreiranja = DateTime.Now },
+            new eBeautySalon.Services.Database.NovostLikeComment { KorisnikId = 5, NovostId = 2, IsLike = true, Komentar = "jako korisne informacije!", DatumKreiranja = DateTime.Now }
+            );
         dataContext.SaveChanges();
     }
 }

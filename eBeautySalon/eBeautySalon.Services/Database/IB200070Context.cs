@@ -23,6 +23,8 @@ public partial class Ib200070Context : DbContext
 
     public virtual DbSet<Novost> Novosts { get; set; }
 
+    public virtual DbSet<NovostLikeComment> NovostLikeComments { get; set; }
+
     public virtual DbSet<RecenzijaUsluge> RecenzijaUsluges { get; set; }
 
     public virtual DbSet<RecenzijaUsluznika> RecenzijaUsluznikas { get; set; }
@@ -57,7 +59,7 @@ public partial class Ib200070Context : DbContext
     {
         modelBuilder.Entity<Kategorija>(entity =>
         {
-            entity.ToTable("Kategorija", tb => tb.HasTrigger("trg_SetDefaultSifraKategorija"));
+            entity.ToTable("Kategorija");
 
             entity.Property(e => e.KategorijaId).HasColumnName("KategorijaID");
             entity.Property(e => e.DatumKreiranja).HasColumnType("datetime");
@@ -71,7 +73,7 @@ public partial class Ib200070Context : DbContext
 
         modelBuilder.Entity<Korisnik>(entity =>
         {
-            entity.ToTable("Korisnik", tb => tb.HasTrigger("trg_SetDefaultSifraKorisnik"));
+            entity.ToTable("Korisnik");
 
             entity.HasIndex(e => e.SlikaProfilaId, "IX_Korisnik_SlikaProfilaID");
 
@@ -122,7 +124,7 @@ public partial class Ib200070Context : DbContext
 
         modelBuilder.Entity<Novost>(entity =>
         {
-            entity.ToTable("Novost", tb => tb.HasTrigger("trg_SetDefaultSifraNovost"));
+            entity.ToTable("Novost");
 
             entity.HasIndex(e => e.KorisnikId, "IX_Novost_KorisnikID");
 
@@ -145,6 +147,26 @@ public partial class Ib200070Context : DbContext
             entity.HasOne(d => d.SlikaNovost).WithMany(p => p.Novosts)
                 .HasForeignKey(d => d.SlikaNovostId)
                 .HasConstraintName("FK_Novost_SlikaNovost");
+        });
+
+        modelBuilder.Entity<NovostLikeComment>(entity =>
+        {
+            entity.ToTable("NovostLikeComment");
+
+            entity.Property(e => e.DatumKreiranja)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DatumModifikovanja).HasColumnType("datetime");
+            entity.Property(e => e.Komentar).HasMaxLength(255);
+            entity.Property(e => e.NovostId).HasColumnName("NovostID");
+
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.NovostLikeComments)
+                .HasForeignKey(d => d.KorisnikId)
+                .HasConstraintName("FK_NovostLikeComment_Korisnik");
+
+            entity.HasOne(d => d.Novost).WithMany(p => p.NovostLikeComments)
+                .HasForeignKey(d => d.NovostId)
+                .HasConstraintName("FK_NovostLikeComment_Novost");
         });
 
         modelBuilder.Entity<RecenzijaUsluge>(entity =>
@@ -199,9 +221,11 @@ public partial class Ib200070Context : DbContext
 
         modelBuilder.Entity<Rezervacija>(entity =>
         {
-            entity.ToTable("Rezervacija", tb => tb.HasTrigger("trg_SetDefaultSifraRezervacija"));
+            entity.ToTable("Rezervacija");
 
             entity.HasIndex(e => e.KorisnikId, "IX_Rezervacija_KorisnikID");
+
+            entity.HasIndex(e => e.StatusId, "IX_Rezervacija_StatusID");
 
             entity.HasIndex(e => e.TerminId, "IX_Rezervacija_TerminID");
 
@@ -210,6 +234,7 @@ public partial class Ib200070Context : DbContext
             entity.Property(e => e.RezervacijaId).HasColumnName("RezervacijaID");
             entity.Property(e => e.DatumRezervacije).HasColumnType("datetime");
             entity.Property(e => e.IsArhiva).HasColumnName("isArhiva");
+            entity.Property(e => e.IsArhivaKorisnik).HasColumnName("isArhivaKorisnik");
             entity.Property(e => e.KorisnikId).HasColumnName("KorisnikID");
             entity.Property(e => e.Sifra)
                 .HasMaxLength(10)
@@ -258,7 +283,7 @@ public partial class Ib200070Context : DbContext
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.ToTable("Status", tb => tb.HasTrigger("trg_SetDefaultSifraStatus"));
+            entity.ToTable("Status");
 
             entity.Property(e => e.StatusId).HasColumnName("StatusID");
             entity.Property(e => e.Opis).HasMaxLength(50);
@@ -269,7 +294,7 @@ public partial class Ib200070Context : DbContext
 
         modelBuilder.Entity<Termin>(entity =>
         {
-            entity.ToTable("Termin", tb => tb.HasTrigger("trg_SetDefaultSifraTermin"));
+            entity.ToTable("Termin");
 
             entity.Property(e => e.TerminId).HasColumnName("TerminID");
             entity.Property(e => e.Opis).HasMaxLength(50);
@@ -280,7 +305,7 @@ public partial class Ib200070Context : DbContext
 
         modelBuilder.Entity<Uloga>(entity =>
         {
-            entity.ToTable("Uloga", tb => tb.HasTrigger("trg_SetDefaultSifraUloga"));
+            entity.ToTable("Uloga");
 
             entity.Property(e => e.UlogaId).HasColumnName("UlogaID");
             entity.Property(e => e.Naziv).HasMaxLength(50);
@@ -292,7 +317,7 @@ public partial class Ib200070Context : DbContext
 
         modelBuilder.Entity<Usluga>(entity =>
         {
-            entity.ToTable("Usluga", tb => tb.HasTrigger("trg_SetDefaultSifraUsluga"));
+            entity.ToTable("Usluga");
 
             entity.HasIndex(e => e.KategorijaId, "IX_Usluga_KategorijaID");
 
@@ -321,6 +346,10 @@ public partial class Ib200070Context : DbContext
         modelBuilder.Entity<UslugaTermin>(entity =>
         {
             entity.ToTable("UslugaTermin");
+
+            entity.HasIndex(e => e.TerminId, "IX_UslugaTermin_TerminID");
+
+            entity.HasIndex(e => e.UslugaId, "IX_UslugaTermin_UslugaID");
 
             entity.Property(e => e.UslugaTerminId).HasColumnName("UslugaTerminID");
             entity.Property(e => e.DatumIzmjene).HasColumnType("datetime");

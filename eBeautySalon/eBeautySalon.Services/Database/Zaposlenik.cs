@@ -17,6 +17,8 @@ public partial class Zaposlenik
 
     public DateTime? DatumModifikovanja { get; set; }
 
+    public string? Biografija { get; set; }
+
     public virtual Korisnik? Korisnik { get; set; }
 
     public virtual ICollection<RecenzijaUsluznika> RecenzijaUsluznikas { get; set; } = new List<RecenzijaUsluznika>();

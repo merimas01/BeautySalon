@@ -23,5 +23,7 @@ public partial class Novost
 
     public virtual Korisnik? Korisnik { get; set; }
 
+    public virtual ICollection<NovostLikeComment> NovostLikeComments { get; set; } = new List<NovostLikeComment>();
+
     public virtual SlikaNovost? SlikaNovost { get; set; }
 }

@@ -56,7 +56,7 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        title: "",
+        title: "Moj profil",
         child: isLoading == false
             ? _buildForm()
             : Center(child: CircularProgressIndicator()));

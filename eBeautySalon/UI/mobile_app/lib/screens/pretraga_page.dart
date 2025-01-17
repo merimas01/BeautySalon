@@ -152,7 +152,10 @@ class _PretragaPageState extends State<PretragaPage> {
                         ? Container(
                             child: Text(
                               "${podusluge.result[0].kategorija?.naziv ?? ""}",
-                              style: TextStyle(fontSize: 18, color: Colors.pink, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.pink,
+                                  fontWeight: FontWeight.bold),
                             ),
                           )
                         : Container(),
@@ -195,10 +198,20 @@ class _PretragaPageState extends State<PretragaPage> {
             child: TextField(
               controller: _searchController,
               onSubmitted: (value) async {
-                var tmpData = await _uslugeProvider.get(filter: {'FTS': value});
-                setState(() {
-                  data = tmpData;
-                });
+                List<SearchResult<Usluga>> filteredList = [];
+
+                for (var kat in _kategorijeResult!.result) {
+                  var uslugeZaKategoriju = await _uslugeProvider
+                      .get(filter: {'FTS': _searchController.text, 'kategorijaId': kat.kategorijaId});
+                  filteredList.add(uslugeZaKategoriju);
+                  setState(() {
+                    sveUsluge = filteredList;
+                  });
+                }
+                // var tmpData = await _uslugeProvider.get(filter: {'FTS': value});
+                // setState(() {
+                //   data = tmpData;
+                // });
               },
               decoration: InputDecoration(
                   hintText: "Trazi",

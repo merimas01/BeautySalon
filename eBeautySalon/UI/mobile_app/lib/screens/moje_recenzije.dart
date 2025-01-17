@@ -112,14 +112,14 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                     children: [
                       Column(
                         children: [
-                          _searchByCategories(),
+                          _searchByCategories(), 
                           isLoadingData == false
                               ? _buildRecenzijeUslugaListView()
                               : Container(child: CircularProgressIndicator()),
                         ],
                       ),
                       Column(children: [
-                        _searchByUsluge(),
+                        _searchByUsluge(), //na backendu, recenzijaUsluznika, treba koristiti korisnikId i uslugaId
                         isLoadingData == false
                             ? _buildRecenzijeUsluznikaListView()
                             : Container(child: CircularProgressIndicator()),

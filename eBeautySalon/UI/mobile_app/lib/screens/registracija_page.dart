@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/main.dart';
+import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -120,6 +121,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                 var slika_request = SlikaProfilaInsertUpdate(_base64image);
 
                 if (val == true) {
+                  print("obj: ${obj}");
                   doInsert(obj, slika_request);
                 } else {
                   showDialog(
@@ -425,7 +427,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
     );
   }
 
-Widget _naslov() {
+  Widget _naslov() {
     return Text(
       "Registrujte se na nasu aplikaciju putem sljedece forme!",
       textAlign: TextAlign.center,
@@ -459,6 +461,8 @@ Widget _naslov() {
     }
     print("insert korisnik request: $korisnik_insert");
     try {
+      Authorization.username = "admin";
+      Authorization.password = "admin";
       var kor_post = await _korisnikProvider.insert(korisnik_insert);
       await showDialog(
           context: context,
@@ -471,20 +475,23 @@ Widget _naslov() {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => LoginPage()));
                       },
-                      child: Text("Nazad na prijavu"))
+                      child: Text("Prijavite se sa vasim korisnickim imenom i lozinkom"))
                 ],
               ));
       _formKey.currentState?.reset();
       ponistiSliku();
       setState(() {
         _passwordController.clear();
+        Authorization.username = "";
+        Authorization.password = "";
       });
     } catch (err) {
       await showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
-                content: Text("Neispravni podaci. Molimo pokušajte ponovo."),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

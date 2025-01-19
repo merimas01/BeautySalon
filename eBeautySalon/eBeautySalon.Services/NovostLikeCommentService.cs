@@ -67,6 +67,7 @@ namespace eBeautySalon.Services
 
             if (novostLajkoviKomentari != null) return false;
             else if (brojRijeciKomentar > 15) return false;
+            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
 
             return true;
         }
@@ -78,6 +79,7 @@ namespace eBeautySalon.Services
 
             if (novostLajkoviKomentari != null) return false;
             else if (brojRijeciKomentar > 15) return false;
+            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
 
             return true;
         }

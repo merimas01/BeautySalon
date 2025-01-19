@@ -112,7 +112,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                     children: [
                       Column(
                         children: [
-                          _searchByCategories(), 
+                          _searchByCategories(),
                           isLoadingData == false
                               ? _buildRecenzijeUslugaListView()
                               : Container(child: CircularProgressIndicator()),
@@ -195,8 +195,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UslugaDetails(
-                                usluga: x.usluga,
+                          builder: (context) => EditRecenzijaUsluge(
+                                recenzijaUsluge: x,
                               )));
                     },
                     child: x.usluga.slikaUsluge != null &&
@@ -216,6 +216,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             width: 170,
                           ),
                   ),
+                  SizedBox(height: 10,),
                   Text(x?.usluga.naziv ?? ""),
                   //Text("Ocjena: ${x.ocjena}"),
                   Row(
@@ -233,14 +234,14 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => EditRecenzijaUsluge(
-                                      recenzijaUsluge: x,
-                                    )));
-                          },
-                          child: Icon(Icons.edit_square)),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       Navigator.of(context).push(MaterialPageRoute(
+                      //           builder: (context) => EditRecenzijaUsluge(
+                      //                 recenzijaUsluge: x,
+                      //               )));
+                      //     },
+                      //     child: Icon(Icons.edit_square)),
                       TextButton(
                         onPressed: () {
                           _deleteConfirmationDialog(x, true);
@@ -273,8 +274,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UsluznikDetails(
-                                usluznik: x.usluznik,
+                          builder: (context) => EditRecenzijaUsluznika(
+                                recenzijaUsluznika: x,
                               )));
                     },
                     child: x.usluznik.korisnik.slikaProfila != null &&
@@ -294,6 +295,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             width: 170,
                           ),
                   ),
+                  SizedBox(height: 10,),
                   Text(
                       "${x?.usluznik.korisnik.ime} ${x?.usluznik.korisnik.prezime}"),
                   //Text("Ocjena: ${x.ocjena}"),
@@ -312,14 +314,14 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => EditRecenzijaUsluznika(
-                                      recenzijaUsluznika: x,
-                                    )));
-                          },
-                          child: Icon(Icons.edit_square)),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       Navigator.of(context).push(MaterialPageRoute(
+                      //           builder: (context) => EditRecenzijaUsluznika(
+                      //                 recenzijaUsluznika: x,
+                      //               )));
+                      //     },
+                      //     child: Icon(Icons.edit_square)),
                       TextButton(
                         onPressed: () {
                           _deleteConfirmationDialog(x, false);

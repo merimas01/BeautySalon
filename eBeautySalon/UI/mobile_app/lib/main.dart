@@ -1,5 +1,7 @@
+import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/providers/kategorije_provider.dart';
 import 'package:mobile_app/providers/korisnik_provider.dart';
+import 'package:mobile_app/providers/novost_like_comment_provider.dart';
 import 'package:mobile_app/providers/novost_provider.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
 import 'package:mobile_app/providers/recenzije_usluznika_provider.dart';
@@ -37,6 +39,7 @@ void main() async {
       // ChangeNotifierProvider(create: (_) => StatusiProvider()),
       // ChangeNotifierProvider(create: (_) => TerminProvider()),
       // ChangeNotifierProvider(create: (_) => UslugeTerminiProvider()),
+      ChangeNotifierProvider(create: (_) => NovostLikeCommentProvider()),
     ],
     child: MyMaterialApp(),
   ));

@@ -49,54 +49,55 @@ class _HomePageState extends State<HomePage> {
           // height: 800,
           width: 800,
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(children: [
-                SizedBox(height: 10,),
-                Container(
-                  height: 30,
-                  child: Text(
-                    "Dobrodosli ${LoggedUser.ime}!",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontFamily: 'BeckyTahlia',
-                        fontSize: 26,
-                        color: Colors.pinkAccent),
-                  ),
+            // child: Padding(
+            // padding: const EdgeInsets.all(8.0),
+            child: Column(children: [
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 30,
+                child: Text(
+                  "Dobrodosli ${LoggedUser.ime}!",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontFamily: 'BeckyTahlia',
+                      fontSize: 26,
+                      color: Colors.pinkAccent),
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  child: Text("Pogledajte novosti naseg salona."),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                isLoading == false
-                    ? Container(
-                        width: 800,
-                        height: 600,
-                        // child: Padding(
-                        // padding: const EdgeInsets.all(8.0),
-                        child: GridView(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount:
-                                1, // Number of items in a row (1 in this case)
-                            childAspectRatio:
-                                3 / 1, // Adjust the width-to-height ratio here
-                            mainAxisSpacing:
-                                8, // Spacing between items vertically
-                          ),
-                          scrollDirection: Axis.vertical,
-                          children: _buildNovostList(),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                child: Text("Pogledajte novosti naseg salona."),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              isLoading == false
+                  ? Container(
+                      width: 800,
+                      height: 600,
+                      // child: Padding(
+                      // padding: const EdgeInsets.all(8.0),
+                      child: GridView(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount:
+                              1, // Number of items in a row (1 in this case)
+                          childAspectRatio:
+                              3 / 1, // Adjust the width-to-height ratio here
+                          mainAxisSpacing:
+                              8, // Spacing between items vertically
                         ),
-                        // ),
-                      )
-                    : Text("Ucitavanje...")
-              ]),
-            ),
+                        scrollDirection: Axis.vertical,
+                        children: _buildNovostList(),
+                      ),
+                      // ),
+                    )
+                  : Text("Ucitavanje...")
+            ]),
+            // ),
           ),
         ));
   }
@@ -110,6 +111,7 @@ class _HomePageState extends State<HomePage> {
         .map((x) => Container(
               child: DecoratedBox(
                 decoration: BoxDecoration(
+                 // color: Color.fromARGB(255, 248, 204, 219),
                   border: Border(
                     bottom: BorderSide(
                       color: Colors.black,
@@ -117,53 +119,50 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => NovostDetailsScreen(
-                                      novost: x,
-                                    )));
-                          },
-                          child: x.slikaNovost != null &&
-                                  x.slikaNovost?.slika != null
-                              ? Container(
-                                  height: 150,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(right: 15.0, top: 5.0, bottom: 5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NovostDetailsScreen(
+                                    novost: x,
+                                  )));
+                        },
+                        child: x.slikaNovost != null &&
+                                x.slikaNovost?.slika != null
+                            ? Container(
+                                height: 150,
+                                width: 150,
+                                child:
+                                    ImageFromBase64String(x.slikaNovost!.slika),
+                              )
+                            : Container(
+                                child: Image.asset(
+                                  "assets/images/noImage.jpg",
                                   width: 150,
-                                  child: ImageFromBase64String(
-                                      x.slikaNovost!.slika),
-                                )
-                              : Container(
-                                  child: Image.asset(
-                                    "assets/images/noImage.jpg",
-                                    width: 150,
-                                    height: 150,
-                                  ),
                                   height: 150,
-                                  width: 150,
                                 ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "${(x.naslov ?? "").split(' ').take(3).join(' ')}...",
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Icon(
-                              Icons.info,
-                              color: Colors.blueGrey,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                              ),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "${(x.naslov ?? "").split(' ').take(3).join(' ')}...",
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Icon(
+                            Icons.info,
+                            color: Colors.blueGrey,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),

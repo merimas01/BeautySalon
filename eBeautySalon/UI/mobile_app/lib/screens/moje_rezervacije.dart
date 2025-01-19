@@ -290,12 +290,12 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${x.sifra}"),
-                          Text("${x.usluga.naziv}"),
+                          Text("${x.sifra ?? ""}"),
+                          Text("${x.usluga?.naziv ?? ""}"),
                           Text("${formatDate(x.datumRezervacije)}"),
-                          Text("${x.termin.opis}h"),
+                          Text("${x.termin?.opis ??""}h"),
                           Text(
-                            "${x.status.opis}",
+                            "${x.status?.opis ?? ""}",
                             style: TextStyle(color: _colorReservationStatus(x)),
                           )
                         ],

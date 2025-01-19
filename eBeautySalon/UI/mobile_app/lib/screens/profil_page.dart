@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_app/screens/moje_recenzije.dart';
 import 'package:mobile_app/screens/moje_rezervacije.dart';
+import 'package:mobile_app/screens/moji_komentari_novosti.dart';
+import 'package:mobile_app/screens/moji_lajkovi_novosti.dart';
 import 'package:mobile_app/screens/profil_edit.dart';
 import 'package:provider/provider.dart';
 
@@ -105,6 +107,7 @@ class _ProfilPageState extends State<ProfilPage> {
             padding: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -201,11 +204,13 @@ class _ProfilPageState extends State<ProfilPage> {
                     height: 15,
                   ),
                   korisnik != null
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _mojeRecenzijeButton(),
                             _mojeRezervacijeButton(),
+                            _mojiKomentariNovostiButton(),
+                            _mojiLajkoviNovostiButton(),
                             _editButton(),
                           ],
                         )
@@ -229,25 +234,75 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Widget _mojeRecenzijeButton() {
-    return TextButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => MojeRecenzije(
-                    korisnik: korisnik,
-                  )));
-        },
-        child: Text("Moje recenzije"));
+    return Row(
+      children: [
+        Icon(
+          Icons.star,
+          color: Colors.pink,
+        ),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MojeRecenzije(
+                        korisnik: korisnik,
+                      )));
+            },
+            child: Text("Moje recenzije"))
+      ],
+    );
   }
 
   Widget _mojeRezervacijeButton() {
-    return TextButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => MojeRezervacije(
-                    korisnik: korisnik,
-                  )));
-        },
-        child: Text("Moje rezervacije"));
+    return Row(
+      children: [
+        Icon(
+          Icons.calendar_month,
+          color: Colors.pink,
+        ),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MojeRezervacije(
+                        korisnik: korisnik,
+                      )));
+            },
+            child: Text("Moje rezervacije"))
+      ],
+    );
+  }
+
+  Widget _mojiKomentariNovostiButton() {
+    return Row(
+      children: [
+        Icon(
+          Icons.comment,
+          color: Colors.pink,
+        ),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MojiKomentariNovosti()));
+            },
+            child: Text("Moji komentari o novostima"))
+      ],
+    );
+  }
+
+  Widget _mojiLajkoviNovostiButton() {
+    return Row(
+      children: [
+        Icon(
+          Icons.thumb_up,
+          color: Colors.pink,
+        ),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MojiLajkoviNovosti()));
+            },
+            child: Text("Moja sviđanja novosti"))
+      ],
+    );
   }
 
   Uint8List displayCurrentImage() {

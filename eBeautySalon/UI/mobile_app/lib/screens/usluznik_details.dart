@@ -257,19 +257,15 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
                           SizedBox(
                             height: 10,
                           ),
-                          widget.totalReviws != "0"
-                              ? ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SveRecenzijeUsluznika(
-                                                  zaposlenik: widget.usluznik,
-                                                )));
-                                  },
-                                  child: Text(
-                                      "Pogledajte sve recenzije za usluznika"))
-                              : Container()
+                          ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => SveRecenzijeUsluznika(
+                                          zaposlenik: widget.usluznik,
+                                        )));
+                              },
+                              child:
+                                  Text("Pogledajte sve recenzije za usluznika"))
                         ],
                       ),
                     ),

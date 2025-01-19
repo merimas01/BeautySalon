@@ -158,19 +158,17 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                       SizedBox(
                         height: 10,
                       ),
-                      _getTotalReviewsUsluga() != 0
-                          ? ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => SveRecenzijeUsluge(
-                                          usluga: widget.usluga,
-                                        )));
-                              },
-                              child: Text(
-                                "Pogledajte sve recenzije za ovu uslugu",
-                                style: TextStyle(fontSize: 16),
-                              ))
-                          : Container(),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SveRecenzijeUsluge(
+                                      usluga: widget.usluga,
+                                    )));
+                          },
+                          child: Text(
+                            "Pogledajte sve recenzije za ovu uslugu",
+                            style: TextStyle(fontSize: 16),
+                          )),
                     ],
                   ),
 

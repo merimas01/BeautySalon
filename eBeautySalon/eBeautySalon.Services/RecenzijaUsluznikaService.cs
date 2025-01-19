@@ -79,6 +79,7 @@ namespace eBeautySalon.Services
             else if (korisnik_uloga_usluznik == null) return false; // zaposlenik nije usluznik
             else if (recenzija_usluznika != null) return false; //postoji vec isti objekat
             else if (brojRijeciKomentar > 15) return false; //ako je broj rijeci veci od 15
+            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false; //ne smije biti prazan string
             else if (!usluznici.Contains(request.UsluznikId) || !korisnici.Contains(request.KorisnikId)) return false; //nije validan usluznik ili korisnik
             return true; 
         }
@@ -96,7 +97,8 @@ namespace eBeautySalon.Services
             if (korisnik_zaposlenik != null) return false; //korisnik u requestu je zaposlenik (zaposlenik ne smije recenzirati)
             else if (korisnik_uloga_usluznik == null) return false; // zaposlenik nije usluznik
             else if (recenzija_usluznika != null) return false; //postoji vec isti objekat
-            else if (brojRijeciKomentar > 15) return false; 
+            else if (brojRijeciKomentar > 15) return false;
+            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
             else if (!usluznici.Contains(request.UsluznikId) || !korisnici.Contains(request.KorisnikId)) return false; //nije validan usluznik ili korisnik
             return true;
         }

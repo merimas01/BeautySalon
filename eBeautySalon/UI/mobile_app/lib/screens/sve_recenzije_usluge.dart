@@ -98,6 +98,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                           onPressed: () {
                             setState(() {
                               makeAReview = !makeAReview;
+                              imaRecenziju = true;
                             });
                           },
                           child: Text("Napisi recenziju?"))
@@ -208,7 +209,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                               ),
                             ],
                           ),
-                          x.komentar != null &&  x.komentar.trim().isNotEmpty
+                          x.komentar != null && x.komentar.trim().isNotEmpty
                               ? Row(
                                   children: [
                                     Icon(Icons.comment),

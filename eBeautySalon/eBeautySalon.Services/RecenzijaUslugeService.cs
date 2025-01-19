@@ -74,6 +74,7 @@ namespace eBeautySalon.Services
             if (korisnik_zaposlenik != null) return false;
             else if (recenzija_usluge != null) return false;
             else if (brojRijeciKomentar > 15) return false;
+            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
 
             return true;
@@ -91,6 +92,7 @@ namespace eBeautySalon.Services
             if (korisnik_zaposlenik != null) return false;
             else if (recenzija_usluge != null) return false;
             else if (brojRijeciKomentar > 15) return false;
+            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
             return true;
         }

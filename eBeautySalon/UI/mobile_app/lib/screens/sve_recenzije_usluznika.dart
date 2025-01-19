@@ -411,6 +411,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
                           onPressed: () {
                             setState(() {
                               makeAReview = !makeAReview;
+                              imaRecenziju = true;
                             });
                           },
                           child: Text("Napisi recenziju?"))

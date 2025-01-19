@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/models/novost_like_comment.dart';
+import 'package:mobile_app/models/novost_like_comment_insert_update.dart';
 import 'package:mobile_app/models/search_result.dart';
-import 'package:mobile_app/providers/novost_provider.dart';
+import 'package:mobile_app/screens/edit_komentar_novost.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/novost.dart';
+import '../providers/novost_like_comment_provider.dart';
 import '../utils/util.dart';
 
 class NovostDetailsScreen extends StatefulWidget {
@@ -19,136 +22,235 @@ class NovostDetailsScreen extends StatefulWidget {
 
 class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
   bool showComments = false;
+  bool isLoadingLikesComments = true;
+  bool createComment = false;
+  bool liked = false; //vec lajkano
+  bool commented = false; //vec komentarisano
+  int likesCount = 0;
+  int commentsCount = 0;
+  int? novostLikeCommentId;
+  String? currentComment;
+  late NovostLikeCommentProvider _novostLikeCommentProvider;
+  SearchResult<NovostLikeComment>? _novostLikeCommentResult;
+  TextEditingController _commentController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _novostLikeCommentProvider = context.read<NovostLikeCommentProvider>();
+
+    loadData();
+  }
+
+  loadData() async {
+    //ukupni lajkovi
+    var hasLikes = await _novostLikeCommentProvider
+        .get(filter: {'novostId': widget.novost?.novostId, 'isLike': true});
+    //ukupni komentari
+    var hasComments = await _novostLikeCommentProvider.get(filter: {
+      'novostId': widget.novost?.novostId,
+      'isKorisnikIncluded': true,
+      'isNovostIncluded': true,
+      'isComment': true
+    });
+    //da li je korisnik lajkao
+    var isLiked = await _novostLikeCommentProvider.get(filter: {
+      'novostId': widget.novost?.novostId,
+      'korisnikId': LoggedUser.id,
+      'isLike': true
+    });
+    //da li je korisnik komentarisao
+    var isComment = await _novostLikeCommentProvider.get(filter: {
+      'novostId': widget.novost?.novostId,
+      'korisnikId': LoggedUser.id,
+      'isComment': true
+    });
+    //objekat u kojem je korisnik lajkao/komentarisao
+    var novostlikecomment = await _novostLikeCommentProvider.get(filter: {
+      'novostId': widget.novost?.novostId,
+      'korisnikId': LoggedUser.id,
+    });
+
+    setState(() {
+      isLoadingLikesComments = false;
+      _novostLikeCommentResult = hasComments;
+      likesCount = hasLikes.count;
+      commentsCount = hasComments.count;
+      liked = isLiked.count != 0 ? true : false;
+      commented = isComment.count != 0 ? true : false;
+      novostLikeCommentId = novostlikecomment.count != 0
+          ? novostlikecomment.result[0].novostLikeCommentId
+          : 0;
+      currentComment =
+          isComment.count != 0 ? isComment.result[0].komentar : null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        title: widget.novost?.naslov ?? "naslov",
-        child: Container(
-            width: 800,
-            height: 700,
-            child: Card(
-                //    child: SingleChildScrollView(
+        title: "Detalji novosti",
+        child: isLoadingLikesComments == false
+            ? Container(
+                width: 800,
                 child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  Text(
-                    "${widget.novost?.naslov ?? ""}",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontFamily: 'BeckyTahlia',
-                        fontSize: 26,
-                        color: Colors.pinkAccent),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  widget.novost?.slikaNovost != null &&
-                          widget.novost?.slikaNovost!.slika != ""
-                      ? Container(
-                          height: 200,
-                          width: null,
-                          child: ImageFromBase64String(
-                              widget.novost!.slikaNovost!.slika),
-                        )
-                      : Container(
-                          child: Image.asset(
-                            "assets/images/noImage.jpg",
-                            height: 200,
-                            width: null,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  //Text("Autor: ${widget.novost?.korisnik?.ime ?? ""}"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "Datum objavljivanja: ${formatDate(widget.novost!.datumKreiranja!)}",
-                    textAlign: TextAlign.justify,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "${widget.novost?.sadrzaj}",
-                    textAlign: TextAlign.justify,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Text("20"),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          TextButton(onPressed: () {}, child: Text("👍")),
-                        ],
+                  padding: const EdgeInsets.all(15.0),
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      Text(
+                        "${widget.novost?.naslov ?? ""}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontFamily: 'BeckyTahlia',
+                            //fontStyle: FontStyle.italic,
+                            fontSize: 26,
+                            color: Colors.pinkAccent),
                       ),
-                      Row(
-                        children: [
-                          Text("0"),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  showComments = !showComments;
-                                });
-                              },
-                              child: Text("💬")),
-                        ],
+                      SizedBox(
+                        height: 10,
                       ),
-                    ],
-                  ),
-                  showComments == true
-                      ? Container(
-                          height: 200,
-                          width: 800,
-                          child: Card(
-                            child: SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: _showComments(),
+                      widget.novost?.slikaNovost != null &&
+                              widget.novost?.slikaNovost!.slika != ""
+                          ? Container(
+                              height: 200,
+                              width: null,
+                              child: ImageFromBase64String(
+                                  widget.novost!.slikaNovost!.slika),
+                            )
+                          : Container(
+                              child: Image.asset(
+                                "assets/images/noImage.jpg",
+                                height: 200,
+                                width: null,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                        )
-                      : Container(),
-                  _createComment()
-                ]),
-                //)
-              ),
-            ))));
-  }
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Datum objavljivanja: ${formatDate(widget.novost!.datumKreiranja!)}",
+                        textAlign: TextAlign.justify,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "${widget.novost?.sadrzaj}",
+                        textAlign: TextAlign.justify,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text("${likesCount}"),
+                              TextButton(
+                                  onPressed: () async {
+                                    try {
+                                      if (novostLikeCommentId != 0) {
+                                        //edit
+                                        var obj =
+                                            await _novostLikeCommentProvider
+                                                .update(novostLikeCommentId!,
+                                                    LikeNovostRequest());
+                                      } else {
+                                        //insert
+                                        var obj =
+                                            await _novostLikeCommentProvider
+                                                .insert(LikeNovostRequest());
+                                      }
 
-  void _giveLike() {
-    //poziv u bazu, loggedUser id u novostLikeKomment tabeli
+                                      var data =
+                                          await _novostLikeCommentProvider
+                                              .get(filter: {
+                                        'novostId': widget.novost?.novostId,
+                                        'isKorisnikIncluded': true,
+                                        'isNovostIncluded': true,
+                                        'isComment': true,
+                                      });
+
+                                      var hasLikes =
+                                          await _novostLikeCommentProvider.get(
+                                              filter: {
+                                            'novostId': widget.novost?.novostId,
+                                            'isLike': true
+                                          });
+                                      setState(() {
+                                        liked = !liked;
+                                        _novostLikeCommentResult = data;
+                                        likesCount = hasLikes.count;
+                                      });
+
+                                      //showSuccessMessage();
+                                    } catch (err) {
+                                      print(err.toString());
+                                      _showValidationError();
+                                    }
+                                  },
+                                  child: liked == true
+                                      ? Icon(Icons.thumb_up)
+                                      : Icon(Icons.thumb_up_alt_outlined)),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text("${commentsCount}"),
+                              TextButton(
+                                  onPressed: () {
+                                    if (commentsCount != 0) {
+                                      setState(() {
+                                        showComments = !showComments;
+                                      });
+                                    }
+                                  },
+                                  child: commented == true
+                                      ? Icon(Icons.comment)
+                                      : Icon(Icons.comment_outlined)),
+                            ],
+                          ),
+                        ],
+                      ),
+                      showComments == true
+                          ? Container(
+                              height: 270,
+                              width: 800,
+                              child: Card(
+                                child: SingleChildScrollView(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: _showComments(),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(),
+                      commented == false ? _createComment() : Container()
+                    ]),
+                  ),
+                ))
+            : Container());
   }
-  //promijeni emoji ako korisnik lajka ili komentarise
-  //obrisi, edituj komentar (svoj). (Moje recenzije za novosti - svidjanja i komentari)
-  //uraditi isto kao za recenzije: usluga details-sve recenzije-delete, stranica edit. profil - lajkovi,komentari - delete, stranica edit
 
   Widget _createComment() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Write a comment:",
+          "Napišite komentar:",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 8.0),
         TextField(
-          // controller: _commentController,
+          controller: _commentController,
           maxLines: 5, // Allows multi-line input
           decoration: InputDecoration(
-            hintText: "Type your comment here...",
+            hintText: "Napišite komentar ovdje...",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -160,7 +262,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
           children: [
             ElevatedButton(
               onPressed: _saveComment,
-              child: Text("Save"),
+              child: Text("Spasi"),
             ),
           ],
         ),
@@ -168,62 +270,249 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
     );
   }
 
-  void _saveComment() {
-    // String comment = _commentController.text.trim();
-    // if (comment.isNotEmpty) {
-    //   // Handle saving the comment (e.g., send to server or add to list)
-    //   print("Saved comment: $comment");
-    //   _commentController.clear(); // Clear the text area
-    // } else {
-    //   // Show error or feedback
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text("Comment cannot be empty")),
-    //   );
-    // }
+  void _saveComment() async {
+    try {
+      var request = NovostLikeCommentInsertUpdate(LoggedUser.id,
+          widget.novost?.novostId, liked, _commentController.text.trim());
+      var obj = await _novostLikeCommentProvider.insert(request);
+      var data = await _novostLikeCommentProvider.get(filter: {
+        'novostId': widget.novost?.novostId,
+        'isKorisnikIncluded': true,
+        'isNovostIncluded': true,
+        'isComment': true
+      });
+      setState(() {
+        commented = true;
+        commentsCount = data.count;
+        _novostLikeCommentResult = data;
+      });
+      showSuccessMessage();
+    } catch (err) {
+      _showValidationError();
+    }
   }
 
   Widget _showComments() {
-    var comments = [
-      {'username': 'user1', 'comment': 'komm1'},
-      {'username': 'user2', 'comment': 'This is a longer comment.'},
-      {'username': 'user3', 'comment': 'Nice post!'},
-    ];
-
-    return Column(
-      children: comments.map((comment) {
-        return Padding(
+    return Container(
+      width: 800,
+      child: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: Colors.grey),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  comment['username'] ?? 'Unknown',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  comment['comment'] ?? '',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
+            height: 230,
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1, // Number of items in a row (1 in this case)
+                childAspectRatio:
+                    2 / 1, // Adjust the width-to-height ratio here
+                mainAxisSpacing: 8, // Spacing between items vertically
+              ),
+              scrollDirection: Axis.vertical,
+              children: _buildList(_novostLikeCommentResult!.result),
             ),
           ),
-        );
-      }).toList(),
+        ),
+      ),
     );
+  }
+
+  List<Widget> _buildList(data) {
+    if (data.length == 0) {
+      return [Text("Nema nijedan komentar za ovu novost.")];
+    }
+
+    List<Widget> list = data
+        .map((x) => Container(
+              decoration: BoxDecoration(
+                  //color: Colors.amber,
+                  border: Border.all(width: 2),
+                  borderRadius: BorderRadius.circular(20)),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: InkWell(
+                  onTap: () {
+                    if (x.korisnikId == LoggedUser.id) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EditKomentarNovost(
+                                novostLikeComment: x,
+                              )));
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.person),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "${x.korisnik?.ime} ${x.korisnik?.prezime}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.comment),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text("${x.komentar}"),
+                            ],
+                          ),
+                          x.datumModifikovanja == null
+                              ? Row(
+                                  children: [
+                                    Icon(Icons.date_range),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text("${formatDate(x.datumKreiranja)}"),
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    Icon(Icons.date_range),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                        "${formatDate(x.datumModifikovanja)} (modifikovano)"),
+                                  ],
+                                ),
+                        ],
+                      ),
+                      x.korisnikId == LoggedUser.id
+                          ? IconButton(
+                              onPressed: () {
+                                _deleteConfirmationDialog(x);
+                              },
+                              icon: Icon(Icons.delete),
+                              color: Colors.red,
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ),
+              ),
+            ))
+        .cast<Widget>()
+        .toList();
+
+    return list;
+  }
+
+  void _showValidationError() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Greška"),
+              content:
+                  Text("Nije zadovoljena validacija. Molimo pokušajte ponovo."),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Shvatam"))
+              ],
+            ));
+  }
+
+  void showSuccessMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Informacija o uspjehu"),
+              content: Text("Uspješno izvršena akcija!"),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Ok"))
+              ],
+            ));
+  }
+
+  LikeNovostRequest() {
+    if (liked == true && commented == true) {
+      var request = NovostLikeCommentInsertUpdate(
+          LoggedUser.id, widget.novost?.novostId, false, currentComment);
+      return request;
+    } else if (liked == true && commented == false) {
+      var request = NovostLikeCommentInsertUpdate(
+          LoggedUser.id, widget.novost?.novostId, false, null);
+      return request;
+    } else if (liked == false && commented == true) {
+      var request = NovostLikeCommentInsertUpdate(
+          LoggedUser.id, widget.novost?.novostId, true, currentComment);
+      return request;
+    } else if (liked == false && commented == false) {
+      var request = NovostLikeCommentInsertUpdate(
+          LoggedUser.id, widget.novost?.novostId, true, null);
+      return request;
+    }
+  }
+
+  void _deleteConfirmationDialog(e) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text('Potvrda o brisanju zapisa',
+                  textAlign: TextAlign.center),
+              content: Text('Jeste li sigurni da želite izbrisati ovaj zapis?',
+                  textAlign: TextAlign.center),
+              actions: <Widget>[
+                ElevatedButton(
+                  child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
+                  onPressed: () {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('Da'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
+                  onPressed: () async {
+                    Navigator.of(context).pop(); //zatvori dijalog
+                    _obrisiZapis(e);
+                  },
+                ),
+              ],
+            ));
+  }
+
+  void _obrisiZapis(e) async {
+    var deleted = await _novostLikeCommentProvider.update(
+        e.novostLikeCommentId!,
+        NovostLikeCommentInsertUpdate(
+            LoggedUser.id, widget.novost?.novostId, liked, null));
+
+    //ukupni komentari
+    var hasComments = await _novostLikeCommentProvider.get(filter: {
+      'novostId': widget.novost?.novostId,
+      'isKorisnikIncluded': true,
+      'isNovostIncluded': true,
+      'isComment': true
+    });
+
+    setState(() {
+      isLoadingLikesComments = false;
+      _novostLikeCommentResult = hasComments;
+      commentsCount = hasComments.count;
+      commented = false;
+      currentComment = null;
+    });
   }
 }

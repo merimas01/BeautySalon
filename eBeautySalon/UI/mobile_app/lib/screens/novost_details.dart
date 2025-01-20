@@ -68,10 +68,10 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       'isComment': true
     });
     //objekat u kojem je korisnik lajkao/komentarisao
-    var novostlikecomment = await _novostLikeCommentProvider.get(filter: {
-      'novostId': widget.novost?.novostId,
-      'korisnikId': LoggedUser.id,
-    });
+    // var novostlikecomment = await _novostLikeCommentProvider.get(filter: {
+    //   'novostId': widget.novost?.novostId,
+    //   'korisnikId': LoggedUser.id,
+    // });
 
     setState(() {
       isLoadingLikesComments = false;
@@ -80,8 +80,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       commentsCount = hasComments.count;
       liked = isLiked.count != 0 ? true : false;
       commented = isComment.count != 0 ? true : false;
-      novostLikeCommentId = novostlikecomment.count != 0
-          ? novostlikecomment.result[0].novostLikeCommentId
+      novostLikeCommentId = isLiked.count != 0
+          ? isLiked.result[0].novostLikeCommentId
           : 0;
       currentComment =
           isComment.count != 0 ? isComment.result[0].komentar : null;
@@ -229,8 +229,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                 ),
                               ),
                             )
-                          : Container(),
-                      commented == false ? _createComment() : Container()
+                          : Container(), 
+                      commented == false ? _createComment() : Container() //samo jednom moze komentarisati
                     ]),
                   ),
                 ))

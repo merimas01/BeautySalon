@@ -17,7 +17,7 @@ namespace eBeautySalon.Models.Requests
         [Required]
         public int? NovostId { get; set; }
 
-        public bool? IsLike { get; set; }
+        public bool? IsLike { get; set; } = false;
 
         public string? Komentar { get; set; }
 

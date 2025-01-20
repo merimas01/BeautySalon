@@ -65,11 +65,13 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Widget _naslov() {
-    return Text(
-      "Moji podaci",
-      textAlign: TextAlign.center,
-      style: const TextStyle(
-          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+    return Center(
+      child: Text(
+        "Moji podaci",
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+            fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+      ),
     );
   }
 

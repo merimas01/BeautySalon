@@ -19,6 +19,7 @@ class Zaposlenik {
   DateTime? datumModifikovanja;
   Korisnik? korisnik;
   List<ZaposlenikUsluga>? zaposlenikUslugas;
+  String? biografija;
 
   Zaposlenik(
       this.zaposlenikId,
@@ -28,7 +29,8 @@ class Zaposlenik {
       this.datumKreiranja,
       this.datumModifikovanja,
       this.korisnik,
-      this.zaposlenikUslugas);
+      this.zaposlenikUslugas,
+      this.biografija);
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.

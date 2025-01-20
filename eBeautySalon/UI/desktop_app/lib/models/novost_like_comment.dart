@@ -1,45 +1,45 @@
-import 'package:desktop_app/models/zaposlenik_usluga.dart';
+import 'dart:ffi';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'korisnik.dart';
-
-import 'package:json_annotation/json_annotation.dart';
+import 'novost.dart';
 
 /// This allows the `User` class to access private members in
 /// the generated file. The value for this is *.g.dart, where
 /// the star denotes the source file name.
-part 'zaposlenik.g.dart';
+part 'novost_like_comment.g.dart';
 
 @JsonSerializable()
-class Zaposlenik {
-  int? zaposlenikId;
-  DateTime? datumRodjenja;
-  DateTime? datumZaposlenja;
-  int? korisnikId;
-  DateTime? datumKreiranja;
-  DateTime? datumModifikovanja;
-  Korisnik? korisnik;
-  List<ZaposlenikUsluga>? zaposlenikUslugas;
-  String? biografija;
-
-  Zaposlenik(
-      this.zaposlenikId,
-      this.datumRodjenja,
-      this.datumZaposlenja,
+class NovostLikeComment {
+  NovostLikeComment(
+      this.novostLikeCommentId,
       this.korisnikId,
+      this.novostId,
+      this.isLike,
+      this.komentar,
       this.datumKreiranja,
       this.datumModifikovanja,
       this.korisnik,
-      this.zaposlenikUslugas,
-      this.biografija);
+      this.novost);
+
+  int? novostLikeCommentId;
+  int? korisnikId;
+  int? novostId;
+  bool? isLike;
+  String? komentar;
+  DateTime? datumKreiranja;
+  DateTime? datumModifikovanja;
+  Korisnik? korisnik;
+  Novost? novost;
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
-  factory Zaposlenik.fromJson(Map<String, dynamic> json) =>
-      _$ZaposlenikFromJson(json);
+  factory NovostLikeComment.fromJson(Map<String, dynamic> json) =>
+      _$NovostLikeCommentFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated
   /// helper method `_$UserToJson`.
-  Map<String, dynamic> toJson() => _$ZaposlenikToJson(this);
+  Map<String, dynamic> toJson() => _$NovostLikeCommentToJson(this);
 }

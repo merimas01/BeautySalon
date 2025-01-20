@@ -1,8 +1,10 @@
 import 'package:desktop_app/models/novost.dart';
+import 'package:desktop_app/providers/novost_like_comment_provider.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/novost_like_comment.dart';
 import '../models/search_result.dart';
 import '../providers/novosti_provider.dart';
 import '../utils/util.dart';
@@ -17,7 +19,10 @@ class NovostiListScreen extends StatefulWidget {
 
 class _NovostiListScreenState extends State<NovostiListScreen> {
   late NovostiProvider _novostiProvider;
+  late NovostLikeCommentProvider _novostLikeCommentProvider;
   SearchResult<Novost>? result;
+  SearchResult<NovostLikeComment>? _komentari;
+  SearchResult<NovostLikeComment>? _lajkovi;
   TextEditingController _ftsController = new TextEditingController();
   bool isLoadingData = true;
   String? search = "";
@@ -28,7 +33,28 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _novostiProvider = context.read<NovostiProvider>();
+    _novostLikeCommentProvider = context.read<NovostLikeCommentProvider>();
     getData();
+    getLjakoviKomentariData();
+  }
+
+  void getLjakoviKomentariData() async {
+    var listLajkovi = await _novostLikeCommentProvider.get(filter: {
+      'isKorisnikIncluded': true,
+      'isNovostIncluded': true,
+      'isLike': true
+    });
+
+    var listKomentari = await _novostLikeCommentProvider.get(filter: {
+      'isKorisnikIncluded': true,
+      'isNovostIncluded': true,
+      'isComment': true
+    });
+
+    setState(() {
+      _lajkovi = listLajkovi;
+      _komentari = listKomentari;
+    });
   }
 
   void getData() async {
@@ -57,6 +83,26 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
 
       print("authorised: $authorised");
     });
+  }
+
+  getLikesFromNovost(int novostId) {
+    var list = _lajkovi?.result
+        .where(
+          (item) => item.novostId == novostId,
+        )
+        .toList();
+
+    return list?.length ?? 0;
+  }
+
+  getCommentsFromNovost(int novostId) {
+    var list = _komentari?.result
+        .where(
+          (item) => item.novostId == novostId,
+        )
+        .toList();
+
+    return list?.length ?? 0;
   }
 
   Widget buildAuthorisation() {
@@ -218,7 +264,11 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
             )),
             DataColumn(
                 label: Expanded(
-              child: Text("Autor"),
+              child: Icon(Icons.thumb_up),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Icon(Icons.comment),
             )),
             DataColumn(
                 label: Expanded(
@@ -254,11 +304,12 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                                 ? Text(formatDate(e.datumKreiranja!))
                                 : Text(
                                     formatDate(e.datumModificiranja!),
-                                    textAlign: TextAlign.center,
                                   ))),
                         DataCell(Container(
-                          child:
-                              Text("${e.korisnik?.ime} ${e.korisnik?.prezime}"),
+                          child: Text("${getLikesFromNovost(e.novostId!)}"),
+                        )),
+                        DataCell(Container(
+                          child: Text("${getCommentsFromNovost(e.novostId!)}"),
                         )),
                         DataCell(
                           TextButton(

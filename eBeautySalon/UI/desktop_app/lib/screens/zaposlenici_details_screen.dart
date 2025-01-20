@@ -82,6 +82,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       'zaposlenikId': widget.zaposlenik?.zaposlenikId.toString(),
       'datumRodjenja': widget.zaposlenik?.datumRodjenja,
       'datumZaposlenja': widget.zaposlenik?.datumZaposlenja,
+      'biografija': widget.zaposlenik?.biografija,
       'korisnikId': widget.zaposlenik?.korisnikId.toString(),
       'ime': widget.korisnik?.ime,
       'prezime': widget.korisnik?.prezime,
@@ -360,6 +361,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     _odaberiUlogu(),
                     _korisnickoIme(),
                     _inputIme(),
+                    _inputBiografija(),
                     _inputPrezime(),
                     _inputTelefonEmail(),
                     SizedBox(height: 10),
@@ -607,7 +609,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     ],
                   )
                 : _ponistiSliku != true
-                    ?isNullSlika() == false
+                    ? isNullSlika() == false
                         ? Image.memory(
                             displayCurrentImage(),
                             width: null,
@@ -732,7 +734,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         var kid = kor_post.korisnikId;
 
         var zaposlenik_request = ZaposlenikInsertUpdate(
-            _selectedDateRodjenja, _selectedDateZaposlenja, kid);
+            _selectedDateRodjenja, _selectedDateZaposlenja, kid, obj['biografija']);
         var zap_post = await _zaposleniciProvider.insert(zaposlenik_request);
         print("insert zaposlenik request request: ${zaposlenik_request}");
 
@@ -835,7 +837,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       }
 
       var zaposlenik_request = ZaposlenikInsertUpdate(_selectedDateRodjenja,
-          _selectedDateRodjenja, widget.zaposlenik!.korisnikId);
+          _selectedDateRodjenja, widget.zaposlenik!.korisnikId, obj['biografija']);
       var zap_put = await _zaposleniciProvider.update(
           widget.zaposlenik!.zaposlenikId!, zaposlenik_request);
       print(
@@ -951,6 +953,23 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         }
         if (!RegExp(r'^[a-zA-Z]{1,}[a-zA-Z\d-_.]{2,}$').hasMatch(value)) {
           return 'Korisničko ime treba imati najmanje 3 karaktera,\ntreba počinjati sa slovom i smije sadržavati: \nslova bez afrikata, brojeve i sljedeće znakove: ._-';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _inputBiografija() {
+    return FormBuilderTextField(
+      decoration: InputDecoration(labelText: "Biografija:"),
+      name: "biografija",
+      validator: (value) {
+        if (value == null || value.isEmpty || value.trim().isEmpty) {
+          return 'Molimo Vas unesite biografiju';
+        }
+        
+        if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
+          return 'Ponovite unos.';
         }
         return null;
       },

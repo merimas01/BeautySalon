@@ -29,6 +29,7 @@ Rezervacija _$RezervacijaFromJson(Map<String, dynamic> json) => Rezervacija(
           ? null
           : Status.fromJson(json['status'] as Map<String, dynamic>),
       json['isArhiva'] as bool?,
+      json['isArhivaKorisnik'] as bool?,
     );
 
 Map<String, dynamic> _$RezervacijaToJson(Rezervacija instance) =>
@@ -45,4 +46,5 @@ Map<String, dynamic> _$RezervacijaToJson(Rezervacija instance) =>
       'termin': instance.termin,
       'status': instance.status,
       'isArhiva': instance.isArhiva,
+      'isArhivaKorisnik': instance.isArhivaKorisnik,
     };

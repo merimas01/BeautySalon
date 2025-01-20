@@ -31,8 +31,6 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
   List<Usluga>? _postojeceUsluge;
   bool isLoading = true;
 
-//biografija - NOVI ATRIBUT
-
   @override
   void initState() {
     // TODO: implement initState
@@ -49,14 +47,14 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      title: "",
+      title: "Detalji uslužnika",
       child: _buildDetails(),
     );
   }
 
   Widget _naslov() {
     return Text(
-      "Detalji usluznika",
+      "${widget.usluznik?.korisnik?.ime} ${widget.usluznik?.korisnik?.prezime}",
       textAlign: TextAlign.center,
       style: const TextStyle(
           fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
@@ -76,6 +74,16 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
       decoration: InputDecoration(labelText: "Prezime:"),
       initialValue: widget.usluznik?.korisnik?.prezime,
       enabled: false,
+    );
+  }
+
+  _Biografija() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: "Biografija:"),
+      initialValue: widget.usluznik?.biografija,
+      enabled: false,
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
     );
   }
 
@@ -209,66 +217,64 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
       height: 800,
       child: SingleChildScrollView(
           child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(10.0),
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : Container(
                 width: 800,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: SingleChildScrollView(
-                      child: Column(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _naslov(),
+                      SizedBox(height: 10),
+                      _Slika(),
+                      SizedBox(height: 10),
+                      _Ime(),
+                      SizedBox(height: 10),
+                      _Prezime(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      _Biografija(),
+                      SizedBox(height: 10),
+                      _Telefon(),
+                      SizedBox(height: 10),
+                      _Email(),
+                      SizedBox(height: 10),
+                      _DatumRodjenja(),
+                      SizedBox(height: 10),
+                      _DatumZaposlenja(),
+                      SizedBox(height: 10),
+                      _Usluge(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
                         children: [
-                          _naslov(),
-                          SizedBox(height: 10),
-                          _Slika(),
-                          SizedBox(height: 10),
-                          _Ime(),
-                          SizedBox(height: 10),
-                          _Prezime(),
-                          SizedBox(height: 10),
-                          _Telefon(),
-                          SizedBox(height: 10),
-                          _Email(),
-                          SizedBox(height: 10),
-                          _DatumRodjenja(),
-                          SizedBox(height: 10),
-                          _DatumZaposlenja(),
-                          SizedBox(height: 10),
-                          _Usluge(),
+                          displayAverageGrade(
+                              double.parse(widget.prosjecnaOcjena ?? "0")),
                           SizedBox(
-                            height: 10,
+                            width: 5,
                           ),
-                          Row(
-                            children: [
-                              displayAverageGrade(
-                                  double.parse(widget.prosjecnaOcjena ?? "0")),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text("${widget.prosjecnaOcjena ?? "0"}"),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text("(${widget.totalReviws.toString()})"),
-                            ],
-                          ),
+                          Text("${widget.prosjecnaOcjena ?? "0"}"),
                           SizedBox(
-                            height: 10,
+                            width: 5,
                           ),
-                          ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => SveRecenzijeUsluznika(
-                                          zaposlenik: widget.usluznik,
-                                        )));
-                              },
-                              child:
-                                  Text("Pogledajte sve recenzije za usluznika"))
+                          Text("(${widget.totalReviws.toString()})"),
                         ],
                       ),
-                    ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SveRecenzijeUsluznika(
+                                      zaposlenik: widget.usluznik,
+                                    )));
+                          },
+                          child: Text("Pogledajte sve recenzije za usluznika"))
+                    ],
                   ),
                 ),
               ),

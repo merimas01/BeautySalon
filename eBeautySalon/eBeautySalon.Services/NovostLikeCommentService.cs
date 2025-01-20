@@ -60,13 +60,10 @@ namespace eBeautySalon.Services
         public override async Task<bool> AddValidationInsert(NovostLikeCommentInsertRequest request)
         {
             //komentar ne smije biti duzi od 15 rijeci
-            //ne smije postojati dva zapisa sa istim korisnikId i novostId
 
             var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
-            var novostLajkoviKomentari = await _context.NovostLikeComments.Where(x => x.KorisnikId == request.KorisnikId && x.NovostId == request.NovostId).FirstOrDefaultAsync();
-
-            if (novostLajkoviKomentari != null) return false;
-            else if (brojRijeciKomentar > 15) return false;
+       
+            if (brojRijeciKomentar > 15) return false;
             else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
 
             return true;
@@ -75,10 +72,8 @@ namespace eBeautySalon.Services
         public override async Task<bool> AddValidationUpdate(int id, NovostLikeCommentUpdateRequest request)
         {
             var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
-            var novostLajkoviKomentari = await _context.NovostLikeComments.Where(x => x.NovostLikeCommentId != id && (x.KorisnikId == request.KorisnikId && x.NovostId == request.NovostId)).FirstOrDefaultAsync();
-
-            if (novostLajkoviKomentari != null) return false;
-            else if (brojRijeciKomentar > 15) return false;
+          
+            if (brojRijeciKomentar > 15) return false;
             else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
 
             return true;

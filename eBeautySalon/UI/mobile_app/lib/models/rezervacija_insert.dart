@@ -11,12 +11,16 @@ class RezervacijaInsert {
   int? uslugaId;
   int? terminId;
   DateTime? datumRezervacije;
+  bool? isArhivaKorisnik;
+  bool? isArhiva;
   
   RezervacijaInsert(
       this.korisnikId,
       this.uslugaId,
       this.terminId,
       this.datumRezervacije,
+      this.isArhivaKorisnik,
+      this.isArhiva
     );
 
   /// A necessary factory constructor for creating a new User instance

@@ -115,7 +115,7 @@ class _PretragaPageState extends State<PretragaPage> {
         child: Container(
             height: 800,
             width: 800,
-            child: Card(
+           // child: Card(
                 child: SingleChildScrollView(
                     child: Column(
               children: [
@@ -136,7 +136,10 @@ class _PretragaPageState extends State<PretragaPage> {
                 _searchUsluge(),
                 _showUsluge(),
               ],
-            )))));
+            )
+            )
+          //  )
+            ));
   }
 
   _showUsluge() {

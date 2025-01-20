@@ -16,6 +16,7 @@ ZaposlenikInsertUpdate _$ZaposlenikInsertUpdateFromJson(
           ? null
           : DateTime.parse(json['datumZaposlenja'] as String),
       json['korisnikId'] as int?,
+      json['biografija'] as String?,
     );
 
 Map<String, dynamic> _$ZaposlenikInsertUpdateToJson(
@@ -24,4 +25,5 @@ Map<String, dynamic> _$ZaposlenikInsertUpdateToJson(
       'datumRodjenja': instance.datumRodjenja?.toIso8601String(),
       'datumZaposlenja': instance.datumZaposlenja?.toIso8601String(),
       'korisnikId': instance.korisnikId,
+      'biografija': instance.biografija,
     };

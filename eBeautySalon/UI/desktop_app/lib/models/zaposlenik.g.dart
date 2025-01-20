@@ -27,6 +27,7 @@ Zaposlenik _$ZaposlenikFromJson(Map<String, dynamic> json) => Zaposlenik(
       (json['zaposlenikUslugas'] as List<dynamic>?)
           ?.map((e) => ZaposlenikUsluga.fromJson(e as Map<String, dynamic>))
           .toList(),
+      json['biografija'] as String?,
     );
 
 Map<String, dynamic> _$ZaposlenikToJson(Zaposlenik instance) =>
@@ -39,4 +40,5 @@ Map<String, dynamic> _$ZaposlenikToJson(Zaposlenik instance) =>
       'datumModifikovanja': instance.datumModifikovanja?.toIso8601String(),
       'korisnik': instance.korisnik,
       'zaposlenikUslugas': instance.zaposlenikUslugas,
+      'biografija': instance.biografija,
     };

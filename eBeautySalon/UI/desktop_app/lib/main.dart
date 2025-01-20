@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:desktop_app/models/novost_like_comment.dart';
 import 'package:desktop_app/providers/kategorije_provider.dart';
 import 'package:desktop_app/providers/korisnici_uloge_provider.dart';
 import 'package:desktop_app/providers/korisnik_provider.dart';
+import 'package:desktop_app/providers/novost_like_comment_provider.dart';
 import 'package:desktop_app/providers/novosti_provider.dart';
 import 'package:desktop_app/providers/recenzija_usluznika_provider.dart';
 import 'package:desktop_app/providers/recenzije_usluga_provider.dart';
@@ -53,6 +55,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => StatusiProvider()),
       ChangeNotifierProvider(create: (_) => TerminProvider()),
       ChangeNotifierProvider(create: (_) => UslugeTerminiProvider()),
+      ChangeNotifierProvider(create: (_) => NovostLikeCommentProvider()),
     ],
     child: const MyMaterialApp(),
   ));
@@ -245,19 +248,19 @@ class LoginPage extends StatelessWidget {
 
                                 if (LoggedUser.uloga == "")
                                   showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                        title: Text("Greška"),
-                                        content: Text(
-                                            "Nedozvoljena prijava. Molimo pokušajte ponovo."),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: Text("Ok"))
-                                        ],
-                                      ));
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                            title: Text("Greška"),
+                                            content: Text(
+                                                "Nedozvoljena prijava. Molimo pokušajte ponovo."),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: Text("Ok"))
+                                            ],
+                                          ));
                                 else {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => const HomePage()));

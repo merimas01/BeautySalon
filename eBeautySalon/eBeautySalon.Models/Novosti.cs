@@ -26,5 +26,6 @@ namespace eBeautySalon.Models
         public virtual Korisnici? Korisnik { get; set; }
 
         public virtual SlikaNovosti? SlikaNovost { get; set; }
+
     }
 }

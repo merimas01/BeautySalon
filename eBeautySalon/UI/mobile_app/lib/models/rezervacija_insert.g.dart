@@ -14,6 +14,8 @@ RezervacijaInsert _$RezervacijaInsertFromJson(Map<String, dynamic> json) =>
       json['datumRezervacije'] == null
           ? null
           : DateTime.parse(json['datumRezervacije'] as String),
+      json['isArhivaKorisnik'] as bool?,
+      json['isArhiva'] as bool?,
     );
 
 Map<String, dynamic> _$RezervacijaInsertToJson(RezervacijaInsert instance) =>
@@ -22,4 +24,6 @@ Map<String, dynamic> _$RezervacijaInsertToJson(RezervacijaInsert instance) =>
       'uslugaId': instance.uslugaId,
       'terminId': instance.terminId,
       'datumRezervacije': instance.datumRezervacije?.toIso8601String(),
+      'isArhivaKorisnik': instance.isArhivaKorisnik,
+      'isArhiva': instance.isArhiva,
     };

@@ -11,8 +11,9 @@ class RezervacijaUpdate {
   int? uslugaId;
   int? terminId;
   int? statusId;
-  int? isArhiva;
+  bool? isArhiva;
   DateTime? datumRezervacije;
+  bool? isArhivaKorisnik;
   
   RezervacijaUpdate(
       this.korisnikId,
@@ -21,6 +22,7 @@ class RezervacijaUpdate {
       this.statusId,
       this.isArhiva,
       this.datumRezervacije,
+      this.isArhivaKorisnik
     );
 
   /// A necessary factory constructor for creating a new User instance

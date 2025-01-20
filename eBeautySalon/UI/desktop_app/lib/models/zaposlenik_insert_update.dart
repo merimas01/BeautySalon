@@ -10,11 +10,13 @@ class ZaposlenikInsertUpdate {
   DateTime? datumRodjenja;
   DateTime? datumZaposlenja;
   int? korisnikId;
+  String? biografija;
 
   ZaposlenikInsertUpdate(
       this.datumRodjenja,
       this.datumZaposlenja,
       this.korisnikId,
+      this.biografija
     );
 
   /// A necessary factory constructor for creating a new User instance

@@ -70,10 +70,9 @@ namespace eBeautySalon.Services
             //komentar ne smije biti duzi od 15 rijeci
 
             var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
-            var isWhiteSpace = request.Komentar?.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
 
             if (brojRijeciKomentar > 15) return false;
-            else if (isWhiteSpace != 0) return false;
+            else if (request.Komentar.Trim() == "") return false;
 
             return true;
         }
@@ -81,10 +80,10 @@ namespace eBeautySalon.Services
         public override async Task<bool> AddValidationUpdate(int id, NovostLikeCommentUpdateRequest request)
         {
             var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
-            var isWhiteSpace = request.Komentar?.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
-             
+           
             if (brojRijeciKomentar > 15) return false;
-            else if (isWhiteSpace!=0) return false;
+            else if (request.Komentar.Trim() == "") return false;
+
 
             return true;
         }

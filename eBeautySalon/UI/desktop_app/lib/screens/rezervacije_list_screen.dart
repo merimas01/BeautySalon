@@ -177,7 +177,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       );
     }
     return Center(child: CircularProgressIndicator());
-  }
+    }
 
   var dropdown_lista = [
     {'opis': 'da', 'vrijednost': true},

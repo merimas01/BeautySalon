@@ -70,11 +70,13 @@ namespace eBeautySalon.Services
             var recenzija_usluge = await _context.RecenzijaUsluges.Where(x => x.KorisnikId == request.KorisnikId && x.UslugaId == request.UslugaId).FirstOrDefaultAsync();
             var usluge = await _context.Uslugas.Select(x => x.UslugaId).ToListAsync();
             var korisnici = await _context.Korisniks.Where(x => x.KorisnikUlogas.Count() == 0).Select(x => x.KorisnikId).ToListAsync();
+            var isWhiteSpace = request.Komentar?.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
+
 
             if (korisnik_zaposlenik != null) return false;
             else if (recenzija_usluge != null) return false;
             else if (brojRijeciKomentar > 15) return false;
-            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
+            else if (isWhiteSpace != 0) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
 
             return true;
@@ -88,11 +90,13 @@ namespace eBeautySalon.Services
             var recenzija_usluge = await _context.RecenzijaUsluges.Where(x => (x.KorisnikId == request.KorisnikId && x.UslugaId == request.UslugaId) && x.RecenzijaUslugeId != id).FirstOrDefaultAsync();
             var usluge = await _context.Uslugas.Select(x => x.UslugaId).ToListAsync();
             var korisnici = await _context.Korisniks.Where(x => x.KorisnikUlogas.Count() == 0).Select(x => x.KorisnikId).ToListAsync();
+            var isWhiteSpace = request.Komentar?.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
+
 
             if (korisnik_zaposlenik != null) return false;
             else if (recenzija_usluge != null) return false;
             else if (brojRijeciKomentar > 15) return false;
-            else if (string.IsNullOrWhiteSpace(request.Komentar)) return false;
+            else if (isWhiteSpace != 0) return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
             return true;
         }

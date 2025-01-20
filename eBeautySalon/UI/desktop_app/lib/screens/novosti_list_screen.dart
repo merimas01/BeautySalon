@@ -8,6 +8,7 @@ import '../models/novost_like_comment.dart';
 import '../models/search_result.dart';
 import '../providers/novosti_provider.dart';
 import '../utils/util.dart';
+import 'novost_like_comment_screen.dart';
 import 'novosti_details_screen.dart';
 
 class NovostiListScreen extends StatefulWidget {
@@ -306,10 +307,28 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                                     formatDate(e.datumModificiranja!),
                                   ))),
                         DataCell(Container(
-                          child: Text("${getLikesFromNovost(e.novostId!)}"),
+                          child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        NovostLikeCommentScreen(
+                                          novost: e,
+                                        )));
+                              },
+                              child:
+                                  Text("${getLikesFromNovost(e.novostId!)}")),
                         )),
                         DataCell(Container(
-                          child: Text("${getCommentsFromNovost(e.novostId!)}"),
+                          child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        NovostLikeCommentScreen(
+                                          novost: e,
+                                        )));
+                              },
+                              child: Text(
+                                  "${getCommentsFromNovost(e.novostId!)}")),
                         )),
                         DataCell(
                           TextButton(

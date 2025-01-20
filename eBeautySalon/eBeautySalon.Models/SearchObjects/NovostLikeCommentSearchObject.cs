@@ -21,5 +21,7 @@ namespace eBeautySalon.Models.SearchObjects
         public bool? isNovostIncluded { get; set; }
 
         public bool? isKorisnikIncluded { get; set; }
+
+        public string? FTS { get;set; }
     }
 }

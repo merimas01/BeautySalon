@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future loadData() async {
-    var tmpData = await _novostiProvider.get();
+    var tmpData = await _novostiProvider.get(filter: {'isSlikaIncluded': true});
     setState(() {
       data = tmpData;
       isLoading = false;
@@ -106,12 +106,11 @@ class _HomePageState extends State<HomePage> {
     if (data?.result.length == 0) {
       return [Text("Ucitavanje...")];
     }
-
     List<Widget> list = data!.result
         .map((x) => Container(
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                 // color: Color.fromARGB(255, 248, 204, 219),
+                  // color: Color.fromARGB(255, 248, 204, 219),
                   border: Border(
                     bottom: BorderSide(
                       color: Colors.black,
@@ -133,7 +132,8 @@ class _HomePageState extends State<HomePage> {
                                   )));
                         },
                         child: x.slikaNovost != null &&
-                                x.slikaNovost?.slika != null
+                                x.slikaNovost?.slika != null &&
+                                x.slikaNovost?.slika != ""
                             ? Container(
                                 height: 150,
                                 width: 150,

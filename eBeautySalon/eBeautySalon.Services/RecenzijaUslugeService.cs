@@ -54,6 +54,7 @@ namespace eBeautySalon.Services
             if (search?.isUslugeIncluded == true)
             {
                 query = query.Include(x => x.Usluga.Kategorija);
+                query = query.Include(x => x.Usluga.SlikaUsluge);
             }
             return base.AddInclude(query, search);
         }
@@ -74,7 +75,7 @@ namespace eBeautySalon.Services
             if (korisnik_zaposlenik != null) return false;
             else if (recenzija_usluge != null) return false;
             else if (brojRijeciKomentar > 15) return false;
-            else if (request.Komentar.Trim() == "") return false;
+            else if (request.Komentar != null && request.Komentar.Trim() == "") return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
 
             return true;
@@ -92,7 +93,7 @@ namespace eBeautySalon.Services
             if (korisnik_zaposlenik != null) return false;
             else if (recenzija_usluge != null) return false;
             else if (brojRijeciKomentar > 15) return false;
-            else if (request.Komentar.Trim() == "") return false;
+            else if (request.Komentar != null && request.Komentar.Trim() == "") return false;
             else if (!usluge.Contains(request.UslugaId) || !korisnici.Contains(request.KorisnikId)) return false;
             return true;
         }

@@ -80,9 +80,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       commentsCount = hasComments.count;
       liked = isLiked.count != 0 ? true : false;
       commented = isComment.count != 0 ? true : false;
-      novostLikeCommentId = isLiked.count != 0
-          ? isLiked.result[0].novostLikeCommentId
-          : 0;
+      novostLikeCommentId =
+          isLiked.count != 0 ? isLiked.result[0].novostLikeCommentId : 0;
       currentComment =
           isComment.count != 0 ? isComment.result[0].komentar : null;
     });
@@ -229,8 +228,10 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                 ),
                               ),
                             )
-                          : Container(), 
-                      commented == false ? _createComment() : Container() //samo jednom moze komentarisati
+                          : Container(),
+                      commented == false
+                          ? _createComment()
+                          : Container() //samo jednom moze komentarisati
                     ]),
                   ),
                 ))

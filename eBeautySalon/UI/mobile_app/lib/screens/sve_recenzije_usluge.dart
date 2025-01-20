@@ -79,47 +79,48 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        title: "Sve recenzije usluge",
         child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: isLoadingData == false
-          ? SingleChildScrollView(
-              child: Column(
-                children: [
-                  _naslov(),
-                  SizedBox(
-                    height: 10,
+          padding: const EdgeInsets.all(8.0),
+          child: isLoadingData == false
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _naslov(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      _showResultCount(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      imaRecenziju == false
+                          ? ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  makeAReview = !makeAReview;
+                                  imaRecenziju = true;
+                                });
+                              },
+                              child: Text("Napisi recenziju?"))
+                          : Container(),
+                      imaRecenziju == false
+                          ? SizedBox(
+                              height: 10,
+                            )
+                          : Container(),
+                      makeAReview == true ? _rateUsluga() : Container(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      _buildListView()
+                    ],
                   ),
-                  _showResultCount(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  imaRecenziju == false
-                      ? ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              makeAReview = !makeAReview;
-                              imaRecenziju = true;
-                            });
-                          },
-                          child: Text("Napisi recenziju?"))
-                      : Container(),
-                  imaRecenziju == false
-                      ? SizedBox(
-                          height: 10,
-                        )
-                      : Container(),
-                  makeAReview == true ? _rateUsluga() : Container(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _buildListView()
-                ],
-              ),
-            )
-          : Center(
-              child: CircularProgressIndicator(),
-            ),
-    ));
+                )
+              : Center(
+                  child: CircularProgressIndicator(),
+                ),
+        ));
   }
 
   _buildListView() {

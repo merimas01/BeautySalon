@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class RecenzijaUslugeProvider extends BaseProvider<RecenzijaUsluge> {
   RecenzijaUslugeProvider()
       : super(
-            "RecenzijaUsluge", "isUslugeIncluded=true&isKorisnikIncluded=true");
+            "RecenzijaUsluge", "isUslugeIncluded=true&isKorisnikIncluded=true"); 
 
   @override
   RecenzijaUsluge fromJson(data) {

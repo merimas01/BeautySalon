@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Padding(
                   padding:
-                      const EdgeInsets.only(right: 15.0, top: 5.0, bottom: 5.0),
+                      const EdgeInsets.only(right: 15.0, top: 5.0, bottom: 5.0, left: 15.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

@@ -53,7 +53,7 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
             child: Column(
               children: [
                 Text(
-                  "${widget.recenzijaUsluznika?.korisnik?.ime ?? ""} ${widget.recenzijaUsluznika?.korisnik?.prezime ?? ""}",
+                  "${widget.recenzijaUsluznika?.usluznik?.korisnik?.ime ?? ""} ${widget.recenzijaUsluznika?.usluznik?.korisnik?.prezime ?? ""}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontFamily: 'BeckyTahlia',
@@ -63,18 +63,18 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                 SizedBox(
                   height: 10,
                 ),
-                widget.recenzijaUsluznika?.korisnik?.slikaProfila != null &&
-                        widget.recenzijaUsluznika?.korisnik?.slikaProfila
+                widget.recenzijaUsluznika?.usluznik?.korisnik?.slikaProfila != null &&
+                        widget.recenzijaUsluznika?.usluznik?.korisnik?.slikaProfila
                                 ?.slika !=
                             null &&
-                        widget.recenzijaUsluznika?.korisnik?.slikaProfila
+                        widget.recenzijaUsluznika?.usluznik?.korisnik?.slikaProfila
                                 ?.slika !=
                             ""
                     ? Container(
                         height: 200,
                         width: 200,
                         child: ImageFromBase64String(widget
-                            .recenzijaUsluznika!.korisnik!.slikaProfila!.slika),
+                            .recenzijaUsluznika!.usluznik!.korisnik!.slikaProfila!.slika),
                       )
                     : Container(
                         child: Image.asset(

@@ -72,7 +72,7 @@ namespace eBeautySalon.Services
             var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
 
             if (brojRijeciKomentar > 15) return false;
-            else if (request.Komentar.Trim() == "") return false;
+            else if (request.Komentar!=null && request.Komentar.Trim() == "") return false;
 
             return true;
         }
@@ -82,7 +82,7 @@ namespace eBeautySalon.Services
             var brojRijeciKomentar = request.Komentar?.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length ?? 0;
            
             if (brojRijeciKomentar > 15) return false;
-            else if (request.Komentar.Trim() == "") return false;
+            else if (request.Komentar != null && request.Komentar.Trim() == "") return false;
 
 
             return true;

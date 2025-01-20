@@ -53,11 +53,11 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   void getData() async {
     var recenzijeUsluge = await _recenzijeUslugeProvider.get(filter: {
       'FTS': _ftsController1.text,
-      'korisnikId': widget.korisnik!.korisnikId
+      'korisnikId': widget.korisnik!.korisnikId,
     });
     var recenzijeUsluznika = await _recenzijeUsluznikaProvider.get(filter: {
       'FTS': _ftsController2.text,
-      'korisnikId': widget.korisnik!.korisnikId
+      'korisnikId': widget.korisnik!.korisnikId,
     });
 
     // Add a listener to get the value whenever the text changes
@@ -216,9 +216,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             width: 170,
                           ),
                   ),
-                  SizedBox(height: 10,),
                   Text(x?.usluga.naziv ?? ""),
-                  //Text("Ocjena: ${x.ocjena}"),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(5, (index) {
@@ -234,14 +232,6 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // TextButton(
-                      //     onPressed: () {
-                      //       Navigator.of(context).push(MaterialPageRoute(
-                      //           builder: (context) => EditRecenzijaUsluge(
-                      //                 recenzijaUsluge: x,
-                      //               )));
-                      //     },
-                      //     child: Icon(Icons.edit_square)),
                       TextButton(
                         onPressed: () {
                           _deleteConfirmationDialog(x, true);
@@ -295,10 +285,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                             width: 170,
                           ),
                   ),
-                  SizedBox(height: 10,),
                   Text(
                       "${x?.usluznik.korisnik.ime} ${x?.usluznik.korisnik.prezime}"),
-                  //Text("Ocjena: ${x.ocjena}"),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(5, (index) {
@@ -314,14 +302,6 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // TextButton(
-                      //     onPressed: () {
-                      //       Navigator.of(context).push(MaterialPageRoute(
-                      //           builder: (context) => EditRecenzijaUsluznika(
-                      //                 recenzijaUsluznika: x,
-                      //               )));
-                      //     },
-                      //     child: Icon(Icons.edit_square)),
                       TextButton(
                         onPressed: () {
                           _deleteConfirmationDialog(x, false);
@@ -378,7 +358,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   crossAxisCount: 1,
                   childAspectRatio: 3 / 2,
                   // crossAxisSpacing: 8,
-                  mainAxisSpacing: 8),
+                  mainAxisSpacing: 10),
               scrollDirection: Axis.vertical,
               children: _buildUsluznikList(_recenzijaUsluznikaResult!.result),
             ),

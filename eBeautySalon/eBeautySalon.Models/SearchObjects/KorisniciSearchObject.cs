@@ -9,6 +9,7 @@ namespace eBeautySalon.Models.SearchObjects
     public class KorisniciSearchObject : BaseSearchObject
     {
         public string? FTS { get; set; }
+
         public string? isBlokiran { get; set; }
 
         public bool? isAdmin { get; set; }
@@ -25,6 +26,8 @@ namespace eBeautySalon.Models.SearchObjects
         public string? Prezime { get; set; } = null!;
 
         public string? KorisnickoIme { get; set; } = null!;
+
+        public bool? DatumOpadajuciSort { get; set; }   
        
     }
 }

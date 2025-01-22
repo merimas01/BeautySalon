@@ -69,5 +69,16 @@ namespace eBeautySalon.Services
             if(korisniciUloge.Count() != 0) return false;   
             return true;
         }
+
+        public override async Task<Uloga> AddIncludeForGetById(IQueryable<Uloga> query, int id)
+        {
+            var entity = await query.FirstOrDefaultAsync(x => x.UlogaId == id);
+            return entity;
+        }
+
+        public override async Task AfterInsert(Uloga entity, UlogeInsertRequest insert)
+        {
+            entity.Sifra = "UL" + entity.UlogaId.ToString("D6");
+        }
     }
 }

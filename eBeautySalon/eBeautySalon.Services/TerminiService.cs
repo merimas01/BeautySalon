@@ -44,5 +44,16 @@ namespace eBeautySalon.Services
             .ToList();
             return list;
         }
+
+        public override async Task<Termin> AddIncludeForGetById(IQueryable<Termin> query, int id)
+        {
+            var entity = await query.FirstOrDefaultAsync(x => x.TerminId == id);
+            return entity;
+        }
+
+        public override async Task AfterInsert(Termin entity, TerminiInsertRequest insert)
+        {
+            entity.Sifra = "T" + entity.TerminId.ToString("D6");
+        }
     }
 }

@@ -133,6 +133,19 @@ namespace eBeautySalon.Services
             await base.BeforeInsert(entity, insert);
         }
 
-       
+        public override async Task<Rezervacija> AddIncludeForGetById(IQueryable<Rezervacija> query, int id)
+        {           
+            query = query.Include(x => x.Korisnik.SlikaProfila);
+            query = query.Include(x => x.Usluga.Kategorija);
+            query = query.Include(x => x.Termin);           
+            query = query.Include(x => x.Status);            
+            var entity = await query.FirstOrDefaultAsync(x => x.RezervacijaId == id);
+            return entity;
+        }
+
+        public override async Task AfterInsert(Rezervacija entity, RezervacijeInsertRequest insert)
+        {
+            entity.Sifra = "R" + entity.RezervacijaId.ToString("D6");
+        }
     }
 }

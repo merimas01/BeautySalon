@@ -22,6 +22,11 @@ namespace eBeautySalon.Services
 
         }
 
+        public virtual async Task AfterInsert(TDb entity, TInsert insert)
+        {
+
+        }
+
         public virtual async Task BeforeUpate(TDb entity, TUpdate update)
         {
 
@@ -62,6 +67,11 @@ namespace eBeautySalon.Services
                 set.Add(entity);
 
                 await _context.SaveChangesAsync();
+
+                await AfterInsert(entity, insert);
+
+                await _context.SaveChangesAsync();
+
                 return _mapper.Map<T>(entity);
             }
             else throw new Exception("podaci nisu validni (duplicirani nazivi ili zabranjena radnja).");

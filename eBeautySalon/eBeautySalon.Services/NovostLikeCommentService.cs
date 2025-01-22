@@ -87,5 +87,13 @@ namespace eBeautySalon.Services
 
             return true;
         }
+
+        public override async Task<Database.NovostLikeComment> AddIncludeForGetById(IQueryable<Database.NovostLikeComment> query, int id)
+        {
+            query = query.Include(x => x.Novost.SlikaNovost);
+            query = query.Include(x => x.Korisnik.SlikaProfila);
+            var entity = await query.FirstOrDefaultAsync(x => x.NovostLikeCommentId == id);
+            return entity;
+        }
     }
 }

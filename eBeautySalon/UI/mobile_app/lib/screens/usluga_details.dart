@@ -135,6 +135,8 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                     decoration: InputDecoration(labelText: "Opis"),
                     initialValue: "${widget.usluga?.opis}",
                     enabled: false,
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
                   ),
                   SizedBox(
                     height: 10,

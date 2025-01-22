@@ -57,5 +57,11 @@ namespace eBeautySalon.Services
             }
             else return false;
         }
+
+        public override async Task<ZaposlenikUsluga> AddIncludeForGetById(IQueryable<ZaposlenikUsluga> query, int id)
+        {
+            var entity = await query.FirstOrDefaultAsync(x => x.ZaposlenikUslugaId == id);
+            return entity;
+        }
     }
 }

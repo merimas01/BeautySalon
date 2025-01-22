@@ -27,5 +27,13 @@ namespace eBeautySalon.Services
            
             return base.AddInclude(query, search);
         }
+
+        public override async Task<KorisnikUloga> AddIncludeForGetById(IQueryable<KorisnikUloga> query, int id)
+        {
+            query = query.Include(x => x.Uloga);
+            query = query.Include(x => x.Korisnik);
+            var entity = await query.FirstOrDefaultAsync(x => x.KorisnikUlogaId == id);
+            return entity;
+        }
     }
 }

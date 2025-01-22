@@ -130,5 +130,14 @@ namespace eBeautySalon.Services
           
             return prosjecneOcjene_usluge;
         }
+
+        public override async Task<Database.RecenzijaUsluge> AddIncludeForGetById(IQueryable<Database.RecenzijaUsluge> query, int id)
+        {
+            query = query.Include(x => x.Korisnik.SlikaProfila);
+            query = query.Include(x => x.Usluga.Kategorija);
+            query = query.Include(x => x.Usluga.SlikaUsluge);
+            var entity = await query.FirstOrDefaultAsync(x => x.RecenzijaUslugeId == id);
+            return entity;
+        }
     }
 }

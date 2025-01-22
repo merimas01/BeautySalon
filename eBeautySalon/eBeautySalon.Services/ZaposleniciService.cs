@@ -106,5 +106,15 @@ namespace eBeautySalon.Services
             var zaposlenik = await _context.Zaposleniks.FirstOrDefaultAsync(x => request.KorisnikId == x.KorisnikId && x.ZaposlenikId != id);
             if (zaposlenik == null) return true; else return false;
         }
+
+        public override async Task<Zaposlenik> AddIncludeForGetById(IQueryable<Zaposlenik> query, int id)
+        {
+            query = query.Include("Korisnik.KorisnikUlogas.Uloga");
+            query = query.Include("Korisnik.SlikaProfila");
+            query = query.Include("ZaposlenikUslugas.Usluga");
+            var entity = await query.FirstOrDefaultAsync(x => x.ZaposlenikId == id);
+            return entity;
+        }
+
     }
 }

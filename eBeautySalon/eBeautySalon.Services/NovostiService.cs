@@ -121,5 +121,18 @@ namespace eBeautySalon.Services
             pagedResult.Count = number;
             return pagedResult;
         }
+
+        public override async Task<Novost> AddIncludeForGetById(IQueryable<Novost> query, int id)
+        {
+            query = query.Include(c => c.SlikaNovost);
+            query = query.Include(c => c.Korisnik);
+            var entity = await query.FirstOrDefaultAsync(x => x.NovostId == id);
+            return entity;
+        }
+
+        public override async Task AfterInsert(Novost entity, NovostiInsertRequest insert)
+        {
+            entity.Sifra = "N" + entity.NovostId.ToString("D6");
+        }
     }
 }

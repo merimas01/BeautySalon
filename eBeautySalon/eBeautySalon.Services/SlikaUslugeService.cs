@@ -2,6 +2,7 @@
 using eBeautySalon.Models.Requests;
 using eBeautySalon.Models.SearchObjects;
 using eBeautySalon.Services.Database;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,12 @@ namespace eBeautySalon.Services
             }
             
             return base.BeforeDelete(entity);
+        }
+
+        public override async Task<SlikaUsluge> AddIncludeForGetById(IQueryable<SlikaUsluge> query, int id)
+        {
+            var entity = await query.FirstOrDefaultAsync(x => x.SlikaUslugeId == id);
+            return entity;
         }
     }
 }

@@ -147,6 +147,46 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     );
   }
 
+  var dropdown_lista_sort = [
+    {'opis': 'Po najnovijim korisnicima', 'vrijednost': 'da'},
+    {'opis': 'Po najstarijim korisnicima', 'vrijednost': 'ne'}
+  ];
+
+  String? selectedSort;
+
+  Widget _sortByDatumKreiranja() {
+    return Container(
+      width: 200,
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: selectedSort,
+            isExpanded: true,
+            hint: Text("Sortiraj po"),
+            items: dropdown_lista_sort.map((item) {
+              return DropdownMenuItem<String>(
+                value: item['vrijednost'] as String,
+                child: Text(item['opis'] as String),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedSort = value;
+              });
+              print(selectedSort);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
@@ -236,18 +276,41 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                   ),
                 )
               : Container(),
-          SizedBox(width: 20),
+          SizedBox(width: 10),
+          _sortByDatumKreiranja(),
+          SizedBox(
+            width: 10,
+          ),
+          selectedSort != null
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedSort = null;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Poništi selekciju",
+                  ),
+                )
+              : Container(),
+              SizedBox(width: 20,),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
 
                 var data = await _korisniciProvider.get(filter: {
                   'FTS': _ftsController.text,
-                  'isBlokiran': selectedOpis
+                  'isBlokiran': selectedOpis,
+                  'DatumOpadajuciSort': selectedSort == "da"
+                      ? true
+                      : selectedSort == "ne"
+                          ? false
+                          : null
                 });
-
-                print(
-                    "fts: ${_ftsController.text}, isBlokiran: ${selectedOpis}");
 
                 setState(() {
                   result = data;
@@ -395,8 +458,15 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
     print('status? ${obj.status}');
 
     //treba da se osvjezi dropdown_lista
-    var data = await _korisniciProvider
-        .get(filter: {'FTS': _ftsController.text, 'isBlokiran': selectedOpis});
+    var data = await _korisniciProvider.get(filter: {
+      'FTS': _ftsController.text,
+      'isBlokiran': selectedOpis,
+      'DatumOpadajuciSort': selectedSort == "da"
+          ? true
+          : selectedSort == "ne"
+              ? false
+              : null
+    });
 
     setState(() {
       result = data;

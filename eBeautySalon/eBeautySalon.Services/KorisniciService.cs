@@ -142,6 +142,14 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.Status == true);
             }
+            if (search.DatumOpadajuciSort == true)
+            {
+                query = query.OrderByDescending(x => x.DatumKreiranja);      
+            }
+            if (search.DatumOpadajuciSort == false)
+            {
+                query = query.OrderBy(x => x.DatumKreiranja);
+            }
             return base.AddFilter(query, search);
         }
         public async Task<Korisnici> Login(string username, string password)
@@ -162,6 +170,11 @@ namespace eBeautySalon.Services
             }
             return _mapper.Map<Korisnici>(entity);
 
+        }
+
+        public override async Task AfterInsert(Korisnik entity, KorisniciInsertRequest insert)
+        {
+            entity.Sifra = "USR" + entity.KorisnikId.ToString("D6");
         }
     }
 }

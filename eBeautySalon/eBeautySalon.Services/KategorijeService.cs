@@ -50,6 +50,16 @@ namespace eBeautySalon.Services
             var kategorija_nazivi = await _context.Kategorijas.Where(x => x.KategorijaId != id).Select(x => x.Naziv.ToLower()).ToListAsync();
             if (kategorija_nazivi.Contains(request.Naziv.ToLower())) return false; else return true;
         }
-     
+
+        public override async Task<Kategorija> AddIncludeForGetById(IQueryable<Kategorija> query, int id)
+        {
+            var entity = await query.FirstOrDefaultAsync(x => x.KategorijaId == id);
+            return entity;
+        }
+
+        public override  async Task AfterInsert(Kategorija entity, KategorijeInsertRequest insert)
+        {
+            entity.Sifra = "K" + entity.KategorijaId.ToString("D6");
+        }
     }
 }

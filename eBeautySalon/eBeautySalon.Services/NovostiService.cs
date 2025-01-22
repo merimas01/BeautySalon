@@ -63,6 +63,14 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.Sadrzaj != null && x.Sadrzaj.Contains(search.Sadrzaj));
             }
+            if (search.DatumOpadajuciSort == true)
+            {
+                query = query.OrderByDescending(x => x.DatumKreiranja);
+            }
+            if (search.DatumOpadajuciSort == false)
+            {
+                query = query.OrderBy(x => x.DatumKreiranja);
+            }
             return base.AddFilter(query, search);
         }
 

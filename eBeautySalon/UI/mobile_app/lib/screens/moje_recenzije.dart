@@ -8,11 +8,15 @@ import 'package:mobile_app/screens/usluznik_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../models/kategorija.dart';
 import '../models/recenzija_usluge.dart';
 import '../models/recenzija_usluznika.dart';
 import '../models/search_result.dart';
+import '../models/usluga.dart';
+import '../providers/kategorije_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
 import '../providers/recenzije_usluznika_provider.dart';
+import '../providers/usluge_provider.dart';
 import '../utils/util.dart';
 import 'edit_recenzija_usluge.dart';
 import 'edit_recenzija_usluznika.dart';
@@ -28,17 +32,21 @@ class MojeRecenzije extends StatefulWidget {
 class _MojeRecenzijeState extends State<MojeRecenzije> {
   late RecenzijaUslugeProvider _recenzijeUslugeProvider;
   late RecenzijaUsluznikaProvider _recenzijeUsluznikaProvider;
+  late KategorijeProvider _kategorijaProvider;
+  late UslugeProvider _uslugeProvider;
   SearchResult<RecenzijaUsluge>? _recenzijaUslugeResult;
   SearchResult<RecenzijaUsluznika>? _recenzijaUsluznikaResult;
   TextEditingController _ftsController1 = new TextEditingController();
   TextEditingController _ftsController2 = new TextEditingController();
-  bool isLoadingUsluge = true;
-  bool isLoadingUsluznici = true;
   bool isLoadingData = true;
   String? search1 = "";
   String? search2 = "";
   int _ratingUsluga = 0;
   int _ratingUsluznik = 0;
+  Kategorija? selectedKategorija;
+  SearchResult<Kategorija>? _kategorije;
+  Usluga? selectedUsluga;
+  SearchResult<Usluga>? _usluge;
 
   @override
   void didChangeDependencies() {
@@ -47,6 +55,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     print("Korisnik: ${widget.korisnik?.korisnikId}");
     _recenzijeUslugeProvider = context.read<RecenzijaUslugeProvider>();
     _recenzijeUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
+    _kategorijaProvider = context.read<KategorijeProvider>();
+    _uslugeProvider = context.read<UslugeProvider>();
     getData();
   }
 
@@ -59,6 +69,9 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
       'FTS': _ftsController2.text,
       'korisnikId': widget.korisnik!.korisnikId,
     });
+
+    var kategorije = await _kategorijaProvider.get();
+    var usluge = await _uslugeProvider.get();
 
     // Add a listener to get the value whenever the text changes
     _ftsController1.addListener(() {
@@ -82,6 +95,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
       _recenzijaUslugeResult = recenzijeUsluge;
       _recenzijaUsluznikaResult = recenzijeUsluznika;
       isLoadingData = false;
+      _kategorije = kategorije;
+      _usluge = usluge;
     });
   }
 
@@ -110,20 +125,112 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                 Expanded(
                   child: TabBarView(
                     children: [
-                      Column(
-                        children: [
-                          _searchByCategories(),
-                          isLoadingData == false
-                              ? _buildRecenzijeUslugaListView()
-                              : Container(child: CircularProgressIndicator()),
-                        ],
-                      ),
-                      Column(children: [
-                        _searchByUsluge(), //na backendu, recenzijaUsluznika, treba koristiti korisnikId i uslugaId
-                        isLoadingData == false
-                            ? _buildRecenzijeUsluznikaListView()
-                            : Container(child: CircularProgressIndicator()),
-                      ]),
+                      isLoadingData == false
+                          ? Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        _searchByKategorija(),
+                                        SizedBox(width: 8),
+                                        selectedKategorija != null
+                                            ? TextButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    selectedKategorija = null;
+                                                  });
+                                                },
+                                                child: Tooltip(
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    color: Colors.red,
+                                                  ),
+                                                  message: "Poništi selekciju",
+                                                ),
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                    IconButton(
+                                        onPressed: () async {
+                                          var recenzijeUsluge =
+                                              await _recenzijeUslugeProvider
+                                                  .get(filter: {
+                                            'FTS': _ftsController1.text,
+                                            'korisnikId':
+                                                widget.korisnik!.korisnikId,
+                                            'kategorijaId':
+                                                selectedKategorija?.kategorijaId
+                                          });
+
+                                          setState(() {
+                                            _recenzijaUslugeResult =
+                                                recenzijeUsluge;
+                                          });
+                                        },
+                                        icon: Icon(Icons.search_rounded))
+                                  ],
+                                ),
+                                _buildRecenzijeUslugaListView()
+                              ],
+                            )
+                          : Container(
+                              child: CircularProgressIndicator(),
+                            ),
+                      isLoadingData == false
+                          ? Column(children: [
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        _searchByUsluga(), 
+                                        SizedBox(width: 8),
+                                        selectedUsluga != null
+                                            ? TextButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    selectedUsluga = null;
+                                                  });
+                                                },
+                                                child: Tooltip(
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    color: Colors.red,
+                                                  ),
+                                                  message: "Poništi selekciju",
+                                                ),
+                                              )
+                                            : Container()
+                                      ],
+                                    ),
+                                    IconButton(
+                                        onPressed: () async {
+                                          var recenzijeUsluznika =
+                                              await _recenzijeUsluznikaProvider
+                                                  .get(filter: {
+                                            'FTS': _ftsController2.text,
+                                            'korisnikId':
+                                                widget.korisnik!.korisnikId,
+                                            'uslugaId': selectedUsluga?.uslugaId
+                                          });
+
+                                          setState(() {
+                                            _recenzijaUsluznikaResult =
+                                                recenzijeUsluznika;
+                                          });
+                                        },
+                                        icon: Icon(Icons.search_rounded))
+                                  ]),
+                              _buildRecenzijeUsluznikaListView()
+                            ])
+                          : Container(
+                              child: CircularProgressIndicator(),
+                            ),
                     ],
                   ),
                 ),
@@ -131,56 +238,90 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
             )));
   }
 
-  _searchByUsluge() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: DropdownButton<String>(
-        value: selectedValue,
-        hint: Text('Izaberite uslugu'),
-        dropdownColor: Colors.grey[200], // Background color of dropdown
-        style: TextStyle(color: Colors.black, fontSize: 16), // Text style
-        icon: Icon(Icons.arrow_drop_down, color: Colors.blue), // Custom icon
-        items: items.map((String item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedValue = newValue;
-          });
-        },
-      ),
-    );
+  _searchByKategorija() {
+    if (isLoadingData == false) {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(
+          width: 250,
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey),
+          ),
+          child: Center(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<Kategorija>(
+                hint: Text("Pretraži po kategoriji usluga"),
+                value: selectedKategorija,
+                isExpanded: true,
+                onChanged: (Kategorija? newValue) {
+                  setState(() {
+                    selectedKategorija = newValue;
+                    print(selectedKategorija?.naziv);
+                  });
+                },
+                items: _kategorije?.result
+                    .map<DropdownMenuItem<Kategorija>>((Kategorija service) {
+                  return DropdownMenuItem<Kategorija>(
+                    value: service,
+                    child: Text(
+                      service.naziv!,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Center(child: CircularProgressIndicator());
   }
 
-  //SEARCH PO KATEGORIJAMA (recenzije - desktop)
-  String? selectedValue; // Selected item value
-  List<String> items = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
-
-  _searchByCategories() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: DropdownButton<String>(
-        value: selectedValue,
-        hint: Text('Izaberite kategoriju'),
-        dropdownColor: Colors.grey[200], // Background color of dropdown
-        style: TextStyle(color: Colors.black, fontSize: 16), // Text style
-        icon: Icon(Icons.arrow_drop_down, color: Colors.blue), // Custom icon
-        items: items.map((String item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedValue = newValue;
-          });
-        },
-      ),
-    );
+  Widget _searchByUsluga() {
+    if (isLoadingData == false) {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(
+          width: 250,
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey),
+          ),
+          child: Center(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<Usluga>(
+                hint: Text("Pretraži po usluzi"),
+                value: selectedUsluga,
+                isExpanded: true,
+                onChanged: (Usluga? newValue) {
+                  setState(() {
+                    selectedUsluga = newValue;
+                    print(selectedUsluga?.naziv);
+                  });
+                },
+                items: _usluge?.result
+                    .map<DropdownMenuItem<Usluga>>((Usluga service) {
+                  return DropdownMenuItem<Usluga>(
+                    value: service,
+                    child: Text(
+                      service.naziv!,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Center(child: CircularProgressIndicator());
   }
 
   List<Widget> _buildUslugaList(data) {

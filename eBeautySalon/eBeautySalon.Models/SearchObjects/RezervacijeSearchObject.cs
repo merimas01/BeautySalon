@@ -11,7 +11,9 @@ namespace eBeautySalon.Models.SearchObjects
         public String? FTS { get; set; }
         public int? StatusId { get; set; }
         public string? isArhiva { get; set; }
+        public string? isArhivaKorisnik { get; set; }
         public int? KorisnikId { get; set; }
+        public bool? DatumOpadajuciSort { get; set; }
         public bool? isKorisnikIncluded { get; set; }
         public bool? isUslugaIncluded { get; set; }
         public bool? isTerminIncluded { get; set; }

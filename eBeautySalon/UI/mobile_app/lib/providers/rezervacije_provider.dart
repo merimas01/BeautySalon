@@ -13,4 +13,20 @@ class RezervacijeProvider extends BaseProvider<Rezervacija> {
     // TODO: implement fromJson
     return Rezervacija.fromJson(data);
   }
+
+  Future<bool> OtkaziRezervaciju(int id) async {
+    var url = "${BaseProvider.baseUrl}Rezervacije/otkaziRezervaciju/$id";
+
+    print("url: $url");
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

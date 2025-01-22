@@ -188,14 +188,20 @@ class _UslugaDetailsState extends State<UslugaDetails> {
 
   _findUsluznikeForUsluga() {
     var usluznici = [];
+    dynamic objProsjecnaOcjenaUsluznika = null;
 
     for (var zaposlenik in _resultZaposlenici!.result) {
       for (var o in listProsjecneOcjeneUsluznika) {
         if (zaposlenik.zaposlenikId == o['usluznikId']) {
-          var usluznik = {'usluznik': zaposlenik, 'objekat': o};
-          usluznici.add(usluznik);
+          objProsjecnaOcjenaUsluznika = o;
         }
       }
+      var usluznik = {
+        'usluznik': zaposlenik,
+        'objekat': objProsjecnaOcjenaUsluznika
+      };
+      usluznici.add(usluznik);
+      objProsjecnaOcjenaUsluznika = null;
     }
     return usluznici;
   }
@@ -210,7 +216,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
               )),
               DataColumn(
                   label: Expanded(
-                child: Text("Prosjek"),
+                child: Text("Prosjecna_ocjena"),
               )),
               DataColumn(
                   label: Expanded(
@@ -220,9 +226,10 @@ class _UslugaDetailsState extends State<UslugaDetails> {
             rows: _findUsluznikeForUsluga().map<DataRow>((item) {
               return DataRow(
                 cells: [
-                  DataCell(Text("${item['objekat']['nazivUsluznik']}")),
-                  DataCell(Text(
-                      "${item['objekat']['prosjecnaOcjena']} (${item['objekat']['sveOcjene'].length})")),
+                  DataCell(Text("${item['usluznik'].korisnik?.ime ?? ""}")),
+                  DataCell(Text(item['objekat'] != null
+                      ? "${item['objekat']['prosjecnaOcjena']} (${item['objekat']['sveOcjene'].length})"
+                      : "-")),
                   DataCell(
                     TextButton(
                       style: TextButton.styleFrom(
@@ -232,12 +239,15 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => UsluznikDetails(
                                 usluznik: item['usluznik'],
-                                prosjecnaOcjena: item['objekat']
-                                        ['prosjecnaOcjena']
-                                    .toString(),
-                                totalReviws: item['objekat']['sveOcjene']
-                                    .length
-                                    .toString())));
+                                prosjecnaOcjena: item['objekat'] != null
+                                    ? item['objekat']['prosjecnaOcjena']
+                                        .toString()
+                                    : "0",
+                                totalReviws: item['objekat'] != null
+                                    ? item['objekat']['sveOcjene']
+                                        .length
+                                        .toString()
+                                    : "0")));
                       },
                       child: Icon(Icons.info),
                     ),

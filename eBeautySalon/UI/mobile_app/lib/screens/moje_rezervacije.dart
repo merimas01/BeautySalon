@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/korisnik.dart';
+import 'package:mobile_app/models/rezervacija_update.dart';
+import 'package:mobile_app/providers/status_provider.dart';
 import 'package:mobile_app/screens/rezervacija_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/rezervacija.dart';
 import '../models/search_result.dart';
+import '../models/status.dart';
 import '../providers/rezervacije_provider.dart';
 import '../utils/util.dart';
 
@@ -21,30 +24,35 @@ class MojeRezervacije extends StatefulWidget {
 
 class _MojeRezervacijeState extends State<MojeRezervacije> {
   late RezervacijeProvider _rezervacijeProvider;
+  late StatusiProvider _statusiProvider;
   SearchResult<Rezervacija>? _rezervacijeResult;
   bool isLoadingData = true;
+  SearchResult<Status>? _statusResult;
+  Status? selectedStatus;
+  bool filterData = false;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    print("Korisnik: ${widget.korisnik?.korisnikId}");
     _rezervacijeProvider = context.read<RezervacijeProvider>();
+    _statusiProvider = context.read<StatusiProvider>();
     getData();
   }
 
   //DUGME NA DETALJE REZERVACIJE (ili samo klik na element): SVE INFO + INFO O NACINU PLACANJA + STATUS
-  //u detaljima: DUGME OTKAZI REZERVACIJU
-  // dugme obrisi rezervaciju ili Arhviraj (isArhivaKorisnik). Ako je arhivirano, promjeniti ikonicu na dearhiviraj
-  //SEARCH PO STATUSU, PO DATUMU, po Arhivi (klik na dugme filter i da se pojavi dijalog box)
+  //u detaljima: dugme otkazi rezervaciju (ona se moze otkazati samo ako je nova)
+  //DUGME OTKAZI REZERVACIJU umjesto delete ikonice
+  //Ako je arhivirano, promjeniti ikonicu na dearhiviraj
   //oboji status rezervacije
 
   void getData() async {
     var rezervacije = await _rezervacijeProvider
         .get(filter: {'FTS': "", 'korisnikId': widget.korisnik!.korisnikId});
-
+    var statusi = await _statusiProvider.get();
     setState(() {
       _rezervacijeResult = rezervacije;
+      _statusResult = statusi;
       isLoadingData = false;
     });
   }
@@ -54,11 +62,11 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     {'opis': 'ne', 'vrijednost': false}
   ];
 
-  String? selectedOpis = "ne";
+  String? selectedOpis = null;
 
   Widget _searchByIsArhiva() {
     return Container(
-      width: 150,
+      width: 250,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -69,7 +77,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: selectedOpis,
-            // isExpanded: true,
+            isExpanded: true,
             hint: Text("Arhiva?"),
             items: dropdown_lista.map((item) {
               return DropdownMenuItem<String>(
@@ -89,17 +97,110 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     );
   }
 
-  _showFilterDialog() {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Example Dialog"),
-          content: Container(
-            height: 300,
-            child: SingleChildScrollView(
-              child: Column(children: [
+  Widget searchByStatus() {
+    if (isLoadingData == false) {
+      return Container(
+        width: 250,
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: Center(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Status>(
+              hint: Text("Pretraži po statusu"),
+              value: selectedStatus,
+              isExpanded: true,
+              onChanged: (Status? newValue) {
+                setState(() {
+                  selectedStatus = newValue;
+                });
+              },
+              items: _statusResult?.result
+                  .map<DropdownMenuItem<Status>>((Status service) {
+                return DropdownMenuItem<Status>(
+                  value: service,
+                  child: Text(
+                    service.opis!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      );
+    }
+    return Center(child: CircularProgressIndicator());
+  }
+
+  var dropdown_lista_sort = [
+    {'opis': 'Po najnovijim rezervacijama', 'vrijednost': 'da'},
+    {'opis': 'Po najstarijim rezervacijama', 'vrijednost': 'ne'}
+  ];
+
+  String? selectedSort;
+
+  Widget _sortByDatumKreiranja() {
+    return Container(
+      width: 250,
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: selectedSort,
+            isExpanded: true,
+            hint: Text("Sortiraj po"),
+            items: dropdown_lista_sort.map((item) {
+              return DropdownMenuItem<String>(
+                value: item['vrijednost'] as String,
+                child: Text(item['opis'] as String),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedSort = value;
+              });
+              print(selectedSort);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearch() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: 280,
+        decoration: BoxDecoration(
+            border: Border.all(
+              width: 2,
+              color: Colors.pink,
+            ),
+            borderRadius: BorderRadius.circular(20)),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                Text(
+                  "Filtriraj rezervacije",
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _searchByIsArhiva(),
                     SizedBox(width: 8),
@@ -112,7 +213,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                             },
                             child: Tooltip(
                               child: Icon(
-                                Icons.cancel,
+                                Icons.close,
                                 color: Colors.red,
                               ),
                               message: "Poništi selekciju",
@@ -121,121 +222,85 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                         : Container(),
                   ],
                 ),
-              ]),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
-                var data = await _rezervacijeProvider.get(filter: {
-                  //'statusId': selectedStatus?.statusId,
-                  'isArhiva': selectedOpis
-                });
-
-                setState(() {
-                  _rezervacijeResult = data;
-                });
-              },
-              child: const Icon(Icons.search),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          _searchByIsArhiva(),
-
-          SizedBox(width: 8),
-          selectedOpis != null
-              ? TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedOpis = null;
-                    });
-                  },
-                  child: Tooltip(
-                    child: Icon(
-                      Icons.cancel,
-                      color: Colors.red,
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    searchByStatus(),
+                    SizedBox(width: 8),
+                    selectedStatus != null
+                        ? TextButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedStatus = null;
+                              });
+                            },
+                            child: Tooltip(
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                              message: "Poništi selekciju",
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _sortByDatumKreiranja(),
+                    SizedBox(
+                      width: 8,
                     ),
-                    message: "Poništi selekciju",
-                  ),
-                )
-              : Container(),
+                    selectedSort != null
+                        ? TextButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedSort = null;
+                              });
+                            },
+                            child: Tooltip(
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                              message: "Poništi selekciju",
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      print("pritisnuto dugme Traži");
 
-          // searchByStatus(),
-          // SizedBox(width: 8),
-          // selectedStatus != null
-          //     ? TextButton(
-          //         onPressed: () {
-          //           setState(() {
-          //             selectedStatus = null;
-          //           });
-          //         },
-          //         child: Tooltip(
-          //           child: Icon(
-          //             Icons.close,
-          //             color: Colors.red,
-          //           ),
-          //           message: "Poništi selekciju",
-          //         ),
-          //       )
-          //     : Container(),
-          // SizedBox(width: 10),
+                      var data = await _rezervacijeProvider.get(filter: {
+                        'statusId': selectedStatus?.statusId,
+                        'isArhivaKorisnik': selectedOpis,
+                        'DatumOpadajuciSort': selectedSort == "da"
+                            ? true
+                            : selectedSort == "ne"
+                                ? false
+                                : null
+                      });
 
-          // ElevatedButton(
-          //   style: TextButton.styleFrom(
-          //       foregroundColor: Colors.pink, backgroundColor: Colors.white),
-          //   onPressed: () => _selectDate(context),
-          //   child: Text(_selectedDate == null
-          //       ? 'Izaberi datum'
-          //       : formatDate(_selectedDate!)),
-          // ),
-          // SizedBox(
-          //   width: 8,
-          // ),
-          // _selectedDate != null
-          //     ? TextButton(
-          //         onPressed: () {
-          //           setState(() {
-          //             _selectedDate = null;
-          //           });
-          //         },
-          //         child: Tooltip(
-          //           child: Icon(
-          //             Icons.close,
-          //             color: Colors.red,
-          //           ),
-          //           message: "Poništi datum",
-          //         ),
-          //       )
-          //     : Container(),
-          // SizedBox(width: 10),
-          ElevatedButton(
-              onPressed: () async {
-                print("pritisnuto dugme Traži");
-
-                var data = await _rezervacijeProvider.get(filter: {
-                  //'statusId': selectedStatus?.statusId,
-                  'isArhiva': selectedOpis
-                });
-
-                setState(() {
-                  _rezervacijeResult = data;
-                });
-              },
-              child: Text("Traži")),
-          SizedBox(
-            width: 8,
+                      setState(() {
+                        _rezervacijeResult = data;
+                      });
+                    },
+                    child: Text("Traži")),
+                SizedBox(
+                  width: 8,
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -293,7 +358,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                           Text("${x.sifra ?? ""}"),
                           Text("${x.usluga?.naziv ?? ""}"),
                           Text("${formatDate(x.datumRezervacije)}"),
-                          Text("${x.termin?.opis ??""}h"),
+                          Text("${x.termin?.opis ?? ""}h"),
                           Text(
                             "${x.status?.opis ?? ""}",
                             style: TextStyle(color: _colorReservationStatus(x)),
@@ -302,14 +367,88 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                       ),
                       Row(
                         children: [
-                          TextButton(
-                              onPressed: () {
-                                //Kad se klikne na ovo dugme, brise se rezervacija (odnosno arhivira se samo za korisnika, isArhivaKorisnik)
-                              },
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              )),
+                          x.isArhivaKorisnik == false ||
+                                  x.isArhivaKorisnik == null
+                              ? TextButton(
+                                  onPressed: () async {
+                                    //Kad se klikne na ovo dugme,
+                                    //arhivira se rezervacija (isArhivaKorisnik)
+                                    var request = RezervacijaUpdate(
+                                        LoggedUser.id,
+                                        x.uslugaId,
+                                        x.terminId,
+                                        x.statusId,
+                                        x.isArhiva,
+                                        x.datumRezervacije,
+                                        true);
+                                    try {
+                                      var obj = await _rezervacijeProvider
+                                          .update(x.rezervacijaId, request);
+
+                                      var data = await _rezervacijeProvider
+                                          .get(filter: {
+                                        'statusId': selectedStatus?.statusId,
+                                        'isArhivaKorisnik': selectedOpis,
+                                        'DatumOpadajuciSort':
+                                            selectedSort == "da"
+                                                ? true
+                                                : selectedSort == "ne"
+                                                    ? false
+                                                    : null
+                                      });
+
+                                      setState(() {
+                                        _rezervacijeResult = data;
+                                      });
+                                      showSuccessMessage();
+                                    } catch (err) {
+                                      print(err.toString());
+                                      showError();
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.archive_outlined,
+                                    color: Colors.green,
+                                  ))
+                              : TextButton(
+                                  onPressed: () async {
+                                    var request = RezervacijaUpdate(
+                                        LoggedUser.id,
+                                        x.uslugaId,
+                                        x.terminId,
+                                        x.statusId,
+                                        x.isArhiva,
+                                        x.datumRezervacije,
+                                        false);
+                                    try {
+                                      var obj = await _rezervacijeProvider
+                                          .update(x.rezervacijaId, request);
+
+                                      var data = await _rezervacijeProvider
+                                          .get(filter: {
+                                        'statusId': selectedStatus?.statusId,
+                                        'isArhivaKorisnik': selectedOpis,
+                                        'DatumOpadajuciSort':
+                                            selectedSort == "da"
+                                                ? true
+                                                : selectedSort == "ne"
+                                                    ? false
+                                                    : null
+                                      });
+
+                                      setState(() {
+                                        _rezervacijeResult = data;
+                                      });
+                                      showSuccessMessage();
+                                    } catch (err) {
+                                      print(err.toString());
+                                      showError();
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.unarchive_outlined,
+                                    color: Colors.red,
+                                  )),
                         ],
                       )
                     ],
@@ -324,10 +463,12 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
   }
 
   _colorReservationStatus(Rezervacija e) {
-    if (e.status?.opis == "Prihvacena")
+    if (e.status?.opis == "Prihvaćena")
       return Colors.green[500];
     else if (e.status?.opis == "Odbijena")
       return Colors.red[500];
+       else if (e.status?.opis == "Otkazana")
+      return Colors.grey;
     else if (e.status?.opis == "Nova") return Colors.amber;
   }
 
@@ -336,21 +477,71 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     return MasterScreenWidget(
         title: "Moje rezervacije",
         child: isLoadingData == false
-            ? SingleChildScrollView(
-                child: Column(
-                  children: [
-                    //_buildSearch(),
-                    TextButton(
-                        onPressed: () {
-                          _showFilterDialog();
-                        },
-                        child: Icon(Icons.sort)),
-                    _buildRezervacijeListView()
-                  ],
+            ? Container(
+                width: 800,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      filterData == false
+                          ? IconButton(
+                              icon: Icon(Icons.arrow_downward),
+                              onPressed: () {
+                                setState(() {
+                                  filterData = !filterData;
+                                });
+                              },
+                            )
+                          : Container(),
+                      filterData == true ? _buildSearch() : Container(),
+                      filterData == true
+                          ? IconButton(
+                              icon: Icon(Icons.arrow_upward),
+                              onPressed: () {
+                                setState(() {
+                                  filterData = !filterData;
+                                });
+                              },
+                            )
+                          : Container(),
+                      _buildRezervacijeListView()
+                    ],
+                  ),
                 ),
               )
             : Center(
                 child: CircularProgressIndicator(),
               ));
+  }
+
+  void showSuccessMessage() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Informacija o uspjehu"),
+              content: Text("Uspješno izvršena akcija!"),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Ok"))
+              ],
+            ));
+  }
+
+  void showError() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Greška"),
+              content: Text("Desilo se nešto loše. Molimo pokušajte ponovo."),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Shvatam"))
+              ],
+            ));
   }
 }

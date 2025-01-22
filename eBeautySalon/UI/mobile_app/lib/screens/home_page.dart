@@ -46,11 +46,8 @@ class _HomePageState extends State<HomePage> {
     return MasterScreenWidget(
         title: "Početna stranica",
         child: Container(
-          // height: 800,
           width: 800,
           child: SingleChildScrollView(
-            // child: Padding(
-            // padding: const EdgeInsets.all(8.0),
             child: Column(children: [
               SizedBox(
                 height: 10,
@@ -73,14 +70,62 @@ class _HomePageState extends State<HomePage> {
                 child: Text("Pogledajte novosti naseg salona."),
               ),
               SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        _sortByDatumKreiranja(),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        selectedSort != null
+                            ? TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedSort = null;
+                                  });
+                                },
+                                child: Tooltip(
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.red,
+                                  ),
+                                  message: "Poništi selekciju",
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
+                    IconButton(
+                        onPressed: () async {
+                          var tmpData = await _novostiProvider.get(filter: {
+                            'isSlikaIncluded': true,
+                            'DatumOpadajuciSort': selectedSort == "da"
+                                ? true
+                                : selectedSort == "ne"
+                                    ? false
+                                    : null
+                          });
+                          setState(() {
+                            data = tmpData;
+                          });
+                        },
+                        icon: Icon(Icons.search_rounded)),
+                  ],
+                ),
+              ),
+              SizedBox(
                 height: 30,
               ),
               isLoading == false
                   ? Container(
                       width: 800,
-                      height: 600,
-                      // child: Padding(
-                      // padding: const EdgeInsets.all(8.0),
+                      height: 550,
                       child: GridView(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount:
@@ -93,11 +138,11 @@ class _HomePageState extends State<HomePage> {
                         scrollDirection: Axis.vertical,
                         children: _buildNovostList(),
                       ),
-                      // ),
+                      
                     )
                   : Text("Ucitavanje...")
             ]),
-            // ),
+            
           ),
         ));
   }
@@ -119,8 +164,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(right: 15.0, top: 5.0, bottom: 5.0, left: 15.0),
+                  padding: const EdgeInsets.only(
+                      right: 10.0, top: 5.0, bottom: 5.0, left: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -171,5 +216,45 @@ class _HomePageState extends State<HomePage> {
         .toList();
 
     return list;
+  }
+
+  var dropdown_lista_sort = [
+    {'opis': 'Po najnovijim novostima', 'vrijednost': 'da'},
+    {'opis': 'Po najstarijim novostima', 'vrijednost': 'ne'}
+  ];
+
+  String? selectedSort;
+
+  Widget _sortByDatumKreiranja() {
+    return Container(
+      width: 200,
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: selectedSort,
+            isExpanded: true,
+            hint: Text("Sortiraj po"),
+            items: dropdown_lista_sort.map((item) {
+              return DropdownMenuItem<String>(
+                value: item['vrijednost'] as String,
+                child: Text(item['opis'] as String),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedSort = value;
+              });
+              print(selectedSort);
+            },
+          ),
+        ),
+      ),
+    );
   }
 }

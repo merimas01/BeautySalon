@@ -302,7 +302,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
     });
 
     var data = await _recenzijaUsluznikaProvider
-        .get(filter: {'usluznikaId': widget.zaposlenik!.zaposlenikId});
+        .get(filter: {'usluznikId': widget.zaposlenik!.zaposlenikId});
     setState(() {
       _recenzijaUsluznikaResult = data;
     });

@@ -22,10 +22,10 @@ class _PretragaPageState extends State<PretragaPage> {
   late KategorijeProvider _kategorijeProvider;
   late UslugeProvider _uslugeProvider;
   SearchResult<Usluga>? _uslugeResult;
-  SearchResult<Usluga>? data;
   List<SearchResult<Usluga>>? sveUsluge = [];
   SearchResult<Kategorija>? _kategorijeResult;
   TextEditingController _searchController = TextEditingController();
+  String? search="";
 
   @override
   void initState() {
@@ -48,26 +48,39 @@ class _PretragaPageState extends State<PretragaPage> {
         sveUsluge!.add(uslugeZaKategoriju);
       });
     }
+
+    // Add a listener to get the value whenever the text changes
+    _searchController.addListener(() {
+      String currentText = _searchController.text; // Access the current text
+      setState(() {
+        search = currentText;
+      });
+      print('Current Text: $currentText');
+    });
   }
 
   _createGrid(data) {
-    return Container(
-      height: 250,
-      child: GridView(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            childAspectRatio: 3 / 2,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8),
-        scrollDirection: Axis.horizontal,
-        children: _buildUslugaList(data),
-      ),
-    );
+    return data.length != 0
+        ? Container(
+            height: 250,
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 3 / 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8),
+              scrollDirection: Axis.horizontal,
+              children: _buildUslugaList(data),
+            ),
+          )
+        : Container(
+            child: Text("Nema rezultata za trazenu uslugu."),
+          );
   }
 
   List<Widget> _buildUslugaList(data) {
     if (data.length == 0) {
-      return [Text("Loading...")];
+      return [Text("Ucitavanje...")];
     }
 
     List<Widget> list = data
@@ -115,9 +128,8 @@ class _PretragaPageState extends State<PretragaPage> {
         child: Container(
             height: 800,
             width: 800,
-           // child: Card(
-                child: SingleChildScrollView(
-                    child: Column(
+            child: SingleChildScrollView(
+                child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -136,10 +148,7 @@ class _PretragaPageState extends State<PretragaPage> {
                 _searchUsluge(),
                 _showUsluge(),
               ],
-            )
-            )
-          //  )
-            ));
+            ))));
   }
 
   _showUsluge() {
@@ -189,7 +198,9 @@ class _PretragaPageState extends State<PretragaPage> {
               }).toList(),
             ),
           )
-        : Container();
+        : Container(
+            child: Text("Nema rezultata za trazenu uslugu."),
+          );
   }
 
   _searchUsluge() {
@@ -200,41 +211,49 @@ class _PretragaPageState extends State<PretragaPage> {
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: TextField(
               controller: _searchController,
-              onSubmitted: (value) async {
-                List<SearchResult<Usluga>> filteredList = [];
-
-                for (var kat in _kategorijeResult!.result) {
-                  var uslugeZaKategoriju = await _uslugeProvider
-                      .get(filter: {'FTS': _searchController.text, 'kategorijaId': kat.kategorijaId});
-                  filteredList.add(uslugeZaKategoriju);
-                  setState(() {
-                    sveUsluge = filteredList;
-                  });
-                }
-                // var tmpData = await _uslugeProvider.get(filter: {'FTS': value});
-                // setState(() {
-                //   data = tmpData;
-                // });
-              },
               decoration: InputDecoration(
-                  hintText: "Trazi",
-                  prefixIcon: Icon(Icons.search),
+                  hintText: "Trazi uslugu...",
+                  //prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: Colors.grey))),
             ),
           ),
         ),
+        search != ""
+            ? TextButton(
+                onPressed: () {
+                  setState(() {
+                    _searchController.text = '';
+                    search = _searchController.text;
+                  });
+                },
+                child: Tooltip(
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.red,
+                  ),
+                  message: "Izbriši tekst",
+                ),
+              )
+            : Container(),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: IconButton(
             icon: Icon(Icons.search_sharp),
             onPressed: () async {
-              var tmpData = await _uslugeProvider
-                  .get(filter: {'FTS': _searchController.text});
-              setState(() {
-                data = tmpData;
-              });
+              List<SearchResult<Usluga>> filteredList = [];
+
+              for (var kat in _kategorijeResult!.result) {
+                var uslugeZaKategoriju = await _uslugeProvider.get(filter: {
+                  'FTS': _searchController.text,
+                  'kategorijaId': kat.kategorijaId
+                });
+                filteredList.add(uslugeZaKategoriju);
+                setState(() {
+                  sveUsluge = filteredList;
+                });
+              }
             },
           ),
         )

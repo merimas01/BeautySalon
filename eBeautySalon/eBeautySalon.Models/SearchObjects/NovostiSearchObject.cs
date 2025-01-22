@@ -17,9 +17,6 @@ namespace eBeautySalon.Models.SearchObjects
         
         public bool? isKorisnikIncluded { get; set; }   
 
-        //public DateTime? DatumKreiranja { get; set; }
-
-        //public DateTime? DatumModificiranja { get; set; }
-
+        public bool? DatumOpadajuciSort { get; set; }
     }
 }

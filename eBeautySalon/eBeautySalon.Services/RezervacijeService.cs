@@ -46,9 +46,25 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.IsArhiva == false || x.IsArhiva==null);
             }
+            if (search.isArhivaKorisnik == "da")
+            {
+                query = query.Where(x => x.IsArhivaKorisnik == true);
+            }
+            if (search.isArhivaKorisnik == "ne")
+            {
+                query = query.Where(x => x.IsArhivaKorisnik == false || x.IsArhivaKorisnik == null);
+            }
             if (search.KorisnikId != null)
             {
                 query = query.Where(x => x.KorisnikId == search.KorisnikId);
+            }
+            if (search.DatumOpadajuciSort == true)
+            {
+                query = query.OrderByDescending(x => x.DatumRezervacije);
+            }
+            if (search.DatumOpadajuciSort == false)
+            {
+                query = query.OrderBy(x => x.DatumRezervacije);
             }
             return base.AddFilter(query, search);
         }
@@ -109,7 +125,7 @@ namespace eBeautySalon.Services
             var t = termin?.Opis;
             var datum = insert.DatumRezervacije.Day + "." + insert.DatumRezervacije.Month + "." + insert.DatumRezervacije.Year;
 
-            var factory = new ConnectionFactory { HostName = "localhost", UserName = "guest", Password = "guest" };
+            var factory = new ConnectionFactory { HostName = ".", UserName = "guest", Password = "guest" };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
@@ -146,6 +162,20 @@ namespace eBeautySalon.Services
         public override async Task AfterInsert(Rezervacija entity, RezervacijeInsertRequest insert)
         {
             entity.Sifra = "R" + entity.RezervacijaId.ToString("D6");
+        }
+
+        public async Task<bool> OtkaziRezervaciju(int rezervacijaId)
+        {
+            //rezervacija se moze otkazati samo ako je nova
+            var rezervacija = await _context.Rezervacijas.FindAsync(rezervacijaId);
+            var statusOtkazana = await _context.Statuses.FirstOrDefaultAsync(x => x.Opis == "Otkazana");
+            if (statusOtkazana != null)
+            {
+                rezervacija.StatusId = statusOtkazana.StatusId;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

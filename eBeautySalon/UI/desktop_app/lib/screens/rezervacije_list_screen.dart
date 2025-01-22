@@ -177,7 +177,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       );
     }
     return Center(child: CircularProgressIndicator());
-    }
+  }
 
   var dropdown_lista = [
     {'opis': 'da', 'vrijednost': true},
@@ -586,6 +586,12 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       return MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
           return Colors.red[100];
+        },
+      );
+    else if (e.status?.opis == "Otkazana")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.grey[100];
         },
       );
     else if (e.status?.opis == "Nova")

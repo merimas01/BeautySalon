@@ -360,9 +360,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     _naslov(),
                     _odaberiUlogu(),
                     _korisnickoIme(),
-                    _inputIme(),
-                    _inputBiografija(),
+                    _inputIme(),                
                     _inputPrezime(),
+                    _inputBiografija(),
                     _inputTelefonEmail(),
                     SizedBox(height: 10),
                     Row(

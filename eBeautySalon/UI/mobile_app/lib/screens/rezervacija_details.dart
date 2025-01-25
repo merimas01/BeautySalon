@@ -62,8 +62,6 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
           ),
           TextFormField(
             decoration: InputDecoration(labelText: "Status:"),
-            // initialValue: widget.rezervacija?.status?.opis,
-
             controller: _statusController,
             enabled: false,
           ),

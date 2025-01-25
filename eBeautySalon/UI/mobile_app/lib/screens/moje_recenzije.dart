@@ -278,7 +278,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
         ),
       );
     }
-    return Center(child: CircularProgressIndicator());
+    return Container(child: CircularProgressIndicator());
   }
 
   Widget _searchByUsluga() {
@@ -321,7 +321,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
         ),
       );
     }
-    return Center(child: CircularProgressIndicator());
+    return Container(child: CircularProgressIndicator());
   }
 
   List<Widget> _buildUslugaList(data) {

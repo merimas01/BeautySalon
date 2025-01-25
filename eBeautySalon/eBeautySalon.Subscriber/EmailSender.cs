@@ -45,7 +45,7 @@ namespace eBeautySalon.Subscriber
                     Port = 587,
                     UseDefaultCredentials = false,
                     EnableSsl = true,
-                    Credentials = new System.Net.NetworkCredential("servicebeautysalon@gmail.com", "duey ooom ouni lqqa")
+                    Credentials = new System.Net.NetworkCredential("servicebeautysalon@gmail.com", "dueyooomounilqqa")
                 };
                
                 // Send the email

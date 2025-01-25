@@ -125,7 +125,7 @@ namespace eBeautySalon.Services
             var t = termin?.Opis;
             var datum = insert.DatumRezervacije.Day + "." + insert.DatumRezervacije.Month + "." + insert.DatumRezervacije.Year;
 
-            var factory = new ConnectionFactory { HostName = ".", UserName = "guest", Password = "guest" };
+            var factory = new ConnectionFactory { HostName = "localhost", UserName = "guest", Password = "guest" };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 

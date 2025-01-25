@@ -128,7 +128,7 @@ using (var scope = app.Services.CreateScope())
         dataContext.Korisniks.AddRange(
          new Korisnik
          {
-             DatumKreiranja = DateTime.Now,
+             DatumKreiranja = new DateTime(year: 2024, month: 1, day: 1),
              DatumModifikovanja = null,
              Email = "admin@gmail.com",
              Ime = "Admin",
@@ -137,75 +137,91 @@ using (var scope = app.Services.CreateScope())
              KorisnickoIme = "admin",
              Sifra = "USR000001",
              Status = true,
-             Telefon = "+387 654 235",
+             Telefon = "+387 62 654 235",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
          },
          new Korisnik
          {
-             DatumKreiranja = DateTime.Now,
+             DatumKreiranja = new DateTime(year: 2024, month: 1, day: 2),
              DatumModifikovanja = null,
              Email = "marko.ivanovic@gmail.com",
              Ime = "Marko",
              Prezime = "Ivanovic",
              IsAdmin = false,
-             KorisnickoIme = "markoivanovic",
+             KorisnickoIme = "marko",
              Sifra = "USR000002",
              Status = true,
-             Telefon = "+387 555 777",
+             Telefon = "+387 62 555 777",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
          },
          new Korisnik
          {
-             DatumKreiranja = DateTime.Now,
+             DatumKreiranja = new DateTime(year: 2024, month: 1, day: 2),
              DatumModifikovanja = null,
              Email = "jovana.nikolic@gmail.com",
              Ime = "Jovana",
              Prezime = "Nikolic",
              IsAdmin = false,
-             KorisnickoIme = "jovananikolic",
+             KorisnickoIme = "jovana",
              Sifra = "USR000003",
              Status = true,
-             Telefon = "+387 555 888",
+             Telefon = "+387 62 555 888",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
          },
          new Korisnik
          {
-             DatumKreiranja = DateTime.Now,
+             DatumKreiranja = new DateTime(year: 2024, month: 1, day: 5),
              DatumModifikovanja = null,
              Email = "ivana.mihajlovic@gmail.com",
              Ime = "Ivana",
              Prezime = "Mihajlovic",
              IsAdmin = false,
-             KorisnickoIme = "ivanamihajlovic",
+             KorisnickoIme = "ivana",
              Sifra = "USR000004",
              Status = true,
-             Telefon = "+387 555 999",
+             Telefon = "+387 62 555 999",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
          },
          new Korisnik
          {
-             DatumKreiranja = DateTime.Now,
+             DatumKreiranja = new DateTime(year: 2024, month: 1, day: 3),
              DatumModifikovanja = null,
              Email = "petar.petrovic@gmail.com",
              Ime = "Petar",
              Prezime = "Petrovic",
              IsAdmin = false,
-             KorisnickoIme = "petarpetrovic",
+             KorisnickoIme = "petar",
              Sifra = "USR000005",
              Status = true,
-             Telefon = "+387 555 000",
+             Telefon = "+387 62 555 000",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
-         }
+         },
+        new Korisnik
+        {
+            DatumKreiranja = new DateTime(year: 2024, month: 1, day: 3),
+            DatumModifikovanja = null,
+            Email = "mila.milic@gmail.com",
+            Ime = "Mila",
+            Prezime = "Milic",
+            IsAdmin = false,
+            KorisnickoIme = "mila",
+            Sifra = "USR000006",
+            Status = true,
+            Telefon = "+387 62 544 600",
+            LozinkaHash = hash1,
+            LozinkaSalt = salt1,
+            SlikaProfilaId = 1
+        }
      );
 
         dataContext.SaveChanges();
@@ -230,9 +246,10 @@ using (var scope = app.Services.CreateScope())
         dataContext.SaveChanges();
 
         dataContext.Uslugas.AddRange(
-            new Usluga { Naziv="Profesionalno šminkanje", Opis="šminkanje za mature, svadbe, slikanja...", KategorijaId = 1, Sifra = "U000001", SlikaUslugeId = 1, Cijena = 50 },
-            new Usluga { Naziv = "Bridal šminkanje", Opis = "šminkanje za vlastito vjenčanje", KategorijaId = 1, Sifra = "U000002", SlikaUslugeId = 1, Cijena = 60 },
-            new Usluga { Naziv = "Hemijsko čišćenje lica", Opis = "čišćenje lica", KategorijaId = 5, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45 }
+            new Usluga { Naziv = "Profesionalno šminkanje", Opis="Nudimo najbolje šminkanje za mature, svadbe, slikanja...", KategorijaId = 1, Sifra = "U000001", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Bridal šminkanje", Opis = "Za Vas dan zelimo samo da se opustite i prepustite rukama nasih vrhunskih usluznika. Za Vas cemo se potruditi da vase lice izgleda blistavo i da se osjecate ljepse nego ikada. Nudimo Vam hidrataciju i pripremu lica, šminkanje kao i savjete za odrzavanje sminke i sretnog duha tokom dana.", KategorijaId = 1, Sifra = "U000002", SlikaUslugeId = 1, Cijena = 60, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Hemijsko čišćenje lica", Opis = "Nas najpoznatiji tretman čišćenja lica. Uvjerite se zasto ga ljudi toliko vole.", KategorijaId = 5, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja =DateTime.Now },
+            new Usluga { Naziv = "Njega noktiju", Opis = "Ovaj tretman ukljucuje: ciscenje i obikovanje noktiju,lakiranje, stavljanje zastitnog sloja na nokte, njega i hidratacija ruku.", KategorijaId = 3, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja = DateTime.Now }
             );
 
         dataContext.SaveChanges();
@@ -245,7 +262,7 @@ using (var scope = app.Services.CreateScope())
                 SlikaNovostId = 1,
                 Sifra = "N000001",
                 KorisnikId = 1,
-                DatumKreiranja = DateTime.Now,
+                DatumKreiranja = new DateTime(year:2024, month:8, day:1),
                 DatumModificiranja = null
             },
             new Novost
@@ -255,7 +272,7 @@ using (var scope = app.Services.CreateScope())
                 SlikaNovostId = 1,
                 Sifra = "N000002",
                 KorisnikId = 1,
-                DatumKreiranja = DateTime.Now,
+                DatumKreiranja = new DateTime(year:2024, month:6, day:15),
                 DatumModificiranja = null
             },
             new Novost
@@ -265,7 +282,7 @@ using (var scope = app.Services.CreateScope())
                 SlikaNovostId = 1,
                 Sifra = "N000003",
                 KorisnikId = 1,
-                DatumKreiranja = DateTime.Now,
+                DatumKreiranja = new DateTime(year: 2024, month: 9, day:4),
                 DatumModificiranja = null
             },
             new Novost
@@ -275,7 +292,7 @@ using (var scope = app.Services.CreateScope())
                 SlikaNovostId = 1,
                 Sifra = "N000004",
                 KorisnikId = 1,
-                DatumKreiranja = DateTime.Now,
+                DatumKreiranja = new DateTime(year: 2024, month: 10, day: 5),
                 DatumModificiranja = null
             },
             new Novost
@@ -285,7 +302,7 @@ using (var scope = app.Services.CreateScope())
                 SlikaNovostId = 1,
                 Sifra = "N000005",
                 KorisnikId = 1,
-                DatumKreiranja = DateTime.Now,
+                DatumKreiranja = new DateTime(year: 2024, month: 10, day: 10),
                 DatumModificiranja = null
             },
             new Novost
@@ -295,7 +312,7 @@ using (var scope = app.Services.CreateScope())
                 SlikaNovostId = 1,
                 Sifra = "N000006",
                 KorisnikId = 1,
-                DatumKreiranja = DateTime.Now,
+                DatumKreiranja = new DateTime(year: 2024, month: 7, day: 18),
                 DatumModificiranja = null
             }
             );
@@ -314,7 +331,7 @@ using (var scope = app.Services.CreateScope())
 
         dataContext.Zaposleniks.AddRange(
             new Zaposlenik {
-                DatumRodjenja = DateTime.Now,
+                DatumRodjenja = new DateTime(year: 2000, month: 5, day: 15),
                 DatumZaposlenja = DateTime.Now,
                 KorisnikId = 2, 
                 DatumKreiranja = DateTime.Now,
@@ -323,19 +340,31 @@ using (var scope = app.Services.CreateScope())
 
             new Zaposlenik
             {
-                DatumRodjenja = DateTime.Now,
+                DatumRodjenja = new DateTime(year: 1999, month: 8, day: 7),
                 DatumZaposlenja = DateTime.Now,
                 KorisnikId = 3, 
                 DatumKreiranja = DateTime.Now,
                 Biografija = "Izvrstan radnik, organizovana do srzi, posvecena maksimalno i uziva u tome sto radi."
-            } //rezervacioner
+            },//rezervacioner
+              new Zaposlenik
+              {
+                  DatumRodjenja = new DateTime(year: 1995, month: 6, day: 8),
+                  DatumZaposlenja = DateTime.Now,
+                  KorisnikId = 6,
+                  DatumKreiranja = DateTime.Now,
+                  Biografija = "Svestrana, disciplinovana, brzih i spretnih ruku. Majstor svog zanata u svakom smislu te rijeci."
+              } //usluznik
+
+
             );
 
         dataContext.SaveChanges();
 
         dataContext.ZaposlenikUslugas.AddRange(
+            new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 1 },
             new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 2 },
-            new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 3 }
+            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 3 },
+            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 2 }
             );
 
         dataContext.SaveChanges();
@@ -366,19 +395,19 @@ using (var scope = app.Services.CreateScope())
         dataContext.SaveChanges();
 
         dataContext.UslugaTermins.AddRange(
-            new UslugaTermin { UslugaId = 1, TerminId = 1, DatumIzmjene=DateTime.Now, IsPrikazan=true },
+            new UslugaTermin { UslugaId = 1, TerminId = 1, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 1, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 1, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 2, TerminId = 1, DatumIzmjene = DateTime.Now, IsPrikazan = true },
-            new UslugaTermin { UslugaId = 2, TerminId = 2 , DatumIzmjene = DateTime.Now, IsPrikazan = true }
+            new UslugaTermin { UslugaId = 2, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true }
             );
 
         dataContext.SaveChanges();
 
         dataContext.Rezervacijas.AddRange(
-            new Rezervacija { Sifra = "R000001", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 1, UslugaId = 2, DatumRezervacije = DateTime.Now },
-            new Rezervacija { Sifra = "R000002", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 2, UslugaId = 1, DatumRezervacije = DateTime.Now },
-            new Rezervacija { Sifra = "R000003", KorisnikId = 5, StatusId = 4, IsArhiva = true, IsArhivaKorisnik = false, TerminId = 3, UslugaId = 1, DatumRezervacije = DateTime.Now }
+            new Rezervacija { Sifra = "R000001", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 1, UslugaId = 2, DatumRezervacije = new DateTime(year: 2024, month: 9, day: 9), },
+            new Rezervacija { Sifra = "R000002", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 2, UslugaId = 1, DatumRezervacije = new DateTime(year: 2024, month: 10, day: 8), },
+            new Rezervacija { Sifra = "R000003", KorisnikId = 5, StatusId = 4, IsArhiva = true, IsArhivaKorisnik = false, TerminId = 3, UslugaId = 1, DatumRezervacije = new DateTime(year: 2024, month: 11, day: 6), }
             );
 
         dataContext.SaveChanges();

@@ -22,6 +22,7 @@ namespace eBeautySalon.Services
 
         public override IQueryable<Zaposlenik> AddFilter(IQueryable<Zaposlenik> query, ZaposleniciSearchObject? search = null)
         {
+            query = query.OrderByDescending(x => x.ZaposlenikId);
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
                 query = query.

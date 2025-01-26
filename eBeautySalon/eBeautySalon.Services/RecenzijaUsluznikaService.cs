@@ -28,6 +28,8 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.Korisnik.Ime.Contains(search.FTS)
                 || x.Korisnik.Prezime.Contains(search.FTS)
+                || x.Usluznik.Korisnik.Ime.Contains(search.FTS) 
+                || x.Usluznik.Korisnik.Prezime.Contains(search.FTS)
                 || x.Ocjena.ToString().StartsWith(search.FTS)
                 || x.Komentar.StartsWith(search.FTS)
                 || x.Usluznik.Korisnik.Sifra.Contains(search.FTS));

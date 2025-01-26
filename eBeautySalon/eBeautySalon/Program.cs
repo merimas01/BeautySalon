@@ -229,7 +229,8 @@ using (var scope = app.Services.CreateScope())
         dataContext.KorisnikUlogas.AddRange(
             new KorisnikUloga { UlogaId = 1, KorisnikId = 1, DatumIzmjene = DateTime.Now },
             new KorisnikUloga { UlogaId = 2, KorisnikId = 2, DatumIzmjene = DateTime.Now },
-            new KorisnikUloga { UlogaId = 3, KorisnikId = 3, DatumIzmjene = DateTime.Now }
+            new KorisnikUloga { UlogaId = 3, KorisnikId = 3, DatumIzmjene = DateTime.Now },
+            new KorisnikUloga { UlogaId = 2, KorisnikId = 6, DatumIzmjene = DateTime.Now }
             );
 
         dataContext.SaveChanges();
@@ -249,7 +250,8 @@ using (var scope = app.Services.CreateScope())
             new Usluga { Naziv = "Profesionalno šminkanje", Opis="Nudimo najbolje šminkanje za mature, svadbe, slikanja...", KategorijaId = 1, Sifra = "U000001", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
             new Usluga { Naziv = "Bridal šminkanje", Opis = "Za Vas dan zelimo samo da se opustite i prepustite rukama nasih vrhunskih usluznika. Za Vas cemo se potruditi da vase lice izgleda blistavo i da se osjecate ljepse nego ikada. Nudimo Vam hidrataciju i pripremu lica, šminkanje kao i savjete za odrzavanje sminke i sretnog duha tokom dana.", KategorijaId = 1, Sifra = "U000002", SlikaUslugeId = 1, Cijena = 60, DatumKreiranja = DateTime.Now },
             new Usluga { Naziv = "Hemijsko čišćenje lica", Opis = "Nas najpoznatiji tretman čišćenja lica. Uvjerite se zasto ga ljudi toliko vole.", KategorijaId = 5, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja =DateTime.Now },
-            new Usluga { Naziv = "Njega noktiju", Opis = "Ovaj tretman ukljucuje: ciscenje i obikovanje noktiju,lakiranje, stavljanje zastitnog sloja na nokte, njega i hidratacija ruku.", KategorijaId = 3, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja = DateTime.Now }
+            new Usluga { Naziv = "Njega noktiju", Opis = "Ovaj tretman ukljucuje: ciscenje i obikovanje noktiju, lakiranje, stavljanje zastitnog sloja na nokte, njega i hidratacija ruku.", KategorijaId = 3, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Scensko šminkanje", Opis = "Sminkanje za ples, glumu, koncerte i velike kamere.", KategorijaId = 1, Sifra = "U000005", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now }
             );
 
         dataContext.SaveChanges();
@@ -354,8 +356,6 @@ using (var scope = app.Services.CreateScope())
                   DatumKreiranja = DateTime.Now,
                   Biografija = "Svestrana, disciplinovana, brzih i spretnih ruku. Majstor svog zanata u svakom smislu te rijeci."
               } //usluznik
-
-
             );
 
         dataContext.SaveChanges();
@@ -364,7 +364,8 @@ using (var scope = app.Services.CreateScope())
             new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 1 },
             new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 2 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 3 },
-            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 2 }
+            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 2 },
+            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 5 }
             );
 
         dataContext.SaveChanges();
@@ -399,7 +400,13 @@ using (var scope = app.Services.CreateScope())
             new UslugaTermin { UslugaId = 1, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 1, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 2, TerminId = 1, DatumIzmjene = DateTime.Now, IsPrikazan = true },
-            new UslugaTermin { UslugaId = 2, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true }
+            new UslugaTermin { UslugaId = 2, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 3, TerminId = 1, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 3, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 4, TerminId = 1, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 4, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 5, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 5, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true }
             );
 
         dataContext.SaveChanges();

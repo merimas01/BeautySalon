@@ -11,5 +11,6 @@ namespace eBeautySalon.Models.SearchObjects
         public int? uslugaId { get; set; }
         public bool? isUslugaIncluded { get; set; }
         public bool? isTerminIncluded { get; set; }
+        public bool? isPrikazan { get; set; }
     }
 }

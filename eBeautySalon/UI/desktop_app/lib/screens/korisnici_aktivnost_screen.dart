@@ -479,8 +479,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                         DataCell(Text("${e.sifra}")),
                         DataCell(Text(
                             "${e.usluga?.sifra ?? ""} - ${e.usluga?.naziv ?? ""}")),
-                        DataCell(Text(
-                            "${e.termin?.opis ?? ""}")),
+                        DataCell(Text("${e.termin?.opis ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumRezervacije == null
@@ -552,6 +551,12 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
       return MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
           return Colors.red[100];
+        },
+      );
+    else if (e.status?.opis == "Otkazana")
+      return MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return Colors.grey[100];
         },
       );
     else if (e.status?.opis == "Nova")

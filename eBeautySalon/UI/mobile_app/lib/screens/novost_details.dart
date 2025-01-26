@@ -67,11 +67,6 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       'korisnikId': LoggedUser.id,
       'isComment': true
     });
-    //objekat u kojem je korisnik lajkao/komentarisao
-    // var novostlikecomment = await _novostLikeCommentProvider.get(filter: {
-    //   'novostId': widget.novost?.novostId,
-    //   'korisnikId': LoggedUser.id,
-    // });
 
     setState(() {
       isLoadingLikesComments = false;
@@ -275,7 +270,11 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
     try {
       var request = NovostLikeCommentInsertUpdate(LoggedUser.id,
           widget.novost?.novostId, liked, _commentController.text.trim());
-      var obj = await _novostLikeCommentProvider.insert(request);
+
+      liked == false
+          ? await _novostLikeCommentProvider.insert(request)
+          : await _novostLikeCommentProvider.update(
+              novostLikeCommentId!, request);
       var data = await _novostLikeCommentProvider.get(filter: {
         'novostId': widget.novost?.novostId,
         'isKorisnikIncluded': true,

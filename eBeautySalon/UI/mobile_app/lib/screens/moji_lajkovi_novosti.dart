@@ -54,7 +54,7 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            height: 550,
+            height: 700,
             child: GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,

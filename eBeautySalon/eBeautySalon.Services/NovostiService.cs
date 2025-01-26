@@ -49,6 +49,7 @@ namespace eBeautySalon.Services
         }
         public override IQueryable<Novost> AddFilter(IQueryable<Novost> query, NovostiSearchObject? search = null)
         {
+            query = query.OrderByDescending(x => x.NovostId);
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
                 query = query.Where(x => (x.Naslov != null && x.Naslov.ToLower().Contains(search.FTS.ToLower()))

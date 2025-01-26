@@ -24,6 +24,14 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.UslugaId == search.uslugaId).AsQueryable();
             }
+            if (search.isPrikazan == true)
+            {
+                query = query.Where(x => x.IsPrikazan == true);
+            }
+            if (search.isPrikazan == false)
+            {
+                query = query.Where(x => x.IsPrikazan == false);
+            }
             return base.AddFilter(query, search);
         }
 
@@ -37,7 +45,7 @@ namespace eBeautySalon.Services
             if ( search.isTerminIncluded == true)
             {
                 query = query.Include(x => x.Termin);
-            }
+            }     
             return base.AddInclude(query, search);
         }
 
@@ -76,6 +84,7 @@ namespace eBeautySalon.Services
         public override async Task<UslugaTermin> AddIncludeForGetById(IQueryable<UslugaTermin> query, int id)
         {
             query = query.Include(x => x.Usluga.Kategorija);
+            query = query.Include(x => x.Usluga.SlikaUsluge);
             query = query.Include(x => x.Termin);
             var entity = await query.FirstOrDefaultAsync(x => x.UslugaTerminId == id);
             return entity;

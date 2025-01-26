@@ -318,7 +318,7 @@ class _NovostLikeCommentScreenState extends State<NovostLikeCommentScreen> {
                             width: 130,
                             child: e.datumModifikovanja != null
                                 ? Text(formatDate(e.datumModifikovanja!))
-                                : Text(""))),
+                                : Text("-"))),
                         DataCell(
                           e.komentar != null
                               ? TextButton(

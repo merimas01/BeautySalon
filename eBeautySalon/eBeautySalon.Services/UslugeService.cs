@@ -60,6 +60,7 @@ namespace eBeautySalon.Services
 
         public override IQueryable<Usluga> AddFilter(IQueryable<Usluga> query, UslugeSearchObject? search = null)
         {
+            query = query.OrderByDescending(x => x.UslugaId);
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
                 query = query.Where(x => (x.Naziv != null && x.Naziv.ToLower().Contains(search.FTS.ToLower())) 

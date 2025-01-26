@@ -23,6 +23,7 @@ namespace eBeautySalon.Services
 
         public override IQueryable<Rezervacija> AddFilter(IQueryable<Rezervacija> query, RezervacijeSearchObject? search = null)
         {
+            query = query.OrderByDescending(x => x.RezervacijaId);
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
                 query = query.Where(x => 
@@ -31,7 +32,8 @@ namespace eBeautySalon.Services
                 || x.Termin.Opis.Contains(search.FTS)
                 || x.Usluga.Naziv.Contains(search.FTS))
                 || x.Usluga.Sifra.Contains(search.FTS)
-                || x.Sifra.Contains(search.FTS)
+                || x.Sifra.Contains(search.FTS) 
+                || (x.Status!=null && x.Status.Opis.Contains(search.FTS))
                 );
             }
             if (search.StatusId != null)

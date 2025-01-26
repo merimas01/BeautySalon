@@ -36,6 +36,8 @@ namespace eBeautySalon.Models
 
         public virtual SlikaUsluge? SlikaUsluge { get; set; }
 
+        //public virtual ICollection<UslugeTermini> UslugaTermins { get; set; } = new List<UslugeTermini>();
+
         //public virtual ICollection<ZaposlenikUsluga> ZaposlenikUslugas { get; set; } = new List<ZaposlenikUsluga>();
     }
 }

@@ -85,7 +85,7 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "${(x.novost?.naslov ?? "").split(' ').take(3).join(' ')}...",
+                          "${(x.novost?.naslov ?? "").split(' ').take(2).join(' ')}...",
                         ),
                         TextButton(
                           onPressed: () {

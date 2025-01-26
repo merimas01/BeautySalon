@@ -297,7 +297,9 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                   ),
                 )
               : Container(),
-              SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
           ElevatedButton(
               onPressed: () async {
                 print("pritisnuto dugme Trazi");
@@ -338,10 +340,10 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                 label: Expanded(
               child: Text("Korisnik"),
             )),
-            DataColumn(
-                label: Expanded(
-              child: Text("Korisničko ime"),
-            )),
+            // DataColumn(
+            //     label: Expanded(
+            //   child: Text("Korisničko ime"),
+            // )),
             DataColumn(
                 label: Expanded(
               child: Text("Telefon"),
@@ -353,6 +355,10 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
             DataColumn(
                 label: Expanded(
               child: Text("Slika"),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Text("Registrovan"),
             )),
             DataColumn(
                 label: Expanded(
@@ -371,7 +377,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                   .map((Korisnik e) => DataRow(cells: [
                         DataCell(Text(e.sifra ?? "")),
                         DataCell(Text("${e.ime} ${e.prezime}")),
-                        DataCell(Text(e.korisnickoIme ?? "")),
+                        //DataCell(Text(e.korisnickoIme ?? "")),
                         DataCell(Text(e.telefon ?? "")),
                         DataCell(Text(e.email ?? "")),
                         DataCell(
@@ -391,6 +397,8 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                                   fit: BoxFit.cover,
                                 )),
                         ),
+                        DataCell(Text(
+                            "${formatDate(e.datumKreiranja ?? DateTime(0, 0, 0))}")),
                         DataCell(Text("${e.status == true ? "Ne" : "Da"}")),
                         DataCell(
                           TextButton(

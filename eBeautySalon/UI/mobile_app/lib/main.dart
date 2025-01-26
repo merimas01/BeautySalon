@@ -8,6 +8,8 @@ import 'package:mobile_app/providers/recenzije_usluznika_provider.dart';
 import 'package:mobile_app/providers/rezervacije_provider.dart';
 import 'package:mobile_app/providers/slika_profila_provider.dart';
 import 'package:mobile_app/providers/status_provider.dart';
+import 'package:mobile_app/providers/termini_provider.dart';
+import 'package:mobile_app/providers/usluga_termin_provider.dart';
 import 'package:mobile_app/providers/usluge_provider.dart';
 import 'package:mobile_app/providers/zaposlenici_provider.dart';
 import 'package:mobile_app/screens/home_page.dart';
@@ -38,8 +40,8 @@ void main() async {
       // ChangeNotifierProvider(create: (_) => UlogeProvider()),
       ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
       ChangeNotifierProvider(create: (_) => StatusiProvider()),
-      // ChangeNotifierProvider(create: (_) => TerminProvider()),
-      // ChangeNotifierProvider(create: (_) => UslugeTerminiProvider()),
+      ChangeNotifierProvider(create: (_) => TerminProvider()),
+      ChangeNotifierProvider(create: (_) => UslugeTerminiProvider()),
       ChangeNotifierProvider(create: (_) => NovostLikeCommentProvider()),
     ],
     child: MyMaterialApp(),
@@ -275,7 +277,8 @@ class LoginPage extends StatelessWidget {
                                   builder: (BuildContext context) =>
                                       AlertDialog(
                                         title: Text("Greška"),
-                                        content: Text("Molimo pokusajte ponovo. ${e.toString()}"),
+                                        content: Text(
+                                            "Molimo pokusajte ponovo. ${e.toString()}"),
                                         actions: [
                                           TextButton(
                                               onPressed: () =>

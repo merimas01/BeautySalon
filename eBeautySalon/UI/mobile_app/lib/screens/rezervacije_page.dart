@@ -150,4 +150,109 @@ class _RezervacijePageState extends State<RezervacijePage> {
       ),
     );
   }
+
+  Widget _odaberiUslugu() {
+    return Row(
+      children: [
+        Expanded(
+          child: FormBuilderDropdown<String>(
+            name: 'uslugaId',
+            decoration: InputDecoration(
+              labelText: 'Usluge',
+              suffix: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  _formKey.currentState!.fields['uslugaId']?.reset();
+                },
+              ),
+              hintText: 'Odaberite uslugu',
+            ),
+            onChanged: (x) async {
+              setState(() {
+                selectedUslugaId = x;
+                isLoadingTermin = true;
+                _terminResult = null;
+              });
+              var termini = await _uslugaTerminProvider
+                  .get(filter: {'uslugaId': x, 'isPrikazan': true});
+              print(termini.result[0].termin?.opis);
+              setState(() {
+                isLoadingTermin = false;
+                _terminResult = termini;
+              });
+            },
+            items: _uslugaResult?.result
+                    .map((item) => DropdownMenuItem(
+                          alignment: AlignmentDirectional.center,
+                          value: item.uslugaId.toString(),
+                          child: Text(item.naziv ?? ""),
+                        ))
+                    .toList() ??
+                [],
+            validator: (value) {
+              if (value == null) {
+                return 'Molimo Vas izaberite uslugu';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _odaberiTermin() {
+    return Row(
+      children: [
+        Expanded(
+          child: FormBuilderDropdown<String>(
+            name: 'terminId',
+            decoration: InputDecoration(
+              labelText: 'Termini',
+              suffix: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  _formKey.currentState!.fields['terminId']?.reset();
+                },
+              ),
+              hintText: 'Odaberite termin',
+            ),
+            onChanged: (x) async {
+              setState(() {
+                selectedTerminId = x;
+              });
+              // setState(() {
+              //   selectedUslugaId = x;
+              //   isLoadingTermin=true;
+              //   _terminResult=null;
+              // });
+              //    var termini = await _uslugaTerminProvider.get(filter: {
+              //     'uslugaId': x,
+              //     'isPrikazan': true
+              //   });
+              //   print(termini.result[0].termin?.opis);
+              //   setState(() {
+              //     isLoadingTermin = false;
+              //     _terminResult = termini;
+              //   });
+            },
+            items: _terminResult?.result
+                    .map((item) => DropdownMenuItem(
+                          alignment: AlignmentDirectional.center,
+                          value: item.uslugaId.toString(),
+                          child: Text(item.termin?.opis ?? ""),
+                        ))
+                    .toList() ??
+                [],
+            validator: (value) {
+              if (value == null) {
+                return 'Molimo Vas izaberite termin';
+              }
+              return null;
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }

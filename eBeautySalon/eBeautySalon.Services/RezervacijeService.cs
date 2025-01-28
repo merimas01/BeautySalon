@@ -98,7 +98,7 @@ namespace eBeautySalon.Services
             //samo korisnici mogu napraviti rezervaciju
             //ne smije isti korisnik rezrvisati dvije usluge na isti datum
             var lista_sveIsto = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije.Date.CompareTo( request.DatumRezervacije.Date)==0).ToListAsync();
-            var lista_istiKorisnik = await _context.Rezervacijas.Where(x => x.KorisnikId == request.KorisnikId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date)==0).ToListAsync();
+            var lista_istiKorisnik = await _context.Rezervacijas.Where(x => x.KorisnikId == request.KorisnikId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date)==0 && x.Status.Opis == "Nova").ToListAsync();
             var korisnici = await _context.Korisniks.FindAsync(request.KorisnikId);
             if (lista_sveIsto.Count() != 0) return false;
             if (lista_istiKorisnik.Count() != 0) return false;
@@ -178,6 +178,26 @@ namespace eBeautySalon.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<dynamic> GetTermineZaUsluguIDatum(int uslugaId, DateTime datum)
+        {
+            var usluga_termini = await _context.UslugaTermins.Where(x => x.UslugaId == uslugaId).Select(x=>x.Termin).ToListAsync();
+            var rezervacije_usluga_datum = await _context.Rezervacijas.Where(x => x.UslugaId == uslugaId && x.DatumRezervacije.Date == datum.Date).Select(x=>x.Termin).ToListAsync();
+            var lista_termina = new List<dynamic>();
+
+            foreach(var obj in usluga_termini)
+            {
+                if (rezervacije_usluga_datum.Contains(obj))
+                {
+                    lista_termina.Add(new { terminId= obj.TerminId, termin = obj.Opis, zauzet = true });
+                }
+                else
+                {
+                    lista_termina.Add(new { terminId = obj.TerminId, termin = obj.Opis, zauzet = false });
+                }
+            }
+            return lista_termina;
         }
     }
 }

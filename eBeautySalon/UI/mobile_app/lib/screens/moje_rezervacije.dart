@@ -48,7 +48,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
 
   void getData() async {
     var rezervacije = await _rezervacijeProvider
-        .get(filter: {'FTS': "", 'korisnikId': widget.korisnik!.korisnikId});
+        .get(filter: {'FTS': "", 'korisnikId': LoggedUser.id});
     var statusi = await _statusiProvider.get();
     setState(() {
       _rezervacijeResult = rezervacije;
@@ -312,7 +312,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            height: 700,
+            height: 670,
             child: GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1, // Number of items in a row (1 in this case)

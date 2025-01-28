@@ -29,4 +29,21 @@ class RezervacijeProvider extends BaseProvider<Rezervacija> {
       return false;
     }
   }
+
+  Future<List<dynamic>> GetTerminiZaUsluguIDatum(int uslugaId, DateTime datum) async {
+    var url = "${BaseProvider.baseUrl}Rezervacije/termini/$uslugaId/$datum";
+
+    print("url: $url");
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return data;
+    } else {
+      throw new Exception("Unknow error");
+    }
+  }
 }

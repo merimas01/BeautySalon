@@ -12,5 +12,6 @@ namespace eBeautySalon.Services
     public interface IRezervacijeService : ICRUDService<Rezervacije, RezervacijeSearchObject, RezervacijeInsertRequest, RezervacijeUpdateRequest>
     {
         public Task<bool> OtkaziRezervaciju(int rezervacijaId);
+        public Task<dynamic> GetTermineZaUsluguIDatum(int uslugaId, DateTime datum);
     }
 }

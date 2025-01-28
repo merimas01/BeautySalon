@@ -41,5 +41,12 @@ namespace eBeautySalon.Controllers
         {
             return await _service.OtkaziRezervaciju(rezervacijaId);
         }
+
+        [Authorize]
+        [HttpGet("termini/{uslugaId}/{datum}")]
+        public async Task<dynamic> GetTermineZaUsluguIDatum(int uslugaId, DateTime datum)
+        {
+            return await _service.GetTermineZaUsluguIDatum(uslugaId, datum);
+        }
     }
 }

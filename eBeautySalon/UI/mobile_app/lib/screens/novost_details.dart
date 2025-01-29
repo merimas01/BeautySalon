@@ -246,7 +246,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
           controller: _commentController,
           maxLines: 5, // Allows multi-line input
           decoration: InputDecoration(
-            hintText: "Napišite komentar ovdje...",
+            hintText:
+                "Napišite komentar ovdje... (ne smije biti duži od 15 riječi.)",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -363,7 +364,9 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                               SizedBox(
                                 width: 5,
                               ),
-                              Text("${x.komentar}"),
+                              Text(
+                                "${splitText(x.komentar, 5)}",
+                              ),
                             ],
                           ),
                           x.datumModifikovanja == null
@@ -513,6 +516,21 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       commentsCount = hasComments.count;
       commented = false;
       currentComment = null;
+      showComments = false;
     });
+  }
+
+  // split text every 5 words
+  String splitText(String text, int wordsPerLine) {
+    List<String> words = text.split(' '); // Split by space
+    List<String> lines = [];
+
+    for (int i = 0; i < words.length; i += wordsPerLine) {
+      lines.add(words
+          .sublist(i, (i + wordsPerLine).clamp(0, words.length))
+          .join(' '));
+    }
+
+    return lines.join('\n'); // Join with new lines
   }
 }

@@ -137,8 +137,8 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
   }
 
   var dropdown_lista_sort = [
-    {'opis': 'Po najnovijim rezervacijama', 'vrijednost': 'da'},
-    {'opis': 'Po najstarijim rezervacijama', 'vrijednost': 'ne'}
+    {'opis': 'Po najnovijie kreiranim rezervacijama', 'vrijednost': 'da'},
+    {'opis': 'Po najstarijie kreiranim rezervacijama', 'vrijednost': 'ne'}
   ];
 
   String? selectedSort;
@@ -380,6 +380,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                         x.statusId,
                                         x.isArhiva,
                                         x.datumRezervacije,
+                                        true,
                                         true);
                                     try {
                                       var obj = await _rezervacijeProvider
@@ -419,7 +420,8 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                         x.statusId,
                                         x.isArhiva,
                                         x.datumRezervacije,
-                                        false);
+                                        false,
+                                        true);
                                     try {
                                       var obj = await _rezervacijeProvider
                                           .update(x.rezervacijaId, request);

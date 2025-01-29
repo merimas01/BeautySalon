@@ -94,6 +94,7 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                 TextFormField(
                   decoration: InputDecoration(labelText: "Komentar:"),
                   enabled: true,
+                  maxLines: null,
                   controller: _commentController,
                 ),
                 SizedBox(

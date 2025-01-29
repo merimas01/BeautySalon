@@ -111,9 +111,17 @@ namespace eBeautySalon.Services
             var lista_sveIsto = await _context.Rezervacijas.Where(x => x.UslugaId == request.UslugaId && x.TerminId == request.TerminId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date) == 0 && x.RezervacijaId != id).ToListAsync();
             var lista_istiKorisnik = await _context.Rezervacijas.Where(x => x.KorisnikId == request.KorisnikId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date) == 0 && x.RezervacijaId != id).ToListAsync();
             var korisnici = await _context.Korisniks.FindAsync(request.KorisnikId);
-            if (lista_sveIsto.Count() != 0) return false;
-            if (lista_istiKorisnik.Count() != 0) return false;
-            if (korisnici.KorisnikUlogas.Count() != 0) return false;
+
+            if (request.arhivaZaKorisnika == true)
+            {
+                return true;
+            }
+            else
+            {
+                if (lista_sveIsto.Count() != 0) return false;
+                if (lista_istiKorisnik.Count() != 0) return false;
+                if (korisnici.KorisnikUlogas.Count() != 0) return false;
+            }
             return true;
         }
 

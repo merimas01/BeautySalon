@@ -121,6 +121,7 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
                 TextFormField(
                   decoration: InputDecoration(labelText: "Komentar:"),
                   enabled: true,
+                  maxLines: null,
                   controller: _commentController,
                 ),
                 SizedBox(

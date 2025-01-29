@@ -217,7 +217,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                                     SizedBox(
                                       width: 5,
                                     ),
-                                    Text("${x.komentar}"),
+                                    Text("${splitText(x.komentar, 5)}"),
                                   ],
                                 )
                               : SizedBox.shrink(),
@@ -304,7 +304,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
           TextField(
             controller: _textController,
             decoration: InputDecoration(
-              labelText: "Ovdje napisite komentar, maksimalno 15 rijeci",
+              labelText: "Ovdje napišite komentar, maksimalno 15 rijeci",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
             ),
@@ -433,5 +433,19 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
       _recenzijaUslugeResult = data;
       imaRecenziju = false;
     });
+  }
+
+  // split text every 5 words
+  String splitText(String text, int wordsPerLine) {
+    List<String> words = text.split(' '); // Split by space
+    List<String> lines = [];
+
+    for (int i = 0; i < words.length; i += wordsPerLine) {
+      lines.add(words
+          .sublist(i, (i + wordsPerLine).clamp(0, words.length))
+          .join(' '));
+    }
+
+    return lines.join('\n'); // Join with new lines
   }
 }

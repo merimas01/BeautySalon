@@ -1,0 +1,92 @@
+networks:
+  ebeautysalonnet:
+    driver: bridge 
+
+services:
+  # mssql docker
+  ebeautysalon-sql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SQL_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - ${SQL_PORT}:1433
+    expose:
+      - 1433
+    networks:
+      - ebeautysalonnet
+
+  ebeautysalon-api:
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      - ConnectionStrings:DefaultConnection=Server=${SQL_HOST},1433;Database=${SQL_DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=ebeautysalon-rabbitmq
+      - RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VIRTUALHOST=/
+      - RABBITMQ_PORT=5672
+    ports:
+      - 5266:5266
+    networks:
+      - ebeautysalonnet
+    links:
+      - ebeautysalon-sql
+    depends_on:
+      - ebeautysalon-sql
+
+  # RabbitMQ
+  ebeautysalon-rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    hostname: ebeautysalon-rabbitmq
+    restart: unless-stopped
+    ports:
+      - 5672:5672  
+      - 8080:15672
+      - 15692:15692
+    expose:
+      - 5672
+      - 8080
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER} 
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD} 
+    depends_on:
+      - ebeautysalon-api
+    networks:
+      - ebeautysalonnet
+    volumes:
+      - ./docker_data/rabbitmq_data:/var/lib/rabbitmq
+      - ./docker_data/rabbitmq_logs:/var/log/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ReservationMailingService
+  ebeautysalon-mailingservice:
+    restart: unless-stopped
+    container_name: ebeautysalon-mailingservice
+    hostname: ebeautysalon-mailingservice
+    image: ebeautysalon-subscriber:latest
+    build: 
+      context: .
+      dockerfile: eBeautySalonSubscriberDockerfile
+    environment:
+      - RABBITMQ_HOST=ebeautysalon-rabbitmq
+      - RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VIRTUALHOST=/
+      - RABBITMQ_PORT=5672
+      - FromEmail=${FROM_EMAIL}
+      - SmtpPass=${SMTP_PASS}
+      - SmtpUser=${SMTP_USER}
+    depends_on:
+      ebeautysalon-rabbitmq:
+        condition: service_healthy
+    networks:
+      - ebeautysalonnet

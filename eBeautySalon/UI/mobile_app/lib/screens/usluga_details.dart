@@ -1,18 +1,13 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/models/zaposlenik.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
 import 'package:mobile_app/providers/zaposlenici_provider.dart';
-import 'package:mobile_app/screens/moje_recenzije.dart';
 import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/sve_recenzije_usluge.dart';
-import 'package:mobile_app/screens/sve_recenzije_usluznika.dart';
 import 'package:mobile_app/screens/usluznik_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../models/usluga.dart';
 import '../providers/recenzije_usluznika_provider.dart';
 import '../utils/util.dart';
@@ -76,16 +71,16 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     return isLoading == false
         ? Container(
             width: 800,
-            // child: Card(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Column(children: [
+                  dugmeNazad(),
                   Text(
                     "${widget.usluga?.naziv ?? ""}",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        fontFamily: 'BeckyTahlia',
+                        //fontFamily: 'BeckyTahlia',
                         fontSize: 26,
                         color: Colors.pinkAccent),
                   ),
@@ -96,7 +91,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                     "${widget.usluga?.kategorija?.naziv ?? ""}",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        fontFamily: 'BeckyTahlia',
+                        //fontFamily: 'BeckyTahlia',
                         fontSize: 20,
                         color: Colors.pinkAccent),
                   ),
@@ -122,7 +117,6 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   SizedBox(
                     height: 10,
                   ),
-
                   TextFormField(
                     decoration: InputDecoration(labelText: "Cijena:"),
                     initialValue: "${formatNumber(widget.usluga?.cijena)}KM",
@@ -141,7 +135,6 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   SizedBox(
                     height: 10,
                   ),
-
                   Column(
                     children: [
                       Row(
@@ -173,14 +166,17 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                           )),
                     ],
                   ),
-
                   _createTableUsluznci(),
-                  //recommender
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Recommender...",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
                 ]),
               ),
-            )
-            //),
-            )
+            ))
         : Center(
             child: CircularProgressIndicator(),
           );
@@ -212,11 +208,11 @@ class _UslugaDetailsState extends State<UslugaDetails> {
             columns: [
               DataColumn(
                   label: Expanded(
-                child: Text("Usluznik"),
+                child: Text("Uslužnik"),
               )),
               DataColumn(
                   label: Expanded(
-                child: Text("Prosjecna_ocjena"),
+                child: Text("Prosječna_ocjena"),
               )),
               DataColumn(
                   label: Expanded(
@@ -238,6 +234,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                       onPressed: () async {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => UsluznikDetails(
+                                usluga: widget.usluga,
                                 usluznik: item['usluznik'],
                                 prosjecnaOcjena: item['objekat'] != null
                                     ? item['objekat']['prosjecnaOcjena']
@@ -310,6 +307,19 @@ class _UslugaDetailsState extends State<UslugaDetails> {
           );
         }
       }),
+    );
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => PretragaPage()));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
     );
   }
 }

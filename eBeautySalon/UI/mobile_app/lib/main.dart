@@ -1,4 +1,3 @@
-import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/providers/kategorije_provider.dart';
 import 'package:mobile_app/providers/korisnik_provider.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
@@ -27,17 +26,12 @@ void main() async {
       //dependency injection
       ChangeNotifierProvider(create: (_) => UslugeProvider()),
       ChangeNotifierProvider(create: (_) => KategorijeProvider()),
-      // ChangeNotifierProvider(create: (_) => SlikaUslugeProvider()),
       ChangeNotifierProvider(create: (_) => SlikaProfilaProvider()),
       ChangeNotifierProvider(create: (_) => KorisnikProvider()),
-      // ChangeNotifierProvider(create: (_) => ZaposleniciUslugeProvider()),
       ChangeNotifierProvider(create: (_) => ZaposleniciProvider()),
       ChangeNotifierProvider(create: (_) => NovostiProvider()),
       ChangeNotifierProvider(create: (_) => RecenzijaUslugeProvider()),
       ChangeNotifierProvider(create: (_) => RecenzijaUsluznikaProvider()),
-      // ChangeNotifierProvider(create: (_) => SlikaNovostProvider()),
-      // ChangeNotifierProvider(create: (_) => KorisniciUlogeProvider()),
-      // ChangeNotifierProvider(create: (_) => UlogeProvider()),
       ChangeNotifierProvider(create: (_) => RezervacijeProvider()),
       ChangeNotifierProvider(create: (_) => StatusiProvider()),
       ChangeNotifierProvider(create: (_) => TerminProvider()),

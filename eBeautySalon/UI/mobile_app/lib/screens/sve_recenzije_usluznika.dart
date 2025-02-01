@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/recenzija_usluznika_insert_update.dart';
 import 'package:mobile_app/models/zaposlenik.dart';
 import 'package:mobile_app/screens/edit_recenzija_usluznika.dart';
+import 'package:mobile_app/screens/usluznik_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../models/recenzija_usluznika.dart';
 import '../models/search_result.dart';
+import '../models/usluga.dart';
 import '../providers/recenzije_usluznika_provider.dart';
 import '../utils/util.dart';
 
 class SveRecenzijeUsluznika extends StatefulWidget {
   Zaposlenik? zaposlenik;
-  SveRecenzijeUsluznika({super.key, this.zaposlenik});
+  String? prosjecnaOcjena;
+  String? totalReviws;
+  Usluga? usluga;
+  SveRecenzijeUsluznika(
+      {super.key,
+      this.zaposlenik,
+      this.prosjecnaOcjena,
+      this.totalReviws,
+      this.usluga});
 
   @override
   State<SveRecenzijeUsluznika> createState() => _SveRecenzijeUsluznikaState();
@@ -72,7 +80,9 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
       "Recenzije usluznika: ${widget.zaposlenik?.korisnik?.ime} ${widget.zaposlenik?.korisnik?.prezime}",
       textAlign: TextAlign.center,
       style: const TextStyle(
-          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+          //fontFamily: 'BeckyTahlia',
+          fontSize: 26,
+          color: Colors.pinkAccent),
     );
   }
 
@@ -102,13 +112,12 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
 
   List<Widget> _buildList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [Text("Učitavanje...")];
     }
 
     List<Widget> list = data
         .map((x) => Container(
               decoration: BoxDecoration(
-                  //color: Colors.amber,
                   border: Border.all(width: 2),
                   borderRadius: BorderRadius.circular(20)),
               child: Padding(
@@ -119,6 +128,9 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => EditRecenzijaUsluznika(
                                 recenzijaUsluznika: x,
+                                totalReviws: widget.totalReviws,
+                                prosjecnaOcjena: widget.prosjecnaOcjena,
+                                usluga: widget.usluga,
                               )));
                     }
                   },
@@ -222,7 +234,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
 
   _rateUsluznik() {
     return Container(
-      height: 200,
+      height: 250,
       decoration: BoxDecoration(
           border: Border.all(
             width: 2,
@@ -257,7 +269,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
           TextField(
             controller: _textController,
             decoration: InputDecoration(
-              labelText: "Ovdje napišite komentar, maksimalno 15 rijeci",
+              labelText: "Ovdje napišite komentar, maksimalno 15 riječi",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
             ),
@@ -266,7 +278,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
                 comment = newValue;
               });
             },
-            maxLines: 1,
+            maxLines: 3,
           ),
           SizedBox(
             height: 10,
@@ -288,6 +300,9 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
       var obj = await _recenzijaUsluznikaProvider.insert(request);
       if (obj != null) {
         showSuccessMessage();
+        setState(() {
+          imaRecenziju = true;
+        });
       }
     } catch (err) {
       print(err.toString());
@@ -399,6 +414,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
               ? SingleChildScrollView(
                   child: Column(
                     children: [
+                      dugmeNazad(),
                       _naslov(),
                       SizedBox(
                         height: 10,
@@ -412,10 +428,9 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
                               onPressed: () {
                                 setState(() {
                                   makeAReview = !makeAReview;
-                                  imaRecenziju = true;
                                 });
                               },
-                              child: Text("Napisi recenziju?"))
+                              child: Text("Napiši recenziju?"))
                           : Container(),
                       imaRecenziju == false
                           ? SizedBox(
@@ -448,5 +463,23 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
     }
 
     return lines.join('\n'); // Join with new lines
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => UsluznikDetails(
+                        usluznik: widget.zaposlenik,
+                        totalReviws: widget.totalReviws,
+                        prosjecnaOcjena: widget.prosjecnaOcjena,
+                        usluga: widget.usluga,
+                      )));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 }

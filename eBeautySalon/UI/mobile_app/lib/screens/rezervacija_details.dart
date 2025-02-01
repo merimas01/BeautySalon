@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/rezervacija.dart';
-import 'package:mobile_app/models/rezervacija_update.dart';
 import 'package:mobile_app/providers/rezervacije_provider.dart';
-import 'package:mobile_app/utils/constants.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
+import 'moje_rezervacije.dart';
 
 class RezervacijaDetails extends StatefulWidget {
   Rezervacija? rezervacija;
@@ -45,7 +42,9 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
       "Detalji rezervacije",
       textAlign: TextAlign.center,
       style: const TextStyle(
-          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+          //fontFamily: 'BeckyTahlia',
+          fontSize: 26,
+          color: Colors.pinkAccent),
     );
   }
 
@@ -54,9 +53,10 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
       padding: const EdgeInsets.all(15.0),
       child: Column(
         children: [
+          dugmeNazad(),
           _naslov(),
           TextFormField(
-            decoration: InputDecoration(labelText: "Sifra:"),
+            decoration: InputDecoration(labelText: "Šifra:"),
             initialValue: widget.rezervacija?.sifra,
             enabled: false,
           ),
@@ -96,7 +96,7 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
             enabled: false,
           ),
           TextFormField(
-            decoration: InputDecoration(labelText: "Podaci o placanju:"),
+            decoration: InputDecoration(labelText: "Podaci o plaćanju:"),
             initialValue: "",
             enabled: false,
           ),
@@ -133,7 +133,7 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
                 textAlign: TextAlign.center,
               ),
               content: Text(
-                'Jeste li sigurni da želite otkazati izabranu rezervaciju? (Ova akcija se ne moze povratiti.)',
+                'Jeste li sigurni da želite otkazati izabranu rezervaciju? (Ova akcija se ne može povratiti.)',
                 textAlign: TextAlign.center,
               ),
               actions: <Widget>[
@@ -184,11 +184,25 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => MojeRezervacije()));
                     },
                     child: Text("Ok"))
               ],
             ));
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MojeRezervacije()));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 
   void showError() {

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_app/models/rezervacija_insert.dart';
 import 'package:mobile_app/providers/rezervacije_provider.dart';
-import 'package:mobile_app/providers/usluga_termin_provider.dart';
 import 'package:mobile_app/screens/moje_rezervacije.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../models/search_result.dart';
 import '../models/usluga.dart';
-import '../models/usluga_termin.dart';
-import '../providers/termini_provider.dart';
 import '../providers/usluge_provider.dart';
 
 class RezervacijePage extends StatefulWidget {
@@ -62,13 +57,16 @@ class _RezervacijePageState extends State<RezervacijePage> {
             padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
                   height: 50,
                   child: Text(
-                    "Zakazite Vas termin u par koraka!",
+                    "Zakažite Vaš termin u par koraka!",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        fontFamily: 'BeckyTahlia',
+                        //fontFamily: 'BeckyTahlia',
                         fontSize: 26,
                         color: Colors.pinkAccent),
                   ),
@@ -205,7 +203,6 @@ class _RezervacijePageState extends State<RezervacijePage> {
         child: SingleChildScrollView(
           child: Center(
             child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "*Prvo izaberite datum koji želite rezervisati. Potom uslugu, zatim termin odnosno vrijeme koje želite." +
@@ -314,7 +311,11 @@ class _RezervacijePageState extends State<RezervacijePage> {
                             style: TextStyle(fontSize: 16))),
                   ],
                 ),
-
+                SizedBox(
+                  height: 10,
+                ),
+                Text("Placanje...",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 // Izvrsiti PLACANJE - na novom screenu prikazati konacne podatke rezervacije i tu staviti dugme mojeRezervacije
               ],
             ),

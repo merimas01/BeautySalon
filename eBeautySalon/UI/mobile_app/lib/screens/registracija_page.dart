@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +48,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
+                        dugmeNazad(),
                         _naslov(),
                         _korisnickoIme(),
                         _inputIme(),
@@ -96,23 +96,8 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromARGB(255, 255, 255, 255)),
-                foregroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromARGB(255, 139, 132, 134)),
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-              child: Text("Nazad na prijavu")),
-          SizedBox(
-            width: 10,
-          ),
           ElevatedButton(
               onPressed: () async {
                 var val = _formKey.currentState?.saveAndValidate();
@@ -145,36 +130,6 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
       ),
     );
   }
-
-  // Widget _naslov() {
-  //   var naslov = "Registruj se";
-  //   return Padding(
-  //     padding: const EdgeInsets.only(bottom: 10.0),
-  //     child: Container(
-  //       decoration: BoxDecoration(
-  //         color: Color.fromARGB(255, 244, 201, 215), // Set background color
-  //         borderRadius: BorderRadius.circular(5),
-  //       ),
-  //       child: Padding(
-  //         padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-  //         child: Center(
-  //           child: RichText(
-  //               text: TextSpan(
-  //                   style: TextStyle(
-  //                     fontSize: 16,
-  //                     color: Colors.pink,
-  //                   ),
-  //                   children: [
-  //                 TextSpan(
-  //                   text: naslov,
-  //                   style: TextStyle(fontWeight: FontWeight.bold),
-  //                 ),
-  //               ])),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buttonOdaberiSliku() {
     return FormBuilderField(
@@ -432,7 +387,9 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
       "Registrujte se na nasu aplikaciju putem sljedece forme!",
       textAlign: TextAlign.center,
       style: const TextStyle(
-          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+          //fontFamily: 'BeckyTahlia',
+          fontSize: 26,
+          color: Colors.pinkAccent),
     );
   }
 
@@ -475,7 +432,8 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => LoginPage()));
                       },
-                      child: Text("Prijavite se sa vasim korisnickim imenom i lozinkom"))
+                      child: Text(
+                          "Prijavite se sa vasim korisnickim imenom i lozinkom"))
                 ],
               ));
       _formKey.currentState?.reset();
@@ -490,8 +448,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
-                content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo."),
+                content: Text("Neispravni podaci. Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -499,5 +456,18 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                 ],
               ));
     }
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => LoginPage()));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/models/novost_like_comment_insert_update.dart';
 import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/screens/edit_komentar_novost.dart';
+import 'package:mobile_app/screens/home_page.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -93,11 +94,12 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                   padding: const EdgeInsets.all(15.0),
                   child: SingleChildScrollView(
                     child: Column(children: [
+                      dugmeNazad(),
                       Text(
                         "${widget.novost?.naslov ?? ""}",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                            fontFamily: 'BeckyTahlia',
+                            //fontFamily: 'BeckyTahlia',
                             //fontStyle: FontStyle.italic,
                             fontSize: 26,
                             color: Colors.pinkAccent),
@@ -160,15 +162,6 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                                 .insert(LikeNovostRequest());
                                       }
 
-                                      var data =
-                                          await _novostLikeCommentProvider
-                                              .get(filter: {
-                                        'novostId': widget.novost?.novostId,
-                                        'isKorisnikIncluded': true,
-                                        'isNovostIncluded': true,
-                                        'isComment': true,
-                                      });
-
                                       var hasLikes =
                                           await _novostLikeCommentProvider.get(
                                               filter: {
@@ -177,11 +170,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                           });
                                       setState(() {
                                         liked = !liked;
-                                        _novostLikeCommentResult = data;
                                         likesCount = hasLikes.count;
                                       });
-
-                                      //showSuccessMessage();
                                     } catch (err) {
                                       print(err.toString());
                                       _showValidationError();
@@ -194,7 +184,6 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                           ),
                           Row(
                             children: [
-                              Text("${commentsCount}"),
                               TextButton(
                                   onPressed: () {
                                     if (commentsCount != 0) {
@@ -206,6 +195,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                   child: commented == true
                                       ? Icon(Icons.comment)
                                       : Icon(Icons.comment_outlined)),
+                              Text("${commentsCount}"),
                             ],
                           ),
                         ],
@@ -246,8 +236,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
           controller: _commentController,
           maxLines: 5, // Allows multi-line input
           decoration: InputDecoration(
-            hintText:
-                "Napišite komentar ovdje... (ne smije biti duži od 15 riječi.)",
+            hintText: "Napišite komentar ovdje... (maksimalno 15 riječi.)",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -532,5 +521,18 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
     }
 
     return lines.join('\n'); // Join with new lines
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => HomePage()));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 }

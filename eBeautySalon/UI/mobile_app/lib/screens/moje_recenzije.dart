@@ -1,10 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:mobile_app/models/korisnik.dart';
-import 'package:mobile_app/screens/profil_page.dart';
-import 'package:mobile_app/screens/usluga_details.dart';
-import 'package:mobile_app/screens/usluznik_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +16,7 @@ import 'edit_recenzija_usluge.dart';
 import 'edit_recenzija_usluznika.dart';
 
 class MojeRecenzije extends StatefulWidget {
-  Korisnik? korisnik;
-  MojeRecenzije({super.key, this.korisnik});
+  MojeRecenzije({super.key});
 
   @override
   State<MojeRecenzije> createState() => _MojeRecenzijeState();
@@ -41,8 +34,6 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   bool isLoadingData = true;
   String? search1 = "";
   String? search2 = "";
-  int _ratingUsluga = 0;
-  int _ratingUsluznik = 0;
   Kategorija? selectedKategorija;
   SearchResult<Kategorija>? _kategorije;
   Usluga? selectedUsluga;
@@ -52,7 +43,6 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    print("Korisnik: ${widget.korisnik?.korisnikId}");
     _recenzijeUslugeProvider = context.read<RecenzijaUslugeProvider>();
     _recenzijeUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
     _kategorijaProvider = context.read<KategorijeProvider>();
@@ -63,11 +53,11 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   void getData() async {
     var recenzijeUsluge = await _recenzijeUslugeProvider.get(filter: {
       'FTS': _ftsController1.text,
-      'korisnikId': widget.korisnik!.korisnikId,
+      'korisnikId': LoggedUser.id,
     });
     var recenzijeUsluznika = await _recenzijeUsluznikaProvider.get(filter: {
       'FTS': _ftsController2.text,
-      'korisnikId': widget.korisnik!.korisnikId,
+      'korisnikId': LoggedUser.id,
     });
 
     var kategorije = await _kategorijaProvider.get();
@@ -161,7 +151,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                                                   .get(filter: {
                                             'FTS': _ftsController1.text,
                                             'korisnikId':
-                                                widget.korisnik!.korisnikId,
+                                                LoggedUser.id,
                                             'kategorijaId':
                                                 selectedKategorija?.kategorijaId
                                           });
@@ -215,7 +205,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                                                   .get(filter: {
                                             'FTS': _ftsController2.text,
                                             'korisnikId':
-                                                widget.korisnik!.korisnikId,
+                                                LoggedUser.id,
                                             'uslugaId': selectedUsluga?.uslugaId
                                           });
 
@@ -326,7 +316,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
 
   List<Widget> _buildUslugaList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [Text("Učitavanje...")];
     }
 
     List<Widget> list = data
@@ -338,6 +328,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => EditRecenzijaUsluge(
                                 recenzijaUsluge: x,
+                                poslaniKorisnikId: LoggedUser.id,
                               )));
                     },
                     child: x.usluga.slikaUsluge != null &&
@@ -395,7 +386,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
 
   List<Widget> _buildUsluznikList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [Text("Učitavanje...")];
     }
 
     List<Widget> list = data
@@ -407,6 +398,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => EditRecenzijaUsluznika(
                                 recenzijaUsluznika: x,
+                                poslaniKorisnikId: LoggedUser.id,
                               )));
                     },
                     child: x.usluznik.korisnik.slikaProfila != null &&
@@ -558,7 +550,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     //treba da se osvjezi lista
     var data = await _recenzijeUslugeProvider.get(filter: {
       'FTS': _ftsController1.text,
-      'korisnikId': widget.korisnik!.korisnikId
+      'korisnikId': LoggedUser.id
     });
 
     setState(() {
@@ -574,7 +566,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     //treba da se osvjezi lista
     var data = await _recenzijeUsluznikaProvider.get(filter: {
       'FTS': _ftsController1.text,
-      'korisnikId': widget.korisnik!.korisnikId
+      'korisnikId': LoggedUser.id
     });
 
     setState(() {

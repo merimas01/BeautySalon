@@ -4,15 +4,29 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/recenzija_usluznika.dart';
 import 'package:mobile_app/models/recenzija_usluznika_insert_update.dart';
 import 'package:mobile_app/providers/recenzije_usluznika_provider.dart';
+import 'package:mobile_app/screens/sve_recenzije_usluznika.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/recenzije_usluga_provider.dart';
+import '../models/usluga.dart';
+import '../models/zaposlenik.dart';
+import '../providers/zaposlenici_provider.dart';
 import '../utils/util.dart';
+import 'moje_recenzije.dart';
 
 class EditRecenzijaUsluznika extends StatefulWidget {
   RecenzijaUsluznika? recenzijaUsluznika;
-  EditRecenzijaUsluznika({super.key, this.recenzijaUsluznika});
+  int? poslaniKorisnikId;
+  String? prosjecnaOcjena;
+  String? totalReviws;
+  Usluga? usluga;
+  EditRecenzijaUsluznika(
+      {super.key,
+      this.recenzijaUsluznika,
+      this.poslaniKorisnikId,
+      this.prosjecnaOcjena,
+      this.totalReviws,
+      this.usluga});
 
   @override
   State<EditRecenzijaUsluznika> createState() => _EditRecenzijaUsluznikaState();
@@ -21,9 +35,11 @@ class EditRecenzijaUsluznika extends StatefulWidget {
 class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
   Map<String, dynamic> _initialValue = {};
   late RecenzijaUsluznikaProvider _recenzijaUsluznikaProvider;
+  late ZaposleniciProvider _zaposlenikProvider;
   TextEditingController _ocjenaController = TextEditingController();
   TextEditingController _commentController = TextEditingController();
   int _rating = 0;
+  Zaposlenik? _usluznik;
 
   @override
   void initState() {
@@ -35,12 +51,23 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
     };
 
     _recenzijaUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
+    _zaposlenikProvider = context.read<ZaposleniciProvider>();
 
     setState(() {
       _ocjenaController.text =
           widget.recenzijaUsluznika?.ocjena?.toString() ?? "";
       _commentController.text = widget.recenzijaUsluznika?.komentar ?? "";
       _rating = double.parse(_initialValue['ocjena']).toInt();
+    });
+
+    getUsluznik();
+  }
+
+  getUsluznik() async {
+    var usluznik = await _zaposlenikProvider
+        .getById(widget.recenzijaUsluznika!.usluznikId!);
+    setState(() {
+      _usluznik = usluznik;
     });
   }
 
@@ -52,29 +79,31 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
+                dugmeNazad(),
                 Text(
                   "${widget.recenzijaUsluznika?.usluznik?.korisnik?.ime ?? ""} ${widget.recenzijaUsluznika?.usluznik?.korisnik?.prezime ?? ""}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      fontFamily: 'BeckyTahlia',
+                      //fontFamily: 'BeckyTahlia',
                       fontSize: 26,
                       color: Colors.pinkAccent),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                widget.recenzijaUsluznika?.usluznik?.korisnik?.slikaProfila != null &&
-                        widget.recenzijaUsluznika?.usluznik?.korisnik?.slikaProfila
-                                ?.slika !=
+                widget.recenzijaUsluznika?.usluznik?.korisnik?.slikaProfila !=
                             null &&
-                        widget.recenzijaUsluznika?.usluznik?.korisnik?.slikaProfila
-                                ?.slika !=
+                        widget.recenzijaUsluznika?.usluznik?.korisnik
+                                ?.slikaProfila?.slika !=
+                            null &&
+                        widget.recenzijaUsluznika?.usluznik?.korisnik
+                                ?.slikaProfila?.slika !=
                             ""
                     ? Container(
                         height: 200,
                         width: 200,
-                        child: ImageFromBase64String(widget
-                            .recenzijaUsluznika!.usluznik!.korisnik!.slikaProfila!.slika),
+                        child: ImageFromBase64String(widget.recenzijaUsluznika!
+                            .usluznik!.korisnik!.slikaProfila!.slika),
                       )
                     : Container(
                         child: Image.asset(
@@ -98,6 +127,9 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                         enabled: false,
                       )
                     : Container(),
+                SizedBox(
+                  height: 8,
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: List.generate(5, (index) {
@@ -177,7 +209,18 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      if (widget.poslaniKorisnikId != null) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MojeRecenzije()));
+                      } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SveRecenzijeUsluznika(
+                                  zaposlenik: _usluznik,
+                                  totalReviws: widget.totalReviws,
+                                  prosjecnaOcjena: widget.prosjecnaOcjena,
+                                  usluga: widget.usluga,
+                                )));
+                      }
                     },
                     child: Text("Ok"))
               ],
@@ -186,6 +229,30 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(title: "Modifikacija recenzije usluznika", child: _showDetails());
+    return MasterScreenWidget(
+        title: "Modifikacija recenzije usluznika", child: _showDetails());
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              if (widget.poslaniKorisnikId != null) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => MojeRecenzije()));
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SveRecenzijeUsluznika(
+                          zaposlenik: _usluznik,
+                          totalReviws: widget.totalReviws,
+                          prosjecnaOcjena: widget.prosjecnaOcjena,
+                          usluga: widget.usluga,
+                        )));
+              }
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 }

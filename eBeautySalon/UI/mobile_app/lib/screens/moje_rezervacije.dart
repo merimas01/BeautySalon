@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:mobile_app/models/korisnik.dart';
 import 'package:mobile_app/models/rezervacija_update.dart';
 import 'package:mobile_app/providers/status_provider.dart';
 import 'package:mobile_app/screens/rezervacija_details.dart';
@@ -15,8 +12,7 @@ import '../providers/rezervacije_provider.dart';
 import '../utils/util.dart';
 
 class MojeRezervacije extends StatefulWidget {
-  Korisnik? korisnik;
-  MojeRezervacije({super.key, this.korisnik});
+  MojeRezervacije({super.key});
 
   @override
   State<MojeRezervacije> createState() => _MojeRezervacijeState();
@@ -39,12 +35,6 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     _statusiProvider = context.read<StatusiProvider>();
     getData();
   }
-
-  //DUGME NA DETALJE REZERVACIJE (ili samo klik na element): SVE INFO + INFO O NACINU PLACANJA + STATUS
-  //u detaljima: dugme otkazi rezervaciju (ona se moze otkazati samo ako je nova)
-  //DUGME OTKAZI REZERVACIJU umjesto delete ikonice
-  //Ako je arhivirano, promjeniti ikonicu na dearhiviraj
-  //oboji status rezervacije
 
   void getData() async {
     var rezervacije = await _rezervacijeProvider
@@ -389,6 +379,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                       var data = await _rezervacijeProvider
                                           .get(filter: {
                                         'statusId': selectedStatus?.statusId,
+                                        'korisnikId': LoggedUser.id,
                                         'isArhivaKorisnik': selectedOpis,
                                         'DatumOpadajuciSort':
                                             selectedSort == "da"
@@ -429,6 +420,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                       var data = await _rezervacijeProvider
                                           .get(filter: {
                                         'statusId': selectedStatus?.statusId,
+                                        'korisnikId': LoggedUser.id,
                                         'isArhivaKorisnik': selectedOpis,
                                         'DatumOpadajuciSort':
                                             selectedSort == "da"
@@ -469,7 +461,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
       return Colors.green[500];
     else if (e.status?.opis == "Odbijena")
       return Colors.red[500];
-       else if (e.status?.opis == "Otkazana")
+    else if (e.status?.opis == "Otkazana")
       return Colors.grey;
     else if (e.status?.opis == "Nova") return Colors.amber;
   }

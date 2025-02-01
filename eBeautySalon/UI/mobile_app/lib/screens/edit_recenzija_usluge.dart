@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_app/models/recenzija_usluge.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
+import 'package:mobile_app/providers/usluge_provider.dart';
+import 'package:mobile_app/screens/moje_recenzije.dart';
+import 'package:mobile_app/screens/sve_recenzije_usluge.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../models/recenzija_usluge_insert_update.dart';
+import '../models/usluga.dart';
 
 class EditRecenzijaUsluge extends StatefulWidget {
   RecenzijaUsluge? recenzijaUsluge;
-  EditRecenzijaUsluge({super.key, this.recenzijaUsluge});
+  int? poslaniKorisnikId;
+  EditRecenzijaUsluge(
+      {super.key, this.recenzijaUsluge, this.poslaniKorisnikId});
 
   @override
   State<EditRecenzijaUsluge> createState() => _EditRecenzijaUslugeState();
@@ -21,9 +23,11 @@ class EditRecenzijaUsluge extends StatefulWidget {
 class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
   Map<String, dynamic> _initialValue = {};
   late RecenzijaUslugeProvider _recenzijaUslugeProvider;
+  late UslugeProvider _uslugeProvider;
   TextEditingController _ocjenaController = TextEditingController();
   TextEditingController _commentController = TextEditingController();
   int _rating = 0;
+  Usluga? _usluga;
 
   @override
   void initState() {
@@ -35,11 +39,22 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
     };
 
     _recenzijaUslugeProvider = context.read<RecenzijaUslugeProvider>();
+    _uslugeProvider = context.read<UslugeProvider>();
 
     setState(() {
       _ocjenaController.text = widget.recenzijaUsluge?.ocjena?.toString() ?? "";
       _commentController.text = widget.recenzijaUsluge?.komentar ?? "";
       _rating = double.parse(_initialValue['ocjena']).toInt();
+    });
+
+    getUsluga();
+  }
+
+  getUsluga() async {
+    var usluga =
+        await _uslugeProvider.getById(widget.recenzijaUsluge!.uslugaId!);
+    setState(() {
+      _usluga = usluga;
     });
   }
 
@@ -51,11 +66,12 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
+                dugmeNazad(),
                 Text(
                   "${widget.recenzijaUsluge?.usluga?.naziv ?? ""}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      fontFamily: 'BeckyTahlia',
+                      //fontFamily: 'BeckyTahlia',
                       fontSize: 26,
                       color: Colors.pinkAccent),
                 ),
@@ -100,6 +116,9 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
                         enabled: false,
                       )
                     : Container(),
+                SizedBox(
+                  height: 8,
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: List.generate(5, (index) {
@@ -179,7 +198,15 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      if (widget.poslaniKorisnikId != null) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MojeRecenzije()));
+                      } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SveRecenzijeUsluge(
+                                  usluga: _usluga,
+                                )));
+                      }
                     },
                     child: Text("Ok"))
               ],
@@ -188,6 +215,27 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(title: "Modifikacija recenzije usluge", child: _showDetails());
+    return MasterScreenWidget(
+        title: "Modifikacija recenzije usluge", child: _showDetails());
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              if (widget.poslaniKorisnikId != null) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => MojeRecenzije()));
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SveRecenzijeUsluge(
+                          usluga: _usluga,
+                        )));
+              }
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 }

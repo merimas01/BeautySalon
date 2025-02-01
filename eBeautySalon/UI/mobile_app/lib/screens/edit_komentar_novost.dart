@@ -1,18 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/models/novost_like_comment_insert_update.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
+import 'package:mobile_app/screens/moji_komentari_novosti.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class EditKomentarNovost extends StatefulWidget {
-  NovostLikeComment?
-      novostLikeComment; //treba mi poslati i isNovostIncluded=true
+  NovostLikeComment? novostLikeComment;
   EditKomentarNovost({super.key, this.novostLikeComment});
 
   @override
@@ -47,13 +46,14 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
+                dugmeNazad(),
                 Text(
                   "${widget.novostLikeComment?.novost?.naslov ?? ""}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      fontFamily: 'BeckyTahlia',
+                      //fontFamily: 'BeckyTahlia',
                       fontSize: 26,
-                      color: Colors.pinkAccent),
+                      color: Colors.pinkAccent,),
                 ),
                 SizedBox(
                   height: 10,
@@ -153,11 +153,25 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => MojiKomentariNovosti()));
                     },
                     child: Text("Ok"))
               ],
             ));
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MojiKomentariNovosti()));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 
   @override

@@ -70,7 +70,9 @@ class _ProfilPageState extends State<ProfilPage> {
         "Moji podaci",
         textAlign: TextAlign.center,
         style: const TextStyle(
-            fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+            //fontFamily: 'BeckyTahlia',
+            fontSize: 26,
+            color: Colors.pinkAccent),
       ),
     );
   }
@@ -244,10 +246,8 @@ class _ProfilPageState extends State<ProfilPage> {
         ),
         TextButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MojeRecenzije(
-                        korisnik: korisnik,
-                      )));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MojeRecenzije()));
             },
             child: Text("Moje recenzije"))
       ],
@@ -263,10 +263,8 @@ class _ProfilPageState extends State<ProfilPage> {
         ),
         TextButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MojeRezervacije(
-                        korisnik: korisnik,
-                      )));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MojeRezervacije()));
             },
             child: Text("Moje rezervacije"))
       ],

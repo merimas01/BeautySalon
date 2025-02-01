@@ -1,9 +1,4 @@
-//kao moje recenzije, odmah lajk dislajk
-//navigacija na novost_details
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
@@ -72,7 +67,7 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
 
   List<Widget> _buildList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [Text("Učitavanje...")];
     }
 
     List<Widget> list = data

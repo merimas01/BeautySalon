@@ -44,7 +44,7 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
 
   List<Widget> _buildList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [Text("Učitavanje...")];
     }
 
     List<Widget> list = data

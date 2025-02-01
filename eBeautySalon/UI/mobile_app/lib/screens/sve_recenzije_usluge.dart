@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/recenzija_usluge.dart';
 import 'package:mobile_app/models/recenzija_usluge_insert_update.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
 import 'package:mobile_app/screens/edit_recenzija_usluge.dart';
+import 'package:mobile_app/screens/usluga_details.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +71,9 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
       "Recenzije usluge: ${widget.usluga?.naziv}",
       textAlign: TextAlign.center,
       style: const TextStyle(
-          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+          // fontFamily: 'BeckyTahlia',
+          fontSize: 26,
+          color: Colors.pinkAccent),
     );
   }
 
@@ -86,6 +87,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
               ? SingleChildScrollView(
                   child: Column(
                     children: [
+                      dugmeNazad(),
                       _naslov(),
                       SizedBox(
                         height: 10,
@@ -99,10 +101,9 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                               onPressed: () {
                                 setState(() {
                                   makeAReview = !makeAReview;
-                                  imaRecenziju = true;
                                 });
                               },
-                              child: Text("Napisi recenziju?"))
+                              child: Text("Napiši recenziju?"))
                           : Container(),
                       imaRecenziju == false
                           ? SizedBox(
@@ -155,7 +156,6 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
     List<Widget> list = data
         .map((x) => Container(
               decoration: BoxDecoration(
-                  //color: Colors.amber,
                   border: Border.all(width: 2),
                   borderRadius: BorderRadius.circular(20)),
               child: Padding(
@@ -269,7 +269,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
 
   _rateUsluga() {
     return Container(
-      height: 200,
+      height: 250,
       decoration: BoxDecoration(
           border: Border.all(
             width: 2,
@@ -304,7 +304,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
           TextField(
             controller: _textController,
             decoration: InputDecoration(
-              labelText: "Ovdje napišite komentar, maksimalno 15 rijeci",
+              labelText: "Ovdje napišite komentar, maksimalno 15 riječi",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
             ),
@@ -313,7 +313,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                 comment = newValue;
               });
             },
-            maxLines: 1,
+            maxLines: 3,
           ),
           SizedBox(
             height: 10,
@@ -335,6 +335,9 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
       var obj = await _recenzijaUslugeProvider.insert(request);
       if (obj != null) {
         showSuccessMessage();
+        setState(() {
+          imaRecenziju = true;
+        });
       }
     } catch (err) {
       print(err.toString());
@@ -447,5 +450,20 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
     }
 
     return lines.join('\n'); // Join with new lines
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => UslugaDetails(
+                        usluga: widget.usluga,
+                      )));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 }

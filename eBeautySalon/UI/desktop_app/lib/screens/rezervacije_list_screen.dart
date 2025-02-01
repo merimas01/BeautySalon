@@ -590,7 +590,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   }
 
   _obojiRedove(Rezervacija e) {
-    if (e.status?.opis == "Prihvacena")
+    if (e.status?.opis == "Prihvaćena")
       return MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
           return Colors.green[100];

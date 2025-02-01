@@ -13,11 +13,11 @@ COPY ["eBeautySalon/eBeautySalon.csproj", "eBeautySalon/"]
 RUN dotnet restore "./eBeautySalon/eBeautySalon.csproj"
 COPY . .
 WORKDIR "/src/eBeautySalon"
-RUN dotnet build "./eBeautySalon.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./eBeautySalon.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./eBeautySalon.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./eBeautySalon.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

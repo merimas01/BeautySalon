@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_app/models/korisnik.dart';
 import 'package:mobile_app/providers/slika_profila_provider.dart';
@@ -152,7 +149,9 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
       "Uredi profil",
       textAlign: TextAlign.center,
       style: const TextStyle(
-          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+          //fontFamily: 'BeckyTahlia',
+          fontSize: 26,
+          color: Colors.pinkAccent),
     );
   }
 
@@ -270,7 +269,7 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                                               builder: (context) =>
                                                   ProfilPage()));
                                     },
-                                    child: Text("Nazad na profil"))
+                                    child: Text("Ok"))
                               ],
                             ));
                   } else {
@@ -388,6 +387,7 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    dugmeNazad(),
                     SizedBox(
                       height: 10,
                     ),
@@ -534,6 +534,19 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
             ? Center(child: CircularProgressIndicator())
             : _buildForm(),
       ),
+    );
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => ProfilPage()));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
     );
   }
 }

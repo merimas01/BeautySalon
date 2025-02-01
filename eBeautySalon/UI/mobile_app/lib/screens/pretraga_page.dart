@@ -25,7 +25,7 @@ class _PretragaPageState extends State<PretragaPage> {
   List<SearchResult<Usluga>>? sveUsluge = [];
   SearchResult<Kategorija>? _kategorijeResult;
   TextEditingController _searchController = TextEditingController();
-  String? search="";
+  String? search = "";
 
   @override
   void initState() {
@@ -131,18 +131,18 @@ class _PretragaPageState extends State<PretragaPage> {
             child: SingleChildScrollView(
                 child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 50,
-                    child: Text(
-                      "Pogledajte nase usluge!",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          fontFamily: 'BeckyTahlia',
-                          fontSize: 26,
-                          color: Colors.pinkAccent),
-                    ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  height: 50,
+                  child: Text(
+                    "Pogledajte naše usluge!",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        //fontFamily: 'BeckyTahlia',
+                        fontSize: 26,
+                        color: Colors.pinkAccent),
                   ),
                 ),
                 _searchUsluge(),

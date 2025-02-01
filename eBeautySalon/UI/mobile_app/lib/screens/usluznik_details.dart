@@ -1,25 +1,25 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_app/models/zaposlenik.dart';
-import 'package:mobile_app/screens/sve_recenzije_usluge.dart';
 import 'package:mobile_app/screens/sve_recenzije_usluznika.dart';
+import 'package:mobile_app/screens/usluga_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
-
 import '../models/usluga.dart';
-import '../utils/constants.dart';
 import '../utils/util.dart';
 
 class UsluznikDetails extends StatefulWidget {
   Zaposlenik? usluznik;
   String? prosjecnaOcjena;
   String? totalReviws;
+  Usluga? usluga;
   UsluznikDetails(
-      {super.key, this.usluznik, this.prosjecnaOcjena, this.totalReviws});
+      {super.key,
+      this.usluznik,
+      this.prosjecnaOcjena,
+      this.totalReviws,
+      this.usluga});
 
   @override
   State<UsluznikDetails> createState() => _UsluznikDetailsState();
@@ -57,7 +57,9 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
       "${widget.usluznik?.korisnik?.ime} ${widget.usluznik?.korisnik?.prezime}",
       textAlign: TextAlign.center,
       style: const TextStyle(
-          fontFamily: 'BeckyTahlia', fontSize: 26, color: Colors.pinkAccent),
+          //fontFamily: 'BeckyTahlia',
+          fontSize: 26,
+          color: Colors.pinkAccent),
     );
   }
 
@@ -121,7 +123,7 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
 
   _ProsjecnaOcjena() {
     return TextFormField(
-      decoration: InputDecoration(labelText: "Prosjecna ocjena:"),
+      decoration: InputDecoration(labelText: "Prosječna ocjena:"),
       initialValue: "${widget.prosjecnaOcjena}",
       enabled: false,
     );
@@ -217,7 +219,7 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
       height: 800,
       child: SingleChildScrollView(
           child: Padding(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(15.0),
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : Container(
@@ -225,8 +227,9 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      dugmeNazad(),
                       _naslov(),
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
                       _Slika(),
                       SizedBox(height: 10),
                       _Ime(),
@@ -271,14 +274,32 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => SveRecenzijeUsluznika(
                                       zaposlenik: widget.usluznik,
+                                      prosjecnaOcjena: widget.prosjecnaOcjena,
+                                      totalReviws: widget.totalReviws,
+                                      usluga: widget.usluga,
                                     )));
                           },
-                          child: Text("Pogledajte sve recenzije za usluznika"))
+                          child: Text("Pogledajte sve recenzije za uslužnika"))
                     ],
                   ),
                 ),
               ),
       )),
+    );
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => UslugaDetails(
+                        usluga: widget.usluga,
+                      )));
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
     );
   }
 }

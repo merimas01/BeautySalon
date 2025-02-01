@@ -91,7 +91,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<Ib200070Context>();
 
-    var con = dataContext.Database.GetConnectionString();
+    //var con = dataContext.Database.GetConnectionString();
 
     if (dataContext.Database.EnsureCreated())
     {        

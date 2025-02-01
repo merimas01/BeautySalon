@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/main.dart';
 import 'package:mobile_app/screens/novost_details.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
@@ -50,15 +49,15 @@ class _HomePageState extends State<HomePage> {
           child: SingleChildScrollView(
             child: Column(children: [
               SizedBox(
-                height: 10,
+                height: 20,
               ),
               Container(
                 height: 30,
                 child: Text(
-                  "Dobrodosli ${LoggedUser.ime}!",
+                  "Dobrodošli ${LoggedUser.ime}!",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      fontFamily: 'BeckyTahlia',
+                      // fontFamily: 'BeckyTahlia',
                       fontSize: 26,
                       color: Colors.pinkAccent),
                 ),
@@ -67,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                 height: 30,
               ),
               Container(
-                child: Text("Pogledajte novosti naseg salona."),
+                child: Text("Pogledajte novosti našeg salona."),
               ),
               SizedBox(
                 height: 20,
@@ -138,18 +137,16 @@ class _HomePageState extends State<HomePage> {
                         scrollDirection: Axis.vertical,
                         children: _buildNovostList(),
                       ),
-                      
                     )
-                  : Text("Ucitavanje...")
+                  : Text("Učitavanje...")
             ]),
-            
           ),
         ));
   }
 
   _buildNovostList() {
     if (data?.result.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [Text("Učitavanje...")];
     }
     List<Widget> list = data!.result
         .map((x) => Container(

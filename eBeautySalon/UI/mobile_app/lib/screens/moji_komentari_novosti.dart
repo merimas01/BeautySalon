@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
 import 'package:mobile_app/screens/edit_komentar_novost.dart';
-import 'package:mobile_app/screens/novost_details.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +30,11 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
   }
 
   void getData() async {
-    var data = await _novostLikeCommentProvider
-        .get(filter: {'isNovostIncluded': true, 'korisnikId': LoggedUser.id, 'isComment':true});
+    var data = await _novostLikeCommentProvider.get(filter: {
+      'isNovostIncluded': true,
+      'korisnikId': LoggedUser.id,
+      'isComment': true
+    });
 
     setState(() {
       _novostLikeCommentResult = data;
@@ -54,17 +54,18 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
                   borderRadius: BorderRadius.circular(20)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditKomentarNovost(
-                                  novostLikeComment: x,
-                                )));
-                      },
-                      child: x.novost?.slikaNovost != null &&
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => EditKomentarNovost(
+                              novostLikeComment: x,
+                              poslaniKorisnikId: LoggedUser.id,
+                            )));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      x.novost?.slikaNovost != null &&
                               x.novost?.slikaNovost?.slika != null &&
                               x.novost?.slikaNovost?.slika != ""
                           ? Container(
@@ -80,25 +81,25 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
                               height: 120,
                               width: 120,
                             ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${(x.novost?.naslov ?? "").split(' ').take(2).join(' ')}...",
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            _deleteConfirmationDialog(x);
-                          },
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.red,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${(x.novost?.naslov ?? "").split(' ').take(2).join(' ')}...",
                           ),
-                        ),
-                      ],
-                    )
-                  ],
+                          TextButton(
+                            onPressed: () {
+                              _deleteConfirmationDialog(x);
+                            },
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ))
@@ -169,8 +170,11 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
         NovostLikeCommentInsertUpdate(
             LoggedUser.id, e.novostId, e.isLike, null));
 
-    var data = await _novostLikeCommentProvider
-        .get(filter: {'isNovostIncluded': true, 'korisnikId': LoggedUser.id, 'isComment':true});
+    var data = await _novostLikeCommentProvider.get(filter: {
+      'isNovostIncluded': true,
+      'korisnikId': LoggedUser.id,
+      'isComment': true
+    });
 
     setState(() {
       _novostLikeCommentResult = data;

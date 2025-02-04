@@ -5,14 +5,19 @@ import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/models/novost_like_comment_insert_update.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
 import 'package:mobile_app/screens/moji_komentari_novosti.dart';
+import 'package:mobile_app/screens/novost_details.dart';
 import 'package:provider/provider.dart';
 
+import '../models/novost.dart';
 import '../utils/util.dart';
 import '../widgets/master_screen.dart';
 
 class EditKomentarNovost extends StatefulWidget {
   NovostLikeComment? novostLikeComment;
-  EditKomentarNovost({super.key, this.novostLikeComment});
+  Novost? novost;
+  int? poslaniKorisnikId;
+  EditKomentarNovost(
+      {super.key, this.novostLikeComment, this.novost, this.poslaniKorisnikId});
 
   @override
   State<EditKomentarNovost> createState() => _EditKomentarNovostState();
@@ -51,9 +56,10 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                   "${widget.novostLikeComment?.novost?.naslov ?? ""}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                      //fontFamily: 'BeckyTahlia',
-                      fontSize: 26,
-                      color: Colors.pinkAccent,),
+                    //fontFamily: 'BeckyTahlia',
+                    fontSize: 26,
+                    color: Colors.pinkAccent,
+                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -107,7 +113,9 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                           LoggedUser.id,
                           widget.novostLikeComment?.novostId,
                           widget.novostLikeComment?.isLike,
-                          _commentController.text,
+                          _commentController.text == ""
+                              ? null
+                              : _commentController.text,
                         );
                         var obj = await _novostLikeCommentProvider.update(
                             widget.novostLikeComment!.novostLikeCommentId!,
@@ -153,8 +161,15 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => MojiKomentariNovosti()));
+                      if (widget.poslaniKorisnikId != null) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MojiKomentariNovosti()));
+                      } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NovostDetailsScreen(
+                                  novost: widget.novost,
+                                )));
+                      }
                     },
                     child: Text("Ok"))
               ],
@@ -166,8 +181,15 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
       children: [
         TextButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MojiKomentariNovosti()));
+              if (widget.poslaniKorisnikId != null) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MojiKomentariNovosti()));
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => NovostDetailsScreen(
+                          novost: widget.novost,
+                        )));
+              }
             },
             child: Icon(Icons.arrow_back)),
       ],

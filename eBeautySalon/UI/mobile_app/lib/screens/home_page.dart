@@ -152,7 +152,6 @@ class _HomePageState extends State<HomePage> {
         .map((x) => Container(
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  // color: Color.fromARGB(255, 248, 204, 219),
                   border: Border(
                     bottom: BorderSide(
                       color: Colors.black,
@@ -163,49 +162,48 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(
                       right: 10.0, top: 5.0, bottom: 5.0, left: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => NovostDetailsScreen(
-                                    novost: x,
-                                  )));
-                        },
-                        child: x.slikaNovost != null &&
-                                x.slikaNovost?.slika != null &&
-                                x.slikaNovost?.slika != ""
-                            ? Container(
-                                height: 150,
-                                width: 150,
-                                child:
-                                    ImageFromBase64String(x.slikaNovost!.slika),
-                              )
-                            : Container(
-                                child: Image.asset(
-                                  "assets/images/noImage.jpg",
-                                  width: 150,
-                                  height: 150,
-                                ),
-                              ),
-                      ),
-                      Row(
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NovostDetailsScreen(
+                                  novost: x,
+                                )));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "${(x.naslov ?? "").split(' ').take(3).join(' ')}...",
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
-                            Icons.info,
-                            color: Colors.blueGrey,
-                          ),
+                          x.slikaNovost != null &&
+                                  x.slikaNovost?.slika != null &&
+                                  x.slikaNovost?.slika != ""
+                              ? Container(
+                                  height: 150,
+                                  width: 150,
+                                  child: ImageFromBase64String(
+                                      x.slikaNovost!.slika),
+                                )
+                              : Container(
+                                  child: Image.asset(
+                                    "assets/images/noImage.jpg",
+                                    width: 150,
+                                    height: 150,
+                                  ),
+                                ),
+                          Row(
+                            children: [
+                              Text(
+                                "${(x.naslov ?? "").split(' ').take(3).join(' ')}...",
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.info_rounded,
+                                color: Colors.grey[500],
+                              )
+                            ],
+                          )
                         ],
-                      ),
-                    ],
-                  ),
+                      )),
                 ),
               ),
             ))

@@ -340,10 +340,10 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                 label: Expanded(
               child: Text("Korisnik"),
             )),
-            // DataColumn(
-            //     label: Expanded(
-            //   child: Text("Korisničko ime"),
-            // )),
+            DataColumn(
+                label: Expanded(
+              child: Text("KorisničkoIme"),
+            )),
             DataColumn(
                 label: Expanded(
               child: Text("Telefon"),
@@ -377,25 +377,25 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                   .map((Korisnik e) => DataRow(cells: [
                         DataCell(Text(e.sifra ?? "")),
                         DataCell(Text("${e.ime} ${e.prezime}")),
-                        //DataCell(Text(e.korisnickoIme ?? "")),
+                        DataCell(Text(e.korisnickoIme ?? "")),
                         DataCell(Text(e.telefon ?? "")),
                         DataCell(Text(e.email ?? "")),
                         DataCell(
                           e.slikaProfila?.slika != null &&
                                   e.slikaProfila?.slika != ""
                               ? Container(
-                                  width: 100,
+                                  width: 50,
                                   height: 100,
                                   child: ImageFromBase64String(
                                       e.slikaProfila!.slika),
                                 )
                               : Container(
-                                  child: Image.asset(
-                                  "assets/images/noImage.jpg",
+                                  width: 50,
                                   height: 100,
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                )),
+                                  child: Image.asset(
+                                    "assets/images/noImage.jpg",
+                                    fit: BoxFit.cover,
+                                  )),
                         ),
                         DataCell(Text(
                             "${formatDate(e.datumKreiranja ?? DateTime(0, 0, 0))}")),

@@ -79,7 +79,7 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
-                dugmeNazad(),
+               dugmeNazad(),
                 Text(
                   "${widget.recenzijaUsluznika?.usluznik?.korisnik?.ime ?? ""} ${widget.recenzijaUsluznika?.usluznik?.korisnik?.prezime ?? ""}",
                   textAlign: TextAlign.center,
@@ -162,7 +162,9 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                       try {
                         var request = RecenzijaUsluznikaInsertUpdate(
                             _rating,
-                            _commentController.text,
+                            _commentController.text == ""
+                                ? null
+                                : _commentController.text,
                             LoggedUser.id,
                             widget.recenzijaUsluznika?.usluznikId);
                         var obj = await _recenzijaUsluznikaProvider.update(
@@ -248,6 +250,7 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                           totalReviws: widget.totalReviws,
                           prosjecnaOcjena: widget.prosjecnaOcjena,
                           usluga: widget.usluga,
+                          fromEditRecenzija: true,
                         )));
               }
             },

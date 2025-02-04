@@ -78,8 +78,6 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 
   Widget buttonOdjava() => Container(
-        // width: 800,
-        // height: 100,
         child: TextButton(
           onPressed: () {
             //clear data

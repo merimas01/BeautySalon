@@ -241,28 +241,38 @@ class LoginPage extends StatelessWidget {
 
                               if (val) {
                                 var obj = await _korisnikProvider.get();
-                                var korisnik = await obj.result.firstWhere(
-                                    (korisnik) => korisnik.korisnickoIme!
-                                        .startsWith(Authorization.username!));
-                                LoggedUser.id = korisnik.korisnikId;
-                                LoggedUser.slika = korisnik.slikaProfila?.slika;
-                                LoggedUser.ime = korisnik.ime;
-                                LoggedUser.prezime = korisnik.prezime;
-                                LoggedUser.uloga =
-                                    korisnik.korisnikUlogas?.length != 0
-                                        ? korisnik
-                                            .korisnikUlogas![0].uloga!.naziv
-                                        : "";
+                                if (obj != null) {
+                                  var list = obj.result
+                                      .where(
+                                        (korisnik) => korisnik.korisnickoIme! == Authorization.username,
+                                      )
+                                      .toList();
+                                  var korisnik = list[0];
 
-                                print(
-                                    "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
-                                if (LoggedUser.uloga != "")
-                                  throw new Exception("Nedozvoljena prijava");
-                                else {
-                                  Navigator.pushNamed(
-                                      context, HomePage.routeName);
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //     builder: (context) => const HomePage()));
+                                  if (korisnik != null) {
+                                    LoggedUser.id = korisnik.korisnikId;
+                                    LoggedUser.slika =
+                                        korisnik.slikaProfila?.slika;
+                                    LoggedUser.ime = korisnik.ime;
+                                    LoggedUser.prezime = korisnik.prezime;
+                                    LoggedUser.uloga =
+                                        korisnik.korisnikUlogas?.length != 0
+                                            ? korisnik
+                                                .korisnikUlogas![0].uloga!.naziv
+                                            : "";
+
+                                    print(
+                                        "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
+                                    if (LoggedUser.uloga != "")
+                                      throw new Exception(
+                                          "Nedozvoljena prijava");
+                                    else {
+                                      Navigator.pushNamed(
+                                          context, HomePage.routeName);
+                                      // Navigator.of(context).push(MaterialPageRoute(
+                                      //     builder: (context) => const HomePage()));
+                                    }
+                                  }
                                 }
                               }
                             } on Exception catch (e) {

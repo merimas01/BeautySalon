@@ -48,8 +48,8 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
   }
 
   var dropdown_lista = [
-    {'opis': 'da', 'vrijednost': true},
-    {'opis': 'ne', 'vrijednost': false}
+    {'vrijednost': 'da', 'opis': 'jest arhiva'},
+    {'vrijednost': 'ne', 'opis': 'nije arhiva'}
   ];
 
   String? selectedOpis = null;
@@ -71,7 +71,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
             hint: Text("Arhiva?"),
             items: dropdown_lista.map((item) {
               return DropdownMenuItem<String>(
-                value: item['opis'] as String,
+                value: item['vrijednost'] as String,
                 child: Text(item['opis'] as String),
               );
             }).toList(),
@@ -270,6 +270,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                       print("pritisnuto dugme Traži");
 
                       var data = await _rezervacijeProvider.get(filter: {
+                        'korisnikId': LoggedUser.id,
                         'statusId': selectedStatus?.statusId,
                         'isArhivaKorisnik': selectedOpis,
                         'DatumOpadajuciSort': selectedSort == "da"
@@ -327,6 +328,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     List<Widget> list = data
         .map((x) => Container(
               decoration: BoxDecoration(
+                color: _colorReservationStatus(x),
                   border: Border.all(width: 2),
                   borderRadius: BorderRadius.circular(20)),
               child: Padding(
@@ -351,7 +353,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                           Text("${x.termin?.opis ?? ""}h"),
                           Text(
                             "${x.status?.opis ?? ""}",
-                            style: TextStyle(color: _colorReservationStatus(x)),
+                          //  style: TextStyle(color: _colorReservationStatus(x)),
                           )
                         ],
                       ),
@@ -361,8 +363,6 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                   x.isArhivaKorisnik == null
                               ? TextButton(
                                   onPressed: () async {
-                                    //Kad se klikne na ovo dugme,
-                                    //arhivira se rezervacija (isArhivaKorisnik)
                                     var request = RezervacijaUpdate(
                                         LoggedUser.id,
                                         x.uslugaId,
@@ -398,9 +398,19 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                       showError();
                                     }
                                   },
-                                  child: Icon(
-                                    Icons.archive_outlined,
-                                    color: Colors.green,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.archive_outlined,
+                                        color: Colors.green,
+                                      ),
+                                      Text(
+                                        "Arhiviraj",
+                                        style: TextStyle(
+                                            color: Colors.green, fontSize: 12),
+                                      )
+                                    ],
                                   ))
                               : TextButton(
                                   onPressed: () async {
@@ -439,9 +449,19 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                       showError();
                                     }
                                   },
-                                  child: Icon(
-                                    Icons.unarchive_outlined,
-                                    color: Colors.red,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.unarchive_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      Text(
+                                        "Dearhiviraj",
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 12),
+                                      )
+                                    ],
                                   )),
                         ],
                       )
@@ -458,12 +478,12 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
 
   _colorReservationStatus(Rezervacija e) {
     if (e.status?.opis == "Prihvaćena")
-      return Colors.green[500];
+      return Colors.green[100];
     else if (e.status?.opis == "Odbijena")
-      return Colors.red[500];
+      return Colors.red[100];
     else if (e.status?.opis == "Otkazana")
-      return Colors.grey;
-    else if (e.status?.opis == "Nova") return Colors.amber;
+      return Colors.grey[100];
+    else if (e.status?.opis == "Nova") return Colors.yellow[100];
   }
 
   @override

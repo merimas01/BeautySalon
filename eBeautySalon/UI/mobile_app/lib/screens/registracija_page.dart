@@ -53,7 +53,8 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                         _korisnickoIme(),
                         _inputIme(),
                         _inputPrezime(),
-                        _inputTelefonEmail(),
+                        _inputTelefon(),
+                        _inputEmail(),
                         SizedBox(height: 10),
                         _inputSifra(),
                         SizedBox(
@@ -297,47 +298,37 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
     );
   }
 
-  Widget _inputTelefonEmail() {
-    return Row(
-      children: [
-        Expanded(
-          child: FormBuilderTextField(
-            name: "telefon",
-            decoration: InputDecoration(labelText: "Telefon:"),
-            validator: (value) {
-              if (value == null || value.isEmpty || value.trim().isEmpty) {
-                return 'Molimo Vas unesite telefon';
-              }
-              if (!RegExp(
-                      r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
-                  .hasMatch(value)) {
-                return 'Unesite ispravan telefon: +### ## ### ###';
-              }
-              return null;
-            },
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Expanded(
-          child: FormBuilderTextField(
-            name: "email",
-            decoration: InputDecoration(labelText: "Email:"),
-            validator: (value) {
-              if (value == null || value.isEmpty || value.trim().isEmpty) {
-                return 'Molimo Vas unesite email';
-              }
-              if (!RegExp(
-                      r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
-                  .hasMatch(value)) {
-                return 'Unesite ispravan email primjer@domena.com';
-              }
-              return null;
-            },
-          ),
-        ),
-      ],
+  Widget _inputTelefon() {
+    return FormBuilderTextField(
+      name: "telefon",
+      decoration: InputDecoration(labelText: "Telefon:"),
+      validator: (value) {
+        if (value == null || value.isEmpty || value.trim().isEmpty) {
+          return 'Molimo Vas unesite telefon';
+        }
+        if (!RegExp(r'^\d{3}\s?\d{3}\s?\d{3,4}$').hasMatch(value)) {
+          return 'Unesite ispravan telefon: 06# ### ###';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _inputEmail() {
+    return FormBuilderTextField(
+      name: "email",
+      decoration: InputDecoration(labelText: "Email:"),
+      validator: (value) {
+        if (value == null || value.isEmpty || value.trim().isEmpty) {
+          return 'Molimo Vas unesite email';
+        }
+        if (!RegExp(
+                r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
+            .hasMatch(value)) {
+          return 'Unesite ispravan email primjer@domena.com';
+        }
+        return null;
+      },
     );
   }
 
@@ -394,6 +385,8 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
   }
 
   void doInsert(Map obj, SlikaProfilaInsertUpdate slika_request) async {
+    Authorization.username = "admin";
+    Authorization.password = "admin";
     var korisnik_insert = KorisnikInsert(
         obj['ime'],
         obj['prezime'],
@@ -418,8 +411,6 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
     }
     print("insert korisnik request: $korisnik_insert");
     try {
-      Authorization.username = "admin";
-      Authorization.password = "admin";
       var kor_post = await _korisnikProvider.insert(korisnik_insert);
       await showDialog(
           context: context,
@@ -427,13 +418,15 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                 title: Text("Informacija o uspjehu"),
                 content: Text("Uspješno izvršena akcija!"),
                 actions: <Widget>[
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => LoginPage()));
-                      },
-                      child: Text(
-                          "Prijavite se sa vasim korisnickim imenom i lozinkom"))
+                  Center(
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => LoginPage()));
+                        },
+                        child: Text(
+                            "Prijavite se sa Vašim korisničkim imenom i lozinkom")),
+                  )
                 ],
               ));
       _formKey.currentState?.reset();

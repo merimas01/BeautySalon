@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace eBeautySalon.Services
@@ -25,7 +26,7 @@ namespace eBeautySalon.Services
         public override async Task BeforeInsert(Korisnik korisnik, KorisniciInsertRequest request)
         {
             korisnik.LozinkaSalt = GenerateSalt();
-            korisnik.LozinkaHash = GenerateHash(korisnik.LozinkaSalt, request.Password);   
+            korisnik.LozinkaHash = GenerateHash(korisnik.LozinkaSalt, request.Password);
         }
 
         public override async Task<bool> AddValidationDelete(int id)
@@ -36,14 +37,21 @@ namespace eBeautySalon.Services
 
         public override async Task<bool> AddValidationInsert(KorisniciInsertRequest insert)
         {
-            var korisnici_telefoni = await _context.Korisniks.Select(x => x.Telefon.Replace("-", " ")).ToListAsync();
+            var korisnici_telefoni = await _context.Korisniks.Select(x => x.Telefon.Replace(" ", "")).ToListAsync();
             var korisnici_emailovi = await _context.Korisniks.Select(x => x.Email.ToLower()).ToListAsync();
             var korisnici_korisnickoIme = await _context.Korisniks.Select(x => x.KorisnickoIme.ToLower()).ToListAsync();
-            
+          
+            var telefon_pattern = @"^\d{3}\s?\d{3}\s?\d{3}$";
+            var email_pattern = @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,3})?(\\.[a-zA-Z]{2,3})?$";
+            var korisnicko_ime_pattern = @"[a-zA-Z]{1,}[a-zA-Z\d-_.]{2,}";
+
             if (korisnici_korisnickoIme.Contains(insert.KorisnickoIme.ToLower())
                 || (insert.Telefon != null && korisnici_telefoni.Contains(insert.Telefon))
                 || (insert.Email != null && korisnici_emailovi.Contains(insert.Email.ToLower())))
                 return  false;
+            if (!Regex.IsMatch(insert.Telefon, telefon_pattern) 
+                || !Regex.IsMatch(insert.Email,email_pattern)
+                || !Regex.IsMatch(insert.KorisnickoIme, korisnicko_ime_pattern)) return false;
             else return true;
         }
 
@@ -55,6 +63,13 @@ namespace eBeautySalon.Services
             if ((request.Telefon!=null && korisnici_telefoni.Contains(request.Telefon))
                 || ( request.Email!=null && korisnici_emailovi.Contains(request.Email.ToLower())))
                 return false;
+
+            var telefon_pattern = @"^\d{3}\s?\d{3}\s?\d{3}$";
+            var email_pattern = @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,3})?(\\.[a-zA-Z]{2,3})?$";
+
+            if (!Regex.IsMatch(request.Telefon, telefon_pattern)
+              || !Regex.IsMatch(request.Email, email_pattern)) return false;
+
             else return true;
         }
         public static string GenerateSalt()

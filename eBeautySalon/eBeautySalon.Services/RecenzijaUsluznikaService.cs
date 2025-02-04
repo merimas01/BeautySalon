@@ -24,6 +24,7 @@ namespace eBeautySalon.Services
 
         public override IQueryable<Database.RecenzijaUsluznika> AddFilter(IQueryable<Database.RecenzijaUsluznika> query, RecenzijaUsluznikaSearchObject? search = null)
         {
+            query = query.OrderByDescending(x => x.RecenzijaUsluznikaId);
             if (!string.IsNullOrEmpty(search.FTS))
             {
                 query = query.Where(x => x.Korisnik.Ime.Contains(search.FTS)
@@ -129,7 +130,7 @@ namespace eBeautySalon.Services
                         brojac++;
                     }
                 }
-                prosjek = suma / brojac;
+                prosjek = Math.Round((suma / brojac), 1);
                 var obj = new { usluznikId = index, nazivUsluznik = usluznik, sifraUsluznik = sifra, prosjecnaOcjena = prosjek, sveOcjene = ocjene };
                 prosjecneOcjene_usluznik.Add(obj);
             }

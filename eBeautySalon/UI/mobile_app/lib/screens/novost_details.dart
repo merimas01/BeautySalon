@@ -160,6 +160,11 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                         var obj =
                                             await _novostLikeCommentProvider
                                                 .insert(LikeNovostRequest());
+
+                                        setState(() {
+                                          novostLikeCommentId =
+                                              obj.novostLikeCommentId;
+                                        });
                                       }
 
                                       var hasLikes =
@@ -168,6 +173,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                             'novostId': widget.novost?.novostId,
                                             'isLike': true
                                           });
+
                                       setState(() {
                                         liked = !liked;
                                         likesCount = hasLikes.count;
@@ -261,10 +267,20 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       var request = NovostLikeCommentInsertUpdate(LoggedUser.id,
           widget.novost?.novostId, liked, _commentController.text.trim());
 
-      liked == false
-          ? await _novostLikeCommentProvider.insert(request)
-          : await _novostLikeCommentProvider.update(
+      if (liked == false) {
+        try {
+          await _novostLikeCommentProvider.insert(request);
+        } catch (err) {
+          print(err.toString());
+        }
+      } else {
+        try {
+          await _novostLikeCommentProvider.update(
               novostLikeCommentId!, request);
+        } catch (err) {
+          print(err.toString());
+        }
+      }
       var data = await _novostLikeCommentProvider.get(filter: {
         'novostId': widget.novost?.novostId,
         'isKorisnikIncluded': true,
@@ -325,6 +341,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => EditKomentarNovost(
                                 novostLikeComment: x,
+                                novost: widget.novost,
+                                poslaniKorisnikId: null,
                               )));
                     }
                   },

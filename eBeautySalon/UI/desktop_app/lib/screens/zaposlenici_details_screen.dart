@@ -752,7 +752,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
             var zaposlenik_usluga_request =
                 ZaposlenikUslugaInsertUpdate(zid, zu.uslugaId);
             print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
-            var zap_usluga_post =
+            var zap_usluga_post = await
                 _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
           }
         }
@@ -883,7 +883,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           if (!areListsEqual(_selectedItems.result, _postojeceUsluge)) {
             print("usao u if");
             for (var zu in widget.zaposlenik!.zaposlenikUslugas!) {
-              var delete_zu =
+              var delete_zu = await
                   _zaposleniciUslugeProvider.delete(zu.zaposlenikUslugaId!);
             }
 
@@ -891,7 +891,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               var zaposlenik_usluga_request = ZaposlenikUslugaInsertUpdate(
                   widget.zaposlenik!.zaposlenikId, zu.uslugaId);
               print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
-              var zap_usluga_post =
+              var zap_usluga_post = await
                   _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
             }
           }
@@ -1026,9 +1026,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 return 'Molimo Vas unesite telefon';
               }
               if (!RegExp(
-                      r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
+                      r'^\d{3}\s?\d{3}\s?\d{3,4}$')
                   .hasMatch(value)) {
-                return 'Unesite ispravan telefon: +### ## ### ###';
+                return 'Unesite ispravan telefon: 06# ### ###';
               }
               return null;
             },

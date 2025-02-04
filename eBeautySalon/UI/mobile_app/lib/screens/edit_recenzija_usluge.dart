@@ -151,7 +151,9 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
                       try {
                         var request = RecenzijaUslugeInsertUpdate(
                             _rating,
-                            _commentController.text,
+                            _commentController.text == ""
+                                ? null
+                                : _commentController.text,
                             LoggedUser.id,
                             widget.recenzijaUsluge?.uslugaId);
                         var obj = await _recenzijaUslugeProvider.update(

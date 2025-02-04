@@ -457,10 +457,9 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Molimo Vas unesite telefon';
                         }
-                        if (!RegExp(
-                                r'^\+?\d{2,4}[\s-]{1}\d{2}[\s-]{1}\d{3}[\s-]{1}\d{3,4}$')
+                        if (!RegExp(r'^\d{3}\s?\d{3}\s?\d{3,4}$')
                             .hasMatch(value)) {
-                          return 'Unesite ispravan telefon: +### ## ### ###';
+                          return 'Unesite ispravan telefon: 06# ### ###';
                         }
                         return null;
                       },

@@ -6,7 +6,9 @@ import 'package:mobile_app/models/zaposlenik.dart';
 import 'package:mobile_app/screens/sve_recenzije_usluznika.dart';
 import 'package:mobile_app/screens/usluga_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
+import 'package:provider/provider.dart';
 import '../models/usluga.dart';
+import '../providers/recenzije_usluznika_provider.dart';
 import '../utils/util.dart';
 
 class UsluznikDetails extends StatefulWidget {
@@ -26,6 +28,7 @@ class UsluznikDetails extends StatefulWidget {
 }
 
 class _UsluznikDetailsState extends State<UsluznikDetails> {
+  late RecenzijaUsluznikaProvider _recenzijaUsluznikaProvider;
   final _formKey = GlobalKey<FormBuilderState>();
   Map<String, dynamic> _initialValue = {};
   List<Usluga>? _postojeceUsluge;
@@ -36,12 +39,16 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
     // TODO: implement initState
     super.initState();
 
+    _recenzijaUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
+
     _postojeceUsluge =
         widget.usluznik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
 
     setState(() {
       isLoading = false;
     });
+
+    getProsjecnaOcjenaITotalReviews();
   }
 
   @override
@@ -124,7 +131,9 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
   _ProsjecnaOcjena() {
     return TextFormField(
       decoration: InputDecoration(labelText: "Prosječna ocjena:"),
-      initialValue: "${widget.prosjecnaOcjena}",
+      initialValue: prosjecnaOcjena == ""
+          ? "${widget.prosjecnaOcjena}"
+          : "${prosjecnaOcjena}",
       enabled: false,
     );
   }
@@ -183,34 +192,76 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
   }
 
   displayAverageGrade(x) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(5, (index) {
-        // Determine the star type
-        if (index < x.floor()) {
-          // Full star
-          return Icon(
-            Icons.star,
-            color: Colors.amber,
-            size: 20,
-          );
-        } else if (index < x) {
-          // Half star
-          return Icon(
-            Icons.star_half,
-            color: Colors.amber,
-            size: 20,
-          );
-        } else {
-          // Empty star
-          return Icon(
-            Icons.star_border,
-            color: Colors.grey,
-            size: 20,
-          );
-        }
-      }),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SveRecenzijeUsluznika(
+                  zaposlenik: widget.usluznik,
+                  prosjecnaOcjena: widget.prosjecnaOcjena,
+                  totalReviws: widget.totalReviws,
+                  usluga: widget.usluga,
+                )));
+      },
+      child: Row(
+        children: List.generate(5, (index) {
+          // Determine the star type
+          if (index < x.floor()) {
+            // Full star
+            return Icon(
+              Icons.star,
+              color: Colors.amber,
+              size: 30,
+            );
+          } else if (index < x) {
+            // Half star
+            return Icon(
+              Icons.star_half,
+              color: Colors.amber,
+              size: 30,
+            );
+          } else {
+            // Empty star
+            return Icon(
+              Icons.star_border,
+              color: Colors.grey,
+              size: 30,
+            );
+          }
+        }),
+      ),
     );
+  }
+
+  List<dynamic> listProsjecneOcjeneUsluznika = [];
+  String prosjecnaOcjena = "0";
+  String totalReviws = "0";
+  bool isLoadingProsjecnaOcjena = true;
+
+  getProsjecnaOcjenaITotalReviews() async {
+    var usluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
+    setState(() {
+      listProsjecneOcjeneUsluznika = usluznici;
+    });
+    if (listProsjecneOcjeneUsluznika.length != 0) {
+      for (var o in listProsjecneOcjeneUsluznika) {
+        if (widget.usluznik?.zaposlenikId == o['usluznikId']) {
+          setState(() {
+            prosjecnaOcjena = o['prosjecnaOcjena'].toString();
+            totalReviws = o['sveOcjene'].length.toString();
+          });
+        }
+      }
+    } else {
+      setState(() {
+        prosjecnaOcjena = widget.prosjecnaOcjena.toString();
+        totalReviws = widget.totalReviws.toString();
+      });
+    }
+
+    print("${prosjecnaOcjena} ${totalReviws}");
+    setState(() {
+      isLoadingProsjecnaOcjena = false;
+    });
   }
 
   _buildDetails() {
@@ -231,7 +282,32 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
                       _naslov(),
                       SizedBox(height: 20),
                       _Slika(),
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          prosjecnaOcjena != ""
+                              ? displayAverageGrade(
+                                  double.parse(prosjecnaOcjena))
+                              : displayAverageGrade(
+                                  double.parse(widget.prosjecnaOcjena ?? "0")),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          prosjecnaOcjena != ""
+                              ? Text(prosjecnaOcjena)
+                              : Text("${widget.prosjecnaOcjena ?? "0"}"),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          totalReviws != ""
+                              ? Text("(${totalReviws})")
+                              : Text("(${widget.totalReviws.toString()})"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       _Ime(),
                       SizedBox(height: 10),
                       _Prezime(),
@@ -252,34 +328,6 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
                       SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        children: [
-                          displayAverageGrade(
-                              double.parse(widget.prosjecnaOcjena ?? "0")),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text("${widget.prosjecnaOcjena ?? "0"}"),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text("(${widget.totalReviws.toString()})"),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SveRecenzijeUsluznika(
-                                      zaposlenik: widget.usluznik,
-                                      prosjecnaOcjena: widget.prosjecnaOcjena,
-                                      totalReviws: widget.totalReviws,
-                                      usluga: widget.usluga,
-                                    )));
-                          },
-                          child: Text("Pogledajte sve recenzije za uslužnika"))
                     ],
                   ),
                 ),

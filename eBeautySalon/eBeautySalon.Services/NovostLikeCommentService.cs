@@ -34,6 +34,7 @@ namespace eBeautySalon.Services
 
         public override IQueryable<Database.NovostLikeComment> AddFilter(IQueryable<Database.NovostLikeComment> query, NovostLikeCommentSearchObject? search = null)
         {
+            query = query.OrderByDescending(x => x.NovostLikeCommentId);
             if (!string.IsNullOrWhiteSpace(search.FTS))
             {
                 query = query.Where(x => x.Korisnik.Ime.Contains(search.FTS) || x.Korisnik.Prezime.Contains(search.FTS) || x.Novost.Naslov.Contains(search.FTS));

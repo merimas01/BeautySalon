@@ -17,12 +17,15 @@ class SveRecenzijeUsluznika extends StatefulWidget {
   String? prosjecnaOcjena;
   String? totalReviws;
   Usluga? usluga;
-  SveRecenzijeUsluznika(
-      {super.key,
-      this.zaposlenik,
-      this.prosjecnaOcjena,
-      this.totalReviws,
-      this.usluga});
+  bool? fromEditRecenzija;
+  SveRecenzijeUsluznika({
+    super.key,
+    this.zaposlenik,
+    this.prosjecnaOcjena,
+    this.totalReviws,
+    this.usluga,
+    this.fromEditRecenzija,
+  });
 
   @override
   State<SveRecenzijeUsluznika> createState() => _SveRecenzijeUsluznikaState();
@@ -77,7 +80,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
 
   Widget _naslov() {
     return Text(
-      "Recenzije usluznika: ${widget.zaposlenik?.korisnik?.ime} ${widget.zaposlenik?.korisnik?.prezime}",
+      "Recenzije uslužnika: ${widget.zaposlenik?.korisnik?.ime} ${widget.zaposlenik?.korisnik?.prezime}",
       textAlign: TextAlign.center,
       style: const TextStyle(
           //fontFamily: 'BeckyTahlia',
@@ -414,7 +417,9 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
               ? SingleChildScrollView(
                   child: Column(
                     children: [
-                      dugmeNazad(),
+                      widget.fromEditRecenzija == true
+                          ? dugmeNazad()
+                          : dugmeNazad(),
                       _naslov(),
                       SizedBox(
                         height: 10,
@@ -470,13 +475,15 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
       children: [
         TextButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => UsluznikDetails(
-                        usluznik: widget.zaposlenik,
-                        totalReviws: widget.totalReviws,
-                        prosjecnaOcjena: widget.prosjecnaOcjena,
-                        usluga: widget.usluga,
-                      )));
+              {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UsluznikDetails(
+                          usluznik: widget.zaposlenik,
+                          totalReviws: widget.totalReviws,
+                          prosjecnaOcjena: widget.prosjecnaOcjena,
+                          usluga: widget.usluga,
+                        )));
+              }
             },
             child: Icon(Icons.arrow_back)),
       ],

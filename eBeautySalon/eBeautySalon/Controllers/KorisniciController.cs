@@ -18,7 +18,7 @@ namespace eBeautySalon.Controllers
            _korisniciService = service;
         }
 
-        [Authorize] 
+        [Authorize(Roles = "Administrator")] 
         public override Task<Korisnici> Insert(KorisniciInsertRequest insert)
         {
             return base.Insert(insert);

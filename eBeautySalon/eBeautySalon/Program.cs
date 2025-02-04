@@ -137,7 +137,7 @@ using (var scope = app.Services.CreateScope())
              KorisnickoIme = "admin",
              Sifra = "USR000001",
              Status = true,
-             Telefon = "+387 62 654 235",
+             Telefon = "062 654 235",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
@@ -153,7 +153,7 @@ using (var scope = app.Services.CreateScope())
              KorisnickoIme = "marko",
              Sifra = "USR000002",
              Status = true,
-             Telefon = "+387 62 555 777",
+             Telefon = "062 555 777",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
@@ -169,7 +169,7 @@ using (var scope = app.Services.CreateScope())
              KorisnickoIme = "jovana",
              Sifra = "USR000003",
              Status = true,
-             Telefon = "+387 62 555 888",
+             Telefon = "062 555 888",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
@@ -185,7 +185,7 @@ using (var scope = app.Services.CreateScope())
              KorisnickoIme = "ivana",
              Sifra = "USR000004",
              Status = true,
-             Telefon = "+387 62 555 999",
+             Telefon = "062 555 999",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
@@ -201,7 +201,7 @@ using (var scope = app.Services.CreateScope())
              KorisnickoIme = "petar",
              Sifra = "USR000005",
              Status = true,
-             Telefon = "+387 62 555 000",
+             Telefon = "062 555 000",
              LozinkaHash = hash1,
              LozinkaSalt = salt1,
              SlikaProfilaId = 1
@@ -217,7 +217,7 @@ using (var scope = app.Services.CreateScope())
             KorisnickoIme = "mila",
             Sifra = "USR000006",
             Status = true,
-            Telefon = "+387 62 544 600",
+            Telefon = "062 544 600",
             LozinkaHash = hash1,
             LozinkaSalt = salt1,
             SlikaProfilaId = 1
@@ -365,6 +365,7 @@ using (var scope = app.Services.CreateScope())
             new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 2 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 3 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 2 },
+            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 4 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 5 }
             );
 

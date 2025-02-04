@@ -153,17 +153,6 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                       SizedBox(
                         height: 10,
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SveRecenzijeUsluge(
-                                      usluga: widget.usluga,
-                                    )));
-                          },
-                          child: Text(
-                            "Pogledajte sve recenzije za ovu uslugu",
-                            style: TextStyle(fontSize: 16),
-                          )),
                     ],
                   ),
                   _createTableUsluznci(),
@@ -280,33 +269,41 @@ class _UslugaDetailsState extends State<UslugaDetails> {
   }
 
   displayAverageGrade(x) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(5, (index) {
-        // Determine the star type
-        if (index < x.floor()) {
-          // Full star
-          return Icon(
-            Icons.star,
-            color: Colors.amber,
-            size: 20,
-          );
-        } else if (index < x) {
-          // Half star
-          return Icon(
-            Icons.star_half,
-            color: Colors.amber,
-            size: 20,
-          );
-        } else {
-          // Empty star
-          return Icon(
-            Icons.star_border,
-            color: Colors.grey,
-            size: 20,
-          );
-        }
-      }),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SveRecenzijeUsluge(
+                  usluga: widget.usluga,
+                )));
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(5, (index) {
+          // Determine the star type
+          if (index < x.floor()) {
+            // Full star
+            return Icon(
+              Icons.star,
+              color: Colors.amber,
+              size: 30,
+            );
+          } else if (index < x) {
+            // Half star
+            return Icon(
+              Icons.star_half,
+              color: Colors.amber,
+              size: 30,
+            );
+          } else {
+            // Empty star
+            return Icon(
+              Icons.star_border,
+              color: Colors.grey,
+              size: 30,
+            );
+          }
+        }),
+      ),
     );
   }
 

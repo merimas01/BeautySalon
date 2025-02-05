@@ -322,7 +322,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
 
   List<Widget> _buildRezervacijeList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [noResultsWidget()];
     }
 
     List<Widget> list = data
@@ -557,5 +557,22 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                     child: Text("Shvatam"))
               ],
             ));
+  }
+
+  Widget noResultsWidget() {
+    return Container(
+      width: 300,
+      height: 300,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(
+          "Ups!",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Text("Nije pronađen nijedan zapis. 😔", style: TextStyle(fontSize: 16))
+      ]),
+    );
   }
 }

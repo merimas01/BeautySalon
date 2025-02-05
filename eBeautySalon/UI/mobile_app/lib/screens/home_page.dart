@@ -71,22 +71,27 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        _sortByDatumKreiranja(),
-                        SizedBox(
-                          width: 10,
-                        ),
+              Row( mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                 _sortByDatumKreiranja(),
+                      
                         selectedSort != null
                             ? TextButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   setState(() {
                                     selectedSort = null;
+                                  });
+                                  var tmpData =
+                                      await _novostiProvider.get(filter: {
+                                    'isSlikaIncluded': true,
+                                    'DatumOpadajuciSort': selectedSort == "da"
+                                        ? true
+                                        : selectedSort == "ne"
+                                            ? false
+                                            : null
+                                  });
+                                  setState(() {
+                                    data = tmpData;
                                   });
                                 },
                                 child: Tooltip(
@@ -98,26 +103,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               )
                             : Container(),
-                      ],
-                    ),
-                    IconButton(
-                        onPressed: () async {
-                          var tmpData = await _novostiProvider.get(filter: {
-                            'isSlikaIncluded': true,
-                            'DatumOpadajuciSort': selectedSort == "da"
-                                ? true
-                                : selectedSort == "ne"
-                                    ? false
-                                    : null
-                          });
-                          setState(() {
-                            data = tmpData;
-                          });
-                        },
-                        icon: Icon(Icons.search_rounded)),
-                  ],
-                ),
-              ),
+              ],),
               SizedBox(
                 height: 30,
               ),
@@ -222,7 +208,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _sortByDatumKreiranja() {
     return Container(
-      width: 200,
+      width: 300,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -241,11 +227,22 @@ class _HomePageState extends State<HomePage> {
                 child: Text(item['opis'] as String),
               );
             }).toList(),
-            onChanged: (value) {
+            onChanged: (value) async {
               setState(() {
                 selectedSort = value;
               });
               print(selectedSort);
+              var tmpData = await _novostiProvider.get(filter: {
+                'isSlikaIncluded': true,
+                'DatumOpadajuciSort': selectedSort == "da"
+                    ? true
+                    : selectedSort == "ne"
+                        ? false
+                        : null
+              });
+              setState(() {
+                data = tmpData;
+              });
             },
           ),
         ),

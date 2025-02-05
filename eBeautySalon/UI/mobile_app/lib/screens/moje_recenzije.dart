@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -29,8 +30,6 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   late UslugeProvider _uslugeProvider;
   SearchResult<RecenzijaUsluge>? _recenzijaUslugeResult;
   SearchResult<RecenzijaUsluznika>? _recenzijaUsluznikaResult;
-  TextEditingController _ftsController1 = new TextEditingController();
-  TextEditingController _ftsController2 = new TextEditingController();
   bool isLoadingData = true;
   String? search1 = "";
   String? search2 = "";
@@ -52,34 +51,14 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
 
   void getData() async {
     var recenzijeUsluge = await _recenzijeUslugeProvider.get(filter: {
-      'FTS': _ftsController1.text,
       'korisnikId': LoggedUser.id,
     });
     var recenzijeUsluznika = await _recenzijeUsluznikaProvider.get(filter: {
-      'FTS': _ftsController2.text,
       'korisnikId': LoggedUser.id,
     });
 
     var kategorije = await _kategorijaProvider.get();
     var usluge = await _uslugeProvider.get();
-
-    // Add a listener to get the value whenever the text changes
-    _ftsController1.addListener(() {
-      String currentText = _ftsController1.text; // Access the current text
-      setState(() {
-        search1 = currentText;
-      });
-      print('Current Text: $currentText');
-    });
-
-    // Add a listener to get the value whenever the text changes
-    _ftsController2.addListener(() {
-      String currentText = _ftsController2.text; // Access the current text
-      setState(() {
-        search2 = currentText;
-      });
-      print('Current Text: $currentText');
-    });
 
     setState(() {
       _recenzijaUslugeResult = recenzijeUsluge;
@@ -116,108 +95,105 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                   child: TabBarView(
                     children: [
                       isLoadingData == false
-                          ? Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        _searchByKategorija(),
-                                        SizedBox(width: 8),
-                                        selectedKategorija != null
-                                            ? TextButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    selectedKategorija = null;
-                                                  });
-                                                },
-                                                child: Tooltip(
-                                                  child: Icon(
-                                                    Icons.close,
-                                                    color: Colors.red,
-                                                  ),
-                                                  message: "Poništi selekciju",
-                                                ),
-                                              )
-                                            : Container(),
-                                      ],
-                                    ),
-                                    IconButton(
-                                        onPressed: () async {
-                                          var recenzijeUsluge =
-                                              await _recenzijeUslugeProvider
-                                                  .get(filter: {
-                                            'FTS': _ftsController1.text,
-                                            'korisnikId':
-                                                LoggedUser.id,
-                                            'kategorijaId':
-                                                selectedKategorija?.kategorijaId
-                                          });
+                          ? SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  dugmeNazad(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          _searchByKategorija(),
+                                          SizedBox(width: 8),
+                                          selectedKategorija != null
+                                              ? TextButton(
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      selectedKategorija = null;
+                                                    });
+                                                    var recenzijeUsluge =
+                                                        await _recenzijeUslugeProvider
+                                                            .get(filter: {
+                                                      'korisnikId':
+                                                          LoggedUser.id,
+                                                      'kategorijaId': null
+                                                    });
 
-                                          setState(() {
-                                            _recenzijaUslugeResult =
-                                                recenzijeUsluge;
-                                          });
-                                        },
-                                        icon: Icon(Icons.search_rounded))
-                                  ],
-                                ),
-                                _buildRecenzijeUslugaListView()
-                              ],
+                                                    setState(() {
+                                                      _recenzijaUslugeResult =
+                                                          recenzijeUsluge;
+                                                    });
+                                                  },
+                                                  child: Tooltip(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    ),
+                                                    message:
+                                                        "Poništi selekciju",
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  _buildRecenzijeUslugaListView()
+                                ],
+                              ),
                             )
                           : Container(
                               child: CircularProgressIndicator(),
                             ),
                       isLoadingData == false
-                          ? Column(children: [
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        _searchByUsluga(), 
-                                        SizedBox(width: 8),
-                                        selectedUsluga != null
-                                            ? TextButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    selectedUsluga = null;
-                                                  });
-                                                },
-                                                child: Tooltip(
-                                                  child: Icon(
-                                                    Icons.close,
-                                                    color: Colors.red,
-                                                  ),
-                                                  message: "Poništi selekciju",
-                                                ),
-                                              )
-                                            : Container()
-                                      ],
-                                    ),
-                                    IconButton(
-                                        onPressed: () async {
-                                          var recenzijeUsluznika =
-                                              await _recenzijeUsluznikaProvider
-                                                  .get(filter: {
-                                            'FTS': _ftsController2.text,
-                                            'korisnikId':
-                                                LoggedUser.id,
-                                            'uslugaId': selectedUsluga?.uslugaId
-                                          });
+                          ? SingleChildScrollView(
+                              child: Column(children: [
+                                dugmeNazad(),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          _searchByUsluga(),
+                                          SizedBox(width: 8),
+                                          selectedUsluga != null
+                                              ? TextButton(
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      selectedUsluga = null;
+                                                    });
+                                                    var recenzijeUsluznika =
+                                                        await _recenzijeUsluznikaProvider
+                                                            .get(filter: {
+                                                      'korisnikId':
+                                                          LoggedUser.id,
+                                                      'uslugaId': null
+                                                    });
 
-                                          setState(() {
-                                            _recenzijaUsluznikaResult =
-                                                recenzijeUsluznika;
-                                          });
-                                        },
-                                        icon: Icon(Icons.search_rounded))
-                                  ]),
-                              _buildRecenzijeUsluznikaListView()
-                            ])
+                                                    setState(() {
+                                                      _recenzijaUsluznikaResult =
+                                                          recenzijeUsluznika;
+                                                    });
+                                                  },
+                                                  child: Tooltip(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    ),
+                                                    message:
+                                                        "Poništi selekciju",
+                                                  ),
+                                                )
+                                              : Container()
+                                        ],
+                                      ),
+                                    ]),
+                                _buildRecenzijeUsluznikaListView()
+                              ]),
+                            )
                           : Container(
                               child: CircularProgressIndicator(),
                             ),
@@ -246,10 +222,20 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                 hint: Text("Pretraži po kategoriji usluga"),
                 value: selectedKategorija,
                 isExpanded: true,
-                onChanged: (Kategorija? newValue) {
+                onChanged: (Kategorija? newValue) async {
                   setState(() {
                     selectedKategorija = newValue;
                     print(selectedKategorija?.naziv);
+                  });
+
+                  var recenzijeUsluge = await _recenzijeUslugeProvider.get(
+                      filter: {
+                        'korisnikId': LoggedUser.id,
+                        'kategorijaId': newValue?.kategorijaId
+                      });
+
+                  setState(() {
+                    _recenzijaUslugeResult = recenzijeUsluge;
                   });
                 },
                 items: _kategorije?.result
@@ -289,10 +275,19 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                 hint: Text("Pretraži po usluzi"),
                 value: selectedUsluga,
                 isExpanded: true,
-                onChanged: (Usluga? newValue) {
+                onChanged: (Usluga? newValue) async {
                   setState(() {
                     selectedUsluga = newValue;
                     print(selectedUsluga?.naziv);
+                  });
+                  var recenzijeUsluznika = await _recenzijeUsluznikaProvider
+                      .get(filter: {
+                    'korisnikId': LoggedUser.id,
+                    'uslugaId': newValue?.uslugaId
+                  });
+
+                  setState(() {
+                    _recenzijaUsluznikaResult = recenzijeUsluznika;
                   });
                 },
                 items: _usluge?.result
@@ -314,9 +309,26 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     return Container(child: CircularProgressIndicator());
   }
 
+  Widget noResultsWidget() {
+    return Container(
+      width: 300,
+      height: 300,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(
+          "Ups!",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Text("Nije pronađen nijedan zapis. 😔", style: TextStyle(fontSize: 16))
+      ]),
+    );
+  }
+
   List<Widget> _buildUslugaList(data) {
     if (data.length == 0) {
-      return [Text("Učitavanje...")];
+      return [noResultsWidget()];
     }
 
     List<Widget> list = data
@@ -386,7 +398,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
 
   List<Widget> _buildUsluznikList(data) {
     if (data.length == 0) {
-      return [Text("Učitavanje...")];
+      return [noResultsWidget()];
     }
 
     List<Widget> list = data
@@ -548,10 +560,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _recenzijeUslugeProvider.get(filter: {
-      'FTS': _ftsController1.text,
-      'korisnikId': LoggedUser.id
-    });
+    var data = await _recenzijeUslugeProvider
+        .get(filter: {'korisnikId': LoggedUser.id});
 
     setState(() {
       _recenzijaUslugeResult = data;
@@ -564,13 +574,26 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _recenzijeUsluznikaProvider.get(filter: {
-      'FTS': _ftsController1.text,
-      'korisnikId': LoggedUser.id
-    });
+    var data = await _recenzijeUsluznikaProvider
+        .get(filter: {'korisnikId': LoggedUser.id});
 
     setState(() {
       _recenzijaUsluznikaResult = data;
     });
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfilPage()));
+              }
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
   }
 }

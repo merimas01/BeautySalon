@@ -13,7 +13,10 @@ import '../models/usluga.dart';
 
 class SveRecenzijeUsluge extends StatefulWidget {
   Usluga? usluga;
-  SveRecenzijeUsluge({super.key, this.usluga});
+  String? prosjecnaOcjena;
+  String? totalReviws;
+  SveRecenzijeUsluge(
+      {super.key, this.usluga, this.prosjecnaOcjena, this.totalReviws});
 
   @override
   State<SveRecenzijeUsluge> createState() => _SveRecenzijeUslugeState();
@@ -32,6 +35,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
     super.didChangeDependencies();
     _recenzijaUslugeProvider = context.read<RecenzijaUslugeProvider>();
     getData();
+    getProsjecnaOcjenaITotalReviews();
   }
 
   void getData() async {
@@ -48,22 +52,6 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
               .any((item) => item.korisnikId == LoggedUser.id) ??
           false;
     });
-  }
-
-  Widget _showResultCount() {
-    return RichText(
-        text: TextSpan(
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            ),
-            children: [
-          TextSpan(
-            text:
-                'Ukupan broj recenzija: ${_recenzijaUslugeResult?.count == null ? 0 : _recenzijaUslugeResult?.count}',
-            style: TextStyle(fontWeight: FontWeight.normal),
-          )
-        ]));
   }
 
   Widget _naslov() {
@@ -92,10 +80,31 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                       SizedBox(
                         height: 10,
                       ),
-                      _showResultCount(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          prosjecnaOcjena != ""
+                              ? displayAverageGrade(
+                                  double.parse(prosjecnaOcjena))
+                              : displayAverageGrade(double.parse("0")),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          prosjecnaOcjena != ""
+                              ? Text(prosjecnaOcjena)
+                              : Text("0"),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          totalReviws != ""
+                              ? Text("(${totalReviws})")
+                              : Text("(0)"),
+                        ],
+                      ),
                       SizedBox(
                         height: 10,
                       ),
+                   
                       imaRecenziju == false
                           ? ElevatedButton(
                               onPressed: () {
@@ -338,6 +347,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
         setState(() {
           imaRecenziju = true;
         });
+        getProsjecnaOcjenaITotalReviews();
       }
     } catch (err) {
       print(err.toString());
@@ -432,6 +442,8 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
       'uslugaId': widget.usluga?.uslugaId,
     });
 
+    getProsjecnaOcjenaITotalReviews();
+
     setState(() {
       _recenzijaUslugeResult = data;
       imaRecenziju = false;
@@ -464,6 +476,68 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
             },
             child: Icon(Icons.arrow_back)),
       ],
+    );
+  }
+
+  List<dynamic> listProsjecneOcjeneUsluznika = [];
+  String prosjecnaOcjena = "0";
+  String totalReviws = "0";
+  bool isLoadingProsjecnaOcjena = true;
+
+  getProsjecnaOcjenaITotalReviews() async {
+    var usluznici = await _recenzijaUslugeProvider.GetProsjecnaOcjena();
+    setState(() {
+      listProsjecneOcjeneUsluznika = usluznici;
+    });
+    if (listProsjecneOcjeneUsluznika.length != 0) {
+      for (var o in listProsjecneOcjeneUsluznika) {
+        if (widget.usluga?.uslugaId == o['uslugaId']) {
+          setState(() {
+            prosjecnaOcjena = o['prosjecnaOcjena'].toString();
+            totalReviws = o['sveOcjene'].length.toString();
+          });
+        }
+      }
+    } else {
+      setState(() {
+        prosjecnaOcjena = widget.prosjecnaOcjena.toString();
+        totalReviws = widget.totalReviws.toString();
+      });
+    }
+
+    print("${prosjecnaOcjena} ${totalReviws}");
+    setState(() {
+      isLoadingProsjecnaOcjena = false;
+    });
+  }
+
+  displayAverageGrade(x) {
+    return Row(
+      children: List.generate(5, (index) {
+        // Determine the star type
+        if (index < x.floor()) {
+          // Full star
+          return Icon(
+            Icons.star,
+            color: Colors.pink,
+            size: 20,
+          );
+        } else if (index < x) {
+          // Half star
+          return Icon(
+            Icons.star_half,
+            color: Colors.pink,
+            size: 20,
+          );
+        } else {
+          // Empty star
+          return Icon(
+            Icons.star_border,
+            color: Colors.grey,
+            size: 20,
+          );
+        }
+      }),
     );
   }
 }

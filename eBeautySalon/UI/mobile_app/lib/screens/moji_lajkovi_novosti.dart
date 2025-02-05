@@ -3,6 +3,7 @@ import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
 import 'package:mobile_app/screens/novost_details.dart';
+import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +68,7 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
 
   List<Widget> _buildList(data) {
     if (data.length == 0) {
-      return [Text("Učitavanje...")];
+      return [noResultsWidget()];
     }
 
     List<Widget> list = data
@@ -144,10 +145,53 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
     return list;
   }
 
+  Widget noResultsWidget() {
+    return Container(
+      width: 300,
+      height: 300,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(
+          "Ups!",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Text("Nije pronađen nijedan zapis. 😔", style: TextStyle(fontSize: 16))
+      ]),
+    );
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfilPage()));
+              }
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
         title: "Moji lajkovi novosti",
-        child: isLoadingData == false ? _buildListView() : Container());
+        child: isLoadingData == false
+            ? Container(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      dugmeNazad(),
+                      _buildListView(),
+                    ],
+                  ),
+                ),
+              )
+            : Container());
   }
 }

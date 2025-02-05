@@ -78,13 +78,31 @@ class _PretragaPageState extends State<PretragaPage> {
           );
   }
 
+  Widget noResultsWidget() {
+    return Container(
+      width: 300,
+      height: 300,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(
+          "Ups!",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Text("Nije pronađen nijedan zapis. 😔", style: TextStyle(fontSize: 16))
+      ]),
+    );
+  }
+
   List<Widget> _buildUslugaList(data) {
     if (data.length == 0) {
-      return [Text("Ucitavanje...")];
+      return [noResultsWidget()];
     }
 
     List<Widget> list = data
         .map((x) => Container(
+           key: ValueKey(x.uslugaId),
               child: Column(
                 children: [
                   InkWell(
@@ -192,15 +210,13 @@ class _PretragaPageState extends State<PretragaPage> {
                         //     }).toList(),
                         //   )
                         _createGrid(podusluge.result)
-                        : Container()
+                        : Text("")
                   ],
                 );
               }).toList(),
             ),
           )
-        : Container(
-            child: Text("Nema rezultata za trazenu uslugu."),
-          );
+        : Container();
   }
 
   _searchUsluge() {
@@ -208,11 +224,24 @@ class _PretragaPageState extends State<PretragaPage> {
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: TextField(
               controller: _searchController,
+              onChanged: (x) async {
+                List<SearchResult<Usluga>> filteredList = [];
+
+                for (var kat in _kategorijeResult!.result) {
+                  var uslugeZaKategoriju = await _uslugeProvider.get(
+                      filter: {'FTS': x, 'kategorijaId': kat.kategorijaId});
+                  filteredList.add(uslugeZaKategoriju);
+                  setState(() {
+                    sveUsluge = filteredList;
+                  });
+                }
+              },
               decoration: InputDecoration(
-                  hintText: "Trazi uslugu...",
+                  prefixIcon: Icon(Icons.search),
+                  hintText: "Traži uslugu...",
                   //prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -222,11 +251,23 @@ class _PretragaPageState extends State<PretragaPage> {
         ),
         search != ""
             ? TextButton(
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     _searchController.text = '';
                     search = _searchController.text;
                   });
+                  List<SearchResult<Usluga>> filteredList = [];
+
+                  for (var kat in _kategorijeResult!.result) {
+                    var uslugeZaKategoriju = await _uslugeProvider.get(filter: {
+                      'FTS': _searchController.text,
+                      'kategorijaId': kat.kategorijaId
+                    });
+                    filteredList.add(uslugeZaKategoriju);
+                    setState(() {
+                      sveUsluge = filteredList;
+                    });
+                  }
                 },
                 child: Tooltip(
                   child: Icon(
@@ -237,26 +278,26 @@ class _PretragaPageState extends State<PretragaPage> {
                 ),
               )
             : Container(),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: IconButton(
-            icon: Icon(Icons.search_sharp),
-            onPressed: () async {
-              List<SearchResult<Usluga>> filteredList = [];
+        // Container(
+        //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        //   child: IconButton(
+        //     icon: Icon(Icons.search_sharp),
+        //     onPressed: () async {
+        //       List<SearchResult<Usluga>> filteredList = [];
 
-              for (var kat in _kategorijeResult!.result) {
-                var uslugeZaKategoriju = await _uslugeProvider.get(filter: {
-                  'FTS': _searchController.text,
-                  'kategorijaId': kat.kategorijaId
-                });
-                filteredList.add(uslugeZaKategoriju);
-                setState(() {
-                  sveUsluge = filteredList;
-                });
-              }
-            },
-          ),
-        )
+        //       for (var kat in _kategorijeResult!.result) {
+        //         var uslugeZaKategoriju = await _uslugeProvider.get(filter: {
+        //           'FTS': _searchController.text,
+        //           'kategorijaId': kat.kategorijaId
+        //         });
+        //         filteredList.add(uslugeZaKategoriju);
+        //         setState(() {
+        //           sveUsluge = filteredList;
+        //         });
+        //       }
+        //     },
+        //   ),
+        // )
       ],
     );
   }

@@ -274,6 +274,8 @@ class _UslugaDetailsState extends State<UslugaDetails> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => SveRecenzijeUsluge(
                   usluga: widget.usluga,
+                  prosjecnaOcjena: _getAverageGradeUsluga().toString(),
+                  totalReviws: _getTotalReviewsUsluga().toString(),
                 )));
       },
       child: Row(

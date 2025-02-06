@@ -102,7 +102,7 @@ class _PretragaPageState extends State<PretragaPage> {
 
     List<Widget> list = data
         .map((x) => Container(
-           key: ValueKey(x.uslugaId),
+              key: ValueKey(x.uslugaId),
               child: Column(
                 children: [
                   InkWell(
@@ -142,6 +142,7 @@ class _PretragaPageState extends State<PretragaPage> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 1,
         title: "Pretraži usluge",
         child: Container(
             height: 800,

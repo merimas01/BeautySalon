@@ -49,6 +49,7 @@ class _RezervacijePageState extends State<RezervacijePage> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+      selectedIndex: 2,
       title: "Zakažite termin",
       child: Container(
         width: 800,

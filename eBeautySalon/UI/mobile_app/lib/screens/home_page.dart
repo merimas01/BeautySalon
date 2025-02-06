@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 0,
         title: "Početna stranica",
         child: Container(
           width: 800,
@@ -71,39 +72,39 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 20,
               ),
-              Row( mainAxisAlignment: MainAxisAlignment.spaceAround,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                 _sortByDatumKreiranja(),
-                      
-                        selectedSort != null
-                            ? TextButton(
-                                onPressed: () async {
-                                  setState(() {
-                                    selectedSort = null;
-                                  });
-                                  var tmpData =
-                                      await _novostiProvider.get(filter: {
-                                    'isSlikaIncluded': true,
-                                    'DatumOpadajuciSort': selectedSort == "da"
-                                        ? true
-                                        : selectedSort == "ne"
-                                            ? false
-                                            : null
-                                  });
-                                  setState(() {
-                                    data = tmpData;
-                                  });
-                                },
-                                child: Tooltip(
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.red,
-                                  ),
-                                  message: "Poništi selekciju",
-                                ),
-                              )
-                            : Container(),
-              ],),
+                  _sortByDatumKreiranja(),
+                  selectedSort != null
+                      ? TextButton(
+                          onPressed: () async {
+                            setState(() {
+                              selectedSort = null;
+                            });
+                            var tmpData = await _novostiProvider.get(filter: {
+                              'isSlikaIncluded': true,
+                              'DatumOpadajuciSort': selectedSort == "da"
+                                  ? true
+                                  : selectedSort == "ne"
+                                      ? false
+                                      : null
+                            });
+                            setState(() {
+                              data = tmpData;
+                            });
+                          },
+                          child: Tooltip(
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                            message: "Poništi selekciju",
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
               SizedBox(
                 height: 30,
               ),

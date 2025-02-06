@@ -3,13 +3,19 @@ import 'package:mobile_app/screens/home_page.dart';
 import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/screens/rezervacije_page.dart';
+import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;
   String? title;
   Widget? title_widget;
+  int? selectedIndex;
   MasterScreenWidget(
-      {required this.child, this.title, this.title_widget, super.key});
+      {required this.child,
+      this.title,
+      this.title_widget,
+      super.key,
+      this.selectedIndex});
 
   @override
   State<MasterScreenWidget> createState() => _MasterScreenWidgetState();
@@ -43,12 +49,13 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
       body: SafeArea(
         child: widget.child!,
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: 
+          BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             backgroundColor: Colors.pink,
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Početna stranica',
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.pink,
@@ -66,10 +73,12 @@ class _MasterScreenWidgetState extends State<MasterScreenWidget> {
             label: 'Profil',
           ),
         ],
-        selectedItemColor: Colors.amber[800],
-        currentIndex: currentIndex,
+        selectedItemColor: Colors.blue[200],
+        currentIndex:
+            widget.selectedIndex != null ? widget.selectedIndex! : currentIndex,
         onTap: _onItemTapped,
       ),
     );
   }
+
 }

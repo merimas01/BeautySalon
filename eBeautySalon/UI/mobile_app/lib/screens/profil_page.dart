@@ -58,6 +58,7 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 3,
         title: "Moj profil",
         child: isLoading == false
             ? _buildForm()

@@ -218,6 +218,7 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 3,
         title: "Moji komentari za novosti",
         child: isLoadingData == false
             ? Container(

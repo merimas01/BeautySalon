@@ -398,6 +398,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 1,
         title: "Sve recenzije uslužnika",
         child: Padding(
           padding: const EdgeInsets.all(8.0),

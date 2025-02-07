@@ -54,6 +54,7 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+      selectedIndex: 1,
       title: "Detalji uslužnika",
       child: _buildDetails(),
     );

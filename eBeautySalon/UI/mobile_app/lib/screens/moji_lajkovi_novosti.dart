@@ -86,7 +86,7 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
                             x.novost?.slikaNovost?.slika != null &&
                             x.novost?.slikaNovost?.slika != ""
                         ? Container(
-                            height: 170,
+                            height: 150,
                             width: 170,
                             child: ImageFromBase64String(
                                 x.novost?.slikaNovost!.slika),
@@ -95,12 +95,12 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
                             child: Image.asset(
                               "assets/images/noImage.jpg",
                             ),
-                            height: 170,
+                            height: 150,
                             width: 170,
                           ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   Text(x.novost?.naslov ?? ""),
                   Row(
@@ -180,6 +180,7 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 3,
         title: "Moji lajkovi novosti",
         child: isLoadingData == false
             ? Container(

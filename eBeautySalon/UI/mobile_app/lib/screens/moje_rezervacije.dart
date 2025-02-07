@@ -328,7 +328,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     List<Widget> list = data
         .map((x) => Container(
               decoration: BoxDecoration(
-                color: _colorReservationStatus(x),
+                  color: _colorReservationStatus(x),
                   border: Border.all(width: 2),
                   borderRadius: BorderRadius.circular(20)),
               child: Padding(
@@ -353,7 +353,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                           Text("${x.termin?.opis ?? ""}h"),
                           Text(
                             "${x.status?.opis ?? ""}",
-                          //  style: TextStyle(color: _colorReservationStatus(x)),
+                            //  style: TextStyle(color: _colorReservationStatus(x)),
                           )
                         ],
                       ),
@@ -497,8 +497,9 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                   child: Column(
                     children: [
                       filterData == false
-                          ? IconButton(
-                              icon: Icon(Icons.arrow_downward),
+                          ? TextButton(
+                            child: Text("Otvori filter box"),
+                              //icon: Icon(Icons.arrow_downward),
                               onPressed: () {
                                 setState(() {
                                   filterData = !filterData;
@@ -508,8 +509,9 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                           : Container(),
                       filterData == true ? _buildSearch() : Container(),
                       filterData == true
-                          ? IconButton(
-                              icon: Icon(Icons.arrow_upward),
+                          ? TextButton(
+                              //icon: Icon(Icons.arrow_upward),
+                              child: Text("Zatvori filter box"),
                               onPressed: () {
                                 setState(() {
                                   filterData = !filterData;
@@ -517,6 +519,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                               },
                             )
                           : Container(),
+                      dugmeNazad(),
                       _buildRezervacijeListView()
                     ],
                   ),
@@ -573,6 +576,26 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
         ),
         Text("Nije pronađen nijedan zapis. 😔", style: TextStyle(fontSize: 16))
       ]),
+    );
+  }
+
+  dugmeNazad() {
+    return Row(
+      children: [
+        TextButton(
+            onPressed: () {
+              // if (widget.poslaniKorisnikId != null) {
+              //   Navigator.of(context).push(MaterialPageRoute(
+              //       builder: (context) => MojiKomentariNovosti()));
+              // } else {
+              //   Navigator.of(context).push(MaterialPageRoute(
+              //       builder: (context) => NovostDetailsScreen(
+              //             novost: widget.novost,
+              //           )));
+              // }
+            },
+            child: Icon(Icons.arrow_back)),
+      ],
     );
   }
 }

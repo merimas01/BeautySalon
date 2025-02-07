@@ -68,6 +68,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 1,
         title: "Sve recenzije usluge",
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -104,7 +105,6 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                       SizedBox(
                         height: 10,
                       ),
-                   
                       imaRecenziju == false
                           ? ElevatedButton(
                               onPressed: () {

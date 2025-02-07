@@ -83,8 +83,8 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
                             null &&
                         widget.recenzijaUsluge?.usluga?.slikaUsluge?.slika != ""
                     ? Container(
-                        height: 200,
-                        width: 200,
+                        height: 300,
+                        width: null,
                         child: ImageFromBase64String(
                             widget.recenzijaUsluge!.usluga!.slikaUsluge!.slika),
                       )
@@ -92,9 +92,12 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
                         child: Image.asset(
                           "assets/images/noImage.jpg",
                         ),
-                        height: 200,
-                        width: 200,
+                        height: 300,
+                        width: null,
                       ),
+                SizedBox(
+                  height: 10,
+                ),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Kategorija:"),
                   initialValue:
@@ -218,7 +221,9 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        title: "Modifikacija recenzije usluge", child: _showDetails());
+        selectedIndex: widget.poslaniKorisnikId != null ? 3 : 1,
+        title: "Modifikacija recenzije usluge",
+        child: _showDetails());
   }
 
   dugmeNazad() {

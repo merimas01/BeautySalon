@@ -144,9 +144,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                                 ],
                               ),
                             )
-                          : Container(
-                              child: CircularProgressIndicator(),
-                            ),
+                          : Text(""),
                       isLoadingData == false
                           ? SingleChildScrollView(
                               child: Column(children: [
@@ -194,9 +192,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                                 _buildRecenzijeUsluznikaListView()
                               ]),
                             )
-                          : Container(
-                              child: CircularProgressIndicator(),
-                            ),
+                          : Text("")
                     ],
                   ),
                 ),
@@ -254,7 +250,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
         ),
       );
     }
-    return Container(child: CircularProgressIndicator());
+    return Text("");
   }
 
   Widget _searchByUsluga() {
@@ -306,7 +302,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
         ),
       );
     }
-    return Container(child: CircularProgressIndicator());
+    return Text("");
   }
 
   Widget noResultsWidget() {
@@ -516,6 +512,7 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+      selectedIndex: 3,
       title: "Moje recenzije",
       child: _tabBars(),
     );

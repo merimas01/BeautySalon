@@ -70,8 +70,8 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                         widget.novostLikeComment?.novost?.slikaNovost?.slika !=
                             ""
                     ? Container(
-                        height: 200,
-                        width: 200,
+                        height: 300,
+                        width: null,
                         child: ImageFromBase64String(widget
                             .novostLikeComment!.novost!.slikaNovost!.slika),
                       )
@@ -79,8 +79,8 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                         child: Image.asset(
                           "assets/images/noImage.jpg",
                         ),
-                        height: 200,
-                        width: 200,
+                        height: 300,
+                        width: null,
                       ),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Datum kreiranja:"),
@@ -199,6 +199,8 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        title: "Modifikacija komentara novosti", child: _showDetails());
+        selectedIndex: widget.poslaniKorisnikId != null ? 3 : 0,
+        title: "Modifikacija komentara novosti",
+        child: _showDetails());
   }
 }

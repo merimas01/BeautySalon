@@ -86,6 +86,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: 0,
         title: "Detalji novosti",
         child: isLoadingLikesComments == false
             ? Container(
@@ -110,7 +111,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                       widget.novost?.slikaNovost != null &&
                               widget.novost?.slikaNovost!.slika != ""
                           ? Container(
-                              height: 200,
+                              height: 300,
                               width: null,
                               child: ImageFromBase64String(
                                   widget.novost!.slikaNovost!.slika),
@@ -118,7 +119,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                           : Container(
                               child: Image.asset(
                                 "assets/images/noImage.jpg",
-                                height: 200,
+                                height: 300,
                                 width: null,
                                 fit: BoxFit.cover,
                               ),

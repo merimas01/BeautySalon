@@ -3,7 +3,6 @@ import 'package:mobile_app/screens/home_page.dart';
 import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/screens/rezervacije_page.dart';
-import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
 
 class MasterScreenWidget extends StatefulWidget {
   Widget? child;

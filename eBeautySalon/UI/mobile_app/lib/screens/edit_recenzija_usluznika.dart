@@ -79,7 +79,7 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
-               dugmeNazad(),
+                dugmeNazad(),
                 Text(
                   "${widget.recenzijaUsluznika?.usluznik?.korisnik?.ime ?? ""} ${widget.recenzijaUsluznika?.usluznik?.korisnik?.prezime ?? ""}",
                   textAlign: TextAlign.center,
@@ -100,8 +100,8 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                                 ?.slikaProfila?.slika !=
                             ""
                     ? Container(
-                        height: 200,
-                        width: 200,
+                        height: 300,
+                        width: null,
                         child: ImageFromBase64String(widget.recenzijaUsluznika!
                             .usluznik!.korisnik!.slikaProfila!.slika),
                       )
@@ -109,8 +109,8 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                         child: Image.asset(
                           "assets/images/noImage.jpg",
                         ),
-                        height: 200,
-                        width: 200,
+                        height: 300,
+                        width: null,
                       ),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Datum kreiranja:"),
@@ -232,7 +232,9 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        title: "Modifikacija recenzije usluznika", child: _showDetails());
+        selectedIndex: widget.poslaniKorisnikId != null ? 3 : 1,
+        title: "Modifikacija recenzije usluznika",
+        child: _showDetails());
   }
 
   dugmeNazad() {

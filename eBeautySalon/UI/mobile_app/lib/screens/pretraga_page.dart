@@ -62,13 +62,13 @@ class _PretragaPageState extends State<PretragaPage> {
   _createGrid(data) {
     return data.length != 0
         ? Container(
-            height: 250,
+            height: 200,
             child: GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  childAspectRatio: 3 / 2,
+                  childAspectRatio: 4 / 3,
                   crossAxisSpacing: 8,
-                  mainAxisSpacing: 8),
+                  mainAxisSpacing: 20),
               scrollDirection: Axis.horizontal,
               children: _buildUslugaList(data),
             ),
@@ -116,19 +116,22 @@ class _PretragaPageState extends State<PretragaPage> {
                             x.slikaUsluge?.slika != null &&
                             x.slikaUsluge?.slika != ""
                         ? Container(
-                            height: 150,
-                            width: 150,
+                            height: 130,
+                            width: 300,
                             child: ImageFromBase64String(x.slikaUsluge!.slika),
                           )
                         : Container(
                             child: Image.asset(
                               "assets/images/noImage.jpg",
                             ),
-                            height: 150,
-                            width: 150,
+                            height: 130,
+                            width: 300,
                           ),
                   ),
-                  Text(x?.naziv ?? ""),
+                  Text(
+                    x.naziv.split(' ').take(3).join(' ') ?? "",
+                    textAlign: TextAlign.center,
+                  ),
                   Text("${formatNumber(x?.cijena)}KM"),
                 ],
               ),
@@ -145,7 +148,7 @@ class _PretragaPageState extends State<PretragaPage> {
         selectedIndex: 1,
         title: "Pretraži usluge",
         child: Container(
-            height: 800,
+            // height: 800,
             width: 800,
             child: SingleChildScrollView(
                 child: Column(
@@ -165,6 +168,9 @@ class _PretragaPageState extends State<PretragaPage> {
                   ),
                 ),
                 _searchUsluge(),
+                SizedBox(
+                  height: 15,
+                ),
                 _showUsluge(),
               ],
             ))));
@@ -192,7 +198,7 @@ class _PretragaPageState extends State<PretragaPage> {
                         : Container(),
                     podusluge.result.length != 0
                         ? SizedBox(
-                            height: 20,
+                            height: 3,
                           )
                         : Container(),
                     podusluge.result.length != 0
@@ -279,26 +285,6 @@ class _PretragaPageState extends State<PretragaPage> {
                 ),
               )
             : Container(),
-        // Container(
-        //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        //   child: IconButton(
-        //     icon: Icon(Icons.search_sharp),
-        //     onPressed: () async {
-        //       List<SearchResult<Usluga>> filteredList = [];
-
-        //       for (var kat in _kategorijeResult!.result) {
-        //         var uslugeZaKategoriju = await _uslugeProvider.get(filter: {
-        //           'FTS': _searchController.text,
-        //           'kategorijaId': kat.kategorijaId
-        //         });
-        //         filteredList.add(uslugeZaKategoriju);
-        //         setState(() {
-        //           sveUsluge = filteredList;
-        //         });
-        //       }
-        //     },
-        //   ),
-        // )
       ],
     );
   }

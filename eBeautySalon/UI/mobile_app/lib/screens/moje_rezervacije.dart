@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/models/rezervacija_update.dart';
 import 'package:mobile_app/providers/status_provider.dart';
+import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/screens/rezervacija_details.dart';
+import 'package:mobile_app/screens/rezervacije_page.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +14,8 @@ import '../providers/rezervacije_provider.dart';
 import '../utils/util.dart';
 
 class MojeRezervacije extends StatefulWidget {
-  MojeRezervacije({super.key});
+  int? poslaniKorisnikId;
+  MojeRezervacije({super.key, this.poslaniKorisnikId});
 
   @override
   State<MojeRezervacije> createState() => _MojeRezervacijeState();
@@ -33,18 +36,23 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
     super.didChangeDependencies();
     _rezervacijeProvider = context.read<RezervacijeProvider>();
     _statusiProvider = context.read<StatusiProvider>();
+
     getData();
   }
 
   void getData() async {
-    var rezervacije = await _rezervacijeProvider
-        .get(filter: {'FTS': "", 'korisnikId': LoggedUser.id});
-    var statusi = await _statusiProvider.get();
-    setState(() {
-      _rezervacijeResult = rezervacije;
-      _statusResult = statusi;
-      isLoadingData = false;
-    });
+    var del = await _rezervacijeProvider.DeleteUnpaidReservactions();
+    if (del != null) {
+      var rezervacije = await _rezervacijeProvider
+          .get(filter: {'FTS': "", 'korisnikId': LoggedUser.id});
+      var statusi = await _statusiProvider.get();
+
+      setState(() {
+        _rezervacijeResult = rezervacije;
+        _statusResult = statusi;
+        isLoadingData = false;
+      });
+    }
   }
 
   var dropdown_lista = [
@@ -371,6 +379,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                         x.isArhiva,
                                         x.datumRezervacije,
                                         true,
+                                        true,
                                         true);
                                     try {
                                       var obj = await _rezervacijeProvider
@@ -422,6 +431,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                                         x.isArhiva,
                                         x.datumRezervacije,
                                         false,
+                                        true,
                                         true);
                                     try {
                                       var obj = await _rezervacijeProvider
@@ -489,6 +499,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
+        selectedIndex: widget.poslaniKorisnikId != null ? 3 : 2,
         title: "Moje rezervacije",
         child: isLoadingData == false
             ? Container(
@@ -498,7 +509,7 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
                     children: [
                       filterData == false
                           ? TextButton(
-                            child: Text("Otvori filter box"),
+                              child: Text("Otvori filter box"),
                               //icon: Icon(Icons.arrow_downward),
                               onPressed: () {
                                 setState(() {
@@ -584,15 +595,13 @@ class _MojeRezervacijeState extends State<MojeRezervacije> {
       children: [
         TextButton(
             onPressed: () {
-              // if (widget.poslaniKorisnikId != null) {
-              //   Navigator.of(context).push(MaterialPageRoute(
-              //       builder: (context) => MojiKomentariNovosti()));
-              // } else {
-              //   Navigator.of(context).push(MaterialPageRoute(
-              //       builder: (context) => NovostDetailsScreen(
-              //             novost: widget.novost,
-              //           )));
-              // }
+              if (widget.poslaniKorisnikId != null) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfilPage()));
+              } else {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => RezervacijePage()));
+              }
             },
             child: Icon(Icons.arrow_back)),
       ],

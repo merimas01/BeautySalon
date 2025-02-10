@@ -21,8 +21,23 @@ namespace eBeautySalon.Services
         {         
         }
 
+        public async Task<int> DeleteUnpaidReservations()
+        {
+            int counter = 0;
+            var unpaid_reservations = await _context.Rezervacijas.Where(x => x.Platio == false || x.Platio == null).ToListAsync();
+            foreach (var item in unpaid_reservations)
+            {
+                var rezervacija = await _context.Rezervacijas.FirstOrDefaultAsync(x => x.RezervacijaId == item.RezervacijaId);      
+                _context.Remove(rezervacija);
+                await _context.SaveChangesAsync();
+                counter++;
+            }
+            return counter;
+        }
+
         public override IQueryable<Rezervacija> AddFilter(IQueryable<Rezervacija> query, RezervacijeSearchObject? search = null)
         {
+            //query = query.Where(x => x.Platio == true);
             query = query.OrderByDescending(x => x.RezervacijaId);
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
@@ -112,7 +127,7 @@ namespace eBeautySalon.Services
             var lista_istiKorisnik = await _context.Rezervacijas.Where(x => x.KorisnikId == request.KorisnikId && x.DatumRezervacije.Date.CompareTo(request.DatumRezervacije.Date) == 0 && x.RezervacijaId != id).ToListAsync();
             var korisnici = await _context.Korisniks.FindAsync(request.KorisnikId);
 
-            if (request.arhivaZaKorisnika == true)
+            if (request.arhivaZaKorisnika == true) //ako se zeli arhivirati rezervacija
             {
                 return true;
             }

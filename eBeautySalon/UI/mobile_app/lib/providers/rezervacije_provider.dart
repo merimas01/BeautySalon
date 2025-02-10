@@ -30,8 +30,26 @@ class RezervacijeProvider extends BaseProvider<Rezervacija> {
     }
   }
 
-  Future<List<dynamic>> GetTerminiZaUsluguIDatum(int uslugaId, DateTime datum) async {
+  Future<List<dynamic>> GetTerminiZaUsluguIDatum(
+      int uslugaId, DateTime datum) async {
     var url = "${BaseProvider.baseUrl}Rezervacije/termini/$uslugaId/$datum";
+
+    print("url: $url");
+
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return data;
+    } else {
+      throw new Exception("Unknow error");
+    }
+  }
+
+  Future<int> DeleteUnpaidReservactions() async {
+    var url = "${BaseProvider.baseUrl}Rezervacije/delete_unpaid_reservations";
 
     print("url: $url");
 

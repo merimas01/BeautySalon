@@ -16,6 +16,7 @@ RezervacijaUpdate _$RezervacijaUpdateFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['datumRezervacije'] as String),
       json['statusId'] as int?,
       json['isArhiva'] as bool?,
+      json['platio'] as bool?,
     );
 
 Map<String, dynamic> _$RezervacijaUpdateToJson(RezervacijaUpdate instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$RezervacijaUpdateToJson(RezervacijaUpdate instance) =>
       'datumRezervacije': instance.datumRezervacije?.toIso8601String(),
       'statusId': instance.statusId,
       'isArhiva': instance.isArhiva,
+      'platio': instance.platio,
     };

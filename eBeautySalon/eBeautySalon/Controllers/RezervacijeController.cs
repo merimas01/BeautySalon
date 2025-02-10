@@ -48,5 +48,12 @@ namespace eBeautySalon.Controllers
         {
             return await _service.GetTermineZaUsluguIDatum(uslugaId, datum);
         }
+
+        [Authorize]
+        [HttpGet("delete_unpaid_reservations")]
+        public async Task<int> DeleteUnpaidReservations()
+        {
+            return await _service.DeleteUnpaidReservations();
+        }
     }
 }

@@ -31,5 +31,8 @@ namespace eBeautySalon.Models.Requests
         [JsonIgnore]
         public bool? IsArhivaKorisnik { get; set; } = false;
 
+        [JsonIgnore]
+        public bool? Platio { get; set; } = false;
+
     }
 }

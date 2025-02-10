@@ -29,8 +29,12 @@ namespace eBeautySalon.Models
         public virtual Usluge? Usluga { get; set; }
 
         public bool? IsArhiva { get; set; }
+        
         public bool? IsArhivaKorisnik { get; set; }
+
         public string? Sifra { get; set; }
+
+        public bool? Platio { get; set; }
 
     }
 }

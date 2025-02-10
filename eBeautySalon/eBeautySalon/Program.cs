@@ -250,7 +250,7 @@ using (var scope = app.Services.CreateScope())
             new Usluga { Naziv = "Profesionalno šminkanje", Opis="Nudimo najbolje šminkanje za mature, svadbe, slikanja...", KategorijaId = 1, Sifra = "U000001", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
             new Usluga { Naziv = "Bridal šminkanje", Opis = "Za Vas dan zelimo samo da se opustite i prepustite rukama nasih vrhunskih usluznika. Za Vas cemo se potruditi da vase lice izgleda blistavo i da se osjecate ljepse nego ikada. Nudimo Vam hidrataciju i pripremu lica, šminkanje kao i savjete za odrzavanje sminke i sretnog duha tokom dana.", KategorijaId = 1, Sifra = "U000002", SlikaUslugeId = 1, Cijena = 60, DatumKreiranja = DateTime.Now },
             new Usluga { Naziv = "Hemijsko čišćenje lica", Opis = "Nas najpoznatiji tretman čišćenja lica. Uvjerite se zasto ga ljudi toliko vole.", KategorijaId = 5, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja =DateTime.Now },
-            new Usluga { Naziv = "Njega noktiju", Opis = "Ovaj tretman ukljucuje: ciscenje i obikovanje noktiju, lakiranje, stavljanje zastitnog sloja na nokte, njega i hidratacija ruku.", KategorijaId = 3, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Njega noktiju", Opis = "Ovaj tretman ukljucuje: ciscenje i obikovanje noktiju, lakiranje, stavljanje zastitnog sloja na nokte, njega i hidratacija ruku.", KategorijaId = 3, Sifra = "U000004", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja = DateTime.Now },
             new Usluga { Naziv = "Scensko šminkanje", Opis = "Sminkanje za ples, glumu, koncerte i velike kamere.", KategorijaId = 1, Sifra = "U000005", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now }
             );
 
@@ -413,9 +413,9 @@ using (var scope = app.Services.CreateScope())
         dataContext.SaveChanges();
 
         dataContext.Rezervacijas.AddRange(
-            new Rezervacija { Sifra = "R000001", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 1, UslugaId = 2, DatumRezervacije = new DateTime(year: 2024, month: 9, day: 9), },
-            new Rezervacija { Sifra = "R000002", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 2, UslugaId = 1, DatumRezervacije = new DateTime(year: 2024, month: 10, day: 8), },
-            new Rezervacija { Sifra = "R000003", KorisnikId = 5, StatusId = 4, IsArhiva = true, IsArhivaKorisnik = false, TerminId = 3, UslugaId = 1, DatumRezervacije = new DateTime(year: 2024, month: 11, day: 6), }
+            new Rezervacija { Sifra = "R000001", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 1, UslugaId = 2, DatumRezervacije = new DateTime(year: 2024, month: 9, day: 9), Platio = true },
+            new Rezervacija { Sifra = "R000002", KorisnikId = 4, StatusId = 1, IsArhiva = false, IsArhivaKorisnik = false, TerminId = 2, UslugaId = 1, DatumRezervacije = new DateTime(year: 2024, month: 10, day: 8), Platio = true},
+            new Rezervacija { Sifra = "R000003", KorisnikId = 5, StatusId = 4, IsArhiva = true, IsArhivaKorisnik = false, TerminId = 3, UslugaId = 1, DatumRezervacije = new DateTime(year: 2024, month: 11, day: 6), Platio = true }
             );
 
         dataContext.SaveChanges();

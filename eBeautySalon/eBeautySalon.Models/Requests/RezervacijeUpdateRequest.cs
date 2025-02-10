@@ -30,5 +30,7 @@ namespace eBeautySalon.Models.Requests
 
         public bool? arhivaZaKorisnika { get; set; }
 
+        public bool? Platio { get; set; }
+
     }
 }

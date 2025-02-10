@@ -23,6 +23,8 @@ public partial class Rezervacija
 
     public bool? IsArhivaKorisnik { get; set; }
 
+    public bool? Platio { get; set; }
+
     public virtual Korisnik? Korisnik { get; set; }
 
     public virtual Status? Status { get; set; }

@@ -153,6 +153,10 @@ public partial class Ib200070Context : DbContext
         {
             entity.ToTable("NovostLikeComment");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_NovostLikeComment_KorisnikId");
+
+            entity.HasIndex(e => e.NovostId, "IX_NovostLikeComment_NovostID");
+
             entity.Property(e => e.DatumKreiranja)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

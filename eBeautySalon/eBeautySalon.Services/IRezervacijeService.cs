@@ -13,5 +13,6 @@ namespace eBeautySalon.Services
     {
         public Task<bool> OtkaziRezervaciju(int rezervacijaId);
         public Task<dynamic> GetTermineZaUsluguIDatum(int uslugaId, DateTime datum);
+        public Task<int> DeleteUnpaidReservations();
     }
 }

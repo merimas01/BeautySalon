@@ -86,6 +86,11 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
             enabled: false,
           ),
           TextFormField(
+            decoration: InputDecoration(labelText: "Cijena:"),
+            initialValue: widget.rezervacija?.usluga?.cijena.toString(),
+            enabled: false,
+          ),
+          TextFormField(
             decoration: InputDecoration(labelText: "Termin:"),
             initialValue: widget.rezervacija?.termin?.opis,
             enabled: false,
@@ -93,11 +98,6 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
           TextFormField(
             decoration: InputDecoration(labelText: "Datum:"),
             initialValue: formatDate(widget.rezervacija!.datumRezervacije!),
-            enabled: false,
-          ),
-          TextFormField(
-            decoration: InputDecoration(labelText: "Podaci o plaćanju:"),
-            initialValue: "",
             enabled: false,
           ),
           SizedBox(

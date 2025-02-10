@@ -43,6 +43,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   }
 
   void getData() async {
+    var del = await _rezervacijeProvider.DeleteUnpaidReservactions();
     var data =
         await _rezervacijeProvider.get(filter: {'FTS': '', 'isArhiva': "ne"});
     var statusi = await _statusiProvider.get();
@@ -181,8 +182,8 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   }
 
   var dropdown_lista = [
-    {'opis': 'da', 'vrijednost': true},
-    {'opis': 'ne', 'vrijednost': false}
+    {'vrijednost': 'da', 'opis': 'jest arhiva'},
+    {'vrijednost': 'ne', 'opis': 'nije arhiva'}
   ];
 
   String? selectedOpis = "ne";
@@ -204,7 +205,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
             hint: Text("Arhiva?"),
             items: dropdown_lista.map((item) {
               return DropdownMenuItem<String>(
-                value: item['opis'] as String,
+                value: item['vrijednost'] as String,
                 child: Text(item['opis'] as String),
               );
             }).toList(),
@@ -270,7 +271,8 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                               e.terminId,
                               e.datumRezervacije,
                               selectedChangeStatus?.statusId,
-                              e.isArhiva);
+                              e.isArhiva, 
+                              e.platio);
 
                           var update_status = await _rezervacijeProvider.update(
                               e.rezervacijaId!, rezervacija_update);
@@ -600,7 +602,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       return MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
           return Colors.red[100];
-        },
+        }
       );
     else if (e.status?.opis == "Otkazana")
       return MaterialStateProperty.resolveWith<Color?>(
@@ -665,7 +667,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   void _arhivirajDearhiviraj(e) async {
     var new_value_isArhiva = e.isArhiva == true ? false : true;
     var rezervacija_update = RezervacijaUpdate(e.korisnikId, e.uslugaId,
-        e.terminId, e.datumRezervacije, e.statusId, new_value_isArhiva);
+        e.terminId, e.datumRezervacije, e.statusId, new_value_isArhiva, e.platio);
     try {
       var obj = await _rezervacijeProvider.update(
           e.rezervacijaId, rezervacija_update);
@@ -743,7 +745,8 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           e.terminId,
           e.datumRezervacije,
           DEFAULT_Zavrsena_Statusid,
-          e.isArhiva);
+          e.isArhiva,
+          e.platio);
 
       var update_status = await _rezervacijeProvider.update(
           e.rezervacijaId!, rezervacija_update);

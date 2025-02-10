@@ -263,7 +263,7 @@ class _ProfilPageState extends State<ProfilPage> {
         TextButton(
             onPressed: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => MojeRezervacije()));
+                  MaterialPageRoute(builder: (context) => MojeRezervacije(poslaniKorisnikId: LoggedUser.id,)));
             },
             child: Text("Moje rezervacije"))
       ],

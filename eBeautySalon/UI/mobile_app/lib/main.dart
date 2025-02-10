@@ -244,10 +244,13 @@ class LoginPage extends StatelessWidget {
                                 if (obj != null) {
                                   var list = obj.result
                                       .where(
-                                        (korisnik) => korisnik.korisnickoIme! == Authorization.username,
+                                        (korisnik) =>
+                                            korisnik.korisnickoIme! ==
+                                            Authorization.username,
                                       )
                                       .toList();
-                                  var korisnik = list[0];
+                                  var korisnik =
+                                      list.length != 0 ? list[0] : null;
 
                                   if (korisnik != null) {
                                     LoggedUser.id = korisnik.korisnikId;
@@ -264,14 +267,42 @@ class LoginPage extends StatelessWidget {
                                     print(
                                         "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
                                     if (LoggedUser.uloga != "")
-                                      throw new Exception(
-                                          "Nedozvoljena prijava");
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                title: Text("Greška"),
+                                                content: const Text(
+                                                    "Nedozvoljena prijava. Molimo pokusajte ponovo."),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      child: Text("Ok"))
+                                                ],
+                                              ));
                                     else {
                                       Navigator.pushNamed(
                                           context, HomePage.routeName);
                                       // Navigator.of(context).push(MaterialPageRoute(
                                       //     builder: (context) => const HomePage()));
                                     }
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                              title: Text("Greška"),
+                                              content: const Text(
+                                                  "Neispravni podaci. Molimo pokusajte ponovo."),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: Text("Ok"))
+                                              ],
+                                            ));
                                   }
                                 }
                               }
@@ -281,8 +312,8 @@ class LoginPage extends StatelessWidget {
                                   builder: (BuildContext context) =>
                                       AlertDialog(
                                         title: Text("Greška"),
-                                        content: Text(
-                                            "Molimo pokusajte ponovo. ${e.toString()}"),
+                                        content: const Text(
+                                            "Nešto loše se dogodilo. Molimo pokusajte ponovo."),
                                         actions: [
                                           TextButton(
                                               onPressed: () =>

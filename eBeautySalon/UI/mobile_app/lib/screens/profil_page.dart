@@ -139,7 +139,7 @@ class _ProfilPageState extends State<ProfilPage> {
                               clipBehavior: Clip.antiAlias,
                               child: Image.memory(
                                 displayCurrentImage(),
-                                width: null,
+                                width: 300,
                                 height: 250,
                                 fit: BoxFit.cover,
                               ),
@@ -152,7 +152,7 @@ class _ProfilPageState extends State<ProfilPage> {
                               child: Image.asset(
                                 "assets/images/noImage.jpg",
                                 height: 250,
-                                width: null,
+                                width: 300,
                                 fit: BoxFit.cover,
                               ),
                             ),

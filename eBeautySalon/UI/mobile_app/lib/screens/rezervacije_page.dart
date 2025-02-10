@@ -222,7 +222,7 @@ class _RezervacijePageState extends State<RezervacijePage> {
           child: Center(
             child: Column(
               children: [
-                Text(
+                const Text(
                   "*Prvo izaberite datum koji želite rezervisati. Potom izaberite uslugu, zatim termin odnosno vrijeme u kojem želite biti usluženi." +
                       "\nNapomena: Možete zakazati samo jednu uslugu na jedan dan.",
                   style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
@@ -357,7 +357,7 @@ class _RezervacijePageState extends State<RezervacijePage> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: Text("Ups!"),
-              content: Text(
+              content: const Text(
                   "Nije dozvoljeno rezervisati više od jednu uslugu na jedan dan. Provjerite Vaše rezervacije i pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
@@ -374,7 +374,7 @@ class _RezervacijePageState extends State<RezervacijePage> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška!"),
-              content: Text(
+              content: const Text(
                   "Niste selektirali sve podatke potrebne za rezervaciju. Pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
@@ -394,7 +394,7 @@ class _RezervacijePageState extends State<RezervacijePage> {
             MaterialPageRoute(
               builder: (context) => PayPalScreen(
                 lastRezervacija: lastRezervacija,
-                totalAmount: lastRezervacija!.usluga!.cijena!, 
+                totalAmount: lastRezervacija!.usluga!.cijena!,
               ),
             ),
           );
@@ -405,7 +405,6 @@ class _RezervacijePageState extends State<RezervacijePage> {
             isLoadingTermin = true;
             terminiZaUslugu = [];
             selectedDate = null;
-            lastRezervacija = null;
           });
         },
         child: Text("Izvrši plaćanje"));

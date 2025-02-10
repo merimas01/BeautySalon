@@ -215,7 +215,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   DataCell(Text("${item['usluznik'].korisnik?.ime ?? ""}")),
                   DataCell(Text(item['objekat'] != null
                       ? "${item['objekat']['prosjecnaOcjena']} (${item['objekat']['sveOcjene'].length})"
-                      : "-")),
+                      : "0")),
                   DataCell(
                     TextButton(
                       style: TextButton.styleFrom(

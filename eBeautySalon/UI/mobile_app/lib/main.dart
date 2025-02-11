@@ -273,7 +273,7 @@ class LoginPage extends StatelessWidget {
                                               AlertDialog(
                                                 title: Text("Greška"),
                                                 content: const Text(
-                                                    "Nedozvoljena prijava. Molimo pokusajte ponovo."),
+                                                    "Nedozvoljena prijava. Molimo pokušajte ponovo."),
                                                 actions: [
                                                   TextButton(
                                                       onPressed: () =>
@@ -295,7 +295,7 @@ class LoginPage extends StatelessWidget {
                                             AlertDialog(
                                               title: Text("Greška"),
                                               content: const Text(
-                                                  "Neispravni podaci. Molimo pokusajte ponovo."),
+                                                  "Neispravni podaci. Molimo pokušajte ponovo."),
                                               actions: [
                                                 TextButton(
                                                     onPressed: () =>

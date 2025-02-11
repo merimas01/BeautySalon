@@ -230,40 +230,67 @@ class LoginPage extends StatelessWidget {
 
                               if (val) {
                                 var obj = await _korisnikProvider.get();
-                                var korisnik = await obj.result.firstWhere(
-                                    (korisnik) => korisnik.korisnickoIme!
-                                        .startsWith(Authorization.username!));
-                                LoggedUser.id = korisnik.korisnikId;
-                                LoggedUser.slika = korisnik.slikaProfila?.slika;
-                                LoggedUser.ime = korisnik.ime;
-                                LoggedUser.prezime = korisnik.prezime;
-                                LoggedUser.uloga =
-                                    korisnik.korisnikUlogas?.length != 0
-                                        ? korisnik
-                                            .korisnikUlogas![0].uloga!.naziv
-                                        : "";
+                                if (obj != null) {
+                                  var list = obj.result
+                                      .where(
+                                        (korisnik) =>
+                                            korisnik.korisnickoIme! ==
+                                            Authorization.username,
+                                      )
+                                      .toList();
+                                  var korisnik =
+                                      list.length != 0 ? list[0] : null;
 
-                                print(
-                                    "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
+                                  if (korisnik != null) {
+                                    LoggedUser.id = korisnik.korisnikId;
+                                    LoggedUser.slika =
+                                        korisnik.slikaProfila?.slika;
+                                    LoggedUser.ime = korisnik.ime;
+                                    LoggedUser.prezime = korisnik.prezime;
+                                    LoggedUser.uloga =
+                                        korisnik.korisnikUlogas?.length != 0
+                                            ? korisnik
+                                                .korisnikUlogas![0].uloga!.naziv
+                                            : "";
 
-                                if (LoggedUser.uloga == "")
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                            title: Text("Greška"),
-                                            content: Text(
-                                                "Nedozvoljena prijava. Molimo pokušajte ponovo."),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: Text("Ok"))
-                                            ],
-                                          ));
-                                else {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => const HomePage()));
+                                    print(
+                                        "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
+                                    if (LoggedUser.uloga != "Administrator")
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                title: Text("Greška"),
+                                                content: const Text(
+                                                    "Nedozvoljena prijava. Molimo pokušajte ponovo."),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      child: Text("Ok"))
+                                                ],
+                                              ));
+                                    else {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (context) => const HomePage()));
+                                    }
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                              title: Text("Greška"),
+                                              content: const Text(
+                                                  "Neispravni podaci. Molimo pokušajte ponovo."),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: Text("Ok"))
+                                              ],
+                                            ));
+                                  }
                                 }
                               }
                             } on Exception catch (e) {

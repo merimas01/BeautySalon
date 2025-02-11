@@ -363,7 +363,7 @@ using (var scope = app.Services.CreateScope())
         dataContext.ZaposlenikUslugas.AddRange(
             new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 1 },
             new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 2 },
-            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 3 },
+            new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 3 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 2 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 4 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 5 }

@@ -476,7 +476,7 @@ class _HomePageState extends State<HomePage> {
                 TextSpan(
                   text: '\nRecenzije daju uvid u poslovanje našeg salona, stoga su jako bitne. Na narednim slikama, prikazani su štapićasti dijagami sa prosječnim ocjenama usluga/uslužnika.' +
                       ' Ukoliko pređete kursorom preko štapića, vidjet ćete naziv usluge/uslužnika i njihove prosječne ocjene. ' +
-                      ' Detaljnije informacije o svakom dijagramu se nalaze u pdf dokumentima koje možete odmah preuzeti. ' +
+                      'Detaljnije informacije o svakom dijagramu se nalaze u pdf dokumentima koje možete odmah preuzeti. ' +
                       'Pojedinačne recenzije od svakog korisnika se mogu vidjeti pritiskom na dugme ispod.',
                   style: TextStyle(
                     fontWeight: FontWeight.w300,
@@ -771,7 +771,7 @@ class _HomePageState extends State<HomePage> {
                 "U sljedećoj tabeli prikazane su sve ocijenjivane usluge, sa svim ocijenama koje imaju. Prikazana je i prosječna ocjena za svaku od njih.",
                 textAlign: pw.TextAlign.justify,
                 style: pw.TextStyle(
-                  fontSize: 15,
+                  fontSize: 12,
                   fontWeight: pw.FontWeight.normal,
                   font: ttf,
                 ),

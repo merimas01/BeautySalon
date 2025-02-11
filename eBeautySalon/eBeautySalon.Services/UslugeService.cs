@@ -11,6 +11,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Trainers;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace eBeautySalon.Services
 {
@@ -114,5 +118,91 @@ namespace eBeautySalon.Services
         {
             entity.Sifra = "U" + entity.UslugaId.ToString("D6");
         }
+
+        static MLContext mLContext = null;
+        static object isLocked = new object();
+        static ITransformer model = null;
+
+        public async Task<List<Models.Usluge>> Recommend(int uslugaId)
+        {
+            lock (isLocked)
+            {
+                if (mLContext == null)
+                {
+                    mLContext = new MLContext();
+                    var tempData = _context.RecenzijaUsluges.Include(x => x.Korisnik).Include(x => x.Usluga.SlikaUsluge).ToList();
+                    var data = new List<UslugaEntry>();
+                    foreach(var rec in tempData)
+                    {
+                        foreach (var item in tempData)
+                        {
+                            if (item.KorisnikId == rec.KorisnikId && item.UslugaId != rec.UslugaId)
+                            {
+                                data.Add(new UslugaEntry { UslugaId = (uint)rec.UslugaId, CoUsluga_Id = (uint)item.UslugaId });
+                            }
+                        }
+                    }
+
+                    var trainData = mLContext.Data.LoadFromEnumerable(data);
+
+                    MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
+                    options.MatrixColumnIndexColumnName = nameof(UslugaEntry.UslugaId);
+                    options.MatrixRowIndexColumnName = nameof(UslugaEntry.CoUsluga_Id);
+                    options.LabelColumnName = "Label";
+                    options.LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass;
+                    options.Alpha = 0.01;
+                    options.Lambda = 0.025;
+                    // For better results use the following parameters
+                    options.NumberOfIterations = 100;
+                    options.C = 0.00001;
+
+                    var est = mLContext.Recommendation().Trainers.MatrixFactorization(options);
+                    model = est.Fit(trainData);
+
+                }
+            }
+
+            //prediction
+
+            var usluge = _context.Uslugas.Include(x=>x.SlikaUsluge).Include(x=>x.Kategorija).Where(x => x.UslugaId != uslugaId);
+
+            var predictionResult = new List<Tuple<Database.Usluga, float>>(); //onaj koji ima najveci score, njega uzimamo
+
+            foreach(var usluga in usluge)
+            {
+                var predictionengine = mLContext.Model.CreatePredictionEngine<UslugaEntry, CoUsluga_Prediction>(model);
+                var prediction = predictionengine.Predict(
+                                         new UslugaEntry()
+                                         {
+                                             UslugaId = (uint)uslugaId,
+                                             CoUsluga_Id = (uint)usluga.UslugaId
+                                         });
+
+
+                predictionResult.Add(new Tuple<Database.Usluga, float>(usluga, prediction.Score));
+            }
+
+            //order by score - najveci skor ce biti u prvom redu
+            var finalResult = predictionResult.OrderByDescending(x => x.Item2).Select(x => x.Item1).Take(3).ToList();
+
+            return _mapper.Map<List<Models.Usluge>>(finalResult);
+
+        }
+    }
+
+    public class CoUsluga_Prediction
+    {
+        public float Score { get; set; }
+    }
+
+    public class UslugaEntry
+    {
+        [KeyType(count:10)] //daje hint ml .netu koliku matricu treba da napravi, 10x10
+        public uint UslugaId { get; set; }
+
+        [KeyType(count: 10)]
+        public uint CoUsluga_Id { get; set; }
+
+        public float Label { get; set; }
     }
 }

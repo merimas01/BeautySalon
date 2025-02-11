@@ -272,8 +272,10 @@ class LoginPage extends StatelessWidget {
                                                 ],
                                               ));
                                     else {
-                                      Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (context) => const HomePage()));
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomePage()));
                                     }
                                   } else {
                                     showDialog(

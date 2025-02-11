@@ -11,8 +11,10 @@ namespace eBeautySalon.Controllers
     [Route("api/[controller]")]
     public class UslugeController : BaseCRUDController<Usluge,UslugeSearchObject,UslugeInsertRequest,UslugeUpdateRequest>
     {
+        IUslugeService _service;
         public UslugeController(ILogger<BaseCRUDController<Usluge, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest>> logger, IUslugeService service) :base(logger,service)
         {
+            _service = service;
         }
 
         [Authorize(Roles = "Administrator")]
@@ -31,6 +33,13 @@ namespace eBeautySalon.Controllers
         public override Task<bool> Delete(int id)
         {
             return base.Delete(id);
+        }
+
+        [Authorize]
+        [HttpGet("recommend/{uslugaId}")]
+        public async Task<List<Models.Usluge>> Recommend(int uslugaId)
+        {
+            return await _service.Recommend(uslugaId);
         }
     }
 }

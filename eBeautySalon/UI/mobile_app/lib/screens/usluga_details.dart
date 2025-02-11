@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/models/zaposlenik.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
+import 'package:mobile_app/providers/usluge_provider.dart';
 import 'package:mobile_app/providers/zaposlenici_provider.dart';
 import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/sve_recenzije_usluge.dart';
@@ -24,7 +25,9 @@ class _UslugaDetailsState extends State<UslugaDetails> {
   late ZaposleniciProvider _zaposleniciProvider;
   late RecenzijaUslugeProvider _recenzijaUslugeProvider;
   late RecenzijaUsluznikaProvider _recenzijaUsluznikaProvider;
+  late UslugeProvider _uslugeProvider;
   SearchResult<Zaposlenik>? _resultZaposlenici;
+  List<Usluga> recommendLista = [];
   List<dynamic> listProsjecneOcjeneUsluga = [];
   List<dynamic> listProsjecneOcjeneUsluznika = [];
   bool isLoading = true;
@@ -36,6 +39,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     _zaposleniciProvider = context.read<ZaposleniciProvider>();
     _recenzijaUslugeProvider = context.read<RecenzijaUslugeProvider>();
     _recenzijaUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
+    _uslugeProvider = context.read<UslugeProvider>();
 
     loadData();
   }
@@ -45,11 +49,13 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     var usluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
     var zaposlenici = await _zaposleniciProvider
         .get(filter: {'uslugaId': widget.usluga?.uslugaId});
+    var recommend = await _uslugeProvider.Recommend(widget.usluga!.uslugaId);
 
     setState(() {
       listProsjecneOcjeneUsluga = usluge;
       listProsjecneOcjeneUsluznika = usluznici;
       _resultZaposlenici = zaposlenici;
+      recommendLista = recommend;
     });
 
     if (usluge.length != 0 && usluznici.length != 0 && zaposlenici != 0) {
@@ -158,12 +164,20 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   ),
                   _createTableUsluznci(),
                   SizedBox(
+                    height: 20,
+                  ),
+                  recommendLista.length != 0
+                      ? Text(
+                          "Predlažemo Vam da pogledate sljedeće usluge:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      : SizedBox.shrink(),
+                  SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    "Recommender...",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
+                  recommendLista.length != 0
+                      ? getRecommendedUsluge(recommendLista)
+                      : SizedBox.shrink(),
                 ]),
               ),
             ))
@@ -321,5 +335,71 @@ class _UslugaDetailsState extends State<UslugaDetails> {
             child: Icon(Icons.arrow_back)),
       ],
     );
+  }
+
+  getRecommendedUsluge(data) {
+    return data.length != 0
+        ? Container(
+            height: 200,
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 4 / 3,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 20),
+              scrollDirection: Axis.horizontal,
+              children: _buildUslugaList(data),
+            ),
+          )
+        : Container(
+            child: Text("Nema rezultata za trazenu uslugu."),
+          );
+  }
+
+  List<Widget> _buildUslugaList(data) {
+    if (data.length == 0) {
+      return [Text("nema nijedna preporucena usluga.")];
+    }
+
+    List<Widget> list = data
+        .map((x) => Container(
+              key: ValueKey(x.uslugaId),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => UslugaDetails(
+                                usluga: x,
+                              )));
+                    },
+                    child: x.slikaUsluge != null &&
+                            x.slikaUsluge?.slika != null &&
+                            x.slikaUsluge?.slika != ""
+                        ? Container(
+                            height: 130,
+                            width: 300,
+                            child: ImageFromBase64String(x.slikaUsluge!.slika),
+                          )
+                        : Container(
+                            child: Image.asset(
+                              "assets/images/noImage.jpg",
+                            ),
+                            height: 130,
+                            width: 300,
+                          ),
+                  ),
+                  Text(
+                    x.naziv.split(' ').take(3).join(' ') ?? "",
+                    textAlign: TextAlign.center,
+                  ),
+                  Text("${formatNumber(x?.cijena)}KM"),
+                ],
+              ),
+            ))
+        .cast<Widget>()
+        .toList();
+
+    return list;
   }
 }

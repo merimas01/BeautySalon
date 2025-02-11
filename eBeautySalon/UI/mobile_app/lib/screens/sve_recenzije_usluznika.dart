@@ -318,7 +318,7 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
               content:
-                  Text("Nije zadovoljena validacija. Molimo pokušajte ponovo."),
+                  Text("Trebate dati ocjenu i zadovoljiti validaciju komentara. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
                     onPressed: () {

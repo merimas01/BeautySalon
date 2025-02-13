@@ -123,24 +123,30 @@ namespace eBeautySalon.Services
         static object isLocked = new object();
         static ITransformer model = null;
 
-        public async Task<List<Models.Usluge>> Recommend(int uslugaId)
+        public async Task<List<Models.Usluge>> Recommend(int uslugaId, int korisnikId)
         {
             lock (isLocked)
             {
                 if (mLContext == null)
                 {
                     mLContext = new MLContext();
-                    var tempData = _context.RecenzijaUsluges.Include(x => x.Korisnik).Include(x => x.Usluga.SlikaUsluge).ToList();
+                    var tmp = _context.Rezervacijas.Include(x => x.Usluga).ToList();
+                    var tempData = _context.RecenzijaUsluges.Include(x => x.Korisnik).Include(x => x.Usluga.Kategorija).ToList();
+                    var uslugeList = _context.Uslugas.Include(x => x.Kategorija).ToList();
                     var data = new List<UslugaEntry>();
-                    foreach(var rec in tempData)
+                 
+                    foreach (var rec in tempData)
                     {
-                        foreach (var item in tempData)
+                        if (rec.KorisnikId == korisnikId)
                         {
-                            if (item.KorisnikId == rec.KorisnikId && item.UslugaId != rec.UslugaId)
+                            foreach (var item in uslugeList)
                             {
-                                data.Add(new UslugaEntry { UslugaId = (uint)rec.UslugaId, CoUsluga_Id = (uint)item.UslugaId });
+                                if (item.UslugaId != rec.UslugaId && item.KategorijaId == rec.Usluga.KategorijaId)
+                                {
+                                    data.Add(new UslugaEntry { UslugaId = (uint)rec.UslugaId, CoUsluga_Id = (uint)item.UslugaId });
+                                }
                             }
-                        }
+                        }                      
                     }
 
                     var trainData = mLContext.Data.LoadFromEnumerable(data);
@@ -158,7 +164,6 @@ namespace eBeautySalon.Services
 
                     var est = mLContext.Recommendation().Trainers.MatrixFactorization(options);
                     model = est.Fit(trainData);
-
                 }
             }
 
@@ -171,6 +176,7 @@ namespace eBeautySalon.Services
             foreach(var usluga in usluge)
             {
                 var predictionengine = mLContext.Model.CreatePredictionEngine<UslugaEntry, CoUsluga_Prediction>(model);
+
                 var prediction = predictionengine.Predict(
                                          new UslugaEntry()
                                          {
@@ -180,12 +186,15 @@ namespace eBeautySalon.Services
 
 
                 predictionResult.Add(new Tuple<Database.Usluga, float>(usluga, prediction.Score));
+
             }
 
             //order by score - najveci skor ce biti u prvom redu
-            var finalResult = predictionResult.OrderByDescending(x => x.Item2).Select(x => x.Item1).Take(3).ToList();
+            var result = predictionResult;
+            var finalResult = predictionResult.OrderByDescending(x => x.Item2).Select(x => x.Item1);
+            var res = finalResult.Take(3).ToList();
 
-            return _mapper.Map<List<Models.Usluge>>(finalResult);
+            return _mapper.Map<List<Models.Usluge>>(res);
 
         }
     }
@@ -197,12 +206,12 @@ namespace eBeautySalon.Services
 
     public class UslugaEntry
     {
-        [KeyType(count:10)] //daje hint ml .netu koliku matricu treba da napravi, 10x10
+        [KeyType(count:100)] //daje hint ml .netu koliku matricu treba da napravi, 10x10
         public uint UslugaId { get; set; }
 
-        [KeyType(count: 10)]
+        [KeyType(count: 100)]
         public uint CoUsluga_Id { get; set; }
 
-        public float Label { get; set; }
+        public float Label { get; set; } 
     }
 }

@@ -36,10 +36,10 @@ namespace eBeautySalon.Controllers
         }
 
         [Authorize]
-        [HttpGet("recommend/{uslugaId}")]
-        public async Task<List<Models.Usluge>> Recommend(int uslugaId)
+        [HttpGet("recommend/{uslugaId}/{korisnikId}")]
+        public async Task<List<Models.Usluge>> Recommend(int uslugaId, int korisnikId)
         {
-            return await _service.Recommend(uslugaId);
+            return await _service.Recommend(uslugaId, korisnikId);
         }
     }
 }

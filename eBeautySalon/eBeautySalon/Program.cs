@@ -221,6 +221,70 @@ using (var scope = app.Services.CreateScope())
             LozinkaHash = hash1,
             LozinkaSalt = salt1,
             SlikaProfilaId = 1
+        },
+        new Korisnik
+        {
+            DatumKreiranja = new DateTime(year: 2024, month: 1, day: 3),
+            DatumModifikovanja = null,
+            Email = "alisa.alic@gmail.com",
+            Ime = "Alisa",
+            Prezime = "Alic",
+            IsAdmin = false,
+            KorisnickoIme = "alisa",
+            Sifra = "USR000007",
+            Status = true,
+            Telefon = "062 514 610",
+            LozinkaHash = hash1,
+            LozinkaSalt = salt1,
+            SlikaProfilaId = 1
+        },
+        new Korisnik
+        {
+            DatumKreiranja = new DateTime(year: 2024, month: 1, day: 3),
+            DatumModifikovanja = null,
+            Email = "sabrina.mujkic@gmail.com",
+            Ime = "Sabrina",
+            Prezime = "Mujkic",
+            IsAdmin = false,
+            KorisnickoIme = "sabrina",
+            Sifra = "USR000008",
+            Status = true,
+            Telefon = "062 114 790",
+            LozinkaHash = hash1,
+            LozinkaSalt = salt1,
+            SlikaProfilaId = 1
+        },
+        new Korisnik
+        {
+            DatumKreiranja = new DateTime(year: 2024, month: 1, day: 3),
+            DatumModifikovanja = null,
+            Email = "melina.melic@gmail.com",
+            Ime = "Melina",
+            Prezime = "Melic",
+            IsAdmin = false,
+            KorisnickoIme = "melina",
+            Sifra = "USR000009",
+            Status = true,
+            Telefon = "062 111 888",
+            LozinkaHash = hash1,
+            LozinkaSalt = salt1,
+            SlikaProfilaId = 1
+        },
+        new Korisnik
+        {
+            DatumKreiranja = new DateTime(year: 2024, month: 1, day: 3),
+            DatumModifikovanja = null,
+            Email = "ferisa.feric@gmail.com",
+            Ime = "Ferisa",
+            Prezime = "Feric",
+            IsAdmin = false,
+            KorisnickoIme = "ferisa",
+            Sifra = "USR000010",
+            Status = true,
+            Telefon = "062 634 098",
+            LozinkaHash = hash1,
+            LozinkaSalt = salt1,
+            SlikaProfilaId = 1
         }
      );
 
@@ -230,7 +294,11 @@ using (var scope = app.Services.CreateScope())
             new KorisnikUloga { UlogaId = 1, KorisnikId = 1, DatumIzmjene = DateTime.Now },
             new KorisnikUloga { UlogaId = 2, KorisnikId = 2, DatumIzmjene = DateTime.Now },
             new KorisnikUloga { UlogaId = 3, KorisnikId = 3, DatumIzmjene = DateTime.Now },
-            new KorisnikUloga { UlogaId = 2, KorisnikId = 6, DatumIzmjene = DateTime.Now }
+            new KorisnikUloga { UlogaId = 2, KorisnikId = 6, DatumIzmjene = DateTime.Now },
+            new KorisnikUloga { UlogaId = 2, KorisnikId = 7, DatumIzmjene = DateTime.Now },
+            new KorisnikUloga { UlogaId = 2, KorisnikId = 8, DatumIzmjene = DateTime.Now },
+            new KorisnikUloga { UlogaId = 2, KorisnikId = 9, DatumIzmjene = DateTime.Now },
+            new KorisnikUloga { UlogaId = 2, KorisnikId = 10, DatumIzmjene = DateTime.Now }
             );
 
         dataContext.SaveChanges();
@@ -251,7 +319,20 @@ using (var scope = app.Services.CreateScope())
             new Usluga { Naziv = "Bridal šminkanje", Opis = "Za Vas dan zelimo samo da se opustite i prepustite rukama nasih vrhunskih usluznika. Za Vas cemo se potruditi da vase lice izgleda blistavo i da se osjecate ljepse nego ikada. Nudimo Vam hidrataciju i pripremu lica, šminkanje kao i savjete za odrzavanje sminke i sretnog duha tokom dana.", KategorijaId = 1, Sifra = "U000002", SlikaUslugeId = 1, Cijena = 60, DatumKreiranja = DateTime.Now },
             new Usluga { Naziv = "Hemijsko čišćenje lica", Opis = "Nas najpoznatiji tretman čišćenja lica. Uvjerite se zasto ga ljudi toliko vole.", KategorijaId = 5, Sifra = "U000003", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja =DateTime.Now },
             new Usluga { Naziv = "Njega noktiju", Opis = "Ovaj tretman ukljucuje: ciscenje i obikovanje noktiju, lakiranje, stavljanje zastitnog sloja na nokte, njega i hidratacija ruku.", KategorijaId = 3, Sifra = "U000004", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja = DateTime.Now },
-            new Usluga { Naziv = "Scensko šminkanje", Opis = "Sminkanje za ples, glumu, koncerte i velike kamere.", KategorijaId = 1, Sifra = "U000005", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now }
+            new Usluga { Naziv = "Scensko šminkanje", Opis = "Sminkanje za ples, glumu, koncerte i velike kamere.", KategorijaId = 1, Sifra = "U000005", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Festivalsko šminkanje", Opis = "Šminka za posebne prigode, za festivale, karnevale, balove, halloween i ostale slične događaje. Čekaju Vas masterpiece umjetnici za Vaše lice!", KategorijaId = 1, Sifra = "U000006", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Spray ten", Opis = "Želite preplanuli ten, bez oštećenja tijela i narandžaste ili šarene boje? Na pravom ste mjestu. Vaše želje će biti ispunjene za tili čas.", KategorijaId = 6, Sifra = "U000007", SlikaUslugeId = 1, Cijena = 35, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Kratka frizura", Opis = "Šišanje na kratko po inspiraciji slavne Marlyn Monroe. Istaknite svoju ženstvenost ovakvom jednom frizurom!", KategorijaId = 2, Sifra = "U000008", SlikaUslugeId = 1, Cijena = 30, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Pramenovi", Opis = "opis", KategorijaId = 2, Sifra = "U000009", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },              
+            new Usluga { Naziv = "Epilacija", Opis = "opis", KategorijaId = 6, Sifra = "U000010", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Masaza", Opis = "opis", KategorijaId = 6, Sifra = "U000011", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Lash lift", Opis = "opis", KategorijaId = 5, Sifra = "U000012", SlikaUslugeId = 1, Cijena = 50, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Henna brows", Opis = "opis", KategorijaId = 5, Sifra = "U000013", SlikaUslugeId = 1, Cijena = 40, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Mehanicko ciscenje lica", Opis = "opis", KategorijaId = 5, Sifra = "U000014", SlikaUslugeId = 1, Cijena = 45, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Farbanje", Opis = "opis", KategorijaId = 2, Sifra = "U000015", SlikaUslugeId = 1, Cijena = 80, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Svecane frizure", Opis = "opis", KategorijaId = 2, Sifra = "U000016", SlikaUslugeId = 1, Cijena = 30, DatumKreiranja = DateTime.Now },
+            new Usluga { Naziv = "Kana", Opis = "opis", KategorijaId = 6, Sifra = "U000017", SlikaUslugeId = 1, Cijena = 40, DatumKreiranja = DateTime.Now }
+
             );
 
         dataContext.SaveChanges();
@@ -321,11 +402,27 @@ using (var scope = app.Services.CreateScope())
 
         dataContext.SaveChanges();
 
-        dataContext.RecenzijaUsluges.AddRange( 
+        dataContext.RecenzijaUsluges.AddRange(
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 15, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 4 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 16, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 17, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 4 },
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 1, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 2, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 2, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 3 },
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 1, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Prosjek", Ocjena = 3 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 2, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Može bolje", Ocjena = 4 }
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 2, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Može bolje", Ocjena = 1 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 3, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 4, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 5, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 4 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 6, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 4 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 9, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Onako", Ocjena = 3 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 10, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 7, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 3 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 8, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 4 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 11, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 12, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 1 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 13, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 2 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 14, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 }
+           
             );
 
         dataContext.SaveChanges();
@@ -339,7 +436,6 @@ using (var scope = app.Services.CreateScope())
                 DatumKreiranja = DateTime.Now,
                 Biografija = "Iskusan u svom poslu. Jako kreativan. Zavrsio umjetnicku skolu."
             }, //usluznik
-
             new Zaposlenik
             {
                 DatumRodjenja = new DateTime(year: 1999, month: 8, day: 7),
@@ -348,14 +444,47 @@ using (var scope = app.Services.CreateScope())
                 DatumKreiranja = DateTime.Now,
                 Biografija = "Izvrstan radnik, organizovana do srzi, posvecena maksimalno i uziva u tome sto radi."
             },//rezervacioner
-              new Zaposlenik
-              {
-                  DatumRodjenja = new DateTime(year: 1995, month: 6, day: 8),
-                  DatumZaposlenja = DateTime.Now,
-                  KorisnikId = 6,
-                  DatumKreiranja = DateTime.Now,
-                  Biografija = "Svestrana, disciplinovana, brzih i spretnih ruku. Majstor svog zanata u svakom smislu te rijeci."
-              } //usluznik
+            new Zaposlenik
+            {
+                DatumRodjenja = new DateTime(year: 1995, month: 6, day: 8),
+                DatumZaposlenja = DateTime.Now,
+                KorisnikId = 6,
+                DatumKreiranja = DateTime.Now,
+                Biografija = "Svestrana, disciplinovana, brzih i spretnih ruku. Majstor svog zanata u svakom smislu te rijeci."
+            }, //usluznik
+            new Zaposlenik
+            {
+                DatumRodjenja = new DateTime(year: 1995, month: 7, day: 12),
+                DatumZaposlenja = DateTime.Now,
+                KorisnikId = 7,
+                DatumKreiranja = DateTime.Now,
+                Biografija = "Odlikuje je nevjerovatna kreativnost i ljubav prema tome sto radi."
+            }, //usluznik
+            new Zaposlenik
+            {
+                DatumRodjenja = new DateTime(year: 1995, month: 10, day: 1),
+                DatumZaposlenja = DateTime.Now,
+                KorisnikId = 8,
+                DatumKreiranja = DateTime.Now,
+                Biografija = "Ne samo sto je pozitivna i drustvena osoba, ona je i spretnih ruku i brzo uspijeva da popravi raspolozenje svakoga ko stupi u kontakt s njom."
+            }, //usluznik
+            new Zaposlenik
+            {
+                DatumRodjenja = new DateTime(year: 1995, month: 10, day: 1),
+                DatumZaposlenja = DateTime.Now,
+                KorisnikId = 9,
+                DatumKreiranja = DateTime.Now,
+                Biografija = "Bezvremenska umjetnica"
+            }, //usluznik
+            new Zaposlenik
+            {
+                DatumRodjenja = new DateTime(year: 1995, month: 10, day: 1),
+                DatumZaposlenja = DateTime.Now,
+                KorisnikId = 10,
+                DatumKreiranja = DateTime.Now,
+                Biografija = "Najbolja u svom poslu."
+            }//usluznik
+
             );
 
         dataContext.SaveChanges();
@@ -366,7 +495,20 @@ using (var scope = app.Services.CreateScope())
             new ZaposlenikUsluga { ZaposlenikId = 1, DatumKreiranja = DateTime.Now, UslugaId = 3 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 2 },
             new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 4 },
-            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 5 }
+            new ZaposlenikUsluga { ZaposlenikId = 3, DatumKreiranja = DateTime.Now, UslugaId = 5 },
+            new ZaposlenikUsluga { ZaposlenikId = 4, DatumKreiranja = DateTime.Now, UslugaId = 6 },
+            new ZaposlenikUsluga { ZaposlenikId = 4, DatumKreiranja = DateTime.Now, UslugaId = 8 },
+            new ZaposlenikUsluga { ZaposlenikId = 4, DatumKreiranja = DateTime.Now, UslugaId = 9 },
+            new ZaposlenikUsluga { ZaposlenikId = 5, DatumKreiranja = DateTime.Now, UslugaId = 7 },
+            new ZaposlenikUsluga { ZaposlenikId = 5, DatumKreiranja = DateTime.Now, UslugaId = 10 },
+            new ZaposlenikUsluga { ZaposlenikId = 5, DatumKreiranja = DateTime.Now, UslugaId = 11 },
+            new ZaposlenikUsluga { ZaposlenikId = 6, DatumKreiranja = DateTime.Now, UslugaId = 12 },
+            new ZaposlenikUsluga { ZaposlenikId = 6, DatumKreiranja = DateTime.Now, UslugaId = 13 },
+            new ZaposlenikUsluga { ZaposlenikId = 6, DatumKreiranja = DateTime.Now, UslugaId = 14 },
+            new ZaposlenikUsluga { ZaposlenikId = 7, DatumKreiranja = DateTime.Now, UslugaId = 15 },
+            new ZaposlenikUsluga { ZaposlenikId = 7, DatumKreiranja = DateTime.Now, UslugaId = 16 },
+            new ZaposlenikUsluga { ZaposlenikId = 7, DatumKreiranja = DateTime.Now, UslugaId = 17 }
+
             );
 
         dataContext.SaveChanges();
@@ -407,7 +549,32 @@ using (var scope = app.Services.CreateScope())
             new UslugaTermin { UslugaId = 4, TerminId = 1, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 4, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
             new UslugaTermin { UslugaId = 5, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
-            new UslugaTermin { UslugaId = 5, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true }
+            new UslugaTermin { UslugaId = 5, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 6, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 7, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 8, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 9, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 10, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 11, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 12, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 13, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 14, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 15, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 16, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 17, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 6, TerminId = 3, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 7, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 8, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 9, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 10, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 11, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 12, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 13, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 14, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 15, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 16, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true },
+            new UslugaTermin { UslugaId = 17, TerminId = 2, DatumIzmjene = DateTime.Now, IsPrikazan = true }
+
             );
 
         dataContext.SaveChanges();

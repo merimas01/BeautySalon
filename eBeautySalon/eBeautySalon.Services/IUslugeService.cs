@@ -12,6 +12,6 @@ namespace eBeautySalon.Services
 {
     public interface IUslugeService : ICRUDService<Usluge, UslugeSearchObject, UslugeInsertRequest, UslugeUpdateRequest>
     {
-        Task<List<Models.Usluge>> Recommend(int uslugaId);
+        Task<List<Models.Usluge>> Recommend(int uslugaId, int korisnikId);
     }
 }

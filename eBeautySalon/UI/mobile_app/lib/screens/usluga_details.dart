@@ -49,7 +49,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     var usluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
     var zaposlenici = await _zaposleniciProvider
         .get(filter: {'uslugaId': widget.usluga?.uslugaId});
-    var recommend = await _uslugeProvider.Recommend(widget.usluga!.uslugaId);
+    var recommend = await _uslugeProvider.Recommend(widget.usluga!.uslugaId, LoggedUser.id);
 
     setState(() {
       listProsjecneOcjeneUsluga = usluge;

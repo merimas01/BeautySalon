@@ -13,8 +13,8 @@ class UslugeProvider extends BaseProvider<Usluga> {
     return Usluga.fromJson(data);
   }
 
-  Future<List<Usluga>> Recommend(uslugaId) async {
-    var url = "${BaseProvider.baseUrl}Usluge/recommend/$uslugaId";
+  Future<List<Usluga>> Recommend(uslugaId, korisnikId) async {
+    var url = "${BaseProvider.baseUrl}Usluge/recommend/$uslugaId/$korisnikId";
 
     print("url: $url");
 

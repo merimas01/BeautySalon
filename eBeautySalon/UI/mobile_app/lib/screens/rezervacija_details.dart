@@ -86,7 +86,7 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
             enabled: false,
           ),
           TextFormField(
-            decoration: InputDecoration(labelText: "Cijena:"),
+            decoration: InputDecoration(labelText: "Cijena/Platio:"),
             initialValue: widget.rezervacija?.usluga?.cijena.toString(),
             enabled: false,
           ),

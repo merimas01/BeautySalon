@@ -6,7 +6,7 @@ WORKDIR /src
 COPY . .
 
 FROM build AS publish
-RUN dotnet publish "./eBeautySalon.Subscriber/eBeautySalon.Subscriber.csproj" -c Release -o /app
+RUN dotnet publish "./eBeautySalon.Subscriber.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .

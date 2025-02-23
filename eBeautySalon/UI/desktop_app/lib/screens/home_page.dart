@@ -494,7 +494,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildBarChartUsluge() {
     return sifraUslugeList.length != 0
         ? SizedBox(
-            width: 500,
+            width: 700,
             height: 300,
             child: BarChart(
               BarChartData(
@@ -556,7 +556,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildBarChartUsluznici() {
     return sifraUsluznikaList.length != 0
         ? SizedBox(
-            width: 500,
+            width: 700,
             height: 300,
             child: BarChart(
               BarChartData(

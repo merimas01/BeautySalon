@@ -441,7 +441,8 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
-                content: Text("Neispravni podaci. Molimo pokušajte ponovo."),
+                content: Text(
+                    "Neispravni podaci. Molimo pokušajte ponovo. Korisničko ime/telefon/email možda već postoji."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

@@ -150,12 +150,25 @@ namespace eBeautySalon.Services
             var t = termin?.Opis;
             var datum = insert.DatumRezervacije.Day + "." + insert.DatumRezervacije.Month + "." + insert.DatumRezervacije.Year;
 
-            var factory = new ConnectionFactory { HostName = "localhost", UserName = "guest", Password = "guest" };
+           // var factory = new ConnectionFactory { HostName = "rabbitMQ", UserName = "guest", Password = "guest" };
+
+            var factory = new ConnectionFactory
+            {
+                HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
+                Port = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? ""),
+                UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
+                Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
+                RequestedConnectionTimeout = TimeSpan.FromSeconds(30),
+                RequestedHeartbeat = TimeSpan.FromSeconds(60),
+                AutomaticRecoveryEnabled = true,
+                NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
+            };
+
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
 
             channel.QueueDeclare(queue: "reservation_created",
-                                 durable: false,
+                                 durable: true,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
@@ -220,7 +233,7 @@ namespace eBeautySalon.Services
                     lista_termina.Add(new { terminId = obj.TerminId, termin = obj.Opis, zauzet = false });
                 }
             }
-            return lista_termina;
+            return lista_termina.OrderBy(t=> TimeSpan.Parse(t.termin));
         }
     }
 }

@@ -1,92 +1,88 @@
-networks:
-  ebeautysalonnet:
-    driver: bridge 
-
+version: '3'
 services:
-  # mssql docker
-  ebeautysalon-sql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+  rabbitMQ:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq_container'
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "8080:15672"
+      - "15672:15672"
+    expose:
+      - 5672
+    networks: 
+      - ebeautysalon_network
+    healthcheck:
+        test: ["CMD", "rabbitmqctl", "status"]
+        interval: 10s
+        retries: 5
+
+  ebeautysalon_sql:
+    container_name: ebeautysalon_db
+    image: mcr.microsoft.com/mssql/server:2022-latest
     restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=${SQL_PASSWORD}
+      - SA_PASSWORD=mySqlP4ssword!
       - MSSQL_PID=Developer
     ports:
-      - ${SQL_PORT}:1433
+      - 1405:1433
     expose:
       - 1433
     networks:
-      - ebeautysalonnet
+      - ebeautysalon_network
 
-  ebeautysalon-api:
+  ebeautysalon_api:
     restart: unless-stopped
     build:
       context: .
     environment:
-      - ConnectionStrings:DefaultConnection=Server=${SQL_HOST},1433;Database=${SQL_DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD};TrustServerCertificate=True
+      - ConnectionStrings:DefaultConnection=Server=ebeautysalon_sql,1433;Database=IB200070;User=sa;Password=mySqlP4ssword!;ConnectRetryCount=0;TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
-      - RABBITMQ_HOST=ebeautysalon-rabbitmq
-      - RABBITMQ_USERNAME=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - RABBITMQ_VIRTUALHOST=/
+      - RABBITMQ_HOST=rabbitMQ
       - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
     ports:
-      - 5266:5266
+      - "5145:5145"
     networks:
-      - ebeautysalonnet
+      - ebeautysalon_network
     links:
-      - ebeautysalon-sql
+      - ebeautysalon_sql
     depends_on:
-      - ebeautysalon-sql
+      - ebeautysalon_sql
+      - rabbitMQ
 
-  # RabbitMQ
-  ebeautysalon-rabbitmq:
-    image: rabbitmq:3.8-management-alpine
-    hostname: ebeautysalon-rabbitmq
+  rabbitmq-consumer:
     restart: unless-stopped
-    ports:
-      - 5672:5672  
-      - 8080:15672
-      - 15692:15692
-    expose:
-      - 5672
-      - 8080
+    build:
+      context: ./eBeautySalon.Subscriber
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER} 
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD} 
-    depends_on:
-      - ebeautysalon-api
-    networks:
-      - ebeautysalonnet
-    volumes:
-      - ./docker_data/rabbitmq_data:/var/lib/rabbitmq
-      - ./docker_data/rabbitmq_logs:/var/log/rabbitmq
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  # ReservationMailingService
-  ebeautysalon-mailingservice:
-    restart: unless-stopped
-    container_name: ebeautysalon-mailingservice
-    hostname: ebeautysalon-mailingservice
-    image: ebeautysalon-subscriber:latest
-    build: 
-      context: .
-      dockerfile: eBeautySalonSubscriberDockerfile
-    environment:
-      - RABBITMQ_HOST=ebeautysalon-rabbitmq
-      - RABBITMQ_USERNAME=${RABBITMQ_USER}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - RABBITMQ_VIRTUALHOST=/
+      - RABBITMQ_HOST=rabbitMQ
       - RABBITMQ_PORT=5672
-      - FromEmail=${FROM_EMAIL}
-      - SmtpPass=${SMTP_PASS}
-      - SmtpUser=${SMTP_USER}
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - SMTP_SERVER=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USERNAME=servicebeautysalon@gmail.com
+      - SMTP_PASSWORD=dueyooomounilqqa
     depends_on:
-      ebeautysalon-rabbitmq:
-        condition: service_healthy
+      # - ebeautysalon_sql
+      # - ebeatysalon_api
+      # - rabbitMQ
+       rabbitMQ:
+          condition: service_healthy
+
     networks:
-      - ebeautysalonnet
+      - ebeautysalon_network
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  ebeautysalon_network:
+    driver: bridge
+  NETWORK:
+    external: true

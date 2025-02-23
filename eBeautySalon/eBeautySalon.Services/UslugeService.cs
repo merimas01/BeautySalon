@@ -123,7 +123,7 @@ namespace eBeautySalon.Services
         static object isLocked = new object();
         static ITransformer model = null;
 
-        public async Task<List<Models.Usluge>> Recommend(int uslugaId, int korisnikId)
+        public List<Models.Usluge> Recommend(int uslugaId, int korisnikId)
         {
             lock (isLocked)
             {

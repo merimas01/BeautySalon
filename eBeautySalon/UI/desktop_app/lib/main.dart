@@ -255,7 +255,7 @@ class LoginPage extends StatelessWidget {
 
                                     print(
                                         "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
-                                    if (LoggedUser.uloga != "Administrator")
+                                    if (LoggedUser.uloga == "")
                                       showDialog(
                                           context: context,
                                           builder: (BuildContext context) =>

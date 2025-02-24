@@ -23,8 +23,8 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 
 ## Setting up 
 
-- Clone the repository
-- Open a solution folder in CMD
+- Clone the repository: https://github.com/merimas01/BeautySalon.git 
+- Open a solution folder in terminal (Command Prompt)
 - Run a following command: docker-compose up --build
 - Wait until docker finish composing
 - Open Swagger at http://localhost:5145/swagger/index.html 
@@ -74,4 +74,4 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 
 ## Notes
 
-- Setting Up and Running applications can take a few minutes, approximately about 3-5 mins.
+- Setting Up and running applications can take a few minutes, approximately about 3-5 mins.

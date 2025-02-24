@@ -67,8 +67,7 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 
 ## PayPal Payment Credentials
 
-- email: paypal.test.rs2@gmail.com
-- password: _iD{T5H&
+- `email: paypal.test.rs2@gmail.com` `password: _iD{T5H&`
 
 ## Notes
 

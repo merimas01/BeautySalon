@@ -124,7 +124,7 @@ using (var scope = app.Services.CreateScope())
 
         dataContext.SaveChanges();
 
-        string password = "admin"; // Same password for demonstration
+        string password = "test"; // Same password for demonstration
 
         string salt1 = GenerateSalt();
         string hash1 = GenerateHash(salt1, password);
@@ -170,7 +170,7 @@ using (var scope = app.Services.CreateScope())
              Ime = "Jovana",
              Prezime = "Nikolic",
              IsAdmin = false,
-             KorisnickoIme = "jovana",
+             KorisnickoIme = "rezervacioner",
              Sifra = "USR000003",
              Status = true,
              Telefon = "062 555 888",
@@ -186,7 +186,7 @@ using (var scope = app.Services.CreateScope())
              Ime = "Ivana",
              Prezime = "Mihajlovic",
              IsAdmin = false,
-             KorisnickoIme = "ivana",
+             KorisnickoIme = "mobile",
              Sifra = "USR000004",
              Status = true,
              Telefon = "062 555 999",
@@ -218,7 +218,7 @@ using (var scope = app.Services.CreateScope())
             Ime = "Mila",
             Prezime = "Milic",
             IsAdmin = false,
-            KorisnickoIme = "mila",
+            KorisnickoIme = "usluznik",
             Sifra = "USR000006",
             Status = true,
             Telefon = "062 544 600",
@@ -410,15 +410,16 @@ using (var scope = app.Services.CreateScope())
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 15, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 4 },
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 16, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 1, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 2, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 3 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 2, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Zlatna sredina!", Ocjena = 3 },
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 1, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Prosjek", Ocjena = 3 },
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 2, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Može bolje", Ocjena = 1 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 5, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 4 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 6, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 4 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 9, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Onako", Ocjena = 3 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 6, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Vrlo dobro!", Ocjena = 4 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 9, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Prosjecno", Ocjena = 3 },
             new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 10, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 5 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 12, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Super usluga!", Ocjena = 1 },
-            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 14, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 }          
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 12, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Nije dobro!", Ocjena = 1 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 14, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 4, UslugaId = 17, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Odlična usluga!", Ocjena = 5 },
+            new eBeautySalon.Services.Database.RecenzijaUsluge { KorisnikId = 5, UslugaId = 17, DatumKreiranja = DateTime.Now, DatumModificiranja = null, Komentar = "Meni se jako svidja!", Ocjena = 4 }
             );
 
         dataContext.SaveChanges();

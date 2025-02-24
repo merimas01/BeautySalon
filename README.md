@@ -24,10 +24,11 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 - Open a solution folder in CMD
 - Run a following command: docker-compose up --build
 - Wait until docker finish composing
+- Open Swagger at http://localhost:5145/swagger/index.html 
 
 ## Desktop App
 
-### Set up
+### Setup
 
 1. Open desktop_app directory in Visual Studio Code (VSC)
 2. Run the following commands in VSC terminal:
@@ -36,24 +37,21 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 - flutter pub get
 - flutter run -d windows
 
-### Credentials:
+### Credentials
 
 *For administrator*
 
-- username: admin
-- password: test
+- `username: admin` `password: test`
 
 *For employees*
 
-- username: usluznik
-- password: test
+- `username: usluznik` `password: test`
 
-- username: rezervacioner
-- password: test
+- `username: rezervacioner` `password: test`
 
 ## Mobile App
 
-### Set up
+### Setup
 
 1. Open mobile_app directory in Visual Studio Code (VSC)
 2. Open Android Studio and run Emulator
@@ -63,10 +61,14 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 - flutter pub get
 - flutter run
 
-### Credentials:
+### Credentials
 
-- username: mobile
-- password: test
+- `username: mobile` `password: test`
+
+## PayPal Payment Credentials
+
+- email: paypal.test.rs2@gmail.com
+- password: _iD{T5H&
 
 ## Notes
 

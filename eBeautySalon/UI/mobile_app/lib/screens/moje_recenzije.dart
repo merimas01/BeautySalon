@@ -342,19 +342,8 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                     child: x.usluga.slikaUsluge != null &&
                             x.usluga.slikaUsluge?.slika != null &&
                             x.usluga.slikaUsluge?.slika != ""
-                        ? Container(
-                            height: 170,
-                            width: 170,
-                            child: ImageFromBase64String(
-                                x.usluga.slikaUsluge!.slika),
-                          )
-                        : Container(
-                            child: Image.asset(
-                              "assets/images/noImage.jpg",
-                            ),
-                            height: 170,
-                            width: 170,
-                          ),
+                        ? imageContainer(x.usluga.slikaUsluge!.slika, 170, 200)
+                        : noImageContainer(170, 200),
                   ),
                   Text(x?.usluga.naziv ?? ""),
                   Row(
@@ -412,19 +401,9 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
                     child: x.usluznik.korisnik.slikaProfila != null &&
                             x.usluznik.korisnik.slikaProfila?.slika != null &&
                             x.usluznik.korisnik.slikaProfila?.slika != ""
-                        ? Container(
-                            height: 170,
-                            width: 170,
-                            child: ImageFromBase64String(
-                                x.usluznik.korisnik.slikaProfila!.slika),
-                          )
-                        : Container(
-                            child: Image.asset(
-                              "assets/images/noImage.jpg",
-                            ),
-                            height: 170,
-                            width: 170,
-                          ),
+                        ? imageContainer(
+                            x.usluznik.korisnik.slikaProfila!.slika, 170, 200)
+                        : noImageContainer(170, 200),
                   ),
                   Text(
                       "${x?.usluznik.korisnik.ime} ${x?.usluznik.korisnik.prezime}"),

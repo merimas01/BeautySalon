@@ -146,7 +146,9 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
             widget.usluznik?.korisnik?.slikaProfila?.slika != ""
         ? Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(15), // Rounded corners
+              // border: Border.all(
+              //     color: Colors.grey.shade300, width: 2), // Light border
             ),
             clipBehavior: Clip.antiAlias,
             child: Image.memory(
@@ -158,7 +160,9 @@ class _UsluznikDetailsState extends State<UsluznikDetails> {
           )
         : Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(15), // Rounded corners
+              // border: Border.all(
+              //     color: Colors.grey.shade300, width: 2), // Light border
             ),
             clipBehavior: Clip.antiAlias,
             child: Image.asset(

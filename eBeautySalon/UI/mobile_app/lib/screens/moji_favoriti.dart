@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/favoriti_usluge.dart';
 import 'package:mobile_app/providers/usluge_provider.dart';
 import 'package:mobile_app/screens/profil_page.dart';
@@ -35,10 +33,6 @@ class _MojiFavoritiState extends State<MojiFavoriti> {
     _favoritiUslugeProvider = context.read<FavoritiUslugeProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
     getData();
-    //  getUsluge();
-    setState(() {
-      isLoadingData = false;
-    });
   }
 
   void getData() async {
@@ -66,21 +60,6 @@ class _MojiFavoritiState extends State<MojiFavoriti> {
     setState(() {
       isLoadingData = false;
     });
-  }
-
-  getUsluge() async {
-    List<Usluga> listaUsluga = [];
-    if (_favoritiResult?.count != 0) {
-      for (var obj in _favoritiResult!.result) {
-        var usluga = await _uslugeProvider.getById(obj.uslugaId!);
-        var favoritDto = FavoritDto(obj.favoritId, usluga);
-        setState(() {
-          _favoritDtoResult.add(favoritDto);
-        });
-      }
-    } else {
-      _favoritDtoResult = [];
-    }
   }
 
   Widget _buildListView() {
@@ -120,24 +99,14 @@ class _MojiFavoritiState extends State<MojiFavoriti> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UslugaDetails(
                                 usluga: x.usluga,
+                                poslaniKorisnikId: LoggedUser.id,
                               )));
                     },
                     child: x.usluga?.slikaUsluge != null &&
                             x.usluga?.slikaUsluge?.slika != null &&
                             x.usluga?.slikaUsluge?.slika != ""
-                        ? Container(
-                            height: 150,
-                            width: 170,
-                            child: ImageFromBase64String(
-                                x.usluga?.slikaUsluge!.slika),
-                          )
-                        : Container(
-                            child: Image.asset(
-                              "assets/images/noImage.jpg",
-                            ),
-                            height: 150,
-                            width: 170,
-                          ),
+                        ? imageContainer( x.usluga!.slikaUsluge!.slika, 170, 200)
+                        : noImageContainer(170, 200),
                   ),
                   SizedBox(
                     height: 5,

@@ -82,19 +82,11 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
                         widget.recenzijaUsluge?.usluga?.slikaUsluge?.slika !=
                             null &&
                         widget.recenzijaUsluge?.usluga?.slikaUsluge?.slika != ""
-                    ? Container(
-                        height: 300,
-                        width: null,
-                        child: ImageFromBase64String(
-                            widget.recenzijaUsluge!.usluga!.slikaUsluge!.slika),
-                      )
-                    : Container(
-                        child: Image.asset(
-                          "assets/images/noImage.jpg",
-                        ),
-                        height: 300,
-                        width: null,
-                      ),
+                    ? imageContainer(
+                        widget.recenzijaUsluge!.usluga!.slikaUsluge!.slika,
+                        300,
+                        500)
+                    : noImageContainer(300, 500),
                 SizedBox(
                   height: 10,
                 ),

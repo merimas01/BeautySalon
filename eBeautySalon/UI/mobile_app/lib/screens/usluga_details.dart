@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_app/models/favoriti_usluge_insert.dart';
 import 'package:mobile_app/models/search_result.dart';
@@ -6,6 +8,7 @@ import 'package:mobile_app/providers/favoriti_usluge_provider.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
 import 'package:mobile_app/providers/usluge_provider.dart';
 import 'package:mobile_app/providers/zaposlenici_provider.dart';
+import 'package:mobile_app/screens/moji_favoriti.dart';
 import 'package:mobile_app/screens/pretraga_page.dart';
 import 'package:mobile_app/screens/sve_recenzije_usluge.dart';
 import 'package:mobile_app/screens/usluznik_details.dart';
@@ -17,7 +20,8 @@ import '../utils/util.dart';
 
 class UslugaDetails extends StatefulWidget {
   Usluga? usluga;
-  UslugaDetails({super.key, this.usluga});
+  int? poslaniKorisnikId;
+  UslugaDetails({super.key, this.usluga, this.poslaniKorisnikId});
 
   @override
   State<UslugaDetails> createState() => _UslugaDetailsState();
@@ -85,7 +89,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-      selectedIndex: 1,
+      selectedIndex: widget.poslaniKorisnikId != null ? 3 : 1,
       title: "Detalji usluge",
       child: _showDetails(),
     );
@@ -125,19 +129,8 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   widget.usluga?.slikaUsluge != null &&
                           widget.usluga?.slikaUsluge?.slika != null &&
                           widget.usluga?.slikaUsluge?.slika != ""
-                      ? Container(
-                          height: 300,
-                          width: null,
-                          child: ImageFromBase64String(
-                              widget.usluga!.slikaUsluge!.slika),
-                        )
-                      : Container(
-                          child: Image.asset(
-                            "assets/images/noImage.jpg",
-                          ),
-                          height: 300,
-                          width: null,
-                        ),
+                      ? imageContainer(widget.usluga!.slikaUsluge!.slika, 300, 500)
+                      : noImageContainer(300, 500),
                   SizedBox(
                     height: 10,
                   ),
@@ -409,8 +402,13 @@ class _UslugaDetailsState extends State<UslugaDetails> {
       children: [
         TextButton(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => PretragaPage()));
+              if (widget.poslaniKorisnikId != null) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => MojiFavoriti()));
+              } else {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => PretragaPage()));
+              }
             },
             child: Icon(Icons.arrow_back)),
       ],
@@ -458,19 +456,8 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                           x.slikaUsluge != null &&
                                   x.slikaUsluge?.slika != null &&
                                   x.slikaUsluge?.slika != ""
-                              ? Container(
-                                  height: 130,
-                                  width: 300,
-                                  child: ImageFromBase64String(
-                                      x.slikaUsluge!.slika),
-                                )
-                              : Container(
-                                  child: Image.asset(
-                                    "assets/images/noImage.jpg",
-                                  ),
-                                  height: 130,
-                                  width: 300,
-                                ),
+                              ? imageContainer(x.slikaUsluge!.slika, 130, 300)
+                              : noImageContainer(130, 300),
                           Positioned(
                             top: 10, // Adjust position from the top
                             right: 20, // Adjust position from the right
@@ -502,4 +489,5 @@ class _UslugaDetailsState extends State<UslugaDetails> {
 
     return list;
   }
+
 }

@@ -162,19 +162,8 @@ class _HomePageState extends State<HomePage> {
                           x.slikaNovost != null &&
                                   x.slikaNovost?.slika != null &&
                                   x.slikaNovost?.slika != ""
-                              ? Container(
-                                  height: 300,
-                                  width: null,
-                                  child: ImageFromBase64String(
-                                      x.slikaNovost!.slika),
-                                )
-                              : Container(
-                                  child: Image.asset(
-                                    "assets/images/noImage.jpg",
-                                    height: 300,
-                                    width: null,
-                                  ),
-                                ),
+                              ? imageContainer(x.slikaNovost!.slika, 300, 150)
+                              : noImageContainer(300, 150),
                           Row(
                             children: [
                               Text(

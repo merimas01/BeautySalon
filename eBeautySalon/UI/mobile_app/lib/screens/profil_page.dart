@@ -135,7 +135,7 @@ class _ProfilPageState extends State<ProfilPage> {
                               korisnik?.slikaProfila?.slika != ""
                           ? Container(
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(15),
                               ),
                               clipBehavior: Clip.antiAlias,
                               child: Image.memory(
@@ -147,7 +147,8 @@ class _ProfilPageState extends State<ProfilPage> {
                             )
                           : Container(
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
+                                //shape: BoxShape.circle,
+                                borderRadius: BorderRadius.circular(15),
                               ),
                               clipBehavior: Clip.antiAlias,
                               child: Image.asset(

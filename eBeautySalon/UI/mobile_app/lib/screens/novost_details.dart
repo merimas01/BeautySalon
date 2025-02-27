@@ -113,20 +113,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                       ),
                       widget.novost?.slikaNovost != null &&
                               widget.novost?.slikaNovost!.slika != ""
-                          ? Container(
-                              height: 300,
-                              width: null,
-                              child: ImageFromBase64String(
-                                  widget.novost!.slikaNovost!.slika),
-                            )
-                          : Container(
-                              child: Image.asset(
-                                "assets/images/noImage.jpg",
-                                height: 300,
-                                width: null,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                          ? imageContainer(widget.novost!.slikaNovost!.slika, 300, 500)
+                          : noImageContainer(300, 500),
                       SizedBox(
                         height: 10,
                       ),
@@ -562,4 +550,5 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       ],
     );
   }
+
 }

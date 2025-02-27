@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:mobile_app/models/novost_like_comment.dart';
 import 'package:mobile_app/models/novost_like_comment_insert_update.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
@@ -69,19 +67,11 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                             null &&
                         widget.novostLikeComment?.novost?.slikaNovost?.slika !=
                             ""
-                    ? Container(
-                        height: 300,
-                        width: null,
-                        child: ImageFromBase64String(widget
-                            .novostLikeComment!.novost!.slikaNovost!.slika),
-                      )
-                    : Container(
-                        child: Image.asset(
-                          "assets/images/noImage.jpg",
-                        ),
-                        height: 300,
-                        width: null,
-                      ),
+                    ? imageContainer(
+                        widget.novostLikeComment!.novost!.slikaNovost!.slika,
+                        300,
+                        500)
+                    : noImageContainer(300, 500),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Datum kreiranja:"),
                   initialValue:

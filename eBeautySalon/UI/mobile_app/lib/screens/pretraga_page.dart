@@ -117,19 +117,8 @@ class _PretragaPageState extends State<PretragaPage> {
                           x.slikaUsluge != null &&
                                   x.slikaUsluge?.slika != null &&
                                   x.slikaUsluge?.slika != ""
-                              ? Container(
-                                  height: 130,
-                                  width: 300,
-                                  child: ImageFromBase64String(
-                                      x.slikaUsluge!.slika),
-                                )
-                              : Container(
-                                  child: Image.asset(
-                                    "assets/images/noImage.jpg",
-                                  ),
-                                  height: 130,
-                                  width: 300,
-                                ),
+                              ? imageContainer(x.slikaUsluge!.slika, 130, 300)
+                              : noImageContainer(130, 300),
                           Positioned(
                             top: 10, // Adjust position from the top
                             right: 20, // Adjust position from the right

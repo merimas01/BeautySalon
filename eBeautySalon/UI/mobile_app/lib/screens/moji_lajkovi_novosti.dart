@@ -80,26 +80,14 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => NovostDetailsScreen(
-                                novost: x.novost,
-                                poslaniKorisnikId:LoggedUser.id
-                              )));
+                              novost: x.novost,
+                              poslaniKorisnikId: LoggedUser.id)));
                     },
                     child: x.novost?.slikaNovost != null &&
                             x.novost?.slikaNovost?.slika != null &&
                             x.novost?.slikaNovost?.slika != ""
-                        ? Container(
-                            height: 150,
-                            width: 170,
-                            child: ImageFromBase64String(
-                                x.novost?.slikaNovost!.slika),
-                          )
-                        : Container(
-                            child: Image.asset(
-                              "assets/images/noImage.jpg",
-                            ),
-                            height: 150,
-                            width: 170,
-                          ),
+                        ? imageContainer(x.novost?.slikaNovost!.slika, 170, 200)
+                        : noImageContainer(170, 200),
                   ),
                   SizedBox(
                     height: 5,

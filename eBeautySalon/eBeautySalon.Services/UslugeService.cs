@@ -134,7 +134,7 @@ namespace eBeautySalon.Services
                     mLContext = new MLContext();
                     var tmp = _context.Rezervacijas.Include(x => x.Usluga).ToList();
                     var tempData = _context.RecenzijaUsluges.Include(x => x.Korisnik).Include(x => x.Usluga.Kategorija).ToList();
-                    var uslugeList = _context.Uslugas.Include(x => x.Kategorija).ToList();
+                    var uslugeList = _context.Uslugas.Include(x => x.Kategorija).Include("FavoritiUsluges").ToList();
                     var data = new List<UslugaEntry>();
                  
                     foreach (var rec in tempData)
@@ -171,7 +171,7 @@ namespace eBeautySalon.Services
 
             //prediction
 
-            var usluge = _context.Uslugas.Include(x=>x.SlikaUsluge).Include(x=>x.Kategorija).Where(x => x.UslugaId != uslugaId);
+            var usluge = _context.Uslugas.Include(x=>x.SlikaUsluge).Include("FavoritiUsluges").Include(x=>x.Kategorija).Where(x => x.UslugaId != uslugaId);
 
             var predictionResult = new List<Tuple<Database.Usluga, float>>(); //onaj koji ima najveci score, njega uzimamo
 

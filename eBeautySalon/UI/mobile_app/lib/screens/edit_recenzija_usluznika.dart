@@ -99,19 +99,12 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                         widget.recenzijaUsluznika?.usluznik?.korisnik
                                 ?.slikaProfila?.slika !=
                             ""
-                    ? Container(
-                        height: 300,
-                        width: null,
-                        child: ImageFromBase64String(widget.recenzijaUsluznika!
-                            .usluznik!.korisnik!.slikaProfila!.slika),
-                      )
-                    : Container(
-                        child: Image.asset(
-                          "assets/images/noImage.jpg",
-                        ),
-                        height: 300,
-                        width: null,
-                      ),
+                    ? imageContainer(
+                        widget.recenzijaUsluznika!.usluznik!.korisnik!
+                            .slikaProfila!.slika,
+                        250,
+                        300)
+                    : noImageContainer(250, 300),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Datum kreiranja:"),
                   initialValue:

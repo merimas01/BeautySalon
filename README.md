@@ -8,7 +8,7 @@ eBeautySalon is a project for my University. It consists of a desktop and a mobi
 The desktop application is for administrators and employees. The project provides authorisation and authentification so that not everybody can use it and have an access to the unauthorised parts. In the desktop app the administrator evaluates services, news, reviews, employees, users, reservations and his profile, whereas employees evaluate parts they are in charge of.
 <br>
 <br>
-The mobile application is for end-users. They can browse news (add a comment about it and press the like button), browse services (they can filter them and create a review), create reservations and make a payment, edit own profile and see their activity.
+The mobile application is for end-users. They can browse news (add a comment about it and press the like button), browse services (they can filter them, add to favorites and create a review), create reservations and make a payment, edit own profile and see their activity.
 <br>
 <br>
 The project was made using ASP .NET Core, Flutter and SQL Server.
@@ -74,4 +74,4 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 
 ## Notes
 
-- Setting Up and running applications can take a few minutes, approximately about 3-5 mins.
+- Setting up and running applications can take a few minutes, approximately about 3-5 mins.

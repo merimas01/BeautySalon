@@ -15,6 +15,8 @@ public partial class Ib200070Context : DbContext
     {
     }
 
+    public virtual DbSet<FavoritiUsluge> FavoritiUsluges { get; set; }
+
     public virtual DbSet<Kategorija> Kategorijas { get; set; }
 
     public virtual DbSet<Korisnik> Korisniks { get; set; }
@@ -53,10 +55,31 @@ public partial class Ib200070Context : DbContext
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=localhost,1433; Database=IB200070; User Id=sa; Password=mySqlP4ssword!; Trusted_Connection=True; TrustServerCertificate=True");
+//        => optionsBuilder.UseSqlServer("Server=localhost; Database=IB200070; User Id=sa; Password=mySqlP4ssword!; Trusted_Connection=True; TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<FavoritiUsluge>(entity =>
+        {
+            entity.HasKey(e => e.FavoritId);
+
+            entity.ToTable("FavoritiUsluge");
+
+            entity.Property(e => e.FavoritId).HasColumnName("FavoritID");
+            entity.Property(e => e.DatumIzmjene)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UslugaId).HasColumnName("UslugaID");
+
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.FavoritiUsluges)
+                .HasForeignKey(d => d.KorisnikId)
+                .HasConstraintName("FK_FavoritiUsluge_Korisnik");
+
+            entity.HasOne(d => d.Usluga).WithMany(p => p.FavoritiUsluges)
+                .HasForeignKey(d => d.UslugaId)
+                .HasConstraintName("FK_FavoritiUsluge_Usluga");
+        });
+
         modelBuilder.Entity<Kategorija>(entity =>
         {
             entity.ToTable("Kategorija");

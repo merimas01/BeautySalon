@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mobile_app/models/slika_usluge.dart';
 
+import 'favoriti_usluge.dart';
 import 'kategorija.dart';
 
 /// This allows the `User` class to access private members in
@@ -23,7 +24,8 @@ class Usluga {
       this.datumKreiranja,
       this.datumModifikovanja,
       this.slikaUsluge,
-      this.kategorija);
+      this.kategorija,
+      this.favoritiUsluges);
 
   int? uslugaId;
   String? naziv;
@@ -36,6 +38,7 @@ class Usluga {
   DateTime? datumModifikovanja;
   SlikaUsluge? slikaUsluge;
   Kategorija? kategorija;
+  List<FavoritiUsluge>? favoritiUsluges;
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.

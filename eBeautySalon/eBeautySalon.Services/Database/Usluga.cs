@@ -23,6 +23,8 @@ public partial class Usluga
 
     public string? Sifra { get; set; }
 
+    public virtual ICollection<FavoritiUsluge> FavoritiUsluges { get; set; } = new List<FavoritiUsluge>();
+
     public virtual Kategorija? Kategorija { get; set; }
 
     public virtual ICollection<RecenzijaUsluge> RecenzijaUsluges { get; set; } = new List<RecenzijaUsluge>();

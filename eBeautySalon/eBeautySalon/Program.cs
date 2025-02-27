@@ -35,7 +35,7 @@ builder.Services.AddTransient<IUlogeService, UlogeService>();
 builder.Services.AddTransient<IStatusService, StatusiService>();
 builder.Services.AddTransient<IUslugeTerminiService, UslugeTerminiService>();
 builder.Services.AddTransient<INovostLikeCommentService, NovostLikeCommentService>();
-
+builder.Services.AddTransient<IFavoritiUslugeService, FavoritiUslugeService>();
 
 
 
@@ -65,6 +65,8 @@ builder.Services.AddSwaggerGen( c=>
         });
     }
 );
+
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddAutoMapper(typeof(IKorisniciService));
 builder.Services.AddAuthentication("BasicAuthentication")
@@ -595,6 +597,15 @@ using (var scope = app.Services.CreateScope())
             new eBeautySalon.Services.Database.NovostLikeComment { KorisnikId = 4, NovostId = 1, IsLike = true, Komentar = "odlican post!", DatumKreiranja = DateTime.Now },
             new eBeautySalon.Services.Database.NovostLikeComment { KorisnikId = 5, NovostId = 2, IsLike = true, Komentar = "jako korisne informacije!", DatumKreiranja = DateTime.Now }
             );
+
+        dataContext.SaveChanges();
+
+        dataContext.FavoritiUsluges.AddRange(
+            new eBeautySalon.Services.Database.FavoritiUsluge { KorisnikId = 4, UslugaId = 3, IsFavorit = true, DatumIzmjene = DateTime.Now },
+            new eBeautySalon.Services.Database.FavoritiUsluge { KorisnikId = 4, UslugaId = 11, IsFavorit = true, DatumIzmjene = DateTime.Now },
+            new eBeautySalon.Services.Database.FavoritiUsluge { KorisnikId = 5, UslugaId = 5, IsFavorit = true, DatumIzmjene = DateTime.Now }
+            );
+        
         dataContext.SaveChanges();
     }
 }

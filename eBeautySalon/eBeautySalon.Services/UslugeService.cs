@@ -90,6 +90,7 @@ namespace eBeautySalon.Services
             {
                 query = query.Where(x => x.Cijena == search.Cijena);
             }
+            query = query.Include("FavoritiUsluges.Korisnik");
             return base.AddFilter(query, search);
         }
 
@@ -110,6 +111,7 @@ namespace eBeautySalon.Services
         {
             query = query.Include(c => c.Kategorija);
             query = query.Include(c => c.SlikaUsluge);
+            query = query.Include("FavoritiUsluges.Korisnik");
             var entity = await query.FirstOrDefaultAsync(x => x.UslugaId == id);
             return entity;
         }

@@ -357,10 +357,29 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 211, 17, 17)),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ZaposleniciListScreen()));
+                            },
+                            child: Icon(Icons.close)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     _naslov(),
                     _odaberiUlogu(),
                     _korisnickoIme(),
-                    _inputIme(),                
+                    _inputIme(),
                     _inputPrezime(),
                     _inputBiografija(),
                     _inputTelefonEmail(),
@@ -733,8 +752,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         print("kor_post: ${kor_post.slikaProfilaId}");
         var kid = kor_post.korisnikId;
 
-        var zaposlenik_request = ZaposlenikInsertUpdate(
-            _selectedDateRodjenja, _selectedDateZaposlenja, kid, obj['biografija']);
+        var zaposlenik_request = ZaposlenikInsertUpdate(_selectedDateRodjenja,
+            _selectedDateZaposlenja, kid, obj['biografija']);
         var zap_post = await _zaposleniciProvider.insert(zaposlenik_request);
         print("insert zaposlenik request request: ${zaposlenik_request}");
 
@@ -752,8 +771,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
             var zaposlenik_usluga_request =
                 ZaposlenikUslugaInsertUpdate(zid, zu.uslugaId);
             print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
-            var zap_usluga_post = await
-                _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+            var zap_usluga_post = await _zaposleniciUslugeProvider
+                .insert(zaposlenik_usluga_request);
           }
         }
       }
@@ -836,8 +855,11 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         print("kor_put: ${kor_put.slikaProfilaId}");
       }
 
-      var zaposlenik_request = ZaposlenikInsertUpdate(_selectedDateRodjenja,
-          _selectedDateRodjenja, widget.zaposlenik!.korisnikId, obj['biografija']);
+      var zaposlenik_request = ZaposlenikInsertUpdate(
+          _selectedDateRodjenja,
+          _selectedDateRodjenja,
+          widget.zaposlenik!.korisnikId,
+          obj['biografija']);
       var zap_put = await _zaposleniciProvider.update(
           widget.zaposlenik!.zaposlenikId!, zaposlenik_request);
       print(
@@ -883,16 +905,16 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           if (!areListsEqual(_selectedItems.result, _postojeceUsluge)) {
             print("usao u if");
             for (var zu in widget.zaposlenik!.zaposlenikUslugas!) {
-              var delete_zu = await
-                  _zaposleniciUslugeProvider.delete(zu.zaposlenikUslugaId!);
+              var delete_zu = await _zaposleniciUslugeProvider
+                  .delete(zu.zaposlenikUslugaId!);
             }
 
             for (var zu in _selectedItems.result) {
               var zaposlenik_usluga_request = ZaposlenikUslugaInsertUpdate(
                   widget.zaposlenik!.zaposlenikId, zu.uslugaId);
               print("zaposlenik_usluga_request ${zaposlenik_usluga_request}");
-              var zap_usluga_post = await
-                  _zaposleniciUslugeProvider.insert(zaposlenik_usluga_request);
+              var zap_usluga_post = await _zaposleniciUslugeProvider
+                  .insert(zaposlenik_usluga_request);
             }
           }
         }
@@ -967,7 +989,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         if (value == null || value.isEmpty || value.trim().isEmpty) {
           return 'Molimo Vas unesite biografiju';
         }
-        
+
         if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
           return 'Ponovite unos.';
         }
@@ -1025,9 +1047,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
               if (value == null || value.isEmpty || value.trim().isEmpty) {
                 return 'Molimo Vas unesite telefon';
               }
-              if (!RegExp(
-                      r'^\d{3}\s?\d{3}\s?\d{3,4}$')
-                  .hasMatch(value)) {
+              if (!RegExp(r'^\d{3}\s?\d{3}\s?\d{3,4}$').hasMatch(value)) {
                 return 'Unesite ispravan telefon: 06# ### ###';
               }
               return null;

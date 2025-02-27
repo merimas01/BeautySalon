@@ -255,6 +255,24 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                          style: ButtonStyle(
+                            foregroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(255, 211, 17, 17)),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => UslugeListScreen()));
+                          },
+                          child: Icon(Icons.close)),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
                   _naslov(),
                   Row(
                     children: [

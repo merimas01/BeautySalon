@@ -106,28 +106,50 @@ class _PretragaPageState extends State<PretragaPage> {
               child: Column(
                 children: [
                   InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UslugaDetails(
-                                usluga: x,
-                              )));
-                    },
-                    child: x.slikaUsluge != null &&
-                            x.slikaUsluge?.slika != null &&
-                            x.slikaUsluge?.slika != ""
-                        ? Container(
-                            height: 130,
-                            width: 300,
-                            child: ImageFromBase64String(x.slikaUsluge!.slika),
-                          )
-                        : Container(
-                            child: Image.asset(
-                              "assets/images/noImage.jpg",
-                            ),
-                            height: 130,
-                            width: 300,
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => UslugaDetails(
+                                  usluga: x,
+                                )));
+                      },
+                      child: Stack(
+                        children: [
+                          x.slikaUsluge != null &&
+                                  x.slikaUsluge?.slika != null &&
+                                  x.slikaUsluge?.slika != ""
+                              ? Container(
+                                  height: 130,
+                                  width: 300,
+                                  child: ImageFromBase64String(
+                                      x.slikaUsluge!.slika),
+                                )
+                              : Container(
+                                  child: Image.asset(
+                                    "assets/images/noImage.jpg",
+                                  ),
+                                  height: 130,
+                                  width: 300,
+                                ),
+                          Positioned(
+                            top: 10, // Adjust position from the top
+                            right: 20, // Adjust position from the right
+                            child:
+                                //checkIfUslugaIsFavourite(x, x.uslugaId) == true
+                                x.favoritiUsluges.any((obj) =>
+                                            obj.korisnikId == LoggedUser.id &&
+                                            obj.uslugaId == x.uslugaId) ==
+                                        true
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: Colors.pink,
+                                      )
+                                    : Icon(
+                                        Icons.favorite,
+                                        color: Colors.grey,
+                                      ),
                           ),
-                  ),
+                        ],
+                      )),
                   Text(
                     x.naziv.split(' ').take(3).join(' ') ?? "",
                     textAlign: TextAlign.center,

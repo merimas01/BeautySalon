@@ -4,6 +4,8 @@ import 'package:mobile_app/models/novost_like_comment_insert_update.dart';
 import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/screens/edit_komentar_novost.dart';
 import 'package:mobile_app/screens/home_page.dart';
+import 'package:mobile_app/screens/moji_lajkovi_novosti.dart';
+import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -13,9 +15,10 @@ import '../utils/util.dart';
 
 class NovostDetailsScreen extends StatefulWidget {
   Novost? novost;
+  int? poslaniKorisnikId;
   static const String routeName = "/novost_details";
 
-  NovostDetailsScreen({super.key, this.novost});
+  NovostDetailsScreen({super.key, this.novost, this.poslaniKorisnikId});
 
   @override
   State<NovostDetailsScreen> createState() => _NovostDetailsScreenState();
@@ -86,7 +89,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        selectedIndex: 0,
+        selectedIndex: widget.poslaniKorisnikId!=null? 3 : 0,
         title: "Detalji novosti",
         child: isLoadingLikesComments == false
             ? Container(
@@ -547,8 +550,13 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       children: [
         TextButton(
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => HomePage()));
+              if (widget.poslaniKorisnikId != null) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => MojiLajkoviNovosti()));
+              } else {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => HomePage()));
+              }
             },
             child: Icon(Icons.arrow_back)),
       ],

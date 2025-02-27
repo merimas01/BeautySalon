@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/models/favoriti_usluge_insert.dart';
 import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/models/zaposlenik.dart';
+import 'package:mobile_app/providers/favoriti_usluge_provider.dart';
 import 'package:mobile_app/providers/recenzije_usluga_provider.dart';
 import 'package:mobile_app/providers/usluge_provider.dart';
 import 'package:mobile_app/providers/zaposlenici_provider.dart';
@@ -25,12 +27,16 @@ class _UslugaDetailsState extends State<UslugaDetails> {
   late ZaposleniciProvider _zaposleniciProvider;
   late RecenzijaUslugeProvider _recenzijaUslugeProvider;
   late RecenzijaUsluznikaProvider _recenzijaUsluznikaProvider;
+  late FavoritiUslugeProvider _favoritiUslugeProvider;
   late UslugeProvider _uslugeProvider;
   SearchResult<Zaposlenik>? _resultZaposlenici;
   List<Usluga> recommendLista = [];
   List<dynamic> listProsjecneOcjeneUsluga = [];
   List<dynamic> listProsjecneOcjeneUsluznika = [];
   bool isLoading = true;
+  bool isFavorit = false;
+  bool? obrisan;
+  int new_favoritId = 0;
 
   @override
   void initState() {
@@ -40,8 +46,18 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     _recenzijaUslugeProvider = context.read<RecenzijaUslugeProvider>();
     _recenzijaUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
+    _favoritiUslugeProvider = context.read<FavoritiUslugeProvider>();
 
     loadData();
+
+    var fav = widget.usluga?.favoritiUsluges?.any((obj) =>
+            obj.korisnikId == LoggedUser.id &&
+            obj.uslugaId == widget.usluga?.uslugaId) ==
+        true;
+    setState(() {
+      isFavorit = fav;
+      obrisan = fav == true ? false : true;
+    });
   }
 
   loadData() async {
@@ -49,7 +65,8 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     var usluznici = await _recenzijaUsluznikaProvider.GetProsjecnaOcjena();
     var zaposlenici = await _zaposleniciProvider
         .get(filter: {'uslugaId': widget.usluga?.uslugaId});
-    var recommend = await _uslugeProvider.Recommend(widget.usluga!.uslugaId, LoggedUser.id);
+    var recommend =
+        await _uslugeProvider.Recommend(widget.usluga!.uslugaId, LoggedUser.id);
 
     setState(() {
       listProsjecneOcjeneUsluga = usluge;
@@ -124,6 +141,69 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   SizedBox(
                     height: 10,
                   ),
+                  TextButton(
+                      onPressed: () async {
+                        if (isFavorit == true) {
+                          try {
+                            if (obrisan == false) {
+                              var favoritId = 0;
+                              if (widget.usluga?.favoritiUsluges?.length != 0) {
+                                favoritId = widget.usluga?.favoritiUsluges
+                                        ?.firstWhere((element) =>
+                                            element.korisnikId ==
+                                                LoggedUser.id &&
+                                            element.uslugaId ==
+                                                widget.usluga!.uslugaId)
+                                        .favoritId ??
+                                    0;
+                              } else
+                                favoritId = new_favoritId;
+
+                              var obj = await _favoritiUslugeProvider
+                                  .delete(favoritId);
+
+                              var usluga = await _uslugeProvider
+                                  .getById(widget.usluga!.uslugaId!);
+                              setState(() {
+                                isFavorit = false;
+                                this.widget.usluga = usluga;
+                                obrisan = true;
+                              });
+                            }
+                          } catch (err) {
+                            print(err);
+                          }
+                        } else {
+                          try {
+                            var request_insert = FavoritiUslugeInsert(
+                                LoggedUser.id, widget.usluga!.uslugaId!);
+
+                            var obj = await _favoritiUslugeProvider
+                                .insert(request_insert);
+
+                            var usluga = await _uslugeProvider
+                                .getById(widget.usluga!.uslugaId!);
+
+                            setState(() {
+                              isFavorit = true;
+                              this.widget.usluga = usluga;
+                              obrisan = false;
+                              new_favoritId = obj.favoritId!;
+                            });
+                          } catch (err) {
+                            print(err);
+                          }
+                        }
+                      },
+                      child: isFavorit == true
+                          ? Icon(
+                              Icons.favorite,
+                              color: Colors.pink,
+                            )
+                          : Icon(
+                              Icons.favorite,
+                              color: Colors.grey,
+                            )),
                   TextFormField(
                     decoration: InputDecoration(labelText: "Cijena:"),
                     initialValue: "${formatNumber(widget.usluga?.cijena)}KM",
@@ -367,28 +447,48 @@ class _UslugaDetailsState extends State<UslugaDetails> {
               child: Column(
                 children: [
                   InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UslugaDetails(
-                                usluga: x,
-                              )));
-                    },
-                    child: x.slikaUsluge != null &&
-                            x.slikaUsluge?.slika != null &&
-                            x.slikaUsluge?.slika != ""
-                        ? Container(
-                            height: 130,
-                            width: 300,
-                            child: ImageFromBase64String(x.slikaUsluge!.slika),
-                          )
-                        : Container(
-                            child: Image.asset(
-                              "assets/images/noImage.jpg",
-                            ),
-                            height: 130,
-                            width: 300,
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => UslugaDetails(
+                                  usluga: x,
+                                )));
+                      },
+                      child: Stack(
+                        children: [
+                          x.slikaUsluge != null &&
+                                  x.slikaUsluge?.slika != null &&
+                                  x.slikaUsluge?.slika != ""
+                              ? Container(
+                                  height: 130,
+                                  width: 300,
+                                  child: ImageFromBase64String(
+                                      x.slikaUsluge!.slika),
+                                )
+                              : Container(
+                                  child: Image.asset(
+                                    "assets/images/noImage.jpg",
+                                  ),
+                                  height: 130,
+                                  width: 300,
+                                ),
+                          Positioned(
+                            top: 10, // Adjust position from the top
+                            right: 20, // Adjust position from the right
+                            child: x.favoritiUsluges.any((obj) =>
+                                        obj.korisnikId == LoggedUser.id &&
+                                        obj.uslugaId == x.uslugaId) ==
+                                    true
+                                ? Icon(
+                                    Icons.favorite,
+                                    color: Colors.pink,
+                                  )
+                                : Icon(
+                                    Icons.favorite,
+                                    color: Colors.grey,
+                                  ),
                           ),
-                  ),
+                        ],
+                      )),
                   Text(
                     x.naziv.split(' ').take(3).join(' ') ?? "",
                     textAlign: TextAlign.center,

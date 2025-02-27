@@ -33,6 +33,8 @@ public partial class Korisnik
 
     public string? Sifra { get; set; }
 
+    public virtual ICollection<FavoritiUsluge> FavoritiUsluges { get; set; } = new List<FavoritiUsluge>();
+
     public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
 
     public virtual ICollection<NovostLikeComment> NovostLikeComments { get; set; } = new List<NovostLikeComment>();

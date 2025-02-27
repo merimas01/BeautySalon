@@ -1,47 +1,86 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/models/novost_like_comment.dart';
-import 'package:mobile_app/models/search_result.dart';
-import 'package:mobile_app/providers/novost_like_comment_provider.dart';
-import 'package:mobile_app/screens/novost_details.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:mobile_app/models/favoriti_usluge.dart';
+import 'package:mobile_app/providers/usluge_provider.dart';
 import 'package:mobile_app/screens/profil_page.dart';
+import 'package:mobile_app/screens/usluga_details.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../models/novost_like_comment_insert_update.dart';
+import '../models/favorit_dto.dart';
+import '../models/search_result.dart';
+import '../models/usluga.dart';
+import '../providers/favoriti_usluge_provider.dart';
 import '../utils/util.dart';
 
-class MojiLajkoviNovosti extends StatefulWidget {
-  int? poslaniKorisnikId;
-  MojiLajkoviNovosti({super.key, this.poslaniKorisnikId});
+class MojiFavoriti extends StatefulWidget {
+  const MojiFavoriti({super.key});
 
   @override
-  State<MojiLajkoviNovosti> createState() => _MojiLajkoviNovostiState();
+  State<MojiFavoriti> createState() => _MojiFavoritiState();
 }
 
-class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
-  late NovostLikeCommentProvider _novostLikeCommentProvider;
-  SearchResult<NovostLikeComment>? _novostLikeCommentResult;
+class _MojiFavoritiState extends State<MojiFavoriti> {
+  late FavoritiUslugeProvider _favoritiUslugeProvider;
+  late UslugeProvider _uslugeProvider;
+  SearchResult<FavoritiUsluge>? _favoritiResult;
+  List<FavoritDto> _favoritDtoResult = [];
   bool isLoadingData = true;
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    _novostLikeCommentProvider = context.read<NovostLikeCommentProvider>();
+    _favoritiUslugeProvider = context.read<FavoritiUslugeProvider>();
+    _uslugeProvider = context.read<UslugeProvider>();
     getData();
+    //  getUsluge();
+    setState(() {
+      isLoadingData = false;
+    });
   }
 
   void getData() async {
-    var data = await _novostLikeCommentProvider.get(filter: {
-      'isNovostIncluded': true,
+    var data = await _favoritiUslugeProvider.get(filter: {
       'korisnikId': LoggedUser.id,
-      'isLike': true
     });
 
     setState(() {
-      _novostLikeCommentResult = data;
+      _favoritiResult = data;
+    });
+
+    List<Usluga> listaUsluga = [];
+    if (_favoritiResult?.count != 0) {
+      for (var obj in _favoritiResult!.result) {
+        var usluga = await _uslugeProvider.getById(obj.uslugaId!);
+        var favoritDto = FavoritDto(obj.favoritId, usluga);
+        setState(() {
+          _favoritDtoResult.add(favoritDto);
+        });
+      }
+    } else {
+      _favoritDtoResult = [];
+    }
+
+    setState(() {
       isLoadingData = false;
     });
+  }
+
+  getUsluge() async {
+    List<Usluga> listaUsluga = [];
+    if (_favoritiResult?.count != 0) {
+      for (var obj in _favoritiResult!.result) {
+        var usluga = await _uslugeProvider.getById(obj.uslugaId!);
+        var favoritDto = FavoritDto(obj.favoritId, usluga);
+        setState(() {
+          _favoritDtoResult.add(favoritDto);
+        });
+      }
+    } else {
+      _favoritDtoResult = [];
+    }
   }
 
   Widget _buildListView() {
@@ -59,7 +98,7 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
                   // crossAxisSpacing: 8,
                   mainAxisSpacing: 10),
               scrollDirection: Axis.vertical,
-              children: _buildList(_novostLikeCommentResult!.result),
+              children: _buildList(_favoritDtoResult),
             ),
           ),
         ),
@@ -79,19 +118,18 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
                   InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NovostDetailsScreen(
-                                novost: x.novost,
-                                poslaniKorisnikId:LoggedUser.id
+                          builder: (context) => UslugaDetails(
+                                usluga: x.usluga,
                               )));
                     },
-                    child: x.novost?.slikaNovost != null &&
-                            x.novost?.slikaNovost?.slika != null &&
-                            x.novost?.slikaNovost?.slika != ""
+                    child: x.usluga?.slikaUsluge != null &&
+                            x.usluga?.slikaUsluge?.slika != null &&
+                            x.usluga?.slikaUsluge?.slika != ""
                         ? Container(
                             height: 150,
                             width: 170,
                             child: ImageFromBase64String(
-                                x.novost?.slikaNovost!.slika),
+                                x.usluga?.slikaUsluge!.slika),
                           )
                         : Container(
                             child: Image.asset(
@@ -104,27 +142,28 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
                   SizedBox(
                     height: 5,
                   ),
-                  Text(x.novost?.naslov ?? ""),
+                  Text(x.usluga?.naziv ?? ""),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
                         onPressed: () async {
                           try {
-                            var obj = await _novostLikeCommentProvider.update(
-                                x.novostLikeCommentId!,
-                                NovostLikeCommentInsertUpdate(LoggedUser.id,
-                                    x.novostId, false, x.komentar));
+                            var obj = await _favoritiUslugeProvider
+                                .delete(x.favoritId);
 
-                            var data = await _novostLikeCommentProvider.get(
-                                filter: {
-                                  'isNovostIncluded': true,
-                                  'korisnikId': LoggedUser.id,
-                                  'isLike': true
-                                });
+                            var usluga = await _uslugeProvider
+                                .getById(x.usluga!.uslugaId!);
+
+                            var data =
+                                await _favoritiUslugeProvider.get(filter: {
+                              'korisnikId': LoggedUser.id,
+                            });
 
                             setState(() {
-                              _novostLikeCommentResult = data;
+                              _favoritiResult = data;
+                              _favoritDtoResult.removeWhere((favorit) =>
+                                  favorit.favoritId == x.favoritId);
                               isLoadingData = false;
                             });
                           } catch (err) {
@@ -132,8 +171,8 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
                           }
                         },
                         child: Icon(
-                          Icons.thumb_down,
-                          color: Colors.red,
+                          Icons.favorite,
+                          color: Colors.pink,
                         ),
                       )
                     ],
@@ -183,7 +222,7 @@ class _MojiLajkoviNovostiState extends State<MojiLajkoviNovosti> {
   Widget build(BuildContext context) {
     return MasterScreenWidget(
         selectedIndex: 3,
-        title: "Moji lajkovi novosti",
+        title: "Moji favoriti",
         child: isLoadingData == false
             ? Container(
                 child: SingleChildScrollView(

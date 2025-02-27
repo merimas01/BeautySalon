@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mobile_app/screens/moje_recenzije.dart';
 import 'package:mobile_app/screens/moje_rezervacije.dart';
+import 'package:mobile_app/screens/moji_favoriti.dart';
 import 'package:mobile_app/screens/moji_komentari_novosti.dart';
 import 'package:mobile_app/screens/moji_lajkovi_novosti.dart';
 import 'package:mobile_app/screens/profil_edit.dart';
@@ -214,6 +215,7 @@ class _ProfilPageState extends State<ProfilPage> {
                             _mojeRezervacijeButton(),
                             _mojiKomentariNovostiButton(),
                             _mojiLajkoviNovostiButton(),
+                            _mojiFavoriti(),
                             _editButton(),
                           ],
                         )
@@ -262,8 +264,10 @@ class _ProfilPageState extends State<ProfilPage> {
         ),
         TextButton(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => MojeRezervacije(poslaniKorisnikId: LoggedUser.id,)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MojeRezervacije(
+                        poslaniKorisnikId: LoggedUser.id,
+                      )));
             },
             child: Text("Moje rezervacije"))
       ],
@@ -297,9 +301,27 @@ class _ProfilPageState extends State<ProfilPage> {
         TextButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MojiLajkoviNovosti()));
+                  builder: (context) =>
+                      MojiLajkoviNovosti(poslaniKorisnikId: LoggedUser.id)));
             },
             child: Text("Moja sviđanja novosti"))
+      ],
+    );
+  }
+
+  Widget _mojiFavoriti() {
+    return Row(
+      children: [
+        Icon(
+          Icons.favorite,
+          color: Colors.pink,
+        ),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MojiFavoriti()));
+            },
+            child: Text("Moji favoriti"))
       ],
     );
   }

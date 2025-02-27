@@ -78,6 +78,11 @@ namespace eBeautySalon.Services
             CreateMap<NovostLikeCommentUpdateRequest, Database.NovostLikeComment>();
 
             CreateMap<Database.Status, Models.Statusi>();
+
+            CreateMap<Database.FavoritiUsluge, Models.FavoritiUsluge>();
+            CreateMap<FavoritiUslugeInsertRequest, Database.FavoritiUsluge>();
+            CreateMap<FavoritiUslugeUpdateRequest, Database.FavoritiUsluge>();
+
         }
     }
 }

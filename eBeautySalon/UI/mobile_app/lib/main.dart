@@ -1,3 +1,5 @@
+import 'package:mobile_app/models/favoriti_usluge.dart';
+import 'package:mobile_app/providers/favoriti_usluge_provider.dart';
 import 'package:mobile_app/providers/kategorije_provider.dart';
 import 'package:mobile_app/providers/korisnik_provider.dart';
 import 'package:mobile_app/providers/novost_like_comment_provider.dart';
@@ -37,6 +39,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => TerminProvider()),
       ChangeNotifierProvider(create: (_) => UslugeTerminiProvider()),
       ChangeNotifierProvider(create: (_) => NovostLikeCommentProvider()),
+      ChangeNotifierProvider(create: (_) => FavoritiUslugeProvider()),
     ],
     child: MyMaterialApp(),
   ));
@@ -266,7 +269,23 @@ class LoginPage extends StatelessWidget {
 
                                     print(
                                         "loggedUser id: ${LoggedUser.id}, ima sliku? ${LoggedUser.slika != "" ? "da" : "ne"}");
-                                    if (LoggedUser.uloga != "")
+                                    if (korisnik.status == false) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                title: Text("Greška"),
+                                                content: const Text(
+                                                    "Nedozvoljena prijava. Vaš račun je blokiran."),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context),
+                                                      child: Text("Ok"))
+                                                ],
+                                              ));
+                                    } else if (LoggedUser.uloga != "")
                                       showDialog(
                                           context: context,
                                           builder: (BuildContext context) =>
@@ -313,7 +332,7 @@ class LoginPage extends StatelessWidget {
                                       AlertDialog(
                                         title: Text("Greška"),
                                         content: const Text(
-                                            "Nešto loše se dogodilo. Molimo pokusajte ponovo."),
+                                            "Nešto loše se dogodilo. Molimo pokušajte ponovo."),
                                         actions: [
                                           TextButton(
                                               onPressed: () =>

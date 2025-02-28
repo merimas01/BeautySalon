@@ -269,7 +269,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
           return 'Molimo Vas unesite ime';
         }
         if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+').hasMatch(value)) {
-          return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+          return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
         }
         if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
           return 'Unesite ispravno ime.';
@@ -288,7 +288,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
           return 'Molimo Vas unesite prezime';
         }
         if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+').hasMatch(value)) {
-          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
         }
         if (value.replaceAll(RegExp(r'[^a-zA-Z]'), "").isEmpty) {
           return 'Unesite ispravno prezime.';
@@ -325,7 +325,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
         if (!RegExp(
                 r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,3})?(\.[a-zA-Z]{2,3})?$')
             .hasMatch(value)) {
-          return 'Unesite ispravan email primjer@domena.com';
+          return 'Unesite ispravan email: primjer@domena.com';
         }
         return null;
       },
@@ -386,7 +386,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
 
   void doInsert(Map obj, SlikaProfilaInsertUpdate slika_request) async {
     Authorization.username = "admin";
-    Authorization.password = "admin";
+    Authorization.password = "test";
     var korisnik_insert = KorisnikInsert(
         obj['ime'],
         obj['prezime'],
@@ -416,7 +416,8 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Informacija o uspjehu"),
-                content: Text("Uspješno izvršena akcija!"),
+                content: Text(
+                    "Uspješno izvršena akcija! Prijavite se sa Vašim korisničkim imenom i lozinkom"),
                 actions: <Widget>[
                   Center(
                     child: TextButton(
@@ -425,7 +426,9 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                               builder: (context) => LoginPage()));
                         },
                         child: Text(
-                            "Prijavite se sa Vašim korisničkim imenom i lozinkom")),
+                          "Nazad na prijavu",
+                          textAlign: TextAlign.center,
+                        )),
                   )
                 ],
               ));

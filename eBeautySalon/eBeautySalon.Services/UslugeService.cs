@@ -134,7 +134,7 @@ namespace eBeautySalon.Services
                     mLContext = new MLContext();
                     var tmp = _context.Rezervacijas.Include(x => x.Usluga).ToList();
                     var tempData = _context.RecenzijaUsluges.Include(x => x.Korisnik).Include(x => x.Usluga.Kategorija).ToList();
-                    var uslugeList = _context.Uslugas.Include(x => x.Kategorija).Include("FavoritiUsluges").ToList();
+                    var uslugeList = _context.Uslugas.ToList();
                     var data = new List<UslugaEntry>();
                  
                     foreach (var rec in tempData)
@@ -151,52 +151,61 @@ namespace eBeautySalon.Services
                         }                      
                     }
 
-                    var trainData = mLContext.Data.LoadFromEnumerable(data);
+                    if (data.Count != 0) {
+                        var trainData = mLContext.Data.LoadFromEnumerable(data);
 
-                    MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
-                    options.MatrixColumnIndexColumnName = nameof(UslugaEntry.UslugaId);
-                    options.MatrixRowIndexColumnName = nameof(UslugaEntry.CoUsluga_Id);
-                    options.LabelColumnName = "Label";
-                    options.LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass;
-                    options.Alpha = 0.01;
-                    options.Lambda = 0.025;
-                    // For better results use the following parameters
-                    options.NumberOfIterations = 100;
-                    options.C = 0.00001;
+                        MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
+                        options.MatrixColumnIndexColumnName = nameof(UslugaEntry.UslugaId);
+                        options.MatrixRowIndexColumnName = nameof(UslugaEntry.CoUsluga_Id);
+                        options.LabelColumnName = "Label";
+                        options.LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass;
+                        options.Alpha = 0.01;
+                        options.Lambda = 0.025;
+                        // For better results use the following parameters
+                        options.NumberOfIterations = 100;
+                        options.C = 0.00001;
 
-                    var est = mLContext.Recommendation().Trainers.MatrixFactorization(options);
-                    model = est.Fit(trainData);
+                        var est = mLContext.Recommendation().Trainers.MatrixFactorization(options);
+                        model = est.Fit(trainData);
+                    }             
                 }
             }
 
             //prediction
 
-            var usluge = _context.Uslugas.Include(x=>x.SlikaUsluge).Include("FavoritiUsluges").Include(x=>x.Kategorija).Where(x => x.UslugaId != uslugaId);
-
+            var usluge = _context.Uslugas.Include(x => x.SlikaUsluge).Include("FavoritiUsluges").Include(x => x.Kategorija).Where(x => x.UslugaId != uslugaId);
             var predictionResult = new List<Tuple<Database.Usluga, float>>(); //onaj koji ima najveci score, njega uzimamo
 
-            foreach(var usluga in usluge)
+            if (model != null)
             {
-                var predictionengine = mLContext.Model.CreatePredictionEngine<UslugaEntry, CoUsluga_Prediction>(model);
+                
+                foreach (var usluga in usluge)
+                {
+                    var predictionengine = mLContext.Model.CreatePredictionEngine<UslugaEntry, CoUsluga_Prediction>(model);
 
-                var prediction = predictionengine.Predict(
-                                         new UslugaEntry()
-                                         {
-                                             UslugaId = (uint)uslugaId,
-                                             CoUsluga_Id = (uint)usluga.UslugaId
-                                         });
+                    var prediction = predictionengine.Predict(
+                                             new UslugaEntry()
+                                             {
+                                                 UslugaId = (uint)uslugaId,
+                                                 CoUsluga_Id = (uint)usluga.UslugaId
+                                             });
 
 
-                predictionResult.Add(new Tuple<Database.Usluga, float>(usluga, prediction.Score));
+                    predictionResult.Add(new Tuple<Database.Usluga, float>(usluga, prediction.Score));
 
+                }
+
+                //order by score - najveci skor ce biti u prvom redu
+                var result = predictionResult;
+                var finalResult = predictionResult.OrderByDescending(x => x.Item2).Select(x => x.Item1);
+                var res = finalResult.Take(3).ToList();
+
+                return _mapper.Map<List<Models.Usluge>>(res);
             }
-
-            //order by score - najveci skor ce biti u prvom redu
-            var result = predictionResult;
-            var finalResult = predictionResult.OrderByDescending(x => x.Item2).Select(x => x.Item1);
-            var res = finalResult.Take(3).ToList();
-
-            return _mapper.Map<List<Models.Usluge>>(res);
+            else
+            {
+                return new List<Usluge>();
+            }
 
         }
     }

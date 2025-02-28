@@ -79,6 +79,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
       recommendLista = recommend;
     });
 
+    print("recommend: ${recommendLista.length}");
     if (usluge.length != 0 && usluznici.length != 0 && zaposlenici != 0) {
       setState(() {
         isLoading = false;
@@ -129,7 +130,8 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   widget.usluga?.slikaUsluge != null &&
                           widget.usluga?.slikaUsluge?.slika != null &&
                           widget.usluga?.slikaUsluge?.slika != ""
-                      ? imageContainer(widget.usluga!.slikaUsluge!.slika, 300, 500)
+                      ? imageContainer(
+                          widget.usluga!.slikaUsluge!.slika, 300, 500)
                       : noImageContainer(300, 500),
                   SizedBox(
                     height: 10,
@@ -244,7 +246,8 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                           "Predlažemo Vam da pogledate sljedeće usluge:",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         )
-                      : SizedBox.shrink(),
+                      : Text("Za sada nema predloženih usluga 😞",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                   SizedBox(
                     height: 10,
                   ),
@@ -489,5 +492,4 @@ class _UslugaDetailsState extends State<UslugaDetails> {
 
     return list;
   }
-
 }

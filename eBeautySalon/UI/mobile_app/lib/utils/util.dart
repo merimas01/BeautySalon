@@ -13,6 +13,7 @@ Image ImageFromBase64String(String base64Image) {
   return Image.memory(
     base64Decode(base64Image),
     fit: BoxFit.cover,
+    gaplessPlayback: true,
   );
 }
 
@@ -40,6 +41,7 @@ Widget noImageContainer(double height, double width) {
     child: Image.asset(
       "assets/images/noImage.jpg",
       fit: BoxFit.cover, // Ensures the image fills the container
+      gaplessPlayback: true,
     ),
   );
 }

@@ -413,7 +413,7 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                             if (RegExp(
                                     r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
                                 .hasMatch(value)) {
-                              return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                              return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
                             }
                             if (value
                                 .replaceAll(RegExp(r'[^a-zA-Z]'), "")
@@ -437,7 +437,7 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                               if (RegExp(
                                       r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
                                   .hasMatch(value)) {
-                                return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,") su nedozvoljeni.';
+                                return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
                               }
                               if (value
                                   .replaceAll(RegExp(r'[^a-zA-Z]'), "")

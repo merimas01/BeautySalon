@@ -86,19 +86,8 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
                       x.novost?.slikaNovost != null &&
                               x.novost?.slikaNovost?.slika != null &&
                               x.novost?.slikaNovost?.slika != ""
-                          ? Container(
-                              height: 170,
-                              width: 170,
-                              child: ImageFromBase64String(
-                                  x.novost!.slikaNovost!.slika),
-                            )
-                          : Container(
-                              child: Image.asset(
-                                "assets/images/noImage.jpg",
-                              ),
-                              height: 120,
-                              width: 120,
-                            ),
+                          ? imageContainer(x.novost!.slikaNovost!.slika, 120, 120)
+                          : noImageContainer(120, 120),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

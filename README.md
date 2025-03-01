@@ -1,6 +1,6 @@
 # BeautySalon
 
-## About project
+## About the project
 
 eBeautySalon is a project for my University. It consists of a desktop and a mobile application. 
 <br>
@@ -27,7 +27,7 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 - Extract the .env file from folder "fit" to a solution folder (C:\repository-folder\BeautySalon\eBeautySalon)
 - Open the solution folder in terminal (Command Prompt)
 - Run a following command: docker-compose up --build (ensure your Docker Desktop is running)
-- Wait until docker finish composing
+- Wait until docker finishes composing
 - (Optional) Open Swagger at http://localhost:5145/swagger/index.html 
 
 ## Desktop App
@@ -66,4 +66,4 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 
 ## Notes
 
-- Setting up and running applications can take a few minutes, approximately about 3-5 mins.
+- Setting up and running applications may take a few minutes, approximately about 2-5 mins.

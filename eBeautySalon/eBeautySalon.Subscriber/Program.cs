@@ -29,7 +29,7 @@ public class Program
             using var channel = connection.CreateModel();
 
             channel.QueueDeclare(queue: "reservation_created",
-                                 durable: true,
+                                 durable: factory.HostName == "localhost" ? false : true,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);

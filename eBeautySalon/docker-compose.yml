@@ -4,8 +4,8 @@ services:
     image: rabbitmq:3-management-alpine
     container_name: 'rabbitmq_container'
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     ports:
       - "5672:5672"
       - "8080:15672"
@@ -25,10 +25,10 @@ services:
     restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=mySqlP4ssword!
+      - SA_PASSWORD=${SQL_PASSWORD}
       - MSSQL_PID=Developer
     ports:
-      - 1405:1433
+      - ${SQL_PORT}:1433
     expose:
       - 1433
     networks:
@@ -39,12 +39,12 @@ services:
     build:
       context: .
     environment:
-      - ConnectionStrings:DefaultConnection=Server=ebeautysalon_sql,1433;Database=IB200070;User=sa;Password=mySqlP4ssword!;ConnectRetryCount=0;TrustServerCertificate=True
+      - ConnectionStrings:DefaultConnection=Server=${SQL_HOST},1433;Database=${SQL_DATABASE};User=${SQL_USER};Password=${SQL_PASSWORD};ConnectRetryCount=0;TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
-      - RABBITMQ_HOST=rabbitMQ
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USERNAME=guest
-      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
     ports:
       - "5145:5145"
     networks:
@@ -60,18 +60,15 @@ services:
     build:
       context: ./eBeautySalon.Subscriber
     environment:
-      - RABBITMQ_HOST=rabbitMQ
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USERNAME=guest
-      - RABBITMQ_PASSWORD=guest
-      - SMTP_SERVER=smtp.gmail.com
-      - SMTP_PORT=587
-      - SMTP_USERNAME=servicebeautysalon@gmail.com
-      - SMTP_PASSWORD=dueyooomounilqqa
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
     depends_on:
-      # - ebeautysalon_sql
-      # - ebeatysalon_api
-      # - rabbitMQ
        rabbitMQ:
           condition: service_healthy
 

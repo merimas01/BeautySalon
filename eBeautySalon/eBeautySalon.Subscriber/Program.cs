@@ -12,8 +12,8 @@ public class Program
         {
             HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
             Port = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? "5672"),
-            UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
-            Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
+            UserName = Environment.GetEnvironmentVariable("RABBITMQ_USER") ?? "guest",
+            Password = Environment.GetEnvironmentVariable("RABBITMQ_PASS") ?? "guest",
             RequestedConnectionTimeout = TimeSpan.FromSeconds(30),
             RequestedHeartbeat = TimeSpan.FromSeconds(60),
             AutomaticRecoveryEnabled = true,

@@ -32,20 +32,30 @@ namespace eBeautySalon.Subscriber
         {
             try
             {
+                int smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT") ?? "");
+                string smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER") ?? "";
+                string fromEmail = Environment.GetEnvironmentVariable("SMTP_USER") ?? "";
+                string password = Environment.GetEnvironmentVariable("SMTP_PASS") ?? "";
+                bool enableSSL = bool.TryParse(Environment.GetEnvironmentVariable("SMTP_SSL"), out bool result) ? result : true;
+                bool defaultCredentials = bool.TryParse(Environment.GetEnvironmentVariable("SMTP_DEFAULT_CREDENTIALS"), out bool result2) ? result2 : false;
+
+                Console.WriteLine($"EMAIL: {fromEmail}");
+
                 // Set up the mail message
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("servicebeautysalon@gmail.com");
+                mail.From = new MailAddress(fromEmail);
                 mail.To.Add(emailTo);
                 mail.Subject = "Potvrda o rezervaciji";
                 mail.Body = message;
 
                 // Set up the SMTP client
-                SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
+                SmtpClient smtpClient = new SmtpClient()
                 {
-                    Port = 587,
-                    UseDefaultCredentials = false,
-                    EnableSsl = true,
-                    Credentials = new System.Net.NetworkCredential("servicebeautysalon@gmail.com", "dueyooomounilqqa")
+                    Host = smtpServer,
+                    Port = smtpPort,
+                    UseDefaultCredentials = defaultCredentials,
+                    EnableSsl = enableSSL,
+                    Credentials = new System.Net.NetworkCredential(fromEmail, password)
                 };
                
                 // Send the email

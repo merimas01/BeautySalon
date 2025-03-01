@@ -24,21 +24,17 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 ## Setting up 
 
 - Clone the repository: https://github.com/merimas01/BeautySalon.git 
+- Extract the .env file from folder "fit" to a solution folder (C:\repository-folder\BeautySalon\eBeautySalon)
 - Open a solution folder in terminal (Command Prompt)
-- Run a following command: docker-compose up --build
+- Run a following command: docker-compose up --build (ensure your Docker desktop is running)
 - Wait until docker finish composing
-- Open Swagger at http://localhost:5145/swagger/index.html 
+- (Optional) Open Swagger at http://localhost:5145/swagger/index.html 
 
 ## Desktop App
 
 ### Setup
 
-1. Open desktop_app directory in Visual Studio Code (VSC)
-2. Run the following commands in VSC terminal:
-
-- flutter clean
-- flutter pub get
-- flutter run -d windows
+1. open desktop_app.exe from Debug folder in zipped archive fit-build-2025-03-01.zip
 
 ### Credentials
 
@@ -56,13 +52,9 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 
 ### Setup
 
-1. Open mobile_app directory in Visual Studio Code (VSC)
-2. Open Android Studio and run Emulator
-3. Run the following commands in VSC terminal:
-
-- flutter clean
-- flutter pub get
-- flutter run
+1. Open Android Studio and run Emulator
+2. Drag and drop the app-debug.apk (from flutter-apk folder in zipped archive fit-build-2025-03-01.zip) file to the Emulator to install the application
+3. Manually run the application in the Emulator
 
 ### Credentials
 

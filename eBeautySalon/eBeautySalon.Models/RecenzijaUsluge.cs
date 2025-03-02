@@ -18,12 +18,12 @@ namespace eBeautySalon.Models
 
         public DateTime? DatumModificiranja { get; set; }
 
-        public int? KorisnikId { get; set; }
+        public int KorisnikId { get; set; }
 
-        public int? UslugaId { get; set; }
+        public int UslugaId { get; set; }
 
-        public virtual Korisnici? Korisnik { get; set; }
+        public virtual Korisnici Korisnik { get; set; } = null!;
 
-        public virtual Usluge? Usluga { get; set; }
+        public virtual Usluge Usluga { get; set; } = null!;
     }
 }

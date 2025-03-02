@@ -11,10 +11,10 @@ namespace eBeautySalon.Models.Requests
     public class ZaposleniciUslugeInsertRequest
     {
         [Required]
-        public int? ZaposlenikId { get; set; }
+        public int ZaposlenikId { get; set; }
 
         [Required]
-        public int? UslugaId { get; set; }
+        public int UslugaId { get; set; }
 
         [JsonIgnore]
         public DateTime DatumKreiranja { get; set; } = DateTime.Now;

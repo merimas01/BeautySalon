@@ -15,11 +15,11 @@ public partial class RecenzijaUsluznika
 
     public DateTime? DatumModificiranja { get; set; }
 
-    public int? KorisnikId { get; set; }
+    public int KorisnikId { get; set; }
 
-    public int? UsluznikId { get; set; }
+    public int UsluznikId { get; set; }
 
-    public virtual Korisnik? Korisnik { get; set; }
+    public virtual Korisnik Korisnik { get; set; } = null!;
 
-    public virtual Zaposlenik? Usluznik { get; set; }
+    public virtual Zaposlenik Usluznik { get; set; } = null!;
 }

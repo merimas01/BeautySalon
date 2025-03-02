@@ -7,7 +7,7 @@ public partial class Status
 {
     public int StatusId { get; set; }
 
-    public string? Opis { get; set; }
+    public string Opis { get; set; } = null!;
 
     public string? Sifra { get; set; }
 

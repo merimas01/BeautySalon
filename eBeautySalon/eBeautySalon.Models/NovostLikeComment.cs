@@ -10,9 +10,7 @@ namespace eBeautySalon.Models
     {
         public int NovostLikeCommentId { get; set; }
 
-        public int? KorisnikId { get; set; }
-
-        public int? NovostId { get; set; }
+        public int KorisnikId { get; set; }
 
         public bool? IsLike { get; set; }
 
@@ -22,9 +20,11 @@ namespace eBeautySalon.Models
 
         public DateTime? DatumModifikovanja { get; set; }
 
-        public virtual Korisnici? Korisnik { get; set; }
+        public int NovostId { get; set; }
 
-        public virtual Novosti? Novost { get; set; }
+        public virtual Korisnici Korisnik { get; set; } = null!;
+
+        public virtual Novosti Novost { get; set; } = null!;
     }
 
 }

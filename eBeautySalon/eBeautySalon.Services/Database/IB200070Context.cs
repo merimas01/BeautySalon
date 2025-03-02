@@ -65,6 +65,10 @@ public partial class Ib200070Context : DbContext
 
             entity.ToTable("FavoritiUsluge");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_FavoritiUsluge_KorisnikId");
+
+            entity.HasIndex(e => e.UslugaId, "IX_FavoritiUsluge_UslugaID");
+
             entity.Property(e => e.FavoritId).HasColumnName("FavoritID");
             entity.Property(e => e.DatumIzmjene)
                 .HasDefaultValueSql("(getdate())")
@@ -189,10 +193,12 @@ public partial class Ib200070Context : DbContext
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.NovostLikeComments)
                 .HasForeignKey(d => d.KorisnikId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NovostLikeComment_Korisnik");
 
             entity.HasOne(d => d.Novost).WithMany(p => p.NovostLikeComments)
                 .HasForeignKey(d => d.NovostId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NovostLikeComment_Novost");
         });
 
@@ -204,6 +210,8 @@ public partial class Ib200070Context : DbContext
 
             entity.HasIndex(e => e.UslugaId, "IX_RecenzijaUsluge_UslugaID");
 
+            entity.HasIndex(e => e.KorisnikId, "IX_RecenzijaUsluznika_KorisnikID");
+
             entity.Property(e => e.RecenzijaUslugeId).HasColumnName("RecenzijaUslugeID");
             entity.Property(e => e.DatumKreiranja)
                 .HasDefaultValueSql("(getdate())")
@@ -214,10 +222,12 @@ public partial class Ib200070Context : DbContext
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.RecenzijaUsluges)
                 .HasForeignKey(d => d.KorisnikId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RecenzijaUsluge_Korisnik");
 
             entity.HasOne(d => d.Usluga).WithMany(p => p.RecenzijaUsluges)
                 .HasForeignKey(d => d.UslugaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RecenzijaUsluge_Usluga");
         });
 
@@ -239,10 +249,12 @@ public partial class Ib200070Context : DbContext
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.RecenzijaUsluznikas)
                 .HasForeignKey(d => d.KorisnikId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RecenzijaUsluznika_Korisnik");
 
             entity.HasOne(d => d.Usluznik).WithMany(p => p.RecenzijaUsluznikas)
                 .HasForeignKey(d => d.UsluznikId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RecenzijaUsluznika_Usluznik");
         });
 
@@ -272,6 +284,7 @@ public partial class Ib200070Context : DbContext
 
             entity.HasOne(d => d.Korisnik).WithMany(p => p.Rezervacijas)
                 .HasForeignKey(d => d.KorisnikId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rezervacija_Korisnik");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Rezervacijas)
@@ -280,10 +293,12 @@ public partial class Ib200070Context : DbContext
 
             entity.HasOne(d => d.Termin).WithMany(p => p.Rezervacijas)
                 .HasForeignKey(d => d.TerminId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rezervacija_Termin");
 
             entity.HasOne(d => d.Usluga).WithMany(p => p.Rezervacijas)
                 .HasForeignKey(d => d.UslugaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rezervacija_Usluga");
         });
 
@@ -435,10 +450,12 @@ public partial class Ib200070Context : DbContext
 
             entity.HasOne(d => d.Usluga).WithMany(p => p.ZaposlenikUslugas)
                 .HasForeignKey(d => d.UslugaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ZaposlenikUsluga_Usluga");
 
             entity.HasOne(d => d.Zaposlenik).WithMany(p => p.ZaposlenikUslugas)
                 .HasForeignKey(d => d.ZaposlenikId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ZaposlenikUsluga_Zaposlenik");
         });
 

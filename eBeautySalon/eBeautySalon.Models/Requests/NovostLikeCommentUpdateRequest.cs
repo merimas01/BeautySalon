@@ -12,10 +12,10 @@ namespace eBeautySalon.Models.Requests
     public partial class NovostLikeCommentUpdateRequest
     {
         [Required]
-        public int? KorisnikId { get; set; }
+        public int KorisnikId { get; set; }
 
         [Required]
-        public int? NovostId { get; set; }
+        public int NovostId { get; set; }
 
         public bool? IsLike { get; set; }
 

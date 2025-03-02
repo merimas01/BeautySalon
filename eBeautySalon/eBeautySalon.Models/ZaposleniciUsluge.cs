@@ -10,16 +10,16 @@ namespace eBeautySalon.Models
     {
         public int ZaposlenikUslugaId { get; set; }
 
-        public int? ZaposlenikId { get; set; }
+        public int ZaposlenikId { get; set; }
 
-        public int? UslugaId { get; set; }
+        public int UslugaId { get; set; }
 
         public DateTime DatumKreiranja { get; set; }
 
         public DateTime? DatumModificiranja { get; set; }
 
-        public virtual Usluge? Usluga { get; set; }
+        public virtual Usluge Usluga { get; set; } = null!;
 
-        //public virtual Zaposlenici? Zaposlenik { get; set; }
+        //public virtual Zaposlenici Zaposlenik { get; set; } = null!;
     }
 }

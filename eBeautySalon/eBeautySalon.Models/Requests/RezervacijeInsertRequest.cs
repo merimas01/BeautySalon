@@ -11,13 +11,13 @@ namespace eBeautySalon.Models.Requests
     public class RezervacijeInsertRequest
     {
         [Required]
-        public int? KorisnikId { get; set; }
+        public int KorisnikId { get; set; }
 
         [Required]
-        public int? UslugaId { get; set; }
+        public int UslugaId { get; set; }
 
         [Required]
-        public int? TerminId { get; set; }
+        public int TerminId { get; set; }
 
         [Required(ErrorMessage = "Datum je obavezan.")]
         public DateTime DatumRezervacije { get; set; }

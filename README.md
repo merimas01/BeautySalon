@@ -34,7 +34,7 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 
 ### Setup
 
-- Run desktop_app.exe from Debug folder in the zipped archive fit-build-2025-03-01.zip
+- Run desktop_app.exe from Debug folder in the zipped archive fit-build-2025-03-03.zip
 
 ### Credentials
 
@@ -53,7 +53,7 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 ### Setup
 
 - Open Android Studio and run Emulator
-- Drag and drop the app-debug.apk file (from flutter-apk folder in the zipped archive fit-build-2025-03-01.zip) into the Emulator, in order to install the application
+- Drag and drop the app-debug.apk file (from flutter-apk folder in the zipped archive fit-build-2025-03-03.zip) into the Emulator, in order to install the application
 - Manually run the application in the Emulator
 
 ### Credentials

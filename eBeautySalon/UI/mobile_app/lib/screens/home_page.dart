@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
               isLoading == false
                   ? Container(
                       width: 800,
-                      height: 550,
+                      height: 530,
                       child: GridView(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount:

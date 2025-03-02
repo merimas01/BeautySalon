@@ -109,6 +109,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         ? "Usluznik"
         : widget.korisnik?.korisnikUlogas?[0].uloga?.naziv.toString();
 
+    imaSliku();
+    
     _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
     _zaposleniciUslugeProvider = context.read<ZaposleniciUslugeProvider>();
@@ -834,7 +836,8 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
       await _slikaProfilaProvider.update(
           widget.korisnik!.slikaProfilaId!, slika_request);
     } else if (_ponistiSliku == true && _base64image == null) {
-      if (widget.korisnik!.slikaProfilaId != DEFAULT_SlikaProfilaId) {
+      if (widget.korisnik?.slikaProfilaId != DEFAULT_SlikaProfilaId &&
+          widget.korisnik?.slikaProfilaId != null) {
         try {
           var del = await _slikaProfilaProvider
               .delete(widget.korisnik!.slikaProfilaId!);

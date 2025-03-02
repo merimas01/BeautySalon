@@ -332,7 +332,7 @@ class LoginPage extends StatelessWidget {
                                       AlertDialog(
                                         title: Text("Greška"),
                                         content: const Text(
-                                            "Nešto loše se dogodilo. Molimo pokušajte ponovo."),
+                                            "Neispravni podaci. Molimo pokušajte ponovo."),
                                         actions: [
                                           TextButton(
                                               onPressed: () =>

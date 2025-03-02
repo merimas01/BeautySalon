@@ -373,8 +373,8 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
-              content:
-                  Text("Trebate dati ocjenu i zadovoljiti validaciju komentara. Molimo pokušajte ponovo."),
+              content: Text(
+                  "Trebate dati ocjenu i zadovoljiti validaciju komentara. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
@@ -442,12 +442,16 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
       'uslugaId': widget.usluga?.uslugaId,
     });
 
-    getProsjecnaOcjenaITotalReviews();
-
     setState(() {
       _recenzijaUslugeResult = data;
       imaRecenziju = false;
+      listProsjecneOcjeneUsluga = [];
+      prosjecnaOcjena = "0";
+      totalReviws = "0";
+      isLoadingProsjecnaOcjena = true;
     });
+
+    getProsjecnaOcjenaITotalReviews();
   }
 
   // split text every 5 words
@@ -479,18 +483,18 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
     );
   }
 
-  List<dynamic> listProsjecneOcjeneUsluznika = [];
+  List<dynamic> listProsjecneOcjeneUsluga = [];
   String prosjecnaOcjena = "0";
   String totalReviws = "0";
   bool isLoadingProsjecnaOcjena = true;
 
   getProsjecnaOcjenaITotalReviews() async {
-    var usluznici = await _recenzijaUslugeProvider.GetProsjecnaOcjena();
+    var usluge = await _recenzijaUslugeProvider.GetProsjecnaOcjena();
     setState(() {
-      listProsjecneOcjeneUsluznika = usluznici;
+      listProsjecneOcjeneUsluga = usluge;
     });
-    if (listProsjecneOcjeneUsluznika.length != 0) {
-      for (var o in listProsjecneOcjeneUsluznika) {
+    if (listProsjecneOcjeneUsluga.length != 0) {
+      for (var o in listProsjecneOcjeneUsluga) {
         if (widget.usluga?.uslugaId == o['uslugaId']) {
           setState(() {
             prosjecnaOcjena = o['prosjecnaOcjena'].toString();

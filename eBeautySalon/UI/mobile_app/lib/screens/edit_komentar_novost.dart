@@ -88,7 +88,7 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                       )
                     : Container(),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "Komentar:"),
+                  decoration: InputDecoration(labelText: "Komentar:", hintText: "Ovdje napišite komentar..."),
                   enabled: true,
                   maxLines: null,
                   controller: _commentController,

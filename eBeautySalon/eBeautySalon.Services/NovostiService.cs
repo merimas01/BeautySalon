@@ -27,16 +27,6 @@ namespace eBeautySalon.Services
             return base.BeforeInsert(entity, insert);
         }
 
-        public override Task BeforeUpate(Novost entity, NovostiUpdateRequest update)
-        {
-            entity.KorisnikId = _context.Korisniks.Where(x => x.IsAdmin == true).Select(x => x.KorisnikId).First();
-            var slikaNovost = _context.SlikaNovosts.Where(x=>x.SlikaNovostId == entity.SlikaNovostId).First();
-            if (update.SlikaNovostId == Constants.DEFAULT_SlikaNovostId)
-            {
-                _context.Remove(slikaNovost);
-            }
-            return base.BeforeUpate(entity, update);
-        }
         public override async Task BeforeDelete(Novost entity)
         {
             var slikaNovostId = entity.SlikaNovostId;

@@ -30,12 +30,6 @@ namespace eBeautySalon.Services
                 entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();          
         }
 
-        public override async Task BeforeUpate(Usluga entity, UslugeUpdateRequest update)
-        {
-            if (update.SlikaUslugeId == null || update.SlikaUslugeId == 0)
-                entity.SlikaUslugeId = _context.SlikaUsluges.Select(x => x.SlikaUslugeId).First();  
-        }
-
         public override async Task BeforeDelete(Usluga entity)
         {
             var slikaUslugeId = entity.SlikaUslugeId;
@@ -74,7 +68,7 @@ namespace eBeautySalon.Services
                 || (x.Sifra != null && x.Sifra.Contains(search.FTS))
                 ));
             }
-            if (search.KategorijaId !=null)
+            if (search.KategorijaId != null)
             {
                 query = query.Where(x => x.KategorijaId == search.KategorijaId);
             }

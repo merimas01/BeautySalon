@@ -214,6 +214,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                 var request_usluga = new Map.from(_formKey.currentState!.value);
                 var request_slika = new SlikaUslugeInsertUpdate(_base64image);
 
+                print("request usluga: ${request_usluga}");
                 if (val == true) {
                   if (widget.usluga == null) {
                     doInsert(request_usluga, request_slika);
@@ -312,7 +313,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                       if (!RegExp(
                               r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{1,2})?$')
                           .hasMatch(value)) {
-                        return 'Unesite ispravnu cijenu. Npr: 50.60 (ne smije biti 0, negaitvan broj, broj sa više od 3 cifre, niti bilo koji specijalan karakter osim broja)';
+                        return 'Unesite ispravnu cijenu. Npr: 50.60 (ne smije biti 0, negaitvan broj, broj sa više od 3 cifre,\nniti bilo koji specijalan karakter osim broja)';
                       }
                       return null;
                     },
@@ -586,6 +587,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
     } else {
       request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }
+
     print("insert request: $request_usluga");
     try {
       var req = await _uslugeProvider.insert(request_usluga);
@@ -639,43 +641,50 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
       await _slikaUslugeProvider.update(
           widget.usluga!.slikaUslugeId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      try {
-        var del =
-            await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
-        print("delete slikaUslugeId: $del");
-        request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
-      } catch (err) {
-        print("error delete");
+      if (widget.usluga?.slikaUslugeId != DEFAULT_SlikaUslugeId &&
+          widget.usluga?.slikaUslugeId != null) {
+        print(widget.usluga?.slikaUslugeId);
+        try {
+          var del =
+              await _slikaUslugeProvider.delete(widget.usluga!.slikaUslugeId!);
+          if (del == true) request_usluga['slikaUslugeId'] = 1;
+          print("delete slikaUslugeId: $del");
+        } catch (err) {
+          print("error delete");
+        }
       }
+      request_usluga['slikaUslugeId'] = DEFAULT_SlikaUslugeId;
     }
     print("update request: $request_usluga");
 
     try {
+      print(widget.usluga!.uslugaId!);
       var req = await _uslugeProvider.update(
           widget.usluga!.uslugaId!, request_usluga);
-      if (req != null) {}
-      print("req: ${req.slikaUslugeId}");
-      await showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                title: Text("Informacija o uspjehu"),
-                content: Text("Uspješno izvršena akcija!"),
-                actions: <Widget>[
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => UslugeListScreen()));
-                      },
-                      child: Text("Nazad na usluge"))
-                ],
-              ));
+      if (req != null) {
+        print("req: ${req.slikaUslugeId}");
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: Text("Informacija o uspjehu"),
+                  content: Text("Uspješno izvršena akcija!"),
+                  actions: <Widget>[
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => UslugeListScreen()));
+                        },
+                        child: Text("Nazad na usluge"))
+                  ],
+                ));
+      }
     } catch (e) {
       await showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji).  Molimo pokušajte ponovo."),
+                    "${e.toString()} | Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji).  Molimo pokušajte ponovo."),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),

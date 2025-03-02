@@ -317,8 +317,8 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
-              content:
-                  Text("Trebate dati ocjenu i zadovoljiti validaciju komentara. Molimo pokušajte ponovo."),
+              content: Text(
+                  "Trebate dati ocjenu i zadovoljiti validaciju komentara. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
                     onPressed: () {
@@ -387,12 +387,16 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
       'usluznikId': widget.zaposlenik?.zaposlenikId,
     });
 
-    getProsjecnaOcjenaITotalReviews();
-
     setState(() {
       _recenzijaUsluznikaResult = data;
       imaRecenziju = false;
+      listProsjecneOcjeneUsluznika = [];
+      prosjecnaOcjena = "0";
+      totalReviws = "0";
+      isLoadingProsjecnaOcjena = true;
     });
+
+    getProsjecnaOcjenaITotalReviews();
   }
 
   @override

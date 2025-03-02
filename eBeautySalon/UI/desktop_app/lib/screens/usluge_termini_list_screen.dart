@@ -403,7 +403,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 builder: (BuildContext context) => AlertDialog(
                       title: Text("Greška"),
                       content: Text(
-                          "Neispravni podaci. Termin treba biti u formatu ##:## (06:00-22:59) i on se ne smije ponavljati. Molimo pokušajte ponovo."),
+                          "Termin možda već postoji ili je nepravilno unesen novi termin. Termin treba biti u formatu ##:## (06:00-22:59) i on se ne smije ponavljati. Molimo pokušajte ponovo."),
                       actions: [
                         TextButton(
                             onPressed: () => Navigator.pop(context),

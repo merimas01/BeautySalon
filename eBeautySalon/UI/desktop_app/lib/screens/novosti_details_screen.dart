@@ -583,14 +583,18 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
       await _slikaNovostProvider.update(
           widget.novost!.slikaNovostId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      try {
-        var del =
-            await _slikaNovostProvider.delete(widget.novost!.slikaNovostId!);
-        print("delete slikaNovostId: $del");
-        request_novost['slikaNovostId'] = DEFAULT_SlikaNovostId;
-      } catch (err) {
-        print("delete error");
+      if (widget.novost?.slikaNovostId != DEFAULT_SlikaNovostId &&
+          widget.novost?.slikaNovostId != null) {
+        print(widget.novost?.slikaNovostId);
+        try {
+          var del =
+              await _slikaNovostProvider.delete(widget.novost!.slikaNovostId!);
+          print("delete slikaNovostId: $del");
+        } catch (err) {
+          print("error delete");
+        }
       }
+      request_novost['slikaNovostId'] = DEFAULT_SlikaNovostId;
     }
     print("update request: $request_novost");
 

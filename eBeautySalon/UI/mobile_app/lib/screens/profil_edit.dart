@@ -323,14 +323,17 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
       await _slikaProfilaProvider.update(
           widget.korisnik!.slikaProfilaId!, request_slika);
     } else if (_ponistiSliku == true && _base64image == null) {
-      try {
-        var del = await _slikaProfilaProvider
-            .delete(widget.korisnik!.slikaProfilaId!);
-        print("delete slikaProfilaId: $del");
-        request_korisnik['slikaProfilaId'] = DEFAULT_SlikaProfilaId;
-      } catch (err) {
-        print("error delete");
+      if (widget.korisnik?.slikaProfilaId != DEFAULT_SlikaProfilaId &&
+          widget.korisnik?.slikaProfilaId != null) {
+        try {
+          var del = await _slikaProfilaProvider
+              .delete(widget.korisnik!.slikaProfilaId!);
+          print("delete slikaUslugeId: $del");
+        } catch (err) {
+          print("error delete");
+        }
       }
+      request_korisnik.slikaProfilaId = DEFAULT_SlikaProfilaId;
     }
     print("update request: $request_korisnik");
 
@@ -400,55 +403,43 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                       name: "korisnickoIme",
                       enabled: false,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: FormBuilderTextField(
-                          decoration: InputDecoration(labelText: "Ime:"),
-                          name: "ime",
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Molimo Vas unesite ime';
-                            }
-                            if (RegExp(
-                                    r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
-                                .hasMatch(value)) {
-                              return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
-                            }
-                            if (value
-                                .replaceAll(RegExp(r'[^a-zA-Z]'), "")
-                                .isEmpty) {
-                              return 'Unesite ispravno ime.';
-                            }
-                            return null;
-                          },
-                        )),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: FormBuilderTextField(
-                            name: "prezime",
-                            decoration: InputDecoration(labelText: "Prezime:"),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Molimo Vas unesite prezime';
-                              }
-                              if (RegExp(
-                                      r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
-                                  .hasMatch(value)) {
-                                return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
-                              }
-                              if (value
-                                  .replaceAll(RegExp(r'[^a-zA-Z]'), "")
-                                  .isEmpty) {
-                                return 'Unesite ispravno prezime.';
-                              }
-                              return null;
-                            },
-                          ),
-                        )
-                      ],
+                    FormBuilderTextField(
+                      decoration: InputDecoration(labelText: "Ime:"),
+                      name: "ime",
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite ime';
+                        }
+                        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                            .hasMatch(value)) {
+                          return 'Brojevi i specijalni znakovi (@#\$?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
+                        }
+                        if (value
+                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                            .isEmpty) {
+                          return 'Unesite ispravno ime.';
+                        }
+                        return null;
+                      },
+                    ),
+                    FormBuilderTextField(
+                      name: "prezime",
+                      decoration: InputDecoration(labelText: "Prezime:"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Molimo Vas unesite prezime';
+                        }
+                        if (RegExp(r'[@#$?!%()\{\}\[\]\d~°^ˇ`˙´.;:,"<>+=*]+')
+                            .hasMatch(value)) {
+                          return 'Brojevi i specijalni znakovi (@\$#?!%()[]{}<>+=*~°^ˇ`˙´.:;,")\nsu nedozvoljeni.';
+                        }
+                        if (value
+                            .replaceAll(RegExp(r'[^a-zA-Z]'), "")
+                            .isEmpty) {
+                          return 'Unesite ispravno prezime.';
+                        }
+                        return null;
+                      },
                     ),
                     FormBuilderTextField(
                       name: "telefon",

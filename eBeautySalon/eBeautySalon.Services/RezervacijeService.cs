@@ -216,7 +216,7 @@ namespace eBeautySalon.Services
 
         public async Task<dynamic> GetTermineZaUsluguIDatum(int uslugaId, DateTime datum)
         {
-            var usluga_termini = await _context.UslugaTermins.Where(x => x.UslugaId == uslugaId).Select(x=>x.Termin).ToListAsync();
+            var usluga_termini = await _context.UslugaTermins.Where(x => x.UslugaId == uslugaId && x.IsPrikazan == true).Select(x=>x.Termin).ToListAsync();
             var rezervacije_usluga_datum = await _context.Rezervacijas.Where(x => x.UslugaId == uslugaId && x.DatumRezervacije.Date == datum.Date).Select(x=>x.Termin).ToListAsync();
             var lista_termina = new List<dynamic>();
 

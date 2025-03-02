@@ -296,7 +296,7 @@ class LoginPage extends StatelessWidget {
                                 }
                               }
                             } on Exception catch (e) {
-                              showDialog(
+                              showDialog( 
                                   context: context,
                                   builder: (BuildContext context) =>
                                       AlertDialog(

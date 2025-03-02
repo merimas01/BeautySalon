@@ -5,7 +5,6 @@ import 'package:mobile_app/models/search_result.dart';
 import 'package:mobile_app/screens/edit_komentar_novost.dart';
 import 'package:mobile_app/screens/home_page.dart';
 import 'package:mobile_app/screens/moji_lajkovi_novosti.dart';
-import 'package:mobile_app/screens/profil_page.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
 import 'package:provider/provider.dart';
 

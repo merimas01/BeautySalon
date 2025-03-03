@@ -328,8 +328,14 @@ class _RezervacijePageState extends State<RezervacijePage> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: Text("Informacija o uspjehu"),
-              content: Text("Uspješno izvršena akcija!"),
+              title: Text(
+                "👏 Uspješno kreirana rezervacija!",
+                textAlign: TextAlign.center,
+              ),
+              content: Text(
+                "Izvršite plaćanje klikom na dugme ispod!",
+                textAlign: TextAlign.center,
+              ),
               actions: <Widget>[
                 TextButton(
                     style: TextButton.styleFrom(

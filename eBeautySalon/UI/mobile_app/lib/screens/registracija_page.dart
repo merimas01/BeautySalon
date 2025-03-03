@@ -418,9 +418,13 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
       await showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-                title: Text("Informacija o uspjehu"),
+                title: Text(
+                  "👏 Uspješna registracija!",
+                  textAlign: TextAlign.center,
+                ),
                 content: Text(
-                    "Uspješno izvršena akcija! Prijavite se sa Vašim korisničkim imenom i lozinkom"),
+                    "Prijavite se sa Vašim korisničkim imenom i lozinkom.",
+                    textAlign: TextAlign.center),
                 actions: <Widget>[
                   Center(
                     child: TextButton(

@@ -439,23 +439,32 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: e?.status == true
-                  ? Text('Potvrda o blokiranju korisnika')
-                  : Text('Potvrda o odblokiranju korisnika'),
+                  ? Text('Potvrda o blokiranju korisnika',
+                      textAlign: TextAlign.center)
+                  : Text('Potvrda o odblokiranju korisnika',
+                      textAlign: TextAlign.center),
               content: e?.status == true
                   ? Text(
-                      'Jeste li sigurni da želite blokirati izabranog korisnika?')
+                      'Jeste li sigurni da želite blokirati izabranog korisnika?',
+                      textAlign: TextAlign.center)
                   : Text(
-                      "Jeste li sigurni da želite odblokirati izabranog korisnika?"),
+                      "Jeste li sigurni da želite odblokirati izabranog korisnika?",
+                      textAlign: TextAlign.center),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
                   child: Text('Ne'),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey),
                   onPressed: () {
                     Navigator.of(context).pop(); //zatvori dijalog
                   },
                 ),
-                TextButton(
+                ElevatedButton(
                   child: Text('Da'),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red),
                   onPressed: () async {
                     Navigator.of(context).pop(); //zatvori dijalog
                     _blockUnblockUser(e);

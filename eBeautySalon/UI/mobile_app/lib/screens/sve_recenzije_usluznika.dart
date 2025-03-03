@@ -98,9 +98,27 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
     );
   }
 
+
+  Widget noResultsWidget() {
+    return Container(
+      width: 300,
+      height: 300,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(
+          "Ups!",
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Text("Nije pronađena nijedna recenzija. 😔", style: TextStyle(fontSize: 16))
+      ]),
+    );
+  }
+
   List<Widget> _buildList(data) {
     if (data.length == 0) {
-      return [Text("Učitavanje...")];
+      return [noResultsWidget()];
     }
 
     List<Widget> list = data

@@ -405,7 +405,7 @@ class _ProfilPageDetailsScreenState extends State<ProfilPageDetailsScreen> {
                                               builder: (context) =>
                                                   ProfilPage()));
                                     },
-                                    child: Text("Nazad na profil"))
+                                    child: Text("Ok"))
                               ],
                             ));
                   } else {

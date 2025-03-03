@@ -178,8 +178,14 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "šifra/naslov/sadržaj",
-              ),
+                  labelText: "šifra/naslov/sadržaj",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController,
             ),
           ),

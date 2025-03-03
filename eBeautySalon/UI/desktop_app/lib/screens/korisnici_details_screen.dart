@@ -1,15 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:desktop_app/screens/korisnici_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:provider/provider.dart';
-
 import '../models/korisnik.dart';
-import '../models/search_result.dart';
-import '../models/slika_profila.dart';
-import '../providers/slika_profila_provider.dart';
 import '../widgets/master_screen.dart';
 import 'korisnici_aktivnost_screen.dart';
 
@@ -142,6 +136,24 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 211, 17, 17)),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => KorisniciListScreen()));
+                            },
+                            child: Icon(Icons.close)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     _naslov(),
                     widget.korisnik != null &&
                             widget.korisnik?.slikaProfila != null &&
@@ -200,11 +212,11 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
 
   Image displayNoImage() {
     return Image.asset(
-                            "assets/images/noImage.jpg",
-                            height: 250,
-                            width: null,
-                            fit: BoxFit.cover,
-                          );
+      "assets/images/noImage.jpg",
+      height: 250,
+      width: null,
+      fit: BoxFit.cover,
+    );
   }
 
   Uint8List displayCurrentImage() {

@@ -161,6 +161,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
     if (isLoadingUsluge == false) {
       return Container(
         width: 350,
+        height: 55,
         padding: EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -202,6 +203,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
     if (isLoadingUloge == false) {
       return Container(
         width: 200,
+        height: 55,
         padding: EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -246,8 +248,14 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "šifra/ime/prezime/korisničko ime",
-              ),
+                  labelText: "šifra/ime/prezime/korisničko ime",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController,
             ),
           ),

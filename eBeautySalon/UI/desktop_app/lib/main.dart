@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:desktop_app/models/novost_like_comment.dart';
 import 'package:desktop_app/providers/kategorije_provider.dart';
 import 'package:desktop_app/providers/korisnici_uloge_provider.dart';
 import 'package:desktop_app/providers/korisnik_provider.dart';
@@ -87,6 +85,7 @@ class LoginPage extends StatelessWidget {
     _korisnikProvider = context.read<KorisnikProvider>();
 
     return Scaffold(
+      //backgroundColor: Colors.pink[50],
         appBar: AppBar(
           title: Text("Prijava"),
         ),

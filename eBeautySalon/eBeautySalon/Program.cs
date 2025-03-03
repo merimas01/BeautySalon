@@ -536,9 +536,9 @@ using (var scope = app.Services.CreateScope())
         dataContext.SaveChanges();
 
         dataContext.Termins.AddRange(
-            new Termin { Opis = "08:00", Sifra = "T000001"},
-            new Termin { Opis = "09:00", Sifra = "T000002"},
-            new Termin { Opis = "10:00", Sifra = "T000003"}
+            new Termin { Opis = "08:00-09:00", Sifra = "T000001"},
+            new Termin { Opis = "09:00-10:00", Sifra = "T000002"},
+            new Termin { Opis = "10:00-11:00", Sifra = "T000003"}
             );
 
         dataContext.SaveChanges();

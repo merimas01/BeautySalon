@@ -118,6 +118,9 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                                 "Ispravite greške i popunite obavezna polja."),
                             actions: <Widget>[
                               TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.pink),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
@@ -421,6 +424,9 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                 actions: <Widget>[
                   Center(
                     child: TextButton(
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.pink),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => LoginPage()));
@@ -445,9 +451,12 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Molimo pokušajte ponovo. Korisničko ime/telefon/email možda već postoji."),
+                    "Neispravni podaci. Korisničko ime/telefon/email možda već postoji. \nMolimo pokušajte ponovo. "),
                 actions: [
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Ok"))
                 ],

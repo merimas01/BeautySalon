@@ -266,63 +266,51 @@ class _RezervacijePageState extends State<RezervacijePage> {
                   height: 10,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // Background color
-                          foregroundColor: Colors.pink, // Text color
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12), // Optional: Adjust padding
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => MojeRezervacije()));
-                        },
-                        child: Text(
-                          "Moje rezervacije",
-                          style: TextStyle(fontSize: 16),
-                        )),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Colors.green[400], // Background color
-                          foregroundColor: Colors.white, // Text color
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12), // Optional: Adjust padding
-                        ),
-                        onPressed: () async {
-                          if (selectedDate != null &&
-                              selectedUsluga != null &&
-                              selectedTerminZaUslugu != null) {
-                            try {
-                              var request = RezervacijaInsert(
-                                LoggedUser.id,
-                                selectedUsluga!.uslugaId,
-                                selectedTerminZaUslugu['terminId'],
-                                selectedDate,
-                                false,
-                                false,
-                              );
-                              var obj =
-                                  await _rezervacijeProvider.insert(request);
+                    selectedDate != null &&
+                            selectedUsluga != null &&
+                            selectedTerminZaUslugu != null
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Colors.green[400], // Background color
+                              foregroundColor: Colors.white, // Text color
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12), // Optional: Adjust padding
+                            ),
+                            onPressed: () async {
+                              if (selectedDate != null &&
+                                  selectedUsluga != null &&
+                                  selectedTerminZaUslugu != null) {
+                                try {
+                                  var request = RezervacijaInsert(
+                                    LoggedUser.id,
+                                    selectedUsluga!.uslugaId,
+                                    selectedTerminZaUslugu['terminId'],
+                                    selectedDate,
+                                    false,
+                                    false,
+                                  );
+                                  var obj = await _rezervacijeProvider
+                                      .insert(request);
 
-                              setState(() {
-                                lastRezervacija = obj;
-                              });
-                              showSuccessMessage();
-                            } catch (err) {
-                              print("error: $err");
-                              _showError();
-                            }
-                          } else {
-                            _showValidationError();
-                          }
-                        },
-                        child: Text("Rezervišite Vaš dan",
-                            style: TextStyle(fontSize: 16))),
+                                  setState(() {
+                                    lastRezervacija = obj;
+                                  });
+                                  showSuccessMessage();
+                                } catch (err) {
+                                  print("error: $err");
+                                  _showError();
+                                }
+                              } else {
+                                _showValidationError();
+                              }
+                            },
+                            child: Text("Rezervišite Vaš dan",
+                                style: TextStyle(fontSize: 16)))
+                        : SizedBox.shrink(),
                   ],
                 ),
                 SizedBox(
@@ -344,6 +332,9 @@ class _RezervacijePageState extends State<RezervacijePage> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -358,9 +349,12 @@ class _RezervacijePageState extends State<RezervacijePage> {
         builder: (BuildContext context) => AlertDialog(
               title: Text("Ups!"),
               content: const Text(
-                  "Nije dozvoljeno rezervisati više od jednu uslugu na jedan dan. Provjerite Vaše rezervacije i pokušajte ponovo."),
+                  "Nije dozvoljeno rezervisati više od jednu uslugu na jedan dan. \nProvjerite Vaše rezervacije i pokušajte ponovo kasnije."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -378,6 +372,9 @@ class _RezervacijePageState extends State<RezervacijePage> {
                   "Niste selektirali sve podatke potrebne za rezervaciju. Pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -409,104 +406,4 @@ class _RezervacijePageState extends State<RezervacijePage> {
         },
         child: Text("Izvrši plaćanje"));
   }
-
-  // _makeAPayment() {
-  //   return TextButton(
-  //     onPressed: () async {
-  //       Navigator.of(context).push(MaterialPageRoute(
-  //         builder: (BuildContext context) => PaypalCheckout(
-  //           sandboxMode: true,
-  //           clientId:
-  //               "AQM_z2U8Yn7sIuo19d1zQ3kkzT5kTJ_1zh6v-0uzrk8VTWpWNhY2hgKa8Au2UEeu2-yi5EtCFF5XksLq",
-  //           secretKey:
-  //               "EGAe1oij9-LdTE1OYh2Q6FqmKUXq7hcUujiyMeaZhYEZ5YAuVm6G2BdgsKghhcBbFAaDkGjhxZV1YPq5",
-  //           returnURL: "success.com",
-  //           cancelURL: "cancel.com",
-  //           transactions: const [
-  //             {
-  //               "amount": {
-  //                 "total": '55',
-  //                 "currency": "EUR",
-  //                 "details": {
-  //                   "subtotal": '55',
-  //                   "shipping": '0',
-  //                   "shipping_discount": 0
-  //                 }
-  //               },
-  //               "description": "The payment transaction description.",
-  //               // "payment_options": {
-  //               //   "allowed_payment_method":
-  //               //       "INSTANT_FUNDING_SOURCE"
-  //               // },
-  //               "item_list": {
-  //                 "items": [
-  //                   {
-  //                     "name": "Apple",
-  //                     "quantity": 3,
-  //                     "price": '5',
-  //                     "currency": "EUR"
-  //                   },
-  //                   {
-  //                     "name": "Pineapple",
-  //                     "quantity": 4,
-  //                     "price": '10',
-  //                     "currency": "EUR"
-  //                   }
-  //                 ],
-
-  //                 // shipping address is not required though
-  //                 //   "shipping_address": {
-  //                 //     "recipient_name": "Raman Singh",
-  //                 //     "line1": "Delhi",
-  //                 //     "line2": "",
-  //                 //     "city": "Delhi",
-  //                 //     "country_code": "IN",
-  //                 //     "postal_code": "11001",
-  //                 //     "phone": "+00000000",
-  //                 //     "state": "Texas"
-  //                 //  },
-  //               }
-  //             }
-  //           ],
-  //           note: "Contact us for any questions on your order.",
-  //           onSuccess: (Map params) async {
-  //             print("onSuccess: $params");
-  //             print("uspjeh");
-
-  //             // Close the WebView first
-  //             Navigator.of(context).pop();
-
-  //             // Wait a moment to ensure WebView is fully closed
-  //             // await Future.delayed(Duration(milliseconds: 300));
-
-  //             Navigator.of(context).pushReplacement(
-  //               MaterialPageRoute(
-  //                 builder: (context) => SuccessPage(
-  //                   lastRezervacija: lastRezervacija,
-  //                 ),
-  //               ),
-  //             );
-  //           },
-  //           onError: (error) {
-  //             print("onError: $error");
-  //             //Navigator.pop(context);
-  //           },
-  //           onCancel: () {
-  //             print('cancelled:');
-  //           },
-  //         ),
-  //       ));
-  //     },
-  //     style: TextButton.styleFrom(
-  //       backgroundColor: Colors.teal,
-  //       foregroundColor: Colors.white,
-  //       shape: const BeveledRectangleBorder(
-  //         borderRadius: BorderRadius.all(
-  //           Radius.circular(1),
-  //         ),
-  //       ),
-  //     ),
-  //     child: const Text('Izvrsi placanje'),
-  //   );
-  // }
 }

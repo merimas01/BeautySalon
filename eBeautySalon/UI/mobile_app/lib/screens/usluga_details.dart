@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:mobile_app/models/favoriti_usluge_insert.dart';
 import 'package:mobile_app/models/search_result.dart';
@@ -127,78 +125,23 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                   SizedBox(
                     height: 10,
                   ),
-                  widget.usluga?.slikaUsluge != null &&
-                          widget.usluga?.slikaUsluge?.slika != null &&
-                          widget.usluga?.slikaUsluge?.slika != ""
-                      ? imageContainer(
-                          widget.usluga!.slikaUsluge!.slika, 300, 500)
-                      : noImageContainer(300, 500),
+                  Stack(
+                    children: [
+                      widget.usluga?.slikaUsluge != null &&
+                              widget.usluga?.slikaUsluge?.slika != null &&
+                              widget.usluga?.slikaUsluge?.slika != ""
+                          ? imageContainer(
+                              widget.usluga!.slikaUsluge!.slika, 300, 500)
+                          : noImageContainer(300, 500),
+                      Positioned(
+                          top: 10, // Adjust position from the top
+                          right: 10,
+                          child: addToFavorites())
+                    ],
+                  ),
                   SizedBox(
                     height: 10,
                   ),
-                  TextButton(
-                      onPressed: () async {
-                        if (isFavorit == true) {
-                          try {
-                            if (obrisan == false) {
-                              var favoritId = 0;
-                              if (widget.usluga?.favoritiUsluges?.length != 0) {
-                                favoritId = widget.usluga?.favoritiUsluges
-                                        ?.firstWhere((element) =>
-                                            element.korisnikId ==
-                                                LoggedUser.id &&
-                                            element.uslugaId ==
-                                                widget.usluga!.uslugaId)
-                                        .favoritId ??
-                                    0;
-                              } else
-                                favoritId = new_favoritId;
-
-                              var obj = await _favoritiUslugeProvider
-                                  .delete(favoritId);
-
-                              var usluga = await _uslugeProvider
-                                  .getById(widget.usluga!.uslugaId!);
-                              setState(() {
-                                isFavorit = false;
-                                this.widget.usluga = usluga;
-                                obrisan = true;
-                              });
-                            }
-                          } catch (err) {
-                            print(err);
-                          }
-                        } else {
-                          try {
-                            var request_insert = FavoritiUslugeInsert(
-                                LoggedUser.id, widget.usluga!.uslugaId!);
-
-                            var obj = await _favoritiUslugeProvider
-                                .insert(request_insert);
-
-                            var usluga = await _uslugeProvider
-                                .getById(widget.usluga!.uslugaId!);
-
-                            setState(() {
-                              isFavorit = true;
-                              this.widget.usluga = usluga;
-                              obrisan = false;
-                              new_favoritId = obj.favoritId!;
-                            });
-                          } catch (err) {
-                            print(err);
-                          }
-                        }
-                      },
-                      child: isFavorit == true
-                          ? Icon(
-                              Icons.favorite,
-                              color: Colors.pink,
-                            )
-                          : Icon(
-                              Icons.favorite,
-                              color: Colors.grey,
-                            )),
                   TextFormField(
                     decoration: InputDecoration(labelText: "Cijena:"),
                     initialValue: "${formatNumber(widget.usluga?.cijena)}KM",
@@ -491,5 +434,67 @@ class _UslugaDetailsState extends State<UslugaDetails> {
         .toList();
 
     return list;
+  }
+
+  addToFavorites() {
+    return TextButton(
+        onPressed: () async {
+          if (isFavorit == true) {
+            try {
+              if (obrisan == false) {
+                var favoritId = 0;
+                if (widget.usluga?.favoritiUsluges?.length != 0) {
+                  favoritId = widget.usluga?.favoritiUsluges
+                          ?.firstWhere((element) =>
+                              element.korisnikId == LoggedUser.id &&
+                              element.uslugaId == widget.usluga!.uslugaId)
+                          .favoritId ??
+                      0;
+                } else
+                  favoritId = new_favoritId;
+
+                var obj = await _favoritiUslugeProvider.delete(favoritId);
+
+                var usluga =
+                    await _uslugeProvider.getById(widget.usluga!.uslugaId!);
+                setState(() {
+                  isFavorit = false;
+                  this.widget.usluga = usluga;
+                  obrisan = true;
+                });
+              }
+            } catch (err) {
+              print(err);
+            }
+          } else {
+            try {
+              var request_insert =
+                  FavoritiUslugeInsert(LoggedUser.id, widget.usluga!.uslugaId!);
+
+              var obj = await _favoritiUslugeProvider.insert(request_insert);
+
+              var usluga =
+                  await _uslugeProvider.getById(widget.usluga!.uslugaId!);
+
+              setState(() {
+                isFavorit = true;
+                this.widget.usluga = usluga;
+                obrisan = false;
+                new_favoritId = obj.favoritId!;
+              });
+            } catch (err) {
+              print(err);
+            }
+          }
+        },
+        child: isFavorit == true
+            ? Icon(
+                Icons.favorite,
+                color: Colors.pink,
+              )
+            : Icon(
+                Icons.favorite,
+                color: Colors.grey,
+              ));
   }
 }

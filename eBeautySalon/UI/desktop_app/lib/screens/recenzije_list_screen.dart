@@ -117,6 +117,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     if (isLoadingUsluge == false) {
       return Container(
         width: 400,
+        height: 55,
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -158,6 +159,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
     if (isLoadingUsluznici == false) {
       return Container(
         width: 400,
+        height: 55,
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -301,8 +303,14 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "korisnik/ocjena/komentar",
-              ),
+                  labelText: "korisnik/ocjena/komentar",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController1,
             ),
           ),
@@ -526,8 +534,14 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "korisnik/ocjena/komentar",
-              ),
+                  labelText: "korisnik/ocjena/komentar",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController2,
             ),
           ),

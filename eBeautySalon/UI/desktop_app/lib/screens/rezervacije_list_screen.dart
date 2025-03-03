@@ -104,6 +104,9 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -120,6 +123,9 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
               content: Text("Molimo Vas izaberite novi status."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -136,7 +142,11 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
               content: Text("Greška u podacima."),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context), child: Text("Ok"))
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("Ok"))
               ],
             ));
   }
@@ -146,6 +156,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
     if (isLoadingStatus == false) {
       return Container(
         width: 300,
+        height: 55,
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -191,6 +202,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
   Widget _searchByIsArhiva() {
     return Container(
       width: 150,
+      height: 55,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -271,7 +283,7 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
                               e.terminId,
                               e.datumRezervacije,
                               selectedChangeStatus?.statusId,
-                              e.isArhiva, 
+                              e.isArhiva,
                               e.platio);
 
                           var update_status = await _rezervacijeProvider.update(
@@ -371,8 +383,14 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "šifra/korisnik/usluga/termin",
-              ),
+                  labelText: "šifra/korisnik/usluga/termin",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController,
             ),
           ),
@@ -600,10 +618,9 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
       );
     else if (e.status?.opis == "Odbijena")
       return MaterialStateProperty.resolveWith<Color?>(
-        (Set<MaterialState> states) {
-          return Colors.red[100];
-        }
-      );
+          (Set<MaterialState> states) {
+        return Colors.red[100];
+      });
     else if (e.status?.opis == "Otkazana")
       return MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
@@ -666,8 +683,14 @@ class _RezervacijeListScreenState extends State<RezervacijeListScreen> {
 
   void _arhivirajDearhiviraj(e) async {
     var new_value_isArhiva = e.isArhiva == true ? false : true;
-    var rezervacija_update = RezervacijaUpdate(e.korisnikId, e.uslugaId,
-        e.terminId, e.datumRezervacije, e.statusId, new_value_isArhiva, e.platio);
+    var rezervacija_update = RezervacijaUpdate(
+        e.korisnikId,
+        e.uslugaId,
+        e.terminId,
+        e.datumRezervacije,
+        e.statusId,
+        new_value_isArhiva,
+        e.platio);
     try {
       var obj = await _rezervacijeProvider.update(
           e.rezervacijaId, rezervacija_update);

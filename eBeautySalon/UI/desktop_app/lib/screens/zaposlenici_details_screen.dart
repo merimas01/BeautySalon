@@ -110,7 +110,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         : widget.korisnik?.korisnikUlogas?[0].uloga?.naziv.toString();
 
     imaSliku();
-    
+
     _slikaProfilaProvider = context.read<SlikaProfilaProvider>();
     _uslugeProvider = context.read<UslugeProvider>();
     _zaposleniciUslugeProvider = context.read<ZaposleniciUslugeProvider>();
@@ -225,6 +225,9 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                                 "Ispravite greške i popunite obavezna polja."),
                             actions: <Widget>[
                               TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.pink),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
@@ -720,9 +723,6 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   }
 
   Future doInsert(obj, slika_request, ulogaID) async {
-    //ne dozvoliti da se isti korisnik unosi dvaput, uraditi to na backendu,
-    //pa samo ispisati poruku ovde u alertu.
-
     var korisnik_insert = KorisnikInsert(
         obj['ime'],
         obj['prezime'],
@@ -785,11 +785,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 content: Text("Uspješno izvršena akcija!"),
                 actions: <Widget>[
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ZaposleniciListScreen()));
                       },
-                      child: Text("Nazad na zaposlenike"))
+                      child: Text("Ok"))
                 ],
               ));
       _formKey.currentState?.reset();
@@ -809,9 +812,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (korisničko ime, email ili telefon možda već postoji). Molimo pokušajte ponovo."),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (korisničko ime, email ili telefon možda već postoji). \nMolimo pokušajte ponovo."),
                 actions: [
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Ok"))
                 ],
@@ -929,11 +935,14 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 content: Text("Uspješno izvršena akcija!"),
                 actions: <Widget>[
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ZaposleniciListScreen()));
                       },
-                      child: Text("Nazad na zaposlenike"))
+                      child: Text("Ok"))
                 ],
               ));
     } catch (e) {
@@ -943,9 +952,12 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (email ili telefon možda već postoji). Molimo pokušajte ponovo. "),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (email ili telefon možda već postoji). \nMolimo pokušajte ponovo. "),
                 actions: [
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Ok"))
                 ],

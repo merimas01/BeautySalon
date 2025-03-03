@@ -71,6 +71,7 @@ class _NovostLikeCommentScreenState extends State<NovostLikeCommentScreen> {
   Widget _searchByIsLike() {
     return Container(
       width: 150,
+      height: 55,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -112,6 +113,7 @@ class _NovostLikeCommentScreenState extends State<NovostLikeCommentScreen> {
   Widget _searchByIsComment() {
     return Container(
       width: 160,
+      height: 55,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -154,8 +156,14 @@ class _NovostLikeCommentScreenState extends State<NovostLikeCommentScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "korisnik",
-              ),
+                  labelText: "korisnik",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController,
             ),
           ),

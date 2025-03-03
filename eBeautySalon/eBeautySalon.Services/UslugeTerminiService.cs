@@ -71,15 +71,16 @@ namespace eBeautySalon.Services
             return true;
         }
 
-        public override List<UslugaTermin> SortAZ(List<UslugaTermin> list)
-        {
-            if(list.Count()!=0 && list[0].Termin != null) {
-                var sortedTimes = list
-               .OrderBy(t => TimeSpan.Parse(t.Termin.Opis))
-               .ToList();     
-            }
-            return list;
-        }
+        //public override List<UslugaTermin> SortAZ(List<UslugaTermin> list)
+        //{
+        //    if (list.Count() != 0 && list[0].Termin != null)
+        //    {
+        //        var sortedTimes = list
+        //       .OrderBy(t => TimeSpan.Parse(t.Termin.Opis.Split('-')[0]))
+        //       .ToList();
+        //    }
+        //    return list;
+        //}
 
         public override async Task<UslugaTermin> AddIncludeForGetById(IQueryable<UslugaTermin> query, int id)
         {

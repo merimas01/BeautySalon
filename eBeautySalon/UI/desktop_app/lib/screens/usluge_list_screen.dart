@@ -162,8 +162,14 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "šifra/usluga/opis/cijena",
-              ),
+                  labelText: "šifra/usluga/opis/cijena",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController,
             ),
           ),
@@ -398,6 +404,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
     if (isLoadingKategorije == false) {
       return Container(
         width: 300,
+        height: 55,
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.white,

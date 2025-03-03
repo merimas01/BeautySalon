@@ -88,7 +88,9 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                       )
                     : Container(),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "Komentar:", hintText: "Ovdje napišite komentar..."),
+                  decoration: InputDecoration(
+                      labelText: "Komentar:",
+                      hintText: "Ovdje napišite komentar..."),
                   enabled: true,
                   maxLines: null,
                   controller: _commentController,
@@ -130,10 +132,13 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
-              content:
-                  Text("Nije zadovoljena validacija. Molimo pokušajte ponovo."),
+              content: Text(
+                  "Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -150,6 +155,9 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       if (widget.poslaniKorisnikId != null) {
                         Navigator.of(context).push(MaterialPageRoute(

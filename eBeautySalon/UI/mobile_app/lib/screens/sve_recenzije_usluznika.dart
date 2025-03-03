@@ -321,6 +321,9 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
                   "Trebate dati ocjenu i zadovoljiti validaciju komentara. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -337,6 +340,9 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },

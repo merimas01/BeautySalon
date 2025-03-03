@@ -374,9 +374,12 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
               content: Text(
-                  "Trebate dati ocjenu i zadovoljiti validaciju komentara. Molimo pokušajte ponovo."),
+                  "Trebate dati ocjenu i zadovoljiti validaciju komentara. \nMolimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -393,6 +396,9 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },

@@ -504,6 +504,9 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                                 "Ispravite greške i popunite obavezna polja"),
                             actions: <Widget>[
                               TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.pink),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
@@ -542,11 +545,14 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                   content: Text("Uspješno izvršena akcija!"),
                   actions: <Widget>[
                     TextButton(
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.pink),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => NovostiListScreen()));
                         },
-                        child: Text("Nazad na novosti"))
+                        child: Text("Ok"))
                   ],
                 ));
         _formKey.currentState?.reset();
@@ -559,9 +565,12 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji). Molimo pokušajte ponovo."),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji). \nMolimo pokušajte ponovo."),
                 actions: [
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Ok"))
                 ],
@@ -610,6 +619,9 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                   content: Text("Uspješno izvršena akcija!"),
                   actions: <Widget>[
                     TextButton(
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.pink),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => NovostiListScreen()));
@@ -625,9 +637,12 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji). Molimo pokušajte ponovo."),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naslov novosti možda već postoji). \nMolimo pokušajte ponovo."),
                 actions: [
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Ok"))
                 ],

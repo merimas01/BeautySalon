@@ -88,7 +88,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreenWidget(
-        selectedIndex: widget.poslaniKorisnikId!=null? 3 : 0,
+        selectedIndex: widget.poslaniKorisnikId != null ? 3 : 0,
         title: "Detalji novosti",
         child: isLoadingLikesComments == false
             ? Container(
@@ -112,7 +112,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                       ),
                       widget.novost?.slikaNovost != null &&
                               widget.novost?.slikaNovost!.slika != ""
-                          ? imageContainer(widget.novost!.slikaNovost!.slika, 300, 500)
+                          ? imageContainer(
+                              widget.novost!.slikaNovost!.slika, 300, 500)
                           : noImageContainer(300, 500),
                       SizedBox(
                         height: 10,
@@ -244,7 +245,12 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ElevatedButton(
-              onPressed: _saveComment,
+              onPressed: () {
+                print("komentar: ${_commentController.text.trim()}");
+                _commentController.text.trim() != ""
+                    ? _saveComment()
+                    : _showValidationError();
+              },
               child: Text("Spasi"),
             ),
           ],
@@ -255,8 +261,12 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
 
   void _saveComment() async {
     try {
-      var request = NovostLikeCommentInsertUpdate(LoggedUser.id,
-          widget.novost?.novostId, liked, _commentController.text.trim());
+      var request = NovostLikeCommentInsertUpdate(
+        LoggedUser.id,
+        widget.novost?.novostId,
+        liked,
+        _commentController.text,
+      );
 
       if (liked == false) {
         try {
@@ -415,9 +425,12 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
               content:
-                  Text("Nije zadovoljena validacija. Molimo pokušajte ponovo."),
+                  Text("Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -434,6 +447,9 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -509,6 +525,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
     });
 
     setState(() {
+      _commentController.text = "";
       isLoadingLikesComments = false;
       _novostLikeCommentResult = hasComments;
       commentsCount = hasComments.count;
@@ -538,8 +555,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
         TextButton(
             onPressed: () {
               if (widget.poslaniKorisnikId != null) {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => MojiLajkoviNovosti()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => MojiLajkoviNovosti()));
               } else {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => HomePage()));
@@ -549,5 +566,4 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       ],
     );
   }
-
 }

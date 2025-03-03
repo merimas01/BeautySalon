@@ -178,6 +178,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
           ),
           Container(
             width: 400,
+            height: 55,
             padding: EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -333,7 +334,10 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                     title: Text("Informacija o uspjehu"),
                     content: Text("Uspješno izvršena akcija!"),
                     actions: <Widget>[
-                      TextButton(
+                      ElevatedButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.pink),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -348,7 +352,10 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                     content: Text(
                         "Izabrani termin možda već postoji za datu uslugu. Molimo pokušajte ponovo."),
                     actions: [
-                      TextButton(
+                      ElevatedButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.pink),
                           onPressed: () => Navigator.pop(context),
                           child: Text("Ok"))
                     ],
@@ -391,6 +398,9 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                       content: Text("Uspješno izvršena akcija!"),
                       actions: <Widget>[
                         TextButton(
+                            style: TextButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.pink),
                             onPressed: () {
                               Navigator.pop(context);
                             },
@@ -403,9 +413,13 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
                 builder: (BuildContext context) => AlertDialog(
                       title: Text("Greška"),
                       content: Text(
-                          "Termin možda već postoji ili je nepravilno unesen novi termin. Termin treba biti u formatu ##:## (06:00-22:59) i on se ne smije ponavljati. Molimo pokušajte ponovo."),
+                        "Termin možda već postoji u listi termina ili je nepravilno unesen novi termin. \nTermin treba biti logički osmišljen, u formatu ##:##-##:## (od 06:00 do 22:59) i on se ne smije ponavljati. \nMolimo pokušajte ponovo.",
+                      ),
                       actions: [
-                        TextButton(
+                        ElevatedButton(
+                            style: TextButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.pink),
                             onPressed: () => Navigator.pop(context),
                             child: Text("Ok"))
                       ],
@@ -481,6 +495,8 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               child: Text('Dodaj drugi termin?'),
             ),
             ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.pink),
               onPressed: () {
                 kliknuoDodajDrugiTermin = false;
                 print('Selected value: $selectedTermin');
@@ -511,7 +527,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
           content: TextField(
             controller: inputTerminController,
             decoration: InputDecoration(
-              hintText: "primjer: 10:00",
+              hintText: "primjer: 10:00-11:00",
             ),
           ),
           actions: [
@@ -525,6 +541,8 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               child: Text('Otkaži'),
             ),
             ElevatedButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.pink),
               onPressed: () {
                 // Retrieve the input text and handle it
                 print('Input: ${inputTerminController.text}');
@@ -552,7 +570,10 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               title: Text("Greška"),
               content: Text("Molimo Vas izaberite novi termin."),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -568,7 +589,10 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               title: Text("Greška"),
               content: Text("Molimo Vas unesite novi termin."),
               actions: <Widget>[
-                TextButton(
+                ElevatedButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },

@@ -197,8 +197,14 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "šifra usluge/usluga/ocjena/komentar",
-              ),
+                  labelText: "šifra usluge/usluga/ocjena/komentar",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController1,
             ),
           ),
@@ -250,8 +256,14 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "šifra uslužnika/uslužnik/ocjena/komentar",
-              ),
+                  labelText: "šifra uslužnika/uslužnik/ocjena/komentar",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController2,
             ),
           ),
@@ -304,9 +316,15 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText:
-                    "šifra rezervacije/šifra usluge/usluga/termin/status",
-              ),
+                  labelText:
+                      "šifra rezervacije/šifra usluge/usluga/termin/status",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController3,
             ),
           ),

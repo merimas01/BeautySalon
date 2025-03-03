@@ -22,28 +22,52 @@ namespace eBeautySalon.Services
         public override async Task<bool> AddValidationInsert(TerminiInsertRequest request)
         {
             var termini = await _context.Termins.Select(x => x.Opis).ToListAsync();
-            string termin_opis_pattern = @"^(0[6-9]|1[0-9]|2[0-2]):([0-5][0-9])$";
+            string termin_opis_pattern = @"^(0[6-9]|1[0-9]|2[0-2]):([0-5][0-9])-(0[6-9]|1[0-9]|2[0-2]):([0-5][0-9])$";
             if (termini.Contains(request.Opis)) return false;
             if (string.IsNullOrWhiteSpace(request.Opis) || !Regex.IsMatch(request.Opis, termin_opis_pattern)) return false;
+            if(!string.IsNullOrWhiteSpace(request.Opis) && Regex.IsMatch(request.Opis, termin_opis_pattern))
+            {
+                var split= request.Opis.Split('-');
+                string pocetak = split[0];
+                string kraj = split[1];
+
+                TimeSpan t1 = TimeSpan.Parse(pocetak);
+                TimeSpan t2 = TimeSpan.Parse(kraj);
+
+                if (t1 < t2) return true;
+                else return false;
+            }
             return true;
         }
 
         public override async Task<bool> AddValidationUpdate(int id, TerminiUpdateRequest request)
         {
             var termini = await _context.Termins.Where(x=>x.TerminId != id).Select(x => x.Opis).ToListAsync();
-            string termin_opis_pattern = @"^(0[6-9]|1[0-9]|2[0-2]):([0-5][0-9])$";
+            string termin_opis_pattern = @"^(0[6-9]|1[0-9]|2[0-2]):([0-5][0-9])-(0[6-9]|1[0-9]|2[0-2]):([0-5][0-9])$";
             if (termini.Contains(request.Opis)) return false;
             if (string.IsNullOrWhiteSpace(request.Opis) || !Regex.IsMatch(request.Opis, termin_opis_pattern)) return false;
+            if (!string.IsNullOrWhiteSpace(request.Opis) && Regex.IsMatch(request.Opis, termin_opis_pattern))
+            {
+                var split = request.Opis.Split('-');
+                string pocetak = split[0];
+                string kraj = split[1];
+
+                TimeSpan t1 = TimeSpan.Parse(pocetak);
+                TimeSpan t2 = TimeSpan.Parse(kraj);
+
+                if (t1 < t2) return true;
+                else return false;
+            }
             return true;
         }
 
-        public override List<Termin> SortAZ(List<Termin> list)
-        {
-            var sortedTimes = list
-            .OrderBy(t => TimeSpan.Parse(t.Opis))
-            .ToList();
-            return list;
-        }
+        //public override List<Termin> SortAZ(List<Termin> list)
+        //{
+        //    var sortedTimes = list
+        //    .OrderBy(t => TimeSpan.Parse(t.Opis.Split('-')[0]))
+        //    .ToList();
+        //    return list;
+        //}
 
         public override async Task<Termin> AddIncludeForGetById(IQueryable<Termin> query, int id)
         {

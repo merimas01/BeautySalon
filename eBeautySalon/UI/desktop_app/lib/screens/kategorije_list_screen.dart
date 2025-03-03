@@ -130,6 +130,14 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
             child: TextField(
               decoration: InputDecoration(
                 labelText: "šifra/naziv/opis",
+                 prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.grey)
+                  )
               ),
               controller: _ftsController,
             ),

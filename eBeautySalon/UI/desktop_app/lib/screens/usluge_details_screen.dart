@@ -230,6 +230,9 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                                 "Ispravite greške i popunite obavezna polja."),
                             actions: <Widget>[
                               TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.pink),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
@@ -600,11 +603,14 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                   content: Text("Uspješno izvršena akcija!"),
                   actions: <Widget>[
                     TextButton(
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.pink),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => UslugeListScreen()));
                         },
-                        child: Text("Nazad na usluge"))
+                        child: Text("Ok"))
                   ],
                 ));
         _formKey.currentState?.reset();
@@ -617,7 +623,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji). Molimo pokušajte ponovo. "),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji). \nMolimo pokušajte ponovo. "),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -670,11 +676,14 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                   content: Text("Uspješno izvršena akcija!"),
                   actions: <Widget>[
                     TextButton(
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.pink),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => UslugeListScreen()));
                         },
-                        child: Text("Nazad na usluge"))
+                        child: Text("Ok"))
                   ],
                 ));
       }
@@ -684,9 +693,12 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "${e.toString()} | Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji).  Molimo pokušajte ponovo."),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (naziv usluge možda već postoji). \nMolimo pokušajte ponovo."),
                 actions: [
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Ok"))
                 ],

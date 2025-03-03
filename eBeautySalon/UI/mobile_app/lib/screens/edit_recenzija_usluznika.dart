@@ -142,7 +142,9 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                   }),
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "Komentar:", hintText: "Ovdje napišite komentar..."),
+                  decoration: InputDecoration(
+                      labelText: "Komentar:",
+                      hintText: "Ovdje napišite komentar..."),
                   enabled: true,
                   maxLines: null,
                   controller: _commentController,
@@ -187,6 +189,9 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
                   Text("Nije zadovoljena validacija. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -203,6 +208,9 @@ class _EditRecenzijaUsluznikaState extends State<EditRecenzijaUsluznika> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       if (widget.poslaniKorisnikId != null) {
                         Navigator.of(context).push(MaterialPageRoute(

@@ -231,7 +231,7 @@ namespace eBeautySalon.Services
                     lista_termina.Add(new { terminId = obj.TerminId, termin = obj.Opis, zauzet = false });
                 }
             }
-            return lista_termina.OrderBy(t=> TimeSpan.Parse(t.termin));
+            return lista_termina; //OrderBy(t=> TimeSpan.Parse(t.termin.split('-')[0]))
         }
     }
 }

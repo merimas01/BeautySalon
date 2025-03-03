@@ -263,6 +263,9 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                               content: Text("Uspješno izvršena akcija!"),
                               actions: <Widget>[
                                 TextButton(
+                                    style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.pink),
                                     onPressed: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
@@ -281,6 +284,9 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                                   "Ispravite greške i popunite obavezna polja"),
                               actions: <Widget>[
                                 TextButton(
+                                    style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.pink),
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
@@ -297,6 +303,9 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                                 "Neispravni podaci. Molimo pokušajte ponovo."),
                             actions: [
                               TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.pink),
                                   onPressed: () => Navigator.pop(context),
                                   child: Text("Ok"))
                             ],
@@ -353,11 +362,14 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
                   content: Text("Uspješno izvršena akcija!"),
                   actions: <Widget>[
                     TextButton(
+                        style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.pink),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => ProfilPage()));
                         },
-                        child: Text("Nazad na profil"))
+                        child: Text("Ok"))
                   ],
                 ));
       }
@@ -368,9 +380,12 @@ class _ProfilEditScreenState extends State<ProfilEditScreen> {
           builder: (BuildContext context) => AlertDialog(
                 title: Text("Greška"),
                 content: Text(
-                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti (ime, email ili telefon možda već postoji). Molimo pokušajte ponovo."),
+                    "Neispravni podaci. Svaki zapis treba imati unikatne vrijednosti \n(ime, email ili telefon možda već postoji). \nMolimo pokušajte ponovo."),
                 actions: [
                   TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
                       onPressed: () => Navigator.pop(context),
                       child: Text("Ok"))
                 ],

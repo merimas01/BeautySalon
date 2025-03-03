@@ -99,6 +99,7 @@ class LoginPage extends StatelessWidget {
     _korisnikProvider = context.read<KorisnikProvider>();
 
     return Scaffold(
+        //backgroundColor: Colors.pink[50],
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text("Prijava"),

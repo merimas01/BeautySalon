@@ -117,6 +117,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
   Widget _showDropdownDialog() {
     return Container(
       width: 150,
+      height: 55,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -228,8 +229,14 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                labelText: "šifra/ime/prezime/korisničko ime",
-              ),
+                  labelText: "šifra/ime/prezime/korisničko ime",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
               controller: _ftsController,
             ),
           ),

@@ -183,6 +183,9 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
               content: Text("Uspješno izvršena akcija!"),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => MojeRezervacije()));
@@ -213,6 +216,9 @@ class _RezervacijaDetailsState extends State<RezervacijaDetails> {
               content: Text("Desilo se nešto loše. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.pink),
                     onPressed: () {
                       Navigator.pop(context);
                     },

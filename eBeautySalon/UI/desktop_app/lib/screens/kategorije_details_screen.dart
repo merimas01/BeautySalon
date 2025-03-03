@@ -103,13 +103,16 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                               content: Text("Uspješno izvršena akcija!"),
                               actions: <Widget>[
                                 TextButton(
+                                    style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.pink),
                                     onPressed: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   KategorijeListScreen()));
                                     },
-                                    child: Text("Nazad na kategorije"))
+                                    child: Text("Ok"))
                               ],
                             ));
                   } else {
@@ -117,10 +120,13 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
                               title: Text("Neispravni podaci"),
-                              content:
-                                  Text("Ispravite greške i popunite obavezna polja."),
+                              content: Text(
+                                  "Ispravite greške i popunite obavezna polja."),
                               actions: <Widget>[
                                 TextButton(
+                                    style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.pink),
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
@@ -134,9 +140,12 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                       builder: (BuildContext context) => AlertDialog(
                             title: Text("Greška"),
                             content: Text(
-                                "Neispravni podaci. Svaki zapis treba biti imati unikatne vrijednosti (naziv kategorije možda već postoji). Molimo pokušajte ponovo."),
+                                "Neispravni podaci. Svaki zapis treba biti imati unikatne vrijednosti (naziv kategorije možda već postoji). \nMolimo pokušajte ponovo."),
                             actions: [
                               TextButton(
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.pink),
                                   onPressed: () => Navigator.pop(context),
                                   child: Text("Ok"))
                             ],
@@ -196,6 +205,26 @@ class _KategorijeDetailsScreenState extends State<KategorijeDetailsScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Color.fromARGB(255, 211, 17, 17)),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        KategorijeListScreen()));
+                              },
+                              child: Icon(Icons.close)),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
                       _naslov(),
                       FormBuilderTextField(
                         decoration: InputDecoration(labelText: "Naziv:"),

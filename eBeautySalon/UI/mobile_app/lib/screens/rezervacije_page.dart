@@ -333,18 +333,20 @@ class _RezervacijePageState extends State<RezervacijePage> {
                 textAlign: TextAlign.center,
               ),
               content: Text(
-                "Izvršite plaćanje klikom na dugme ispod!",
+                "Izvršite plaćanje klikom na dugme 'Izvrši plaćanje'.",
                 textAlign: TextAlign.center,
               ),
               actions: <Widget>[
-                TextButton(
-                    style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.pink),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("Ok"))
+                Center(
+                  child: TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.pink),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("Ok")),
+                )
               ],
             ));
   }

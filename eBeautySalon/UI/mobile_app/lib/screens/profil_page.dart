@@ -161,7 +161,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     ],
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Korisničko ime:"),
@@ -170,7 +170,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     enabled: false,
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Ime:"),
@@ -179,7 +179,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     enabled: false,
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   FormBuilderTextField(
                     name: "prezime",
@@ -188,7 +188,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     decoration: InputDecoration(labelText: "Prezime:"),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   FormBuilderTextField(
                     name: "telefon",
@@ -197,7 +197,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     decoration: InputDecoration(labelText: "Telefon:"),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   FormBuilderTextField(
                     name: "email",
@@ -206,7 +206,19 @@ class _ProfilPageState extends State<ProfilPage> {
                     decoration: InputDecoration(labelText: "Email:"),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 5,
+                  ),
+                  FormBuilderTextField(
+                    name: "datumKreiranja",
+                    enabled: isEnabled,
+                    initialValue: korisnik?.datumKreiranja != null
+                        ? formatDate(korisnik!.datumKreiranja!)
+                        : "-",
+                    decoration:
+                        InputDecoration(labelText: "Datum registracije:"),
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   korisnik != null
                       ? Column(

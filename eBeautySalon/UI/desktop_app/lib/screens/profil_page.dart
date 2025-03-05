@@ -28,7 +28,6 @@ class _ProfilPageState extends State<ProfilPage> {
   final _formKey = GlobalKey<FormBuilderState>();
   SearchResult<SlikaProfila>? _slikaProfilaResult;
   bool isLoading = true;
-  bool isEnabled = false;
   Korisnik? korisnik;
   bool authorised = false;
 
@@ -182,15 +181,24 @@ class _ProfilPageState extends State<ProfilPage> {
                     ),
                     FormBuilderTextField(
                       name: "telefon",
-                      enabled: isEnabled,
+                      enabled: false,
                       initialValue: korisnik?.telefon,
                       decoration: InputDecoration(labelText: "Telefon:"),
                     ),
                     FormBuilderTextField(
                       name: "email",
-                      enabled: isEnabled,
+                      enabled: false,
                       initialValue: korisnik?.email,
                       decoration: InputDecoration(labelText: "Email:"),
+                    ),
+                    FormBuilderTextField(
+                      name: "datumKreiranja",
+                      enabled: false,
+                      initialValue: korisnik?.datumKreiranja != null
+                          ? formatDate(korisnik!.datumKreiranja!)
+                          : "-",
+                      decoration:
+                          InputDecoration(labelText: "Datum registracije:"),
                     ),
                     SizedBox(
                       height: 15,

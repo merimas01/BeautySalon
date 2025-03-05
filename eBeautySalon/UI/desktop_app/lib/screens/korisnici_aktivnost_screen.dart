@@ -1,3 +1,4 @@
+import 'package:desktop_app/models/novost_like_comment.dart';
 import 'package:desktop_app/widgets/master_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import '../models/recenzija_usluge.dart';
 import '../models/recenzija_usluznika.dart';
 import '../models/rezervacija.dart';
 import '../models/search_result.dart';
+import '../providers/novost_like_comment_provider.dart';
 import '../providers/recenzija_usluznika_provider.dart';
 import '../providers/recenzije_usluga_provider.dart';
 import '../providers/rezarvacije_provider.dart';
@@ -27,18 +29,23 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
   late RecenzijaUslugeProvider _recenzijeUslugeProvider;
   late RecenzijaUsluznikaProvider _recenzijeUsluznikaProvider;
   late RezervacijeProvider _rezervacijeProvider;
+  late NovostLikeCommentProvider _novostLikeCommentProvider;
   SearchResult<RecenzijaUsluge>? _recenzijaUslugeResult;
   SearchResult<RecenzijaUsluznika>? _recenzijaUsluznikaResult;
   SearchResult<Rezervacija>? _rezervacijeResult;
+  SearchResult<NovostLikeComment>? _novostLikeCommentResult;
   TextEditingController _ftsController1 = new TextEditingController();
   TextEditingController _ftsController2 = new TextEditingController();
   TextEditingController _ftsController3 = new TextEditingController();
+  TextEditingController _ftsController4 = new TextEditingController();
   bool isLoadingUsluge = true;
   bool isLoadingUsluznici = true;
   bool isLoadingData = true;
+  bool isLoadingLikeComment = true;
   String? search1 = "";
   String? search2 = "";
   String? search3 = "";
+  String? search4 = "";
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +62,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
     _recenzijeUslugeProvider = context.read<RecenzijaUslugeProvider>();
     _recenzijeUsluznikaProvider = context.read<RecenzijaUsluznikaProvider>();
     _rezervacijeProvider = context.read<RezervacijeProvider>();
+    _novostLikeCommentProvider = context.read<NovostLikeCommentProvider>();
     getData();
   }
 
@@ -70,6 +78,11 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
     var rezervacije = await _rezervacijeProvider.get(filter: {
       'FTS': _ftsController3.text,
       'korisnikId': widget.korisnik!.korisnikId
+    });
+    var novostLikeComment = await _novostLikeCommentProvider.get(filter: {
+      'FTS': _ftsController4.text,
+      'korisnikId': widget.korisnik!.korisnikId,
+      'isNovostIncluded': true
     });
 
     // Add a listener to get the value whenever the text changes
@@ -99,10 +112,20 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
       print('Current Text: $currentText');
     });
 
+    // Add a listener to get the value whenever the text changes
+    _ftsController4.addListener(() {
+      String currentText = _ftsController4.text; // Access the current text
+      setState(() {
+        search4 = currentText;
+      });
+      print('Current Text: $currentText');
+    });
+
     setState(() {
       _recenzijaUslugeResult = recenzijeUsluge;
       _recenzijaUsluznikaResult = recenzijeUsluznika;
       _rezervacijeResult = rezervacije;
+      _novostLikeCommentResult = novostLikeComment;
       isLoadingData = false;
     });
   }
@@ -132,7 +155,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
   Widget _tabBars() {
     return Container(
         child: DefaultTabController(
-            length: 3,
+            length: 4,
             child: Column(
               children: [
                 Container(
@@ -152,6 +175,9 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                         Tab(
                             text: "Njegove rezervacije",
                             icon: Icon(Icons.notes_outlined)),
+                        Tab(
+                            text: "Njegovi komentari/lajkovi za novosti",
+                            icon: Icon(Icons.thumb_up)),
                       ],
                     )),
                 Expanded(
@@ -160,7 +186,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                       Column(
                         children: [
                           _getRecenzijeUsluge(),
-                          _showResultUslugeCount(),
+                          _showResultCount(_recenzijaUslugeResult),
                           isLoadingData == false
                               ? _buildRecenzijeUslugaListView()
                               : Container(child: CircularProgressIndicator()),
@@ -168,7 +194,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                       ),
                       Column(children: [
                         _getRecenzijeUsluznika(),
-                        _showResultUsluzniciCount(),
+                        _showResultCount(_recenzijaUsluznikaResult),
                         isLoadingData == false
                             ? _buildRecenzijeUsluznikaListView()
                             : Container(child: CircularProgressIndicator()),
@@ -176,9 +202,18 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                       Column(
                         children: [
                           _getRezervacije(),
-                          _showResultRezervacijeCount(),
+                          _showResultCount(_rezervacijeResult),
                           isLoadingData == false
                               ? _buildRezervacijeListView()
+                              : Container(child: CircularProgressIndicator()),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          _getNovostLikeComments(),
+                          _showResultCount(_novostLikeCommentResult),
+                          isLoadingData == false
+                              ? _buildNovostLikeCommentListView()
                               : Container(child: CircularProgressIndicator()),
                         ],
                       ),
@@ -194,6 +229,10 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
+          _nazad(),
+          SizedBox(
+            width: 8,
+          ),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
@@ -239,10 +278,6 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                 });
               },
               child: Text("Traži")),
-          SizedBox(
-            width: 8,
-          ),
-          _nazad(),
         ],
       ),
     );
@@ -253,6 +288,10 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
+          _nazad(),
+          SizedBox(
+            width: 8,
+          ),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
@@ -299,10 +338,6 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                 });
               },
               child: Text("Traži")),
-          SizedBox(
-            width: 8,
-          ),
-          _nazad(),
         ],
       ),
     );
@@ -313,6 +348,10 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
+          _nazad(),
+          SizedBox(
+            width: 8,
+          ),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
@@ -360,10 +399,67 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                 });
               },
               child: Text("Traži")),
+        ],
+      ),
+    );
+  }
+
+  Widget _getNovostLikeComments() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          _nazad(),
           SizedBox(
             width: 8,
           ),
-          _nazad(),
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                  labelText: "šifra novosti/novost/komentar",
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.grey))),
+              controller: _ftsController4,
+            ),
+          ),
+          search4 != ""
+              ? TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _ftsController4.text = '';
+                      search4 = _ftsController4.text;
+                    });
+                  },
+                  child: Tooltip(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                    message: "Izbriši tekst",
+                  ),
+                )
+              : Container(),
+          SizedBox(width: 10),
+          ElevatedButton(
+              onPressed: () async {
+                print("pritisnuto dugme trazi novostlikecomment");
+
+                var data = await _novostLikeCommentProvider.get(filter: {
+                  'FTS': _ftsController4.text,
+                  'korisnikId': widget.korisnik!.korisnikId,
+                  'isNovostIncluded': true
+                });
+
+                setState(() {
+                  _novostLikeCommentResult = data;
+                });
+              },
+              child: Text("Traži")),
         ],
       ),
     );
@@ -510,23 +606,57 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
     ));
   }
 
-  Widget _showResultUslugeCount() {
-    return RichText(
-        text: TextSpan(
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            ),
-            children: [
-          TextSpan(
-            text:
-                'Broj rezultata: ${_recenzijaUslugeResult?.count == null ? 0 : _recenzijaUslugeResult?.count}',
-            style: TextStyle(fontWeight: FontWeight.normal),
-          )
-        ]));
+  Widget _buildNovostLikeCommentListView() {
+    return Expanded(
+        child: SingleChildScrollView(
+      child: DataTable(
+          columns: [
+            DataColumn(
+                label: Expanded(
+              child: Text("Novost"),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Icon(Icons.thumb_up),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Icon(Icons.comment),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Text("Datum kreiranja"),
+            )),
+            DataColumn(
+                label: Expanded(
+              child: Text("Datum modifikovanja"),
+            )),
+          ],
+          rows: _novostLikeCommentResult?.result
+                  .map((NovostLikeComment e) => DataRow(cells: [
+                        DataCell(Text(
+                            "${e.novost?.sifra} - ${e.novost?.naslov ?? ""}")),
+                        DataCell(e.isLike == true
+                            ? Icon(Icons.thumb_up_alt_outlined)
+                            : Text("")),
+                        DataCell(Text("${e.komentar ?? ""}")),
+                        DataCell(Container(
+                            width: 150,
+                            child: Text((e.datumKreiranja == null
+                                ? "-"
+                                : formatDate(e.datumKreiranja!))))),
+                        DataCell(Container(
+                            width: 150,
+                            child: Text((e.datumModifikovanja == null
+                                ? "-"
+                                : formatDate(e.datumModifikovanja!))))),
+                      ]))
+                  .toList() ??
+              []),
+    ));
   }
 
-  Widget _showResultUsluzniciCount() {
+  Widget _showResultCount(data) {
     return RichText(
         text: TextSpan(
             style: TextStyle(
@@ -535,24 +665,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
             ),
             children: [
           TextSpan(
-            text:
-                'Broj rezultata: ${_recenzijaUsluznikaResult?.count == null ? 0 : _recenzijaUsluznikaResult?.count}',
-            style: TextStyle(fontWeight: FontWeight.normal),
-          )
-        ]));
-  }
-
-  Widget _showResultRezervacijeCount() {
-    return RichText(
-        text: TextSpan(
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            ),
-            children: [
-          TextSpan(
-            text:
-                'Broj rezultata: ${_rezervacijeResult?.count == null ? 0 : _rezervacijeResult?.count}',
+            text: 'Broj rezultata: ${data?.count == null ? 0 : data?.count}',
             style: TextStyle(fontWeight: FontWeight.normal),
           )
         ]));

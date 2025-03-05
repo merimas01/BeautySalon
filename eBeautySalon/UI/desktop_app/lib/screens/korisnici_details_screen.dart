@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import '../models/korisnik.dart';
 import '../widgets/master_screen.dart';
+import '../utils/util.dart';
 import 'korisnici_aktivnost_screen.dart';
 
 class KorisniciDetailsScreen extends StatefulWidget {
@@ -31,6 +32,9 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
       'korisnickoIme': widget.korisnik?.korisnickoIme,
       'telefon': widget.korisnik?.telefon,
       'email': widget.korisnik?.email,
+      'datumKreiranja': widget.korisnik?.datumKreiranja != null
+          ? formatDate(widget.korisnik!.datumKreiranja!)
+          : "-",
       'status': widget.korisnik?.status == true ? "Ne" : "Da",
       'slikaProfilaId': widget.korisnik?.slikaProfilaId,
     };
@@ -189,6 +193,12 @@ class _KorisniciDetailsScreenState extends State<KorisniciDetailsScreen> {
                       name: "email",
                       enabled: false,
                       decoration: InputDecoration(labelText: "Email:"),
+                    ),
+                    FormBuilderTextField(
+                      name: "datumKreiranja",
+                      enabled: false,
+                      decoration:
+                          InputDecoration(labelText: "Datum registracije:"),
                     ),
                     FormBuilderTextField(
                       name: "status",

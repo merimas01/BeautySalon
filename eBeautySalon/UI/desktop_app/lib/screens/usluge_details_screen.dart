@@ -316,7 +316,7 @@ class _UslugeDetaljiScreenState extends State<UslugeDetaljiScreen> {
                       if (!RegExp(
                               r'^(?!0+(\.0{1,2})?$)\d{1,3}(,\d{3})*(\.\d{1,2})?$')
                           .hasMatch(value)) {
-                        return 'Unesite ispravnu cijenu. Npr: 50.60 (ne smije biti 0, negaitvan broj, broj sa više od 3 cifre,\nniti bilo koji specijalan karakter osim broja)';
+                        return 'Unesite ispravnu cijenu. Npr: 50.00 (ne smije biti 0, negaitvan broj, broj sa više od 3 cifre,\nniti bilo koji specijalan karakter osim broja)';
                       }
                       return null;
                     },

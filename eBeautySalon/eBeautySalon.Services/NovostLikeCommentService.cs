@@ -37,7 +37,9 @@ namespace eBeautySalon.Services
             query = query.OrderByDescending(x => x.NovostLikeCommentId);
             if (!string.IsNullOrWhiteSpace(search.FTS))
             {
-                query = query.Where(x => x.Korisnik.Ime.Contains(search.FTS) || x.Korisnik.Prezime.Contains(search.FTS) || x.Novost.Naslov.Contains(search.FTS));
+                query = query.Where(x => x.Korisnik.Ime.Contains(search.FTS) || x.Korisnik.Prezime.Contains(search.FTS) || x.Novost.Naslov.Contains(search.FTS)
+                || x.Komentar.Contains(search.FTS) || x.Novost.Sifra.Contains(search.FTS)
+                );
             }
             if (search.KorisnikId != null)
             {

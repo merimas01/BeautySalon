@@ -626,7 +626,7 @@ class _NovostiDetailsScreenState extends State<NovostiDetailsScreen> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => NovostiListScreen()));
                         },
-                        child: Text("Nazad na novosti"))
+                        child: Text("Ok"))
                   ],
                 ));
       }

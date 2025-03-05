@@ -156,7 +156,7 @@ class _NovostLikeCommentScreenState extends State<NovostLikeCommentScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                  labelText: "korisnik",
+                  labelText: "korisnik/komentar",
                   prefixIcon: Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,

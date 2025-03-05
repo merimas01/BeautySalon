@@ -536,8 +536,10 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _recenzijeUslugeProvider
-        .get(filter: {'korisnikId': LoggedUser.id});
+    var data = await _recenzijeUslugeProvider.get(filter: {
+      'korisnikId': LoggedUser.id,
+      'kategorijaId': selectedKategorija?.kategorijaId
+    });
 
     setState(() {
       _recenzijaUslugeResult = data;
@@ -550,8 +552,10 @@ class _MojeRecenzijeState extends State<MojeRecenzije> {
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista
-    var data = await _recenzijeUsluznikaProvider
-        .get(filter: {'korisnikId': LoggedUser.id});
+    var data = await _recenzijeUsluznikaProvider.get(filter: {
+      'korisnikId': LoggedUser.id,
+      'uslugaId': selectedUsluga?.uslugaId
+    });
 
     setState(() {
       _recenzijaUsluznikaResult = data;

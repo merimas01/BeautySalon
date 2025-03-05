@@ -393,10 +393,9 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                                     SizedBox(
                                       width: 5,
                                     ),
-                                    Text(
-                                        "${formatDate(x.datumModifikovanja)} (modifikovano)"),
+                                    Text("${formatDate(x.datumModifikovanja)}"),
                                   ],
-                                ),
+                                )
                         ],
                       ),
                       x.korisnikId == LoggedUser.id
@@ -424,8 +423,8 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
         context: context,
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
-              content:
-                  Text("Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta. Molimo pokušajte ponovo."),
+              content: Text(
+                  "Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta. Molimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
                     style: TextButton.styleFrom(

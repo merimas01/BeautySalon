@@ -266,7 +266,7 @@ class _SveRecenzijeUslugeState extends State<SveRecenzijeUsluge> {
                                       width: 5,
                                     ),
                                     Text(
-                                        "${formatDate(x.datumModificiranja)} (modifikovano)"),
+                                        "${formatDate(x.datumModificiranja)}"),
                                   ],
                                 ),
                         ],

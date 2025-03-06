@@ -126,6 +126,11 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
             ? authorised == true
                 ? Column(children: [
                     _builSearch(),
+                    Text(
+                      "Za pretragu zapisa pritisnite dugme Traži",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    SizedBox(height: 3,),
                     _showResultCount(),
                     _buildDataListView(),
                   ])
@@ -311,6 +316,7 @@ class _UslugeListScreenState extends State<UslugeListScreen> {
                                   height: 100,
                                   width: 100,
                                   fit: BoxFit.cover,
+                                  gaplessPlayback: true
                                 ),
                               )),
                         DataCell(

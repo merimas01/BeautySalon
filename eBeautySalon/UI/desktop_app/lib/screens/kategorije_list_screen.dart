@@ -66,6 +66,8 @@ class _KategorijeListScreenState extends State<KategorijeListScreen> {
           ? authorised == true
               ? Column(children: [
                   _builSearch(),
+                  Text("Za pretragu zapisa pritisnite dugme Traži", style: TextStyle(color: Colors.red),),
+                  SizedBox(height: 3,),
                   _showResultCount(),
                   _buildDataListView()
                 ])

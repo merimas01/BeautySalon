@@ -276,12 +276,22 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                                 Column(
                                   children: [
                                     _getRecenzijeUsluge(),
+                                    Text(
+                                      "Za pretragu zapisa pritisnite dugme Traži",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    SizedBox(height: 3,),
                                     _showResultUslugeCount(),
                                     _buildRecenzijeUslugaListView()
                                   ],
                                 ),
                                 Column(children: [
                                   _getRecenzijeUsluznika(),
+                                  Text(
+                                    "Za pretragu zapisa pritisnite dugme Traži",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  SizedBox(height: 3,),
                                   _showResultUsluzniciCount(),
                                   _buildRecenzijeUsluznikaListView()
                                 ])
@@ -369,17 +379,6 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                 });
               },
               child: Text("Traži")),
-          SizedBox(
-            width: 8,
-          ),
-          ElevatedButton(
-              style: TextButton.styleFrom(
-                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => HomePage()));
-              },
-              child: Text("Izvještaj recenzija usluga")),
           SizedBox(
             width: 8,
           ),
@@ -603,15 +602,6 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
           SizedBox(
             width: 8,
           ),
-          ElevatedButton(
-              style: TextButton.styleFrom(
-                  foregroundColor: Colors.pink, backgroundColor: Colors.white),
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => HomePage()));
-              },
-              child: Text("Izvještaj recenzija uslužnika")),
-          SizedBox(width: 8),
         ],
       ),
     );

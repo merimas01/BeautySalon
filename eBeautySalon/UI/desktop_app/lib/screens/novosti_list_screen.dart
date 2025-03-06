@@ -161,6 +161,13 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
               ? Column(
                   children: [
                     _buildSearch(),
+                    Text(
+                      "Za pretragu zapisa pritisnite dugme Traži",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    SizedBox(
+                      height: 3,
+                    ),
                     _showResultCount(),
                     _buildDataListView()
                   ],
@@ -299,11 +306,10 @@ class _NovostiListScreenState extends State<NovostiListScreen> {
                                     ImageFromBase64String(e.slikaNovost!.slika),
                               )
                             : Container(
-                                child: Image.asset(
-                                "assets/images/noImage.jpg",
-                                height: 250,
-                                width: 100,
-                              ))),
+                                child: Image.asset("assets/images/noImage.jpg",
+                                    height: 250,
+                                    width: 100,
+                                    gaplessPlayback: true))),
                         DataCell(Text(e.sadrzaj ?? "")),
                         DataCell(Container(
                             width: 130,

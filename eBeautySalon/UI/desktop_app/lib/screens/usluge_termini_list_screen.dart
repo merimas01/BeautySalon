@@ -127,6 +127,12 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
             ? authorised == true
                 ? Column(children: [
                     _builSearch(),
+                    SizedBox(height: 5,),
+                    Text(
+                      "Napomena: nije moguće dodati termin za uslugu koji već postoji.",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    SizedBox(height: 5,),
                     _showResultCount(),
                     SizedBox(
                       height: 10,
@@ -350,7 +356,7 @@ class _UslugeTerminiListScreenState extends State<UslugeTerminiListScreen> {
               builder: (BuildContext context) => AlertDialog(
                     title: Text("Greška"),
                     content: Text(
-                        "Izabrani termin možda već postoji za datu uslugu. Molimo pokušajte ponovo."),
+                        "Izabrani termin možda već postoji za datu uslugu. Molimo izaberite novi termin."),
                     actions: [
                       ElevatedButton(
                           style: TextButton.styleFrom(

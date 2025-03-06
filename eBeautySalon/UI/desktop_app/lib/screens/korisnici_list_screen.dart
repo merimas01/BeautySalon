@@ -197,6 +197,11 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                 ? Column(
                     children: [
                       _buildSearch(),
+                      Text(
+                        "Za pretragu zapisa pritisnite dugme Traži",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      SizedBox(height: 3,),
                       _showResultCount(),
                       _buildDataListView()
                     ],
@@ -402,6 +407,7 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                                   child: Image.asset(
                                     "assets/images/noImage.jpg",
                                     fit: BoxFit.cover,
+                                    gaplessPlayback: true
                                   )),
                         ),
                         DataCell(Text(

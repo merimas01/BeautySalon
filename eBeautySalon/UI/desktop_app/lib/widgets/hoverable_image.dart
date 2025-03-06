@@ -37,6 +37,7 @@ class _HoverableImageState extends State<HoverableImage> {
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
+                      gaplessPlayback: true
                     ),
                   )
                 : Container(

@@ -1245,12 +1245,8 @@ class _HomePageState extends State<HomePage> {
       final double value = obj['prosjecnaOcjena'].toDouble();
 
       // Random color for each bar
-      Color barColor = Color.fromARGB(
-        255,
-        random.nextInt(256),
-        random.nextInt(256),
-        random.nextInt(256),
-      );
+      Color barColor = Color.fromARGB(255, 246, 97, 147);
+      
 
       return BarChartGroupData(
         x: index,
@@ -1357,6 +1353,7 @@ class _HomePageState extends State<HomePage> {
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
+                      gaplessPlayback: true
                     ),
                   )
                 : const Center(

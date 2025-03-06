@@ -186,6 +186,11 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                       Column(
                         children: [
                           _getRecenzijeUsluge(),
+                          Text(
+                            "Za pretragu zapisa pritisnite dugme Traži",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          SizedBox(height: 3,),
                           _showResultCount(_recenzijaUslugeResult),
                           isLoadingData == false
                               ? _buildRecenzijeUslugaListView()
@@ -194,6 +199,11 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                       ),
                       Column(children: [
                         _getRecenzijeUsluznika(),
+                        Text(
+                          "Za pretragu zapisa pritisnite dugme Traži",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        SizedBox(height: 3,),
                         _showResultCount(_recenzijaUsluznikaResult),
                         isLoadingData == false
                             ? _buildRecenzijeUsluznikaListView()
@@ -202,6 +212,11 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                       Column(
                         children: [
                           _getRezervacije(),
+                          Text(
+                            "Za pretragu zapisa pritisnite dugme Traži",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          SizedBox(height: 3,),
                           _showResultCount(_rezervacijeResult),
                           isLoadingData == false
                               ? _buildRezervacijeListView()
@@ -211,6 +226,11 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
                       Column(
                         children: [
                           _getNovostLikeComments(),
+                          Text(
+                            "Za pretragu zapisa pritisnite dugme Traži",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          SizedBox(height: 3,),
                           _showResultCount(_novostLikeCommentResult),
                           isLoadingData == false
                               ? _buildNovostLikeCommentListView()
@@ -493,8 +513,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           ],
           rows: _recenzijaUslugeResult?.result
                   .map((RecenzijaUsluge e) => DataRow(cells: [
-                        DataCell(Text(
-                            "${e.usluga?.naziv ?? ""}")),
+                        DataCell(Text("${e.usluga?.naziv ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumKreiranja == null

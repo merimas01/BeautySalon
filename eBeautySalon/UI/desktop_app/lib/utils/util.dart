@@ -9,7 +9,7 @@ class Authorization {
 }
 
 Image ImageFromBase64String(String base64Image) {
-  return Image.memory(base64Decode(base64Image));
+  return Image.memory(base64Decode(base64Image), gaplessPlayback: true,);
 }
 
 class LoggedUser {

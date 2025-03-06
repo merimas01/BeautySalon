@@ -171,8 +171,7 @@ namespace eBeautySalon.Services
             var predictionResult = new List<Tuple<Database.Usluga, float>>(); //onaj koji ima najveci score, njega uzimamo
 
             if (model != null)
-            {
-                
+            {               
                 foreach (var usluga in usluge)
                 {
                     var predictionengine = mLContext.Model.CreatePredictionEngine<UslugaEntry, CoUsluga_Prediction>(model);
@@ -194,10 +193,14 @@ namespace eBeautySalon.Services
                 var finalResult = predictionResult.OrderByDescending(x => x.Item2).Select(x => x.Item1);
                 var res = finalResult.Take(3).ToList();
 
+                mLContext = null;
+                model = null;
                 return _mapper.Map<List<Models.Usluge>>(res);
             }
             else
             {
+                mLContext = null;
+                model = null;
                 return new List<Usluge>();
             }
 

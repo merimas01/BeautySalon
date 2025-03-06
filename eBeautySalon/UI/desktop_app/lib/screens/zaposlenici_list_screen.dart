@@ -100,6 +100,11 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
             ? authorised == true
                 ? Column(children: [
                     _builSearch(),
+                    Text(
+                      "Za pretragu zapisa pritisnite dugme Traži",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    SizedBox(height: 3,),
                     _showResultCount(),
                     _buildDataListView()
                   ])
@@ -413,6 +418,7 @@ class _ZaposleniciListScreenState extends State<ZaposleniciListScreen> {
                             : Image.asset(
                                 width: 50,
                                 "assets/images/noImage.jpg",
+                                gaplessPlayback: true
                               )),
                         DataCell(_zaduzenZa(
                             e.zaposlenikUslugas, e.korisnik?.korisnikUlogas)),

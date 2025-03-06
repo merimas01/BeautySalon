@@ -507,7 +507,6 @@ using (var scope = app.Services.CreateScope())
             new ZaposlenikUsluga { ZaposlenikId = 7, DatumKreiranja = DateTime.Now, UslugaId = 15 },
             new ZaposlenikUsluga { ZaposlenikId = 7, DatumKreiranja = DateTime.Now, UslugaId = 16 },
             new ZaposlenikUsluga { ZaposlenikId = 7, DatumKreiranja = DateTime.Now, UslugaId = 17 }
-
             );
 
         dataContext.SaveChanges();

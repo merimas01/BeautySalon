@@ -33,7 +33,7 @@ namespace eBeautySalon.Services
         public override async Task BeforeDelete(Usluga entity)
         {
             var slikaUslugeId = entity.SlikaUslugeId;
-            var slikaUsluge = await _context.SlikaUsluges.Where(x => x.SlikaUslugeId == slikaUslugeId).FirstAsync();
+            var slikaUsluge = slikaUslugeId!=null? await _context.SlikaUsluges.Where(x => x.SlikaUslugeId == slikaUslugeId).FirstAsync():null;
             var recenzije_usluga = await _context.RecenzijaUsluges.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
             var usluga_termini = await _context.UslugaTermins.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
             var zaposlenici_usluge = await _context.ZaposlenikUslugas.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();

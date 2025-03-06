@@ -30,7 +30,7 @@ namespace eBeautySalon.Services
         public override async Task BeforeDelete(Novost entity)
         {
             var slikaNovostId = entity.SlikaNovostId;
-            var slikaNovost = await _context.SlikaNovosts.Where(x => x.SlikaNovostId == slikaNovostId).FirstAsync();
+            var slikaNovost = slikaNovostId != null ? await _context.SlikaNovosts.Where(x => x.SlikaNovostId == slikaNovostId).FirstAsync() : null;
             var novostLikeComment = await _context.NovostLikeComments.Where(x => x.NovostId == entity.NovostId).ToListAsync();
            
             if (slikaNovost != null && slikaNovostId != Constants.DEFAULT_SlikaUslugeId)

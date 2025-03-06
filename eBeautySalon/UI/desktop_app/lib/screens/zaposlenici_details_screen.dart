@@ -106,7 +106,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
         widget.zaposlenik?.zaposlenikUslugas?.map((e) => e.usluga!).toList();
 
     uloga = widget.korisnik?.korisnikUlogas?.length == 0
-        ? "Usluznik"
+        ? "Uslužnik"
         : widget.korisnik?.korisnikUlogas?[0].uloga?.naziv.toString();
 
     imaSliku();
@@ -142,7 +142,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
           setState(() {
             _selectedItems.result = _postojeceUsluge!;
             validationError = "";
-            uloga = "Usluznik";
+            uloga = "Uslužnik";
             selectedUlogaId =
                 widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
             print(
@@ -205,7 +205,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                 var ulogaID =
                     obj['ulogaId'] != null ? int.parse(obj['ulogaId']) : null;
                 var slika_request = SlikaProfilaInsertUpdate(_base64image);
-
+                
                 if (val == true &&
                     ulogaID != null &&
                     validationError == "" &&
@@ -303,7 +303,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                   selectedUlogaId =
                       widget.korisnik?.korisnikUlogas?[0].ulogaId.toString();
                   uloga = selectedUlogaId == DEFAULT_UlogaId.toString()
-                      ? "Usluznik"
+                      ? "Uslužnik"
                       : "";
                 });
               }
@@ -311,15 +311,15 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
             onChanged: (x) async {
               setState(() {
                 selectedUlogaId = x;
-                uloga = x == DEFAULT_UlogaId.toString() ? "Usluznik" : "";
+                uloga = x == DEFAULT_UlogaId.toString() ? "Uslužnik" : "";
               });
-              if (uloga == "Usluznik" && _selectedItems.result.length == 0) {
+              if (uloga == "Uslužnik" && _selectedItems.result.length == 0) {
                 setState(() {
                   validationError =
                       "Molimo Vas odaberite barem jednu uslugu (maksimalno 3).";
                 });
               }
-              if (uloga == "Usluznik" && _selectedItems.result.length > 3) {
+              if (uloga == "Uslužnik" && _selectedItems.result.length > 3) {
                 setState(() {
                   validationError =
                       "Dozvoljeno je izabrati maksimalno 3 usluge. Pokušajte ponovo.";
@@ -404,19 +404,19 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
                     _buttonOdaberiSliku(),
                     SizedBox(height: 10),
                     _odaberiSliku(),
-                    uloga == "Usluznik"
+                    uloga == "Uslužnik"
                         ? SizedBox(
                             height: 20,
                           )
                         : Container(),
                     _buttonOdaberiUsluge(),
-                    uloga == "Usluznik"
+                    uloga == "Uslužnik"
                         ? SizedBox(
                             height: 20,
                           )
                         : Container(),
                     _odaberiUsluge(),
-                    uloga == "Usluznik"
+                    uloga == "Uslužnik"
                         ? SizedBox(
                             height: 20,
                           )
@@ -463,7 +463,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
   }
 
   Widget _buttonOdaberiUsluge() {
-    return uloga == "Usluznik"
+    return uloga == "Uslužnik"
         ? ElevatedButton(
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(
@@ -480,7 +480,7 @@ class _ZaposleniciDetailsScreenState extends State<ZaposleniciDetailsScreen> {
 
   Widget _odaberiUsluge() {
     return Center(
-      child: uloga == "Usluznik"
+      child: uloga == "Uslužnik"
           ? Column(
               children: [
                 Wrap(

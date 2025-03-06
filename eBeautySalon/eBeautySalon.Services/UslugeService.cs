@@ -37,6 +37,9 @@ namespace eBeautySalon.Services
             var recenzije_usluga = await _context.RecenzijaUsluges.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
             var usluga_termini = await _context.UslugaTermins.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
             var zaposlenici_usluge = await _context.ZaposlenikUslugas.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
+            var rezervacija_usluge = await _context.Rezervacijas.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
+            var favoritiUsluge = await _context.FavoritiUsluges.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
+
             if (slikaUsluge != null && slikaUslugeId != Constants.DEFAULT_SlikaUslugeId) { 
                 _context.Remove(slikaUsluge); //deleta se ovaj objekat jer se nece koristiti vise
             }
@@ -49,6 +52,14 @@ namespace eBeautySalon.Services
                 _context.Remove(item);
             }
             foreach (var item in zaposlenici_usluge)
+            {
+                _context.Remove(item);
+            }
+            foreach (var item in rezervacija_usluge)
+            {
+                _context.Remove(item);
+            }
+            foreach (var item in favoritiUsluge)
             {
                 _context.Remove(item);
             }

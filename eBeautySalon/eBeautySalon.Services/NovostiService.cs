@@ -31,11 +31,16 @@ namespace eBeautySalon.Services
         {
             var slikaNovostId = entity.SlikaNovostId;
             var slikaNovost = await _context.SlikaNovosts.Where(x => x.SlikaNovostId == slikaNovostId).FirstAsync();
+            var novostLikeComment = await _context.NovostLikeComments.Where(x => x.NovostId == entity.NovostId).ToListAsync();
            
             if (slikaNovost != null && slikaNovostId != Constants.DEFAULT_SlikaUslugeId)
             {
                 _context.Remove(slikaNovost); //deleta se ovaj objekat jer se nece koristiti vise
-            }    
+            }
+            foreach (var item in novostLikeComment)
+            {
+                _context.Remove(item);
+            }
         }
         public override IQueryable<Novost> AddFilter(IQueryable<Novost> query, NovostiSearchObject? search = null)
         {

@@ -233,5 +233,10 @@ namespace eBeautySalon.Services
             }
             return lista_termina; //OrderBy(t=> TimeSpan.Parse(t.termin.split('-')[0]))
         }
+
+        public override async Task<bool> AddValidationDelete(int id)
+        {
+            return false;
+        }
     }
 }

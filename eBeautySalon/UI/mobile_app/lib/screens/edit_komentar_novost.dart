@@ -25,6 +25,7 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
   Map<String, dynamic> _initialValue = {};
   late NovostLikeCommentProvider _novostLikeCommentProvider;
   TextEditingController _commentController = TextEditingController();
+  String? text="";
 
   @override
   void initState() {
@@ -36,9 +37,19 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
 
     _novostLikeCommentProvider = context.read<NovostLikeCommentProvider>();
 
+ // Add a listener to get the value whenever the text changes
+    _commentController.addListener(() {
+      String currentText = _commentController.text; // Access the current text
+      setState(() {
+        text=_commentController.text;
+      });
+      print('Current Text: $currentText');
+    });
+
     setState(() {
       _commentController.text = widget.novostLikeComment?.komentar ?? "";
     });
+
   }
 
   _showDetails() {
@@ -98,6 +109,7 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                 SizedBox(
                   height: 10,
                 ),
+                _commentController.text!=""?
                 ElevatedButton(
                     onPressed: () async {
                       try {
@@ -109,18 +121,26 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
                               ? null
                               : _commentController.text,
                         );
-                        var obj = await _novostLikeCommentProvider.update(
-                            widget.novostLikeComment!.novostLikeCommentId!,
-                            request);
-                        if (obj != null) {
-                          showSuccessMessage();
+                        // if (widget.novostLikeComment?.isLike == false &&
+                        //     request.komentar == null) {
+                        //   //del
+                        //   var deleted = await _novostLikeCommentProvider.delete(
+                        //       widget.novostLikeComment!.novostLikeCommentId!);
+                        // } else
+                         {
+                          var obj = await _novostLikeCommentProvider.update(
+                              widget.novostLikeComment!.novostLikeCommentId!,
+                              request);
+                          if (obj != null) {
+                            showSuccessMessage();
+                          }
                         }
                       } catch (err) {
                         print(err.toString());
                         _showValidationError();
                       }
                     },
-                    child: Text("Spasi promjene"))
+                    child: Text("Spasi promjene")) : Container()
               ],
             ),
           ),
@@ -133,7 +153,7 @@ class _EditKomentarNovostState extends State<EditKomentarNovost> {
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
               content: Text(
-                  "Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta. Molimo pokušajte ponovo."),
+                  "Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta i ne smije biti duži od 15 riječi. \nMolimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
                     style: TextButton.styleFrom(

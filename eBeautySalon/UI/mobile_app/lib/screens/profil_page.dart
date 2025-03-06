@@ -160,17 +160,11 @@ class _ProfilPageState extends State<ProfilPage> {
                             ),
                     ],
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
                   FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Korisničko ime:"),
                     name: "korisnickoIme",
                     initialValue: korisnik?.korisnickoIme ?? "",
                     enabled: false,
-                  ),
-                  SizedBox(
-                    height: 5,
                   ),
                   FormBuilderTextField(
                     decoration: InputDecoration(labelText: "Ime:"),
@@ -178,17 +172,11 @@ class _ProfilPageState extends State<ProfilPage> {
                     initialValue: korisnik?.ime ?? "",
                     enabled: false,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
                   FormBuilderTextField(
                     name: "prezime",
                     enabled: false,
                     initialValue: korisnik?.prezime ?? "",
                     decoration: InputDecoration(labelText: "Prezime:"),
-                  ),
-                  SizedBox(
-                    height: 5,
                   ),
                   FormBuilderTextField(
                     name: "telefon",
@@ -196,17 +184,11 @@ class _ProfilPageState extends State<ProfilPage> {
                     initialValue: korisnik?.telefon ?? "",
                     decoration: InputDecoration(labelText: "Telefon:"),
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
                   FormBuilderTextField(
                     name: "email",
                     enabled: isEnabled,
                     initialValue: korisnik?.email ?? "",
                     decoration: InputDecoration(labelText: "Email:"),
-                  ),
-                  SizedBox(
-                    height: 5,
                   ),
                   FormBuilderTextField(
                     name: "datumKreiranja",

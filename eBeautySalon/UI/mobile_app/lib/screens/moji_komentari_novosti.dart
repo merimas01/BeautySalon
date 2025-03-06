@@ -80,21 +80,36 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
                               poslaniKorisnikId: LoggedUser.id,
                             )));
                   },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Stack(
                     children: [
-                      x.novost?.slikaNovost != null &&
-                              x.novost?.slikaNovost?.slika != null &&
-                              x.novost?.slikaNovost?.slika != ""
-                          ? imageContainer(x.novost!.slikaNovost!.slika, 120, 120)
-                          : noImageContainer(120, 120),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "${(x.novost?.naslov ?? "").split(' ').take(2).join(' ')}...",
+                          x.novost?.slikaNovost != null &&
+                                  x.novost?.slikaNovost?.slika != null &&
+                                  x.novost?.slikaNovost?.slika != ""
+                              ? imageContainer(
+                                  x.novost!.slikaNovost!.slika, 120, 120)
+                              : noImageContainer(120, 120),
+                          SizedBox(
+                            width: 50,
                           ),
-                          TextButton(
+                          Expanded(
+                            // Ensures it takes the available space
+                            child: SingleChildScrollView(
+                              scrollDirection:
+                                  Axis.horizontal, // Scrolls horizontally
+                              child: Text(
+                                "${(x.novost?.naslov ?? "").split(' ').take(2).join(' ')}...",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Positioned(
+                          top: 30,
+                          right: 20,
+                          child: TextButton(
                             onPressed: () {
                               _deleteConfirmationDialog(x);
                             },
@@ -102,9 +117,7 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
                               Icons.delete,
                               color: Colors.red,
                             ),
-                          ),
-                        ],
-                      )
+                          )),
                     ],
                   ),
                 ),
@@ -172,10 +185,15 @@ class _MojiKomentariNovostiState extends State<MojiKomentariNovosti> {
   }
 
   void _obrisiZapis(e) async {
-    var deleted = await _novostLikeCommentProvider.update(
-        e.novostLikeCommentId!,
-        NovostLikeCommentInsertUpdate(
-            LoggedUser.id, e.novostId, e.isLike, null));
+    if (e.isLike == true) {
+      var deleted = await _novostLikeCommentProvider.update(
+          e.novostLikeCommentId!,
+          NovostLikeCommentInsertUpdate(
+              LoggedUser.id, e.novostId, e.isLike, null));
+    } else {
+      var deleted =
+          await _novostLikeCommentProvider.delete(e.novostLikeCommentId!);
+    }
 
     var data = await _novostLikeCommentProvider.get(filter: {
       'isNovostIncluded': true,

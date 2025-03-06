@@ -98,7 +98,6 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
     );
   }
 
-
   Widget noResultsWidget() {
     return Container(
       width: 300,
@@ -111,7 +110,8 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
         SizedBox(
           height: 20,
         ),
-        Text("Nije pronađena nijedna recenzija. 😔", style: TextStyle(fontSize: 16))
+        Text("Nije pronađena nijedna recenzija. 😔",
+            style: TextStyle(fontSize: 16))
       ]),
     );
   }
@@ -122,112 +122,125 @@ class _SveRecenzijeUsluznikaState extends State<SveRecenzijeUsluznika> {
     }
 
     List<Widget> list = data
-        .map((x) => Container(
-              decoration: BoxDecoration(
-                  border: Border.all(width: 2),
-                  borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: InkWell(
-                  onTap: () {
-                    if (x.korisnikId == LoggedUser.id) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => EditRecenzijaUsluznika(
-                                recenzijaUsluznika: x,
-                                totalReviws: widget.totalReviws,
-                                prosjecnaOcjena: widget.prosjecnaOcjena,
-                                usluga: widget.usluga,
-                              )));
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.person),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "${x.korisnik?.ime} ${x.korisnik?.prezime}",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.grade),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: List.generate(5, (index) {
-                                  return GestureDetector(
-                                    child: Icon(
-                                      Icons.star,
-                                      color: index < x.ocjena
-                                          ? Colors.amber
-                                          : Colors.grey,
-                                      size: 20,
+        .map(
+          (x) => Container(
+            decoration: BoxDecoration(
+                border: Border.all(width: 2),
+                borderRadius: BorderRadius.circular(20)),
+            child: InkWell(
+              onTap: () {
+                if (x.korisnikId == LoggedUser.id) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => EditRecenzijaUsluznika(
+                            recenzijaUsluznika: x,
+                            totalReviws: widget.totalReviws,
+                            prosjecnaOcjena: widget.prosjecnaOcjena,
+                            usluga: widget.usluga,
+                          )));
+                }
+              },
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 15.0, right: 60.0, bottom: 15.0, left: 15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.person),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "${x.korisnik?.ime} ${x.korisnik?.prezime}",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.grade),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(5, (index) {
+                                return GestureDetector(
+                                  child: Icon(
+                                    Icons.star,
+                                    color: index < x.ocjena
+                                        ? Colors.amber
+                                        : Colors.grey,
+                                    size: 20,
+                                  ),
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                        x.komentar != null && x.komentar.trim().isNotEmpty
+                            ? Row(
+                                children: [
+                                  Icon(Icons.comment),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Expanded(
+                                    // Ensures it takes the available space
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis
+                                          .horizontal, // Scrolls horizontally
+                                      child:
+                                          Text("${splitText(x.komentar, 5)}"),
                                     ),
-                                  );
-                                }),
+                                  ),
+                                ],
+                              )
+                            : SizedBox.shrink(),
+                        x.datumModificiranja == null
+                            ? Row(
+                                children: [
+                                  Icon(Icons.date_range),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("${formatDate(x.datumKreiranja)}"),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  Icon(Icons.date_range),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("${formatDate(x.datumModificiranja)}"),
+                                ],
                               ),
-                            ],
-                          ),
-                          x.komentar != null && x.komentar.trim().isNotEmpty
-                              ? Row(
-                                  children: [
-                                    Icon(Icons.comment),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text("${splitText(x.komentar, 5)}"),
-                                  ],
-                                )
-                              : SizedBox.shrink(),
-                          x.datumModificiranja == null
-                              ? Row(
-                                  children: [
-                                    Icon(Icons.date_range),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text("${formatDate(x.datumKreiranja)}"),
-                                  ],
-                                )
-                              : Row(
-                                  children: [
-                                    Icon(Icons.date_range),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                        "${formatDate(x.datumModificiranja)}"),
-                                  ],
-                                ),
-                        ],
-                      ),
-                      x.korisnikId == LoggedUser.id
-                          ? IconButton(
-                              onPressed: () {
-                                _deleteConfirmationDialog(x);
-                              },
-                              icon: Icon(Icons.delete),
-                              color: Colors.red,
-                            )
-                          : Container(),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                  Positioned(
+                    top: 65,
+                    right: 20,
+                    child: x.korisnikId == LoggedUser.id
+                        ? IconButton(
+                            onPressed: () {
+                              _deleteConfirmationDialog(x);
+                            },
+                            icon: Icon(Icons.delete),
+                            color: Colors.red,
+                          )
+                        : Container(),
+                  )
+                ],
               ),
-            ))
+            ),
+          ),
+        )
         .cast<Widget>()
         .toList();
 

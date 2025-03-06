@@ -236,7 +236,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                  labelText: "šifra usluge/usluga/ocjena/komentar",
+                  labelText: "usluga/ocjena/komentar",
                   prefixIcon: Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
@@ -295,7 +295,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                  labelText: "šifra uslužnika/uslužnik/ocjena/komentar",
+                  labelText: "uslužnik/ocjena/komentar",
                   prefixIcon: Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
@@ -494,7 +494,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           rows: _recenzijaUslugeResult?.result
                   .map((RecenzijaUsluge e) => DataRow(cells: [
                         DataCell(Text(
-                            "${e.usluga?.sifra ?? ""} - ${e.usluga?.naziv ?? ""}")),
+                            "${e.usluga?.naziv ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumKreiranja == null
@@ -542,7 +542,7 @@ class _KorisniciAktivnostScreenState extends State<KorisniciAktivnostScreen> {
           rows: _recenzijaUsluznikaResult?.result
                   .map((RecenzijaUsluznika e) => DataRow(cells: [
                         DataCell(Text(
-                            "${e.usluznik?.korisnik?.sifra ?? ""} - ${e.usluznik?.korisnik?.ime ?? ""} ${e.usluznik?.korisnik?.prezime ?? ""}")),
+                            "${e.usluznik?.korisnik?.ime ?? ""} ${e.usluznik?.korisnik?.prezime ?? ""}")),
                         DataCell(Container(
                             width: 150,
                             child: Text((e.datumKreiranja == null

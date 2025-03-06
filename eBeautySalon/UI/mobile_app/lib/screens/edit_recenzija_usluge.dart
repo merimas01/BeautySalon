@@ -177,7 +177,7 @@ class _EditRecenzijaUslugeState extends State<EditRecenzijaUsluge> {
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
               content:
-                  Text("Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta. Molimo pokušajte ponovo."),
+                  Text("Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta i ne smije biti duži od 15 riječi. \nMolimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
                     style: TextButton.styleFrom(

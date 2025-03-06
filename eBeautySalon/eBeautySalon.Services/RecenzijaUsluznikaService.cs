@@ -33,7 +33,8 @@ namespace eBeautySalon.Services
                 || x.Usluznik.Korisnik.Prezime.Contains(search.FTS)
                 || x.Ocjena.ToString().StartsWith(search.FTS)
                 || x.Komentar.StartsWith(search.FTS)
-                || x.Usluznik.Korisnik.Sifra.Contains(search.FTS));
+               // || x.Usluznik.Korisnik.Sifra.Contains(search.FTS)
+                );
             }
             if (search.UsluznikId != null)
             {

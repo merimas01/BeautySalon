@@ -33,9 +33,12 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
   int commentsCount = 0;
   int? novostLikeCommentId;
   String? currentComment;
+  String? textCommentController = "";
   late NovostLikeCommentProvider _novostLikeCommentProvider;
   SearchResult<NovostLikeComment>? _novostLikeCommentResult;
   TextEditingController _commentController = TextEditingController();
+  bool postojiLike = false;
+  bool postojiKomentar = false;
 
   @override
   void initState() {
@@ -58,6 +61,13 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       'isNovostIncluded': true,
       'isComment': true
     });
+
+    //da li postoji novostLikeCommentId
+    var novostlikecomment = await _novostLikeCommentProvider.get(filter: {
+      'novostId': widget.novost?.novostId,
+      'korisnikId': LoggedUser.id,
+    });
+
     //da li je korisnik lajkao
     var isLiked = await _novostLikeCommentProvider.get(filter: {
       'novostId': widget.novost?.novostId,
@@ -71,6 +81,15 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       'isComment': true
     });
 
+    // Add a listener to get the value whenever the text changes
+    _commentController.addListener(() {
+      String currentText = _commentController.text; // Access the current text
+      setState(() {
+        textCommentController = currentText;
+      });
+      print('Current Text: $currentText');
+    });
+
     setState(() {
       isLoadingLikesComments = false;
       _novostLikeCommentResult = hasComments;
@@ -78,8 +97,9 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
       commentsCount = hasComments.count;
       liked = isLiked.count != 0 ? true : false;
       commented = isComment.count != 0 ? true : false;
-      novostLikeCommentId =
-          isLiked.count != 0 ? isLiked.result[0].novostLikeCommentId : 0;
+      novostLikeCommentId = novostlikecomment.count != 0
+          ? novostlikecomment.result[0].novostLikeCommentId
+          : 0;
       currentComment =
           isComment.count != 0 ? isComment.result[0].komentar : null;
     });
@@ -141,22 +161,39 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                               TextButton(
                                   onPressed: () async {
                                     try {
-                                      if (novostLikeCommentId != 0) {
+                                      if (liked == false) {
+                                        if (novostLikeCommentId != 0) {
+                                          //edit
+                                          var obj =
+                                              await _novostLikeCommentProvider
+                                                  .update(novostLikeCommentId!,
+                                                      LikeNovostRequest());
+                                        } else {
+                                          //insert
+                                          var obj =
+                                              await _novostLikeCommentProvider
+                                                  .insert(LikeNovostRequest());
+
+                                          setState(() {
+                                            novostLikeCommentId =
+                                                obj.novostLikeCommentId;
+                                          });
+                                        }
+                                      } else if (liked == true &&
+                                          commented == false) {
+                                        var del =
+                                            await _novostLikeCommentProvider
+                                                .delete(novostLikeCommentId!);
+                                        setState(() {
+                                          novostLikeCommentId = 0;
+                                        });
+                                      } else if (liked == true &&
+                                          commented == true) {
                                         //edit
                                         var obj =
                                             await _novostLikeCommentProvider
                                                 .update(novostLikeCommentId!,
                                                     LikeNovostRequest());
-                                      } else {
-                                        //insert
-                                        var obj =
-                                            await _novostLikeCommentProvider
-                                                .insert(LikeNovostRequest());
-
-                                        setState(() {
-                                          novostLikeCommentId =
-                                              obj.novostLikeCommentId;
-                                        });
                                       }
 
                                       var hasLikes =
@@ -241,20 +278,22 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
           ),
         ),
         SizedBox(height: 12.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                print("komentar: ${_commentController.text.trim()}");
-                _commentController.text.trim() != ""
-                    ? _saveComment()
-                    : _showValidationError();
-              },
-              child: Text("Spasi"),
-            ),
-          ],
-        ),
+        _commentController.text != ""
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      print("komentar: ${_commentController.text.trim()}");
+                      _commentController.text.trim() != ""
+                          ? _saveComment()
+                          : _showValidationError();
+                    },
+                    child: Text("Spasi komentar"),
+                  ),
+                ],
+              )
+            : Container(),
       ],
     );
   }
@@ -268,9 +307,12 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
         _commentController.text,
       );
 
-      if (liked == false) {
+      if (novostLikeCommentId == 0) {
         try {
-          await _novostLikeCommentProvider.insert(request);
+          var obj = await _novostLikeCommentProvider.insert(request);
+          setState(() {
+            novostLikeCommentId = obj.novostLikeCommentId;
+          });
         } catch (err) {
           print(err.toString());
         }
@@ -292,6 +334,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
         commented = true;
         commentsCount = data.count;
         _novostLikeCommentResult = data;
+        currentComment = _commentController.text;
       });
       showSuccessMessage();
     } catch (err) {
@@ -334,82 +377,87 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
                   //color: Colors.amber,
                   border: Border.all(width: 2),
                   borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: InkWell(
-                  onTap: () {
-                    if (x.korisnikId == LoggedUser.id) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => EditKomentarNovost(
-                                novostLikeComment: x,
-                                novost: widget.novost,
-                                poslaniKorisnikId: null,
-                              )));
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.person),
-                              SizedBox(
-                                width: 5,
+              child: InkWell(
+                onTap: () {
+                  if (x.korisnikId == LoggedUser.id) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => EditKomentarNovost(
+                              novostLikeComment: x,
+                              novost: widget.novost,
+                              poslaniKorisnikId: null,
+                            )));
+                  }
+                },
+                child: Stack(children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 15.0, right: 60.0, bottom: 15.0, left: 15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.person),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "${x.korisnik?.ime} ${x.korisnik?.prezime}",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.comment),
+                            SizedBox(width: 5),
+                            Expanded(
+                              // Ensures it takes the available space
+                              child: SingleChildScrollView(
+                                scrollDirection:
+                                    Axis.horizontal, // Scrolls horizontally
+                                child: Text("${splitText(x.komentar, 5)}"),
                               ),
-                              Text(
-                                "${x.korisnik?.ime} ${x.korisnik?.prezime}",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Icon(Icons.comment),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "${splitText(x.komentar, 5)}",
-                              ),
-                            ],
-                          ),
-                          x.datumModifikovanja == null
-                              ? Row(
-                                  children: [
-                                    Icon(Icons.date_range),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text("${formatDate(x.datumKreiranja)}"),
-                                  ],
-                                )
-                              : Row(
-                                  children: [
-                                    Icon(Icons.date_range),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text("${formatDate(x.datumModifikovanja)}"),
-                                  ],
-                                )
-                        ],
-                      ),
-                      x.korisnikId == LoggedUser.id
-                          ? IconButton(
-                              onPressed: () {
-                                _deleteConfirmationDialog(x);
-                              },
-                              icon: Icon(Icons.delete),
-                              color: Colors.red,
-                            )
-                          : Container(),
-                    ],
+                            ),
+                          ],
+                        ),
+                        x.datumModifikovanja == null
+                            ? Row(
+                                children: [
+                                  Icon(Icons.date_range),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("${formatDate(x.datumKreiranja)}"),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  Icon(Icons.date_range),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("${formatDate(x.datumModifikovanja)}"),
+                                ],
+                              )
+                      ],
+                    ),
                   ),
-                ),
+                  Positioned(
+                    top: 60,
+                    right: 20,
+                    child: x.korisnikId == LoggedUser.id
+                        ? IconButton(
+                            onPressed: () {
+                              _deleteConfirmationDialog(x);
+                            },
+                            icon: Icon(Icons.delete),
+                            color: Colors.red,
+                          )
+                        : Container(),
+                  )
+                ]),
               ),
             ))
         .cast<Widget>()
@@ -424,7 +472,7 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
         builder: (BuildContext context) => AlertDialog(
               title: Text("Greška"),
               content: Text(
-                  "Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta. Molimo pokušajte ponovo."),
+                  "Nije zadovoljena validacija. Komentar treba sačinjavati riječi a ne prazna mjesta i ne smije biti duži od 15 riječi. \nMolimo pokušajte ponovo."),
               actions: <Widget>[
                 TextButton(
                     style: TextButton.styleFrom(
@@ -510,10 +558,18 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
   }
 
   void _obrisiZapis(e) async {
-    var deleted = await _novostLikeCommentProvider.update(
-        e.novostLikeCommentId!,
-        NovostLikeCommentInsertUpdate(
-            LoggedUser.id, widget.novost?.novostId, liked, null));
+    if (liked == true) {
+      var deleted = await _novostLikeCommentProvider.update(
+          e.novostLikeCommentId!,
+          NovostLikeCommentInsertUpdate(
+              LoggedUser.id, widget.novost?.novostId, liked, null));
+    } else {
+      var deleted =
+          await _novostLikeCommentProvider.delete(novostLikeCommentId!);
+      setState(() {
+        novostLikeCommentId = 0;
+      });
+    }
 
     //ukupni komentari
     var hasComments = await _novostLikeCommentProvider.get(filter: {

@@ -26,11 +26,11 @@ namespace eBeautySalon.Services
             query = query.OrderByDescending(x => x.RecenzijaUslugeId);
             if (!string.IsNullOrEmpty(search.FTS))
             {
-                query = query.Where(x=> x.Korisnik.Ime.Contains(search.FTS)
+                query = query.Where(x => x.Korisnik.Ime.Contains(search.FTS)
                 || x.Korisnik.Prezime.Contains(search.FTS)
                 || x.Ocjena.ToString().StartsWith(search.FTS)
-                || x.Komentar.StartsWith(search.FTS) 
-                || x.Usluga.Sifra.Contains(search.FTS));
+                || x.Komentar.StartsWith(search.FTS));
+                //|| x.Usluga.Sifra.Contains(search.FTS));
             }
             if(search.UslugaId != null)
             {

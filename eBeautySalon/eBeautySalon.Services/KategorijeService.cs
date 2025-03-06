@@ -61,5 +61,14 @@ namespace eBeautySalon.Services
         {
             entity.Sifra = "K" + entity.KategorijaId.ToString("D6");
         }
+
+        public override async Task BeforeDelete(Kategorija entity)
+        {
+            var kategorije_usluge = await _context.Uslugas.Where(x => x.KategorijaId == entity.KategorijaId).ToListAsync();
+            foreach (var item in kategorije_usluge)
+            {
+                _context.Remove(item);
+            }
+        }
     }
 }

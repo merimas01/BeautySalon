@@ -35,10 +35,20 @@ namespace eBeautySalon.Services
             var slikaUslugeId = entity.SlikaUslugeId;
             var slikaUsluge = await _context.SlikaUsluges.Where(x => x.SlikaUslugeId == slikaUslugeId).FirstAsync();
             var recenzije_usluga = await _context.RecenzijaUsluges.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
+            var usluga_termini = await _context.UslugaTermins.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
+            var zaposlenici_usluge = await _context.ZaposlenikUslugas.Where(x => x.UslugaId == entity.UslugaId).ToListAsync();
             if (slikaUsluge != null && slikaUslugeId != Constants.DEFAULT_SlikaUslugeId) { 
                 _context.Remove(slikaUsluge); //deleta se ovaj objekat jer se nece koristiti vise
             }
             foreach (var item in recenzije_usluga)
+            {
+                _context.Remove(item);
+            }
+            foreach (var item in usluga_termini)
+            {
+                _context.Remove(item);
+            }
+            foreach (var item in zaposlenici_usluge)
             {
                 _context.Remove(item);
             }

@@ -685,7 +685,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
                               foregroundColor: Colors.red,
                             ),
                             onPressed: () async {
-                              _deleteRecenzijaUsluge(e);
+                              _deleteRecenzijaUsluznika(e);
                             },
                             child: Text('Obriši'),
                           ),
@@ -734,7 +734,7 @@ class _RecenzijeListScreenState extends State<RecenzijeListScreen> {
 
   void _obrisiRecenzijaUsluznika(e) async {
     print("delete recenzija usluznika id: ${e.recenzijaUsluznikaId}");
-    var deleted = await _recenzijeUslugeProvider.delete(e.recenzijaUsluznikaId);
+    var deleted = await _recenzijeUsluznikaProvider.delete(e.recenzijaUsluznikaId);
     print('deleted? ${deleted}');
 
     //treba da se osvjezi lista

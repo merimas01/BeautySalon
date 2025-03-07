@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/models/rezervacija.dart';
 import 'package:mobile_app/models/rezervacija_insert.dart';
 import 'package:mobile_app/providers/rezervacije_provider.dart';
-import 'package:mobile_app/screens/moje_rezervacije.dart';
 import 'package:mobile_app/screens/paypal_page.dart';
 import 'package:mobile_app/utils/util.dart';
 import 'package:mobile_app/widgets/master_screen.dart';
@@ -10,7 +9,6 @@ import 'package:provider/provider.dart';
 import '../models/search_result.dart';
 import '../models/usluga.dart';
 import '../providers/usluge_provider.dart';
-import 'package:flutter_paypal_checkout/flutter_paypal_checkout.dart';
 
 class RezervacijePage extends StatefulWidget {
   static const String routeName = "/reservation";

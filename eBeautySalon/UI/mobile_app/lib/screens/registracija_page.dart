@@ -1,12 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/main.dart';
 import 'package:mobile_app/utils/util.dart';
-import 'package:mobile_app/widgets/master_screen.dart';
-
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import '../models/korisnik_insert.dart';
@@ -34,42 +31,46 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreenWidget(
-        title: "Registruj se",
-        child: FormBuilder(
-            key: _formKey,
-            initialValue: _initialValue,
-            child: Container(
-              width: 800,
-              height: 700,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        dugmeNazad(),
-                        _naslov(),
-                        _korisnickoIme(),
-                        _inputIme(),
-                        _inputPrezime(),
-                        _inputTelefon(),
-                        _inputEmail(),
-                        SizedBox(height: 10),
-                        _inputSifra(),
-                        SizedBox(
-                          height: 20,
+    return Scaffold(
+        appBar: AppBar(
+            automaticallyImplyLeading: false, //removes back button
+            backgroundColor: Colors.pink,
+            title: Text("Registruj se")),
+        body: SafeArea(
+            child: FormBuilder(
+                key: _formKey,
+                initialValue: _initialValue,
+                child: Container(
+                  width: 800,
+                  height: 800,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            dugmeNazad(),
+                            _naslov(),
+                            _korisnickoIme(),
+                            _inputIme(),
+                            _inputPrezime(),
+                            _inputTelefon(),
+                            _inputEmail(),
+                            SizedBox(height: 10),
+                            _inputSifra(),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            _buttonOdaberiSliku(),
+                            SizedBox(height: 10),
+                            _odaberiSliku(),
+                            _saveAction(),
+                          ],
                         ),
-                        _buttonOdaberiSliku(),
-                        SizedBox(height: 10),
-                        _odaberiSliku(),
-                        _saveAction(),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            )));
+                ))));
   }
 
   @override
@@ -95,7 +96,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
 
   Widget _saveAction() {
     return Padding(
-      padding: const EdgeInsets.only(top: 15.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -173,7 +174,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                   Image.file(
                     _image!,
                     width: null,
-                    height: 180,
+                    height: 140,
                     fit: BoxFit.cover,
                   ),
                   SizedBox(
@@ -200,14 +201,14 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
                     child: Image.file(
                       _image!,
                       width: null,
-                      height: 180,
+                      height: 140,
                       fit: BoxFit.cover,
                     ),
                   )
                 : Container(
                     child: Image.asset(
                       "assets/images/noImage.jpg",
-                      height: 180,
+                      height: 140,
                       width: null,
                       fit: BoxFit.cover,
                     ),
@@ -378,7 +379,7 @@ class _RegistracijaPageState extends State<RegistracijaPage> {
 
   Widget _naslov() {
     return Text(
-      "Registrujte se na nasu aplikaciju putem sljedece forme!",
+      "Registrujte se na našu aplikaciju putem sljedeće forme!",
       textAlign: TextAlign.center,
       style: const TextStyle(
           //fontFamily: 'BeckyTahlia',

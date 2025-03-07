@@ -50,6 +50,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     _uslugeProvider = context.read<UslugeProvider>();
     _favoritiUslugeProvider = context.read<FavoritiUslugeProvider>();
 
+    print("usluga: ${widget.usluga?.uslugaId}");
     loadData();
 
     var fav = widget.usluga?.favoritiUsluges?.any((obj) =>
@@ -78,7 +79,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
     });
 
     print("recommend: ${recommendLista.length}");
-    if (usluge.length != 0 && usluznici.length != 0 && zaposlenici != 0) {
+    if (widget.usluga != null) {
       setState(() {
         isLoading = false;
       });
@@ -200,9 +201,7 @@ class _UslugaDetailsState extends State<UslugaDetails> {
                 ]),
               ),
             ))
-        : Center(
-            child: CircularProgressIndicator(),
-          );
+        : Container();
   }
 
   _findUsluznikeForUsluga() {

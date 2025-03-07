@@ -312,15 +312,23 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
           var obj = await _novostLikeCommentProvider.insert(request);
           setState(() {
             novostLikeCommentId = obj.novostLikeCommentId;
+            commented = true;
           });
+          showSuccessMessage();
         } catch (err) {
+          _showValidationError();
           print(err.toString());
         }
       } else {
         try {
           await _novostLikeCommentProvider.update(
               novostLikeCommentId!, request);
+          setState(() {
+            commented = true;
+          });
+          showSuccessMessage();
         } catch (err) {
+          _showValidationError();
           print(err.toString());
         }
       }
@@ -331,12 +339,10 @@ class _NovostDetailsScreenState extends State<NovostDetailsScreen> {
         'isComment': true
       });
       setState(() {
-        commented = true;
         commentsCount = data.count;
         _novostLikeCommentResult = data;
         currentComment = _commentController.text;
       });
-      showSuccessMessage();
     } catch (err) {
       _showValidationError();
     }

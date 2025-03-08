@@ -16,9 +16,6 @@ The project was made using ASP .NET Core, Flutter and SQL Server.
 ## Prerequisites
 
 - [Docker Desktop installed and running](https://www.docker.com/products/docker-desktop/)
-- [RabbitMQ installed](https://www.rabbitmq.com/docs/install-windows#installer)
-- [Flutter installed](https://docs.flutter.dev/get-started/install/windows)
-- [Visual Studio Code installed](https://code.visualstudio.com/download)
 - [Android Studio installed](https://docs.flutter.dev/get-started/install/windows/mobile)
 
 ## Setting up 
